@@ -1,0 +1,60 @@
+# Procura na Open Library a capa dos livros do catálogo e guarda o resultado em catalogo/capas.tsv.
+#
+# Para rodar: aba Actions → "Buscar capas" → Run workflow (escolha o ramo). Só procura os livros que ainda não
+# foram procurados; marcando "refazer", tenta de novo os que não tinham sido achados.
+#
+# O que este serviço muda: apenas o arquivo catalogo/capas.tsv, no ramo em que rodou. Ele não monta o painel nem
+# publica o site: isso continua sendo feito numa rodada, com os testes (tools/atualizar.py e tools/qa/tudo.py).
+# Nenhuma imagem entra no repositório — o painel mostra as capas direto da Open Library.
+name: Buscar capas
+
+on:
+  workflow_dispatch:
+    inputs:
+      refazer:
+        description: Procurar de novo as capas que não foram achadas
+        type: boolean
+        default: false
+  # Provisório (rodada 5): a primeira busca roda no ramo de trabalho, antes de o serviço existir em `main`.
+  push:
+    branches: ['arena/8468f0f9-biblioteca']
+    paths: ['.github/workflows/buscar-capas.yml']
+
+permissions:
+  contents: write   # gravar o catalogo/capas.tsv no ramo
+
+# Uma busca por vez em cada ramo.
+concurrency:
+  group: capas-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  buscar:
+    name: Buscar
+    runs-on: ubuntu-latest
+    timeout-minutes: 80
+    steps:
+      - name: Baixar o repositório
+        uses: actions/checkout@v7
+        with:
+          fetch-depth: 0
+
+      - name: Procurar as capas
+        env:
+          REFAZER: ${{ inputs.refazer && '--refazer' || '' }}
+        run: python3 tools/capas.py --minutos 55 $REFAZER
+
+      - name: Guardar o resultado
+        if: always()
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add catalogo/capas.tsv
+          if git diff --cached --quiet; then
+            echo "Nada mudou em catalogo/capas.tsv."
+            exit 0
+          fi
+          git commit -m "Capas: resultado da busca na Open Library"
+          git pull --rebase origin "$GITHUB_REF_NAME"
+          git push origin "HEAD:$GITHUB_REF_NAME"
+          python3 tools/capas.py --conferir >> "$GITHUB_STEP_SUMMARY"
