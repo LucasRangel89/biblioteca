@@ -50,7 +50,7 @@ function montarFiltros() {
         <div class="f-corpo">
           <div class="f-g f-custom" id="f-custom" hidden><span class="f-r">Período</span><label><span>de</span><input type="date" id="f-de" aria-label="Data inicial"></label><label><span>até</span><input type="date" id="f-ate" aria-label="Data final"></label></div>
           <div class="f-g" data-g="acervo"><span class="f-r">Acervo</span>${seg('f-acervo', 'Acervo', [['tudo', 'Tudo'], ['fisico', 'Física'], ['virtual', 'Virtual'], ['ambos', 'Nas duas']])}</div>
-          <div class="f-g"><span class="f-r">Tipo</span>${seg('f-tipo', 'Tipo', [['', 'Todos'], ['F', 'Ficção'], ['NF', 'Não ficção'], ['O', 'Outros']])}</div>
+          <div class="f-g"><span class="f-r">Tipo</span>${seg('f-tipo', 'Tipo', [['', 'Todos'], ['F', 'Ficção'], ['NF', 'Não ficção'], ['HQ', 'HQ'], ['O', 'Outros']])}</div>
           <div class="f-g pop-w" id="pw-eixo"><button type="button" class="btn pop-b" aria-expanded="false" aria-controls="pop-eixo">Eixo<span class="cont" hidden></span>${icone('baixo', 14)}</button>
             <div class="pop" id="pop-eixo"><div class="pop-h"><b>Eixo temático</b><button type="button" class="lk" data-limpar="eixos">limpar</button></div><div class="pop-l">${EIXOS.slice(1).map((e, i) => `<label class="opt"><input type="checkbox" value="${i + 1}"><span>${esc(e.n)}</span><em></em></label>`).join('')}</div></div></div>
           <div class="f-g pop-w" id="pw-mais"><button type="button" class="btn pop-b" aria-expanded="false" aria-controls="pop-mais">${icone('filtro', 14)}Mais filtros<span class="cont" hidden></span>${icone('baixo', 14)}</button>
@@ -123,7 +123,7 @@ function sincronizarFiltros() {
   const ch = [], add = (rm, txt) => ch.push(`<button type="button" class="ativo" data-rm="${esc(rm)}" title="Remover filtro">${esc(txt)}${icone('fechar', 12)}</button>`);
   if (custom) add('periodo:', `${fData(I.de)} – ${fData(I.ate)}`);
   if (S.acervo !== 'tudo' && S.visao !== 'recs') add('acervo:', ROTULO_ACERVO[S.acervo]);
-  if (S.tipo) add('tipo:', { F: 'Ficção', NF: 'Não ficção', O: 'Poesia, HQ e outros' }[S.tipo]);
+  if (S.tipo) add('tipo:', { F: 'Ficção', NF: 'Não ficção', HQ: 'HQ', O: 'Poesia e outros' }[S.tipo]);
   for (const e of [...S.eixos].sort((a, z) => a - z)) add('eixos:' + e, EIXOS[e].n);
   if (S.top) add('top:', 'Só prioridades');
   for (const d of S.dif) add('dif:' + d, 'Dificuldade ' + NIVEIS[d].n.toLowerCase());

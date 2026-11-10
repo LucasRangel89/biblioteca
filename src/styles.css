@@ -659,7 +659,7 @@ td.c-spark svg { margin-left: auto; margin-right: auto; }
   .f-pf .btn { flex: 1; height: 42px; }
   .f-g { flex-direction: column; align-items: stretch; gap: 7px; }
   .f-g .seg { display: flex; }
-  .f-g .seg button { flex: 1; height: 34px; }
+  .f-g .seg button { flex: 1; height: 34px; padding: 0 6px; }   /* cinco opções no Tipo: com 11px de respiro, "Outros" saía da folha em telas de 320 px */
   .f-custom { flex-direction: row; flex-wrap: wrap; align-items: center; }
   .f-custom .f-r { width: 100%; }
   .f-custom label { flex: 1; }

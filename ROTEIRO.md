@@ -13,7 +13,7 @@ Este arquivo é atualizado ao fim de cada rodada. Para saber em que pé as coisa
 | --- | --- | --- |
 | 0 | Trazer a biblioteca virtual para o catálogo e para o painel | **Feita** (10/11/2026) |
 | 1 | Conferir o que foi importado | **Quase pronta** — falta só o que depende de você (lista abaixo) |
-| 2 | Decidir o que ficou de fora (quadrinhos, subpastas) | A fazer |
+| 2 | Decidir o que ficou de fora (quadrinhos, subpastas) | **Feita** (10/11/2026) — ficaram 13 perguntas para você (lista abaixo) |
 | 3 | Trocar os dados de exemplo pelos seus | A fazer |
 | 4 | Classificar os livros digitais novos | A fazer |
 | 5 | Rotina à prova de erro | A fazer |
@@ -60,6 +60,9 @@ Isto não é uma etapa: pode ser feito a qualquer momento.
 3. Peça: "atualize a biblioteca virtual".
 
 Sem listagem nova não há o que atualizar: o catálogo já está igual às listagens guardadas.
+
+Vale também para os **quadrinhos**. Edição nova de uma série que já está no catálogo entra sozinha na série; série
+nova entra marcada para conferência.
 
 ---
 
@@ -132,19 +135,65 @@ da estante é a HQ". A lista completa e sempre atualizada fica em `biblioteca-vi
 
 ## Etapa 2 — Decidir o que ficou de fora
 
-**Por quê.** Nem tudo o que está nas pastas entrou no catálogo.
+**Por quê.** Nem tudo o que está nas pastas tinha entrado no catálogo: faltavam os quadrinhos, três subpastas sem
+listagem e o que não é livro.
 
-- **Quadrinhos.** As três listagens de HQs (236 arquivos, fora as pastas de séries) estão guardadas, mas só *Coraline*
-  e *Maus* entraram. Uma HQ costuma ser uma série com muitos arquivos, e o catálogo foi pensado para livros.
-- **Três subpastas sem listagem:** `Revistas` (dentro de `pasta livros`), `Didáticos` e `Psicologia Aplicada e
-  Popularização` (dentro de `psicologia`). As listagens mostram que as pastas existem, mas não o que há dentro.
-- **O que não é livro** (12 apostilas, 11 periódicos, 3 artigos e 3 outros) fica só no inventário. A proposta é manter
-  assim.
+**O que você decidiu** (10/11/2026):
 
-**De você:** dizer se quer as HQs no painel (e como: uma linha por série, ou só as graphic novels fechadas) e rodar o
-`gerador de nomes.bat` dentro das três subpastas, enviando as listagens.
+- **Quadrinhos entram, uma linha por série.** *Sandman* é uma linha, sejam quantas forem as edições guardadas.
+- **As três subpastas sem listagem estão vazias** (`Revistas`, `Didáticos`, `Psicologia Aplicada e Popularização`).
+  Não há o que importar delas.
+- **O que não é livro continua só no inventário** (apostilas, revistas, artigos).
+
+**O que foi feito** (10/11/2026):
+
+- **243 quadrinhos estão no catálogo**, todos com o marcador `#HQ`: 241 novos, mais *Coraline* e *Maus*, que já
+  estavam. As três listagens de HQs tinham 236 arquivos e 106 subpastas.
+- **O título e o autor de cada um foram identificados por pesquisa.** O nome dos arquivos traz só o título, às vezes
+  abreviado: `Btmn Pdrs Smbrs` é *Batman: Padrões Sombrios*. Nas pastas de um personagem com histórias de várias fases
+  (*Batman*, *Thor*, *Hellblazer*), o autor ficou "Vários autores".
+- **20 livros em prosa estavam guardados nas pastas de quadrinhos** e entraram como livros: romances da Marvel, *Snow
+  Crash*, *Invasores de Corpos*, contos de Robert E. Howard, um livro de arte de *Rick and Morty*. Um deles, *Solomon
+  Kane*, já estava no catálogo e só ganhou mais uma edição.
+- **A adaptação de um livro tem linha própria**, com "(em quadrinhos)" no título: *1984 (em quadrinhos)*, *Moby Dick
+  (em quadrinhos)*. Ter a adaptação não marca o livro original como "tenho em digital".
+- **No painel:** o filtro **Tipo** ganhou o botão **HQ**; a ficha de um quadrinho mostra a subpasta em que as edições
+  estão; a busca acha a série também pelo nome da subpasta.
+
+**O que continua de fora, e por quê:**
+
+| O quê | Por quê |
+| --- | --- |
+| As edições dentro das 104 pastas de séries | A listagem só traz o nome da pasta. O catálogo sabe que você tem *Akira*; não sabe quantos volumes |
+| Subpastas `Mangás` (dentro de HQs) e `novas` (dentro de NovasHQs) | Não têm listagem. Se quiser que entrem, rode o `gerador de nomes.bat` dentro de cada uma e envie |
+| 4 arquivos compactados com o nome cortado: `BTN - Si______ra` (3 partes) e `Lo_____d - Mo_____no` | Não dá para saber o que são sem abrir |
+| 2 revistas *Heavy Metal* | São periódicos; ficam só no inventário, como as outras revistas |
+| `Revistas`, `Didáticos`, `Psicologia Aplicada e Popularização` | Estão vazias |
+| 12 apostilas, 13 periódicos e 3 artigos | Não são livros |
+
+**O que falta — e só você pode responder.** São onze obras que entraram com `#verificar` e mais duas dúvidas. Como
+na etapa 1, o que ficar sem resposta continua marcado e não atrapalha nada. As onze estão na pasta `HQs`.
+
+| No catálogo | A dúvida |
+| --- | --- |
+| *A Vida* (arquivo `A Vida.pdf`) | Quem é o autor? |
+| *Os Impostos* (arquivo `Os Impostos.cbr`) | Quem é o autor? |
+| *Especial: As Espadas* (arquivo `Especial - As Espadas.cbr`) | É um especial de qual série? Quem é o autor? |
+| *Trilogia Lovecraft* (subpasta) | Quais são os três títulos, e de quem? |
+| *Lovecraft* (subpasta) | É a HQ *Lovecraft*, de Hans Rodionoff, Keith Giffen e Enrique Breccia? Ou são adaptações de contos? |
+| *Caminhos Misteriosos* (subpasta) | É *Mysterious Ways*, de Jason Rubin e Tyler Kirkham? |
+| *Contágio* (subpasta) | É a saga do Batman (1996) ou a minissérie da Marvel (2019)? |
+| *Cripta* (subpasta) | Qual revista é? |
+| *Habitat* (arquivo `Habitat.cbr`) | É a de Simon Roy? |
+| *Rashomon* (arquivo `Rashomon.rar`) | É a de Victor Santos? |
+| *Ruído* (arquivo `Ruído ( etc.) (Z-Library).epub`) | É o livro de Daniel Kahneman (*Ruído: Uma Falha no Julgamento Humano*) ou um quadrinho? Entrou como livro |
+
+- **A listagem `novasHQSS` é de qual pasta?** Ela não aparece dentro de nenhuma outra. Se for a subpasta `novas`, de
+  NovasHQs, então essa subpasta já entrou e não falta nada dela.
+- **Os quatro arquivos compactados de nome cortado:** se souber o que são, diga, que eles entram.
 
 **Pronta quando** cada pasta da biblioteca virtual estiver no catálogo ou tiver a decisão de ficar de fora anotada.
+Está: o que entrou e o que ficou de fora estão nas listas acima, e em `biblioteca-virtual/RESUMO.md`.
 
 ## Etapa 3 — Trocar os dados de exemplo pelos seus
 
@@ -162,12 +211,13 @@ com os seus dados, e os de exemplo saem.
 
 ## Etapa 4 — Classificar os livros digitais novos
 
-**Por quê.** Os 1.656 livros que entraram pela biblioteca virtual não têm dificuldade (`#d`), extensão (`#e`) nem
-prioridade, e o eixo de cada um veio da pasta em que o arquivo estava — 472 deles caíram em "Psicologia, psicanálise e
-comportamento", que é larga demais para ajudar a escolher a próxima leitura.
+**Por quê.** Os 1.675 livros que entraram pela biblioteca virtual não têm dificuldade (`#d`), extensão (`#e`) nem
+prioridade, e o eixo de cada um veio da pasta em que o arquivo estava — 473 deles caíram em "Psicologia, psicanálise e
+comportamento", que é larga demais para ajudar a escolher a próxima leitura. Os 241 quadrinhos têm só o marcador
+`#HQ`: falta dizer o gênero de cada um (super-heróis, ficção científica, terror, biografia…).
 
 **O que será feito:** dificuldade e extensão estimadas livro a livro; eixos revistos; a psicologia dividida em grupos
-menores.
+menores; o gênero dos quadrinhos marcado.
 
 **De você:** conferir por amostragem (uns 30 livros que você conhece) e dizer se a classificação faz sentido.
 
@@ -205,3 +255,6 @@ Ideias em aberto; você escolhe quais valem a pena.
 - **O que você anota no painel é seu e é preservado.** Quando um título ou autor é corrigido no catálogo, o painel
   reencontra o livro e mantém as anotações (os detalhes estão no `README.md`).
 - **Na dúvida, fica marcado.** Título ou autor incerto leva `#verificar` em vez de um palpite.
+- **Quadrinhos: uma linha por série**, sejam quantas forem as edições guardadas.
+- **O que não é livro nem quadrinho fica só no inventário** (apostilas, revistas, artigos), fora do catálogo e do
+  painel.

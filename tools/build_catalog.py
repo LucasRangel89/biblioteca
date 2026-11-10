@@ -6,6 +6,7 @@ Saída: lista de [titulo, autor, "tags separadas por espaço", secao, eixo, obse
 - eixo:    eixo temático 1..16 (na estante, deduzido das tags — ver eixos.py; na seção 17, o número da subseção)
 - digital: só nos livros que estão na biblioteca virtual (biblioteca-virtual/inventario.tsv):
            ["formatos", nº de arquivos, [pastas], [títulos das edições, quando diferem do catálogo], "identificadores dos arquivos"]
+           e, nos quadrinhos guardados em pasta própria, um sexto item: [nomes das subpastas da série].
            Os identificadores deixam o painel reconhecer o livro mesmo depois de o título ser corrigido no inventário.
 - nomes antigos: só nas linhas cujo título ou autor foi corrigido no catálogo (catalogo/renomeados.tsv):
            [[título antigo, autor antigo], …]. Com eles o painel reencontra o que o usuário já tinha anotado naquele livro.
@@ -56,12 +57,15 @@ def dados_digitais(books, avisos):
     dono, out = {}, {}
     for i, lista in ligadas.items():
         linhas = [r for o in lista for r in o['linhas']]
-        arquivos = list(dict.fromkeys((r['pasta'], r['arquivo']) for r in linhas))
-        ids = [id_arquivo(*a) for a in arquivos]
+        ids = [id_arquivo(*a) for a in dict.fromkeys((r['pasta'], r['arquivo']) for r in linhas)]      # arquivos e subpastas de séries
         for x in ids:
             dono.setdefault(x, set()).add(i)
-        out[i] = [' '.join(sorted({r['formato'] for r in linhas})), len(arquivos), list(dict.fromkeys(r['pasta'] for r in linhas)),
-                  list(dict.fromkeys(t for o in lista for t in o['edicoes'])), ids]
+        arquivos = [r for r in linhas if r['formato'] != digital.FORMATO_PASTA]
+        subpastas = list(dict.fromkeys(r['arquivo'] for r in linhas if r['formato'] == digital.FORMATO_PASTA))
+        out[i] = [' '.join(sorted({r['formato'] for r in arquivos})), len({(r['pasta'], r['arquivo']) for r in arquivos}),
+                  list(dict.fromkeys(r['pasta'] for r in linhas)), list(dict.fromkeys(t for o in lista for t in o['edicoes'])), ids]
+        if subpastas:
+            out[i].append(subpastas)
     for i, d in out.items():                                   # um identificador repetido entre dois livros não serve para reconhecer nenhum dos dois
         d[4] = ' '.join(x for x in d[4] if len(dono[x]) == 1)
     sem_arquivo = [b['t'] for i, b in enumerate(books) if 'tenho-digital' in b['tags'] and i not in out]

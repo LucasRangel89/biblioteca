@@ -52,7 +52,7 @@ with sync_playwright() as p:
 
     print('PAINEL NOVO, SEM NADA SALVO')
     pg = pagina(b); pg.goto(PAINEL_URL); pg.wait_for_timeout(1200); pg.click('#aviso .pri'); pg.wait_for_timeout(200)
-    k = pg.evaluate(K); ok('acervo: 97 físicos · 1.792 digitais · 24 nos dois', k['acervo']['v'] == '1.865' and k['acervo']['s'] == '97 físicos · 1.792 digitais · 24 nos dois', k['acervo'])
+    k = pg.evaluate(K); ok('acervo: 97 físicos · 2.052 digitais · 24 nos dois', k['acervo']['v'] == '2.125' and k['acervo']['s'] == '97 físicos · 2.052 digitais · 24 nos dois', k['acervo'])
 
     abrir(pg, 'Mal-Estar Civilização Freud'); f = pg.evaluate(FATOS); v = pg.evaluate(VIRTUAL)      # o arquivo é de outra tradução: "O Mal-Estar na Cultura"
     ok('só digital: formato "Digital · Biblioteca virtual", sem data', f.get('Formato') == 'Digital · Biblioteca virtual' and f.get('Adquirido em') == 'sem data' and 'Valor pago' not in f, f)
@@ -71,17 +71,43 @@ with sync_playwright() as p:
     pg.select_option('#dlg [data-f=fmt]', 'ambos'); pg.click('#dlg footer .pri'); pg.wait_for_timeout(800)
     f = pg.evaluate(FATOS); ok('marcar "Físico e digital" à mão', f.get('Formato') == 'Físico e digital', f.get('Formato'))
     pg.keyboard.press('Escape'); pg.wait_for_timeout(300); pg.fill('#p-tab-geral input[type=search]', ''); pg.wait_for_timeout(900)
-    k = pg.evaluate(K); ok('acervo: 25 nos dois depois da edição', k['acervo']['s'] == '97 físicos · 1.793 digitais · 25 nos dois', k['acervo']['s'])
+    k = pg.evaluate(K); ok('acervo: 25 nos dois depois da edição', k['acervo']['s'] == '97 físicos · 2.053 digitais · 25 nos dois', k['acervo']['s'])
     pg.reload(); pg.wait_for_timeout(1200)
-    k = pg.evaluate(K); ok('a edição sobrevive ao recarregar', k['acervo']['s'] == '97 físicos · 1.793 digitais · 25 nos dois', k['acervo']['s'])
+    k = pg.evaluate(K); ok('a edição sobrevive ao recarregar', k['acervo']['s'] == '97 físicos · 2.053 digitais · 25 nos dois', k['acervo']['s'])
     ok('recarregar não anuncia mudança de catálogo', 'O catálogo mudou' not in pg.evaluate(TOASTS), pg.evaluate(TOASTS))
     pg.click('#f-acervo button[data-v="ambos"]'); pg.wait_for_timeout(900)
     k = pg.evaluate(K); ok('filtro "Nas duas": 25 livros', k['acervo']['v'] == '25', k['acervo'])
     pg.click('#f-acervo button[data-v="virtual"]'); pg.wait_for_timeout(900)
-    k = pg.evaluate(K); ok('filtro "Virtual": 1.793 livros, nenhuma compra', k['acervo']['v'] == '1.793' and k['investido']['v'] == 'R$ 0', (k['acervo']['v'], k['investido']['v']))
+    k = pg.evaluate(K); ok('filtro "Virtual": 2.053 livros, nenhuma compra', k['acervo']['v'] == '2.053' and k['investido']['v'] == 'R$ 0', (k['acervo']['v'], k['investido']['v']))
     pg.context.close()
 
-    print('CELULAR: O FORMATO CABE NO CARTÃO')
+    print('QUADRINHOS: O FILTRO "HQ" E A SUBPASTA DA SÉRIE')
+    pg = pagina(b); pg.goto(PAINEL_URL); pg.wait_for_timeout(1200); pg.click('#aviso .pri'); pg.wait_for_timeout(200)
+    botoes = pg.evaluate("() => [...document.querySelectorAll('#f-tipo button')].map(x => x.textContent.trim())")
+    ok('filtro Tipo: Todos, Ficção, Não ficção, HQ, Outros', botoes == ['Todos', 'Ficção', 'Não ficção', 'HQ', 'Outros'], botoes)
+    por_tipo = {}; chips = {}
+    for t in ('F', 'NF', 'HQ', 'O'):
+        pg.click(f'#f-tipo button[data-v="{t}"]'); pg.wait_for_timeout(900); por_tipo[t] = pg.evaluate(K); chips[t] = pg.inner_text('#f-ativos').replace('\n', ' ').replace('\u00a0', ' ')
+    hq = por_tipo['HQ']; n = {t: int(por_tipo[t]['acervo']['v'].replace('.', '')) for t in por_tipo}
+    ok('filtro "HQ": 243 quadrinhos no acervo (um deles também na estante) e 1 nas recomendações', hq['acervo']['v'] == '243' and hq['acervo']['s'] == '1 físico · 243 digitais · 1 nos dois' and hq['recs']['v'] == '1', (hq['acervo'], hq['recs']['v']))
+    ok('os quatro tipos somam o acervo inteiro: nenhum quadrinho ficou também em "Outros"', sum(n.values()) == 2125 and all(n.values()), n)
+    ok('o filtro ativo se chama "HQ"; o de "Outros", "Poesia e outros"', 'HQ' in chips['HQ'] and 'Poesia e outros' in chips['O'] and 'HQ' not in chips['O'], (chips['HQ'], chips['O']))
+    tipos = pg.evaluate("""() => { const cab = [...document.querySelectorAll('#p-tab-geral thead th')].map(x => x.textContent.trim().toLowerCase()), i = cab.indexOf('tipo');
+        return i < 0 ? ['sem coluna Tipo'] : [...new Set([...document.querySelectorAll('#p-tab-geral tbody tr[data-id]')].map(r => r.children[i].textContent.trim()))]; }""")
+    ok('em "Outros", a tabela não mostra nenhuma linha de tipo HQ', bool(tipos) and 'HQ' not in tipos and 'sem coluna Tipo' not in tipos, tipos)
+    pg.click('#f-tipo button[data-v=""]'); pg.wait_for_timeout(700)
+    abrir(pg, 'Akira Otomo', 'Akira'); f = pg.evaluate(FATOS); v = pg.evaluate(VIRTUAL)
+    ok('série que só tem a pasta: a gaveta diz a subpasta e não fala em arquivos', f.get('Formato') == 'Digital · Biblioteca virtual' and '1 pasta de edições' in v and 'As edições estão na subpasta: Akira' in v and 'arquivo' not in v, v[:200])
+    abrir(pg, 'Hellboy Mignola', 'Hellboy'); v = pg.evaluate(VIRTUAL)
+    ok('série com arquivos soltos e pasta: a gaveta mostra as duas coisas', '2 arquivos · RAR + 1 pasta de edições' in v and 'As edições estão na subpasta: Hellboy' in v, v[:200])
+    abrir(pg, 'Coraline Gaiman', 'Coraline'); f = pg.evaluate(FATOS); v = pg.evaluate(VIRTUAL)
+    ok('quadrinho que é um arquivo só: sem falar em pasta de edições', f.get('Formato') == 'Físico e digital' and '1 arquivo · RAR' in v and 'pasta de edições' not in v and 'subpasta' not in v, (f.get('Formato'), v[:200]))
+    pg.keyboard.press('Escape'); pg.wait_for_timeout(200); pg.fill('#p-tab-geral input[type=search]', 'Faltam 20 a 22'); pg.wait_for_timeout(600)
+    tits = pg.evaluate("() => [...document.querySelectorAll('#p-tab-geral tbody tr[data-id] .tt b')].map(x => x.textContent.trim())")
+    ok('a busca acha a série pelo nome da subpasta', tits == ['Fábulas'], tits)
+    pg.context.close()
+
+    print('CELULAR: O FORMATO CABE NO CARTÃO E O FILTRO TIPO, NA FOLHA DE FILTROS')
     for largura in (390, 360, 320):
         ctx = b.new_context(viewport={'width': largura, 'height': 800}, locale='pt-BR', timezone_id='America/Sao_Paulo', is_mobile=True, has_touch=True)
         pg = ctx.new_page(); fixa(pg); pg.on('pageerror', lambda e: errs.append(f'[pageerror] {e}'))
@@ -91,6 +117,11 @@ with sync_playwright() as p:
             const fora = fs.filter(f => { const c = f.closest('td').getBoundingClientRect(); return [...f.getClientRects()].some(q => q.right > c.right + 1 || q.left < c.left - 1); });
             return { n: fs.length, duplos: fs.filter(f => f.querySelectorAll('.ic').length === 2).length, fora: fora.length, pagina: document.documentElement.scrollWidth - document.documentElement.clientWidth }; }""")
         ok(f'{largura} px: "Físico e digital" não invade a coluna vizinha', r['n'] >= 5 and r['duplos'] >= 1 and r['fora'] == 0 and r['pagina'] <= 0, r)
+        pg.click('#f-abrir'); pg.wait_for_timeout(600)
+        r = pg.evaluate("""() => { const g = document.querySelector('#f-tipo'), c = g.getBoundingClientRect(), bs = [...g.querySelectorAll('button')];
+            const fora = bs.filter(x => { const q = x.getBoundingClientRect(); return q.width < 1 || q.right > c.right + .5 || q.left < c.left - .5 || x.scrollWidth > x.clientWidth + 1; });
+            return { n: bs.length, fora: fora.map(x => x.textContent.trim()), rola: g.scrollWidth - g.clientWidth }; }""")
+        ok(f'{largura} px: os cinco botões do filtro Tipo cabem na folha de filtros', r['n'] == 5 and r['fora'] == [] and r['rola'] <= 0, r)
         ctx.close()
 
     print('MIGRAÇÃO: O QUE O PAINEL ANTERIOR SALVOU')
@@ -115,9 +146,9 @@ with sync_playwright() as p:
         pg.context.close()
 
         pg = pagina(b, salvo); pg.goto(PAINEL_URL); pg.wait_for_timeout(1500); t = pg.evaluate(TOASTS)
-        ok('aviso: 1.656 livros entraram e as edições foram mantidas', 'O catálogo mudou: 1.656 livros entraram.' in t and 'O que você editou no painel foi mantido.' in t, t)
+        ok('aviso: 1.916 livros entraram e as edições foram mantidas', 'O catálogo mudou: 1.916 livros entraram.' in t and 'O que você editou no painel foi mantido.' in t, t)
         if pg.locator('#aviso .pri').is_visible(): pg.click('#aviso .pri'); pg.wait_for_timeout(200)
-        k = pg.evaluate(K); ok('acervo migrado: 97 físicos · 1.792 digitais · 24 nos dois', k['acervo']['v'] == '1.865' and k['acervo']['s'] == '97 físicos · 1.792 digitais · 24 nos dois', k['acervo'])
+        k = pg.evaluate(K); ok('acervo migrado: 97 físicos · 2.052 digitais · 24 nos dois', k['acervo']['v'] == '2.125' and k['acervo']['s'] == '97 físicos · 2.052 digitais · 24 nos dois', k['acervo'])
         abrir(pg, 'Zz Livro da Versão Antiga'); f = pg.evaluate(FATOS)
         ok('o livro que eu tinha criado continua na lista de compra, com o alvo', pg.locator('#gaveta.on').count() == 1 and 'R$ 40,00' in f.get('Preço-alvo', ''), f)
         abrir(pg, 'Fundação Asimov', 'Fundação'); f = pg.evaluate(FATOS); v = pg.evaluate(VIRTUAL)
@@ -125,12 +156,12 @@ with sync_playwright() as p:
         pg.keyboard.press('Escape'); pg.wait_for_timeout(300)
         novo = json.loads(pg.evaluate(f"() => localStorage.getItem('{CHAVE}')"))
         marcas = sorted({t for x in novo['livros'] for t in x.get('tags', []) if t.startswith(('ja-tenho', 'tenho-'))})
-        ok('o estado regravado tem 2.301 livros, a assinatura do catálogo e nenhum #ja-tenho', len(novo['livros']) == 2301 and marcas == ['tenho-digital', 'tenho-fisico'] and bool(novo.get('cat')), (len(novo['livros']), marcas, novo.get('cat')))
+        ok('o estado regravado tem 2.561 livros, a assinatura do catálogo e nenhum #ja-tenho', len(novo['livros']) == 2561 and marcas == ['tenho-digital', 'tenho-fisico'] and bool(novo.get('cat')), (len(novo['livros']), marcas, novo.get('cat')))
         pg.reload(); pg.wait_for_timeout(1500); t = pg.evaluate(TOASTS)
         # se falhar, isto ajuda a ver de onde veio: [livros guardados, assinatura do catálogo, as duas marcas de "já posto"]
         guardado = pg.evaluate("() => { const s = JSON.parse(localStorage.getItem('%s') || 'null'); return [s && s.livros.length, s && (s.cat || ''), sessionStorage.getItem('qa-posto'), window.name]; }" % CHAVE)
         ok('ao reabrir, a migração não se repete', 'O catálogo mudou' not in t, t and (t, guardado))
-        k = pg.evaluate(K); ok('e os números continuam os mesmos', k['acervo']['v'] == '1.865' and k['acervo']['s'] == '97 físicos · 1.792 digitais · 24 nos dois', k['acervo'])
+        k = pg.evaluate(K); ok('e os números continuam os mesmos', k['acervo']['v'] == '2.125' and k['acervo']['s'] == '97 físicos · 2.052 digitais · 24 nos dois', k['acervo'])
         pg.context.close()
 
         print('MIGRAÇÃO: BACKUP EXPORTADO PELO PAINEL ANTERIOR')
@@ -139,9 +170,9 @@ with sync_playwright() as p:
         txt = pg.inner_text('#dlg.on').replace('\u00a0', ' ').replace('\n', ' ')
         ok('a confirmação reconhece o backup antigo (645 livros)', '645 livros' in txt, txt[:160])
         pg.click('#dlg footer .pri'); pg.wait_for_timeout(1200); t = pg.evaluate(TOASTS)
-        ok('importado, com o aviso dos 1.656 livros que entraram', 'Backup importado. O catálogo mudou: 1.656 livros entraram.' in t, t)
+        ok('importado, com o aviso dos 1.916 livros que entraram', 'Backup importado. O catálogo mudou: 1.916 livros entraram.' in t, t)
         for _ in range(2): pg.keyboard.press('Escape'); pg.wait_for_timeout(150)
-        k = pg.evaluate(K); ok('acervo depois de importar: 97 físicos · 1.792 digitais · 24 nos dois', k['acervo']['v'] == '1.865' and k['acervo']['s'] == '97 físicos · 1.792 digitais · 24 nos dois', k['acervo'])
+        k = pg.evaluate(K); ok('acervo depois de importar: 97 físicos · 2.052 digitais · 24 nos dois', k['acervo']['v'] == '2.125' and k['acervo']['s'] == '97 físicos · 2.052 digitais · 24 nos dois', k['acervo'])
         abrir(pg, 'Fundação Asimov', 'Fundação'); f = pg.evaluate(FATOS)
         ok('a edição feita no painel antigo veio no backup', f.get('Páginas') == '777' and f.get('Formato') == 'Físico e digital', f)
         abrir(pg, 'Zz Livro da Versão Antiga'); f = pg.evaluate(FATOS)
@@ -171,7 +202,7 @@ with sync_playwright() as p:
         pg.context.close()
 
         pg = pagina(b, salvo); pg.goto(PAINEL_URL); pg.wait_for_timeout(1500); t = pg.evaluate(TOASTS)
-        ok('nenhum livro "entrou" nem "saiu" do catálogo', 'O catálogo mudou' not in t, t)
+        ok('só entraram os 260 livros e quadrinhos que vieram depois; nenhum corrigido "saiu" nem "entrou"', 'O catálogo mudou: 260 livros entraram.' in t, t)
         if pg.locator('#aviso .pri').is_visible(): pg.click('#aviso .pri'); pg.wait_for_timeout(200)
         for busca, antes, depois, autor, pags, conhece in casos:      # a busca é a mesma de antes: nos casos com título novo, é pelo nome antigo
             pg.keyboard.press('Escape'); pg.wait_for_timeout(200); pg.fill('#p-tab-geral input[type=search]', busca); pg.wait_for_timeout(600)
@@ -183,7 +214,7 @@ with sync_playwright() as p:
             else: ok(f'{depois}: a gaveta não fala em título anterior', anterior_na_gaveta == '', anterior_na_gaveta[:120])
         pg.keyboard.press('Escape'); pg.wait_for_timeout(300)
         novo = json.loads(pg.evaluate(f"() => localStorage.getItem('{CHAVE}')"))
-        ok('o estado regravado continua com 2.300 livros', len(novo['livros']) == 2300, len(novo['livros']))
+        ok('o estado regravado tem os 2.560 livros do catálogo de agora, sem nenhum repetido', len(novo['livros']) == 2560, len(novo['livros']))
         pg.context.close()
     b.close()
 print('FALHAS:', falhas); print('ERROS:', len(errs) + len(falhas)); [print('  ', x[:300]) for x in errs[:10]]

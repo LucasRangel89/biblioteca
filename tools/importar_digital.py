@@ -14,7 +14,11 @@ O que faz (pode rodar quantas vezes quiser: se nada mudou, nenhum arquivo é alt
       · livro que já estava catalogado (estante ou recomendação) ganha #tenho-digital;
       · os demais livros entram na seção 17, separados por eixo;
       · o antigo #ja-tenho vira #tenho-fisico;
- 4. escreve biblioteca-virtual/RESUMO.md (o que entrou, o que falta conferir).
+ 4. escreve biblioteca-virtual/RESUMO.md (o que entrou, o que falta conferir, o que ficou de fora).
+
+Quadrinhos: nas pastas de HQ, cada subpasta guarda uma série, e também vira uma linha do inventário (formato "pasta").
+No catálogo a série é uma linha só, sejam quantas forem as edições: os arquivos soltos e a pasta de uma mesma série têm
+o mesmo título e o mesmo autor no inventário.
 
 O inventário é a parte feita à mão: título, autor, eixo e gênero de cada arquivo foram revisados ali.
 Para corrigir um livro digital, corrija a linha dele no inventário e rode este script de novo.
@@ -33,7 +37,9 @@ RESUMO = DIGITAL / 'RESUMO.md'
 COLUNAS = ['pasta', 'arquivo', 'formato', 'tipo', 'titulo', 'autor', 'catalogo', 'eixo', 'genero', 'obs']
 TIPOS_CATALOGO = {'livro', 'hq'}                # o que entra no catálogo; apostila, periódico, artigo e outro ficam só no inventário
 EXT_ARQUIVO = {'epub', 'pdf', 'mobi', 'azw3', 'azw', 'djvu', 'doc', 'docx', 'rtf', 'txt', 'cbr', 'cbz', 'rar', 'zip', '7z'}
-PASTAS_HQ = {'HQs', 'novashqs', 'novasHQSS'}    # quadrinhos: as listagens ficam guardadas, mas não são importadas em bloco
+PASTAS_HQ = {'HQs', 'novashqs', 'novasHQSS', 'novas'}   # pastas de quadrinhos ('novas' é subpasta de novashqs; ainda sem listagem)
+FORMATO_PASTA = 'pasta'                         # coluna `formato` de uma subpasta: nas pastas de quadrinhos, cada subpasta é uma série
+LISTAGEM_E_BAT = re.compile(r'\.(txte|bat)$', re.I)   # a própria listagem e o programa que a gera aparecem em toda pasta
 SEM_AUTOR = '(autor não informado)'
 SECAO_DIGITAL = 17
 
@@ -115,18 +121,50 @@ def gravar(caminho, texto, conferir):
 
 
 # ───────────────────────── listagens ─────────────────────────
+def pasta_de_hq(nome):
+    """A pasta é de quadrinhos? As conhecidas e qualquer listagem nova com HQ, mangá, quadrinho ou gibi no nome."""
+    k = chave(nome).replace(' ', '')
+    return nome in PASTAS_HQ or any(p in k for p in ('hq', 'manga', 'quadrinho', 'gibi'))
+
+
+def extensao(nome):
+    """Extensão de um arquivo de livro ('pdf', 'cbr'…); '' para uma subpasta e para arquivos de outro tipo."""
+    m = re.search(r'\.([A-Za-z0-9]{2,5})$', nome)
+    return m.group(1).lower() if m and m.group(1).lower() in EXT_ARQUIVO else ''
+
+
+def _outro_arquivo(nome):
+    """Tem cara de arquivo (termina em ponto e extensão com alguma letra), mas não é de livro: .bat, .html, .jpg…"""
+    m = re.search(r'\.([A-Za-z0-9]{2,5})$', nome)
+    return bool(m and re.search(r'[A-Za-z]', m.group(1)) and m.group(1).lower() not in EXT_ARQUIVO)
+
+
+def _linhas_da_listagem(arq):
+    for linha in ler_texto(arq).replace('\r', '').split('\n'):
+        linha = re.sub(r'[\x00-\x1f]', ' ', linha.replace('\x07', '•')).strip()        # o `dir` escreve "•" como o caractere de controle 7
+        if linha:
+            yield linha
+
+
+def _arquivos_de_listagem(pasta):
+    return sorted(pathlib.Path(pasta).glob('*.txte'), key=lambda p: p.name.lower())
+
+
 def ler_listagens(pasta=LISTAGENS):
-    """{nome da listagem: [arquivos]} — só arquivos de livro; subpastas, .bat e as próprias listagens ficam de fora."""
+    """{nome da listagem: [linhas]} — os arquivos de livro de cada pasta e, nas pastas de quadrinhos, também as subpastas
+    (cada uma guarda uma série). Ficam de fora o .bat, as próprias listagens e os arquivos de outro tipo; nas pastas de
+    livros, também as subpastas (são outras pastas da biblioteca, cada uma com a sua listagem)."""
     out = collections.OrderedDict()
-    for arq in sorted(pathlib.Path(pasta).glob('*.txte'), key=lambda p: p.name.lower()):
-        nomes = []
-        for linha in ler_texto(arq).replace('\r', '').split('\n'):
-            linha = re.sub(r'[\x00-\x1f]', ' ', linha.replace('\x07', '•')).strip()    # o `dir` escreve "•" como o caractere de controle 7
-            m = re.search(r'\.([A-Za-z0-9]{2,5})$', linha)
-            if m and m.group(1).lower() in EXT_ARQUIVO:
-                nomes.append(linha)
-        out[arq.stem] = nomes
+    for arq in _arquivos_de_listagem(pasta):
+        hq = pasta_de_hq(arq.stem)
+        out[arq.stem] = [l for l in _linhas_da_listagem(arq) if extensao(l) or (hq and not _outro_arquivo(l))]
     return out
+
+
+def outros_arquivos(pasta=LISTAGENS):
+    """[(listagem, nome)] dos arquivos que não são de livro nem de quadrinho (um .html, uma imagem…), para o resumo."""
+    return [(arq.stem, l) for arq in _arquivos_de_listagem(pasta) for l in _linhas_da_listagem(arq)
+            if _outro_arquivo(l) and not LISTAGEM_E_BAT.search(l)]
 
 
 # ───────────────────────── inventário ─────────────────────────
@@ -181,7 +219,8 @@ def caixa_titulo(t):
     out, inicio = [], True
     for w in t.split():
         if inicio or w.lower() not in _MINUSCULAS:
-            w = w if (w.isupper() and 1 < len(w) < 6 and not t.isupper()) else w[:1].upper() + (w[1:].lower() if w.isupper() else w[1:])
+            sigla = (w.isupper() and 1 < len(w) < 6 and not t.isupper()) or re.fullmatch(r'(?:[A-ZÀ-Ý]\.){2,}\W*', w)   # "ONU", "B.P.D.P.:"
+            w = w if sigla else w[:1].upper() + (w[1:].lower() if w.isupper() else w[1:])
         else:
             w = w.lower()
         out.append(w)
@@ -214,21 +253,79 @@ def deduzir(nome):
     return caixa_titulo(titulo), autor
 
 
+_GRUPO = re.compile(r'[\[({][^\[\](){}]*[\])}]')            # "(2021)", "[grupo que digitalizou]", "(13 de 15)"
+_EDICAO = re.compile(r"#\s*\d"                                                               # "#01"
+                     r"|\b(?:v|vol|volume|livro|tomo|parte|n[ºo°])\.?\s*(?:\d+|[IVX]+)\b"       # "v2", "Vol. 3", "Livro II"
+                     r"|\b\d+\s*de\s*\d+\b"                                                  # "01 de 03"
+                     r"|(?<![\w'’.])0\d+\b", re.I)                                           # "001", "07": número com zero à esquerda
+_NUMERO_SOLTO = re.compile(r'(?<=\s)\d+(?=\s|$)')
+
+
+def deduzir_hq(nome):
+    """Título (e autor, se o nome traz) de um arquivo ou de uma subpasta de quadrinhos. O título é o da série: saem a marca
+    de quem digitalizou, o ano e o número da edição — "Coda #03 [Grupo].cbr" e "Coda #04 (2019).cbr" dão os dois "Coda"."""
+    base, arquivo = nome, bool(extensao(nome))
+    while extensao(base):                                       # "… .rar.cbr"
+        base = base[:base.rindex('.')]
+    if arquivo and _ORIGEM.search(base):                        # baixado de um acervo: "Título (Autor) (Z-Library)"
+        return deduzir(nome)
+    base = re.sub(r'-\d{8}T\d{6}Z-\d+$', '', base)              # pasta baixada do Google Drive: "…-20241229T204405Z-001"
+    for _ in range(4):
+        base = _GRUPO.sub(' ', base)
+    base = base.strip()
+    pontuado = not re.search(r'\s', base) and bool(re.search(r'[^\W\d_]{2,}\.[^\W_]', base))   # "As.Eras.Perdidas.01"
+    if pontuado:
+        base = base.replace('.', ' ')
+    cortes = [m.start() for m in (_EDICAO.search(base, 1), _NUMERO_SOLTO.search(base, 1) if pontuado else None) if m]
+    if cortes and base[:min(cortes)].strip(' -–.,;:_'):
+        base = base[:min(cortes)]
+    base = re.sub(r'[\s\-–]*\bcomplet[oa]\s*$', '', base.replace('_', ' '), flags=re.I)
+    base = re.sub(r'\s+', ' ', re.sub(r'\s*[-–]\s+', ': ', base)).strip(' -–,;:')
+    return caixa_titulo(base), ''
+
+
+def series_de_hq(inventario):
+    """{chave do nome: linha} das séries de quadrinhos do inventário, para reconhecer mais uma edição de uma série que já
+    está lá. Vale o título da série e, depois, o nome que se deduz de cada arquivo ou subpasta dela ("Kingsway West #01"
+    leva a "Kingsway Oeste"). Um nome que serve a duas séries diferentes não leva a nenhuma."""
+    por_titulo, por_nome = collections.defaultdict(dict), collections.defaultdict(dict)
+    for r in inventario:
+        if r['tipo'] == 'hq' and not tem_obs(r, 'ausente'):
+            obra = (chave(r['catalogo'] or r['titulo']), chave(r['autor']))
+            por_titulo[chave(r['titulo'])].setdefault(obra, r)
+            por_nome[chave(deduzir_hq(r['arquivo'])[0])].setdefault(obra, r)
+    unica = lambda por: {k: next(iter(v.values())) for k, v in por.items() if k and len(v) == 1}
+    return {**{k: r for k, r in unica(por_nome).items() if k not in por_titulo}, **unica(por_titulo)}
+
+
+def _linha_nova(pasta, nome, series):
+    """A linha de inventário de um arquivo (ou de uma subpasta de quadrinhos) que apareceu na listagem."""
+    if not pasta_de_hq(pasta):
+        eixo, genero, _ = PASTAS.get(pasta, (None, '', ''))
+        titulo, autor = deduzir(nome)
+        return dict(pasta=pasta, arquivo=nome, formato=extensao(nome), tipo='livro', titulo=titulo, autor=autor,
+                    catalogo='', eixo=str(eixo or ''), genero=genero, obs='novo')
+    titulo, autor = deduzir_hq(nome)
+    r = dict(pasta=pasta, arquivo=nome, formato=extensao(nome) or FORMATO_PASTA, tipo='hq', titulo=titulo, autor=autor,
+             catalogo='', eixo='', genero='HQ', obs='novo')
+    serie = series.get(chave(titulo))
+    if serie:                                                   # mais uma edição de uma série conhecida: herda os dados dela
+        r.update(titulo=serie['titulo'], autor=serie['autor'], catalogo=serie['catalogo'], eixo=serie['eixo'],
+                 obs='novo' if tem_obs(serie, 'novo') else '')
+    return r
+
+
 def sincronizar(inventario, listagens):
     """Compara inventário e listagens. Altera o inventário no lugar e devolve (novos, ausentes, de_volta, pastas_sem_listagem)."""
     conhecidos = {(r['pasta'], r['arquivo']) for r in inventario}
+    series = series_de_hq(inventario)
     novos, ausentes, de_volta = [], [], []
     for pasta, nomes in listagens.items():
-        if pasta in PASTAS_HQ:
-            continue
-        eixo, genero, _ = PASTAS.get(pasta, (None, '', ''))
         for nome in nomes:
             if (pasta, nome) in conhecidos:
                 continue
             conhecidos.add((pasta, nome))
-            titulo, autor = deduzir(nome)
-            r = dict(pasta=pasta, arquivo=nome, formato=nome.rsplit('.', 1)[-1].lower(), tipo='livro', titulo=titulo, autor=autor,
-                     catalogo='', eixo=str(eixo or ''), genero=genero, obs='novo')
+            r = _linha_nova(pasta, nome, series)
             inventario.append(r)
             novos.append(r)
     sem_listagem = sorted({r['pasta'] for r in inventario} - set(listagens), key=str.lower)
@@ -261,9 +358,11 @@ def obras_do_inventario(inventario):
         o['linhas'].append(r)
     for o in obras.values():
         L = o['linhas']
-        o['formatos'] = sorted({r['formato'] for r in L})
+        arquivos = [r for r in L if r['formato'] != FORMATO_PASTA]
+        o['formatos'] = sorted({r['formato'] for r in arquivos})
         o['pastas'] = list(dict.fromkeys(r['pasta'] for r in L))
-        o['arquivos'] = len({(r['pasta'], r['arquivo']) for r in L})
+        o['arquivos'] = len({(r['pasta'], r['arquivo']) for r in arquivos})
+        o['subpastas'] = list(dict.fromkeys(r['arquivo'] for r in L if r['formato'] == FORMATO_PASTA))     # séries guardadas em pasta própria
         o['edicoes'] = list(dict.fromkeys(r['titulo'] for r in L if r['catalogo'] and chave(r['titulo']) != chave(o['t'])))
         eixos = collections.Counter(int(r['eixo']) for r in L if r['eixo'].isdigit() and 1 <= int(r['eixo']) <= 16)
         o['eixo'] = eixos.most_common(1)[0][0] if eixos else 0
@@ -275,13 +374,14 @@ def obras_do_inventario(inventario):
 
 def casar(obras, livros):
     """Liga cada obra do inventário à linha do catálogo que tem o mesmo título e autor compatível.
-    `livros`: lista de dicts com 't' e 'a'. Devolve {posição em `livros`: [obras]} e a lista das obras sem linha."""
+    `livros`: lista de dicts com 't', 'a' e, se houver, 'tags'. Devolve {posição em `livros`: [obras]} e a lista das obras sem linha.
+    Um quadrinho só se liga a uma linha marcada #HQ: a adaptação de um romance não é o romance, mesmo com o título igual."""
     por_titulo = collections.defaultdict(list)
     for i, b in enumerate(livros):
         por_titulo[chave(b['t'])].append(i)
     ligadas, soltas = collections.defaultdict(list), []
     for (kt, ka), o in obras.items():
-        cand = por_titulo.get(kt, [])
+        cand = [i for i in por_titulo.get(kt, []) if o['genero'] != 'HQ' or 'HQ' in livros[i].get('tags', ('HQ',))]
         iguais = [i for i in cand if chave('' if livros[i]['a'] == SEM_AUTOR else livros[i]['a']) == ka]
         compat = [i for i in cand if autores_compativeis(livros[i]['a'], o['a'])]
         alvo = iguais[0] if iguais else compat[0] if len(compat) == 1 else None
@@ -346,7 +446,7 @@ def atualizar_catalogo(md, obras):
     rel = {'renomeadas': 0, 'marcadas': 0, 'ja_marcadas': 0, 'fisico_e_digital': [], 'recomendados': [], 'orfas': [], 'tags_perdidas': []}
 
     # 1 ▸ #ja-tenho → #tenho-fisico; #tenho-digital nos livros já catalogados
-    ligadas, soltas = casar(obras, [{'t': c[0], 'a': c[1]} for _, _, c in fixas])
+    ligadas, soltas = casar(obras, [{'t': c[0], 'a': c[1], 'tags': _tags(c[2])} for _, _, c in fixas])
     for n, (i, s, c) in enumerate(fixas):
         tags = _tags(c[2])
         novas = ['tenho-fisico' if t == 'ja-tenho' else t for t in tags]
@@ -378,10 +478,12 @@ def atualizar_catalogo(md, obras):
         por_eixo[o['eixo']].append((chave(o['t']), _linha(o['t'].replace('|', '/'), (o['a'] or SEM_AUTOR).replace('|', '/'), tags)))
     rel['tags_perdidas'] = sorted(extras.values())
     rel['secao17'] = {e: len(v) for e, v in sorted(por_eixo.items())}
+    rel['secao17_hq'] = dict(collections.Counter(o['eixo'] for o in soltas if o['genero'] == 'HQ'))
     rel['nomes'] = nomes
     bloco = [f'## {SECAO_DIGITAL}. Biblioteca virtual (tenho: digital)', '',
-             'Livros da biblioteca virtual que não estavam nas seções anteriores, separados pelos mesmos eixos. Os que já estavam '
-             'catalogados continuam na seção de origem e ganharam `#tenho-digital`.', '',
+             'Livros e quadrinhos da biblioteca virtual que não estavam nas seções anteriores, separados pelos mesmos eixos. Os que já '
+             'estavam catalogados continuam na seção de origem e ganharam `#tenho-digital`. Os quadrinhos levam `#HQ`; uma série é uma '
+             'linha só, sejam quantas forem as edições.', '',
              '> Seção gerada por `tools/importar_digital.py` a partir de `biblioteca-virtual/inventario.tsv`. Para corrigir título, autor ou eixo, '
              'corrija o inventário e rode o script; aqui, só os marcadores acrescentados à mão (`#lido`, `#top`, temas…) são preservados.', '']
     for e in sorted(por_eixo, key=lambda e: (e == 0, e)):
@@ -404,28 +506,51 @@ def atualizar_catalogo(md, obras):
 
 
 # ───────────────────────── resumo ─────────────────────────
-def texto_resumo(inventario, obras, rel, listagens, sem_listagem):
+def _subpasta_sem_listagem(r):
+    """Subpasta que não é uma série: é outra pasta de quadrinhos, ainda sem listagem (no inventário, tipo `outro`)."""
+    return r['formato'] == FORMATO_PASTA and r['tipo'] not in TIPOS_CATALOGO
+
+
+def contar(inventario, obras):
+    """Os números do inventário: arquivos, subpastas de séries de quadrinhos, pastas e obras (livros e quadrinhos)."""
+    ativos = list({(r['pasta'], r['arquivo']): r for r in inventario if not tem_obs(r, 'ausente')}.values())
+    hq = sum(o['genero'] == 'HQ' for o in obras.values())
+    return {'arquivos': sum(r['formato'] != FORMATO_PASTA for r in ativos),
+            'series': sum(r['formato'] == FORMATO_PASTA and r['tipo'] == 'hq' for r in ativos),
+            'pastas': len({r['pasta'] for r in ativos}), 'obras': len(obras), 'livros': len(obras) - hq, 'hq': hq}
+
+
+def _plural(n, um, varios):
+    return f'{n} {um if n == 1 else varios}'
+
+
+def texto_resumo(inventario, obras, rel, listagens, sem_listagem, outros=()):
     ativos = [r for r in inventario if not tem_obs(r, 'ausente')]
-    arquivos = {(r['pasta'], r['arquivo']) for r in ativos}
     por_tipo = collections.Counter()
     for r in ativos:
         por_tipo[r['tipo']] += 1
-    fmt = collections.Counter(r['formato'] for r in {(r['pasta'], r['arquivo']): r for r in ativos}.values())
+    fmt = collections.Counter(r['formato'] for r in {(r['pasta'], r['arquivo']): r for r in ativos}.values() if r['formato'] != FORMATO_PASTA)
     nomes = rel['nomes']
     n17 = sum(rel['secao17'].values())
+    N = contar(inventario, obras)
     T = ['# Biblioteca virtual — resumo da importação', '',
          'Gerado por `tools/importar_digital.py`. Não edite: é refeito a cada execução.', '',
          '## Números', '',
-         f'- **{len(arquivos)} arquivos** no inventário ({", ".join(f"{n} {e}" for e, n in fmt.most_common())}), em {len({r["pasta"] for r in ativos})} pastas.',
-         f'- **{len(obras)} livros** diferentes (o mesmo livro em dois formatos, ou em duas pastas, conta uma vez).',
-         f'- **{len(rel["fisico_e_digital"])}** deles também estão na estante física (`#tenho-fisico #tenho-digital`).',
+         f'- **{N["arquivos"]} arquivos** no inventário ({", ".join(f"{n} {e}" for e, n in fmt.most_common())})'
+         + (f' e **{_plural(N["series"], "pasta", "pastas")} de séries** de quadrinhos (cada uma guarda as edições de uma série)' if N['series'] else '')
+         + f', em {N["pastas"]} pastas.',
+         f'- **{N["obras"]} obras** diferentes: **{_plural(N["livros"], "livro", "livros")}** e **{_plural(N["hq"], "quadrinho", "quadrinhos")}**. O mesmo livro em dois '
+         'formatos, ou em duas pastas, conta uma vez; uma série de quadrinhos conta uma vez, sejam quantas forem as edições.',
+         f'- **{len(rel["fisico_e_digital"])}** delas também estão na estante física (`#tenho-fisico #tenho-digital`).',
          f'- **{len(rel["recomendados"])}** estavam entre as recomendações do catálogo e agora aparecem como `#tenho-digital`.',
-         f'- **{n17}** são novos no catálogo: entraram na seção 17.']
+         f'- **{n17}** são novas no catálogo: entraram na seção 17.']
     fora = [(t, n) for t, n in sorted(por_tipo.items()) if t not in TIPOS_CATALOGO]
     if fora:
-        T.append(f'- Ficaram só no inventário, fora do catálogo: {", ".join(f"{n} {t}" for t, n in fora)} (linhas de arquivo).')
-    T += ['', '## Seção 17, por eixo', '', '| Eixo | Livros |', '|---|---|']
-    T += [f'| {e}. {nomes.get(e, "")} | {n} |' if e else f'| A classificar | {n} |' for e, n in sorted(rel['secao17'].items(), key=lambda x: (x[0] == 0, x[0]))]
+        T.append(f'- Ficaram só no inventário, fora do catálogo: {", ".join(f"{n} {t}" for t, n in fora)} (linhas do inventário).')
+    hq17 = rel.get('secao17_hq', {})
+    T += ['', '## Seção 17, por eixo', '', '| Eixo | Livros | Quadrinhos |', '|---|---|---|']
+    T += [f'| {f"{e}. " + nomes.get(e, "") if e else "A classificar"} | {n - hq17.get(e, 0)} | {hq17.get(e, 0)} |'
+          for e, n in sorted(rel['secao17'].items(), key=lambda x: (x[0] == 0, x[0]))]
 
     def lista(titulo, intro, itens):
         if itens:
@@ -438,30 +563,37 @@ def texto_resumo(inventario, obras, rel, listagens, sem_listagem):
     difer = sorted({(r['titulo'], r['catalogo']) for r in ativos if r['tipo'] in TIPOS_CATALOGO and r['catalogo']}, key=lambda x: (chave(x[1]), chave(x[0])))
     lista('Edições com título diferente do catálogo', 'O arquivo tem um título; a linha do catálogo, outro. Confira se é mesmo o mesmo livro '
           '(se não for, apague a coluna `catalogo` da linha no inventário).', [f'- “{t}” → catálogo: **{c}**' for t, c in difer])
-    verif = sorted({(r['titulo'], r['autor'], r['pasta']) for r in ativos if tem_obs(r, 'verificar')}, key=lambda x: chave(x[0]))
-    lista('A verificar', 'Título, autor ou identificação incertos (coluna `obs` = `verificar`). No catálogo levam `#verificar`.',
-          [f'- {t} — {a or "sem autor"} · pasta `{p}`' for t, a, p in verif])
+    verif = sorted({(r['titulo'], r['autor'], r['pasta'], r['tipo'] in TIPOS_CATALOGO) for r in ativos if tem_obs(r, 'verificar')}, key=lambda x: chave(x[0]))
+    lista('A verificar', 'Título, autor ou identificação incertos (coluna `obs` = `verificar`). Os que estão no catálogo levam `#verificar`.',
+          [f'- {t} — {a or "sem autor"} · pasta `{p}`' + ('' if no_catalogo else ' · fora do catálogo') for t, a, p, no_catalogo in verif])
     novos = [r for r in ativos if tem_obs(r, 'novo')]
-    lista('Arquivos novos, a revisar', 'Entraram nesta execução ou numa anterior, com título e autor deduzidos do nome do arquivo. Revise a linha no '
-          'inventário (título, autor, eixo, gênero) e apague `novo` da coluna `obs`.', [f'- `{r["pasta"]}/{r["arquivo"]}` → {r["titulo"]} — {r["autor"] or "sem autor"}' for r in novos])
+    lista('Arquivos novos, a revisar', 'Entraram nesta execução ou numa anterior, com título e autor deduzidos do nome do arquivo (nas pastas de '
+          'quadrinhos, também do nome da subpasta). Revise a linha no inventário (tipo, título, autor, eixo, gênero) e apague `novo` da coluna `obs`.',
+          [f'- `{r["pasta"]}/{r["arquivo"]}` → {r["titulo"]} — {r["autor"] or "sem autor"}' for r in novos])
     aus = [r for r in inventario if tem_obs(r, 'ausente')]
     lista('Arquivos ausentes', 'Estão no inventário, mas não aparecem mais na listagem da pasta. Se o arquivo foi apagado de propósito, apague a linha.',
           [f'- `{r["pasta"]}/{r["arquivo"]}` — {r["titulo"]}' for r in aus])
-    naolivro = sorted({(r['tipo'], r['titulo'], r['pasta']) for r in ativos if r['tipo'] not in TIPOS_CATALOGO})
+    naolivro = sorted({(r['tipo'], r['titulo'], r['pasta']) for r in ativos if r['tipo'] not in TIPOS_CATALOGO and not _subpasta_sem_listagem(r)})
     lista('Itens que não são livros', 'Apostilas, revistas, artigos e afins: ficam no inventário e não entram no catálogo.',
           [f'- {tp}: {t} · pasta `{p}`' for tp, t, p in naolivro])
     lista('Marcados `#tenho-digital` sem arquivo no inventário', 'O catálogo diz que há cópia digital, mas o inventário não tem o arquivo. '
           'Nada foi alterado; tire o marcador à mão se for engano.', [f'- {t} — {a}' for t, a in rel['orfas']])
     lista('Marcadores que ficaram sem linha', 'Linhas da seção 17 que tinham marcadores postos à mão e deixaram de existir (título ou autor mudou no inventário).',
           [f'- {t}: {" ".join("#" + x for x in tags)}' for t, tags in rel['tags_perdidas']])
-    hq = [p for p in listagens if p in PASTAS_HQ]
-    if hq or sem_listagem:
-        T += ['', '## Fora desta importação', '']
-        if hq:
-            T.append(f'- Quadrinhos: as listagens {", ".join(f"`{p}`" for p in hq)} ({sum(len(listagens[p]) for p in hq)} arquivos, fora as pastas de séries) '
-                     'ficam guardadas, mas não foram importadas em bloco. Só entram as HQs que têm linha própria no inventário.')
-        if sem_listagem:
-            T.append(f'- Pastas do inventário sem listagem (nada foi conferido nelas): {", ".join(f"`{p}`" for p in sem_listagem)}.')
+    fora = []
+    if N['series']:
+        fora.append(f'- Edições dentro das pastas de séries: de cada uma das {N["series"]} pastas de séries de quadrinhos só o nome é conhecido. '
+                    'Quantas e quais edições há dentro delas não foi conferido.')
+    subpastas = [r for r in ativos if _subpasta_sem_listagem(r)]
+    if subpastas:
+        nomes_sub = ', '.join('`%s/%s`' % (r['pasta'], r['arquivo']) for r in subpastas)
+        fora.append(f'- Subpastas sem listagem: {nomes_sub}. Só o nome delas é conhecido; o que há dentro não entrou. Para entrar, gere a '
+                    'listagem de cada uma e ponha em `biblioteca-virtual/listagens/`.')
+    if outros:
+        fora.append('- Arquivos que não são livro nem quadrinho (ignorados): ' + ', '.join('`%s/%s`' % par for par in outros) + '.')
+    if sem_listagem:
+        fora.append(f'- Pastas do inventário sem listagem (nada foi conferido nelas): {", ".join(f"`{p}`" for p in sem_listagem)}.')
+    lista('Fora desta importação', 'O que existe na biblioteca virtual e não foi conferido arquivo por arquivo.', fora)
     return '\n'.join(T) + '\n'
 
 
@@ -483,15 +615,17 @@ def main(argv):
     mudou = [nome for nome, alterado in (
         (INVENTARIO.name, gravar(INVENTARIO, texto_inventario(inventario), conferir)),
         (CATALOGO.name, gravar(CATALOGO, novo_md, conferir)),
-        (RESUMO.name, gravar(RESUMO, texto_resumo(inventario, obras, rel, listagens, sem_listagem), conferir)),
+        (RESUMO.name, gravar(RESUMO, texto_resumo(inventario, obras, rel, listagens, sem_listagem, outros_arquivos(LISTAGENS)), conferir)),
     ) if alterado]
 
-    n_arq = len({(r['pasta'], r['arquivo']) for r in inventario if not tem_obs(r, 'ausente')})
-    print(f'Inventário: {n_arq} arquivos, {len(obras)} livros diferentes'
+    N = contar(inventario, obras)
+    print(f'Inventário: {N["arquivos"]} arquivos' + (f' e {_plural(N["series"], "pasta", "pastas")} de séries de quadrinhos' if N['series'] else '')
+          + f', {N["obras"]} obras diferentes ({_plural(N["livros"], "livro", "livros")}' + (f' e {_plural(N["hq"], "quadrinho", "quadrinhos")}' if N['hq'] else '') + ')'
           + (f' · {len(novos)} arquivo(s) novo(s)' if novos else '') + (f' · {len(ausentes)} ausente(s)' if ausentes else '')
           + (f' · {len(de_volta)} de volta' if de_volta else ''))
     for r in novos[:40]:
-        print(f'   novo: {r["pasta"]}/{r["arquivo"]}  →  {r["titulo"]} — {r["autor"] or "sem autor"}')
+        print(f'   novo: {r["pasta"]}/{r["arquivo"]}  →  {r["titulo"]} — {r["autor"] or "sem autor"}'
+              + ('' if tem_obs(r, 'novo') else '  (mais uma edição de uma série que já estava no inventário)'))
     if len(novos) > 40:
         print(f'   … e mais {len(novos) - 40} (lista completa em {RESUMO.name})')
     for r in ausentes[:40]:

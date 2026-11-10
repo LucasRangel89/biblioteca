@@ -88,7 +88,7 @@ function passaSeg(b, o = {}) {
     const fis = f === 'fisico', vir = ac ? temDigital(b) || f === 'audio' : f === 'ebook' || f === 'audio';
     if (!(S.acervo === 'fisico' ? fis : S.acervo === 'virtual' ? vir : fis && vir)) return false;
   }
-  if (S.tipo) { const t = b._tipo; if (S.tipo === 'O' ? (t === 'F' || t === 'NF') : t !== S.tipo) return false; }
+  if (S.tipo && tipoFiltro(b._tipo) !== S.tipo) return false;
   if (!o.semEixo && S.eixos.size && !S.eixos.has(b.eixo)) return false;
   if (!o.semDE) { if (S.dif.size && !S.dif.has(b._d)) return false; if (S.ext.size && !S.ext.has(b._e)) return false; }
   if (!o.semTags && S.tags.size) for (const t of S.tags) if (!b.tags.includes(t)) return false;

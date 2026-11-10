@@ -374,11 +374,13 @@ function desenharGaveta() {
       ${b.col === 'acervo' ? '' : `<button type="button" class="btn sm" data-acao="cotar">${icone('mais', 14)}Registrar cotação</button>`}`;
   }
   const outras = b.tags.filter(t => !['F', 'NF', 'd1', 'd2', 'd3', 'e1', 'e2', 'e3', 'top', 'ja-tenho', 'tenho-fisico', 'tenho-digital', 'lido', 'sem-pt', 'verificar'].includes(t));
-  // o que há deste livro na biblioteca virtual: arquivos, formatos, pastas e, se for o caso, o título com que a edição está guardada
+  // o que há deste livro na biblioteca virtual: arquivos, formatos, pastas e, se for o caso, o título com que a edição está guardada.
+  // Uma série de quadrinhos pode estar numa subpasta só dela (g[5]): o painel sabe o nome da subpasta, não as edições que há lá.
   const g = b._dg, lista = (v, um, varios) => `${v.length > 1 ? varios : um}: ${v.map(x => `<b>${esc(x)}</b>`).join(' · ')}`;
+  const sub = (g && g[5]) || [], quanto = g ? [g[1] ? `${plural(g[1], 'arquivo', 'arquivos')} · ${esc(g[0].toUpperCase().split(' ').join(', '))}` : '', sub.length ? plural(sub.length, 'pasta de edições', 'pastas de edições') : ''].filter(Boolean).join(' + ') : '';
   // título que a linha tinha antes de ser corrigida no catálogo: quem conhecia o livro pelo nome antigo o reconhece
   const antes = [...new Set((b._ant || []).map(n => n[0]))].filter(t => norm(t) !== norm(b.t));
-  const virt = g ? `<section id="gv-virtual"><div class="gv-st"><h4>Na biblioteca virtual</h4><span>${plural(g[1], 'arquivo', 'arquivos')} · ${esc(g[0].toUpperCase().split(' ').join(', '))}</span></div><p class="gv-obs">${lista(g[2], 'Pasta', 'Pastas')}${g[3].length ? '<br>' + lista(g[3], 'Lá, com o título', 'Lá, como') : ''}${b.col === 'acervo' ? '' : '<br>Você já tem este livro em digital.'}</p></section>` : '';
+  const virt = g ? `<section id="gv-virtual"><div class="gv-st"><h4>Na biblioteca virtual</h4><span>${quanto}</span></div><p class="gv-obs">${lista(g[2], 'Pasta', 'Pastas')}${sub.length ? '<br>' + lista(sub, 'As edições estão na subpasta', 'As edições estão nas subpastas') : ''}${g[3].length ? '<br>' + lista(g[3], 'Lá, com o título', 'Lá, como') : ''}${b.col === 'acervo' ? '' : '<br>Você já tem este livro em digital.'}</p></section>` : '';
   $('#gv-resto').innerHTML = (b.col !== 'acervo' ? `<section><div class="gv-st"><h4>Buscar nas lojas</h4></div><div class="lb">${linksLojas(b).map(([n, u]) => `<a href="${esc(u)}" target="_blank" rel="noopener noreferrer">${esc(n)}${icone('externo', 12)}</a>`).join('')}</div>${Loja.ok ? '' : '<p class="nota">Na pré-visualização os links externos podem não abrir; funcionam com o arquivo aberto no navegador.</p>'}</section>` : '') +
     virt + (outras.length ? `<section><div class="gv-st"><h4>Marcadores</h4><span>clique para filtrar</span></div><div class="gv-tags">${outras.map(t => `<button type="button" class="tag lig" data-tag="${esc(t)}">${esc(rotTag(t))}</button>`).join('')}</div></section>` : '') +
     (b.obs ? `<section><div class="gv-st"><h4>Observações</h4></div><p class="gv-obs">${esc(b.obs)}</p></section>` : '') +

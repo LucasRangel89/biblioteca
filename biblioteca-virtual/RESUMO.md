@@ -4,32 +4,32 @@ Gerado por `tools/importar_digital.py`. Não edite: é refeito a cada execução
 
 ## Números
 
-- **2148 arquivos** no inventário (1096 pdf, 1044 epub, 3 mobi, 2 azw3, 1 zip, 1 txt, 1 rar), em 36 pastas.
-- **1792 livros** diferentes (o mesmo livro em dois formatos, ou em duas pastas, conta uma vez).
-- **24** deles também estão na estante física (`#tenho-fisico #tenho-digital`).
+- **2382 arquivos** no inventário (1161 pdf, 1065 epub, 84 cbr, 44 cbz, 13 rar, 5 mobi, 5 zip, 4 azw3, 1 txt) e **104 pastas de séries** de quadrinhos (cada uma guarda as edições de uma série), em 38 pastas.
+- **2052 obras** diferentes: **1809 livros** e **243 quadrinhos**. O mesmo livro em dois formatos, ou em duas pastas, conta uma vez; uma série de quadrinhos conta uma vez, sejam quantas forem as edições.
+- **24** delas também estão na estante física (`#tenho-fisico #tenho-digital`).
 - **112** estavam entre as recomendações do catálogo e agora aparecem como `#tenho-digital`.
-- **1656** são novos no catálogo: entraram na seção 17.
-- Ficaram só no inventário, fora do catálogo: 12 apostila, 3 artigo, 3 outro, 11 periodico (linhas de arquivo).
+- **1916** são novas no catálogo: entraram na seção 17.
+- Ficaram só no inventário, fora do catálogo: 12 apostila, 3 artigo, 9 outro, 13 periodico (linhas do inventário).
 
 ## Seção 17, por eixo
 
-| Eixo | Livros |
-|---|---|
-| 2. Ficção científica, fantasia e distopia | 153 |
-| 3. Clássicos universais e romances de ideias | 21 |
-| 4. América Latina, Brasil e lusofonia (ficção) | 72 |
-| 5. Ficção contemporânea e mundial | 36 |
-| 6. Romances históricos | 21 |
-| 7. Horror, weird fiction e mistério | 77 |
-| 8. Poesia e cartas | 9 |
-| 9. Filosofia, ética e existência (não ficção) | 196 |
-| 10. Mente, consciência e neurociência | 32 |
-| 11. Política, poder, autoritarismo e economia | 137 |
-| 12. Sociedade, antropologia, cultura e história | 79 |
-| 13. Ciência, tecnologia e futuro | 257 |
-| 14. Psicologia, psicanálise e comportamento | 472 |
-| 15. Espiritualidade, espiritismo e mistérios da consciência | 70 |
-| 16. Artes, escrita, cinema e parentalidade | 24 |
+| Eixo | Livros | Quadrinhos |
+|---|---|---|
+| 2. Ficção científica, fantasia e distopia | 163 | 150 |
+| 3. Clássicos universais e romances de ideias | 22 | 11 |
+| 4. América Latina, Brasil e lusofonia (ficção) | 72 | 11 |
+| 5. Ficção contemporânea e mundial | 37 | 13 |
+| 6. Romances históricos | 21 | 8 |
+| 7. Horror, weird fiction e mistério | 79 | 40 |
+| 8. Poesia e cartas | 9 | 0 |
+| 9. Filosofia, ética e existência (não ficção) | 196 | 1 |
+| 10. Mente, consciência e neurociência | 32 | 0 |
+| 11. Política, poder, autoritarismo e economia | 137 | 3 |
+| 12. Sociedade, antropologia, cultura e história | 80 | 2 |
+| 13. Ciência, tecnologia e futuro | 257 | 1 |
+| 14. Psicologia, psicanálise e comportamento | 473 | 0 |
+| 15. Espiritualidade, espiritismo e mistérios da consciência | 70 | 1 |
+| 16. Artes, escrita, cinema e parentalidade | 27 | 0 |
 
 ## Tenho nos dois formatos
 
@@ -221,24 +221,38 @@ O arquivo tem um título; a linha do catálogo, outro. Confira se é mesmo o mes
 - “O Tigre de Sharpe (Série Sharpe)” → catálogo: **Série Sharpe**
 - “O Triunfo de Sharpe (Série Sharpe)” → catálogo: **Série Sharpe**
 - “Sharpe em Trafalgar (Série Sharpe)” → catálogo: **Série Sharpe**
+- “Solomon Kane: Edição Completa e Definitiva” → catálogo: **Solomon Kane**
 - “Walden ou A Vida nos Bosques” → catálogo: **Walden**
 
 ## A verificar
 
-Título, autor ou identificação incertos (coluna `obs` = `verificar`). No catálogo levam `#verificar`.
+Título, autor ou identificação incertos (coluna `obs` = `verificar`). Os que estão no catálogo levam `#verificar`.
 
+- A Vida — sem autor · pasta `HQs`
 - Análise e Projeto de Sistemas — sem autor · pasta `tecnologia e informacao`
+- BTN - Si______ra — sem autor · pasta `HQs` · fora do catálogo
+- Caminhos Misteriosos — Jason Rubin e Tyler Kirkham · pasta `HQs`
 - Ciclo Antarktos (The Antarktos Cycle) — Robert M. Price (org.) · pasta `Terror e horror`
+- Contágio — Vários autores · pasta `HQs`
+- Cripta — Vários autores · pasta `HQs`
 - Einstein, Freud e Relações Internacionais: Guerra e Paz num Diálogo Interdisciplinar — Luis Henrique Beust · pasta `ciencias`
 - El Proceso de Envejecimiento — sem autor · pasta `psicologia`
 - Engenharia Social — sem autor · pasta `Sociedade e politica`
+- Especial: As Espadas — sem autor · pasta `HQs`
+- Habitat — Simon Roy · pasta `HQs`
 - Introdução à Psicologia (6ª ed.) — sem autor · pasta `historia fundamentos e introducoes psico`
 - Linguagem e Cognição — sem autor · pasta `Filosofia`
 - Linguagem: Os Segredos da Sedução pela Poderosa Força das Palavras — sem autor · pasta `autoconhecimento e desenvolvimento pessoal`
+- Lo_____d - Mo_____no — sem autor · pasta `HQs` · fora do catálogo
+- Lovecraft — Hans Rodionoff, Keith Giffen e Enrique Breccia · pasta `HQs`
 - Manipulação — sem autor · pasta `autoconhecimento e desenvolvimento pessoal`
 - Manual do Xaveco: Como Conquistar uma Mulher — sem autor · pasta `autoconhecimento e desenvolvimento pessoal`
+- Os Impostos — sem autor · pasta `HQs`
 - Psicologia e Sociologia — sem autor · pasta `psicologia social e cultural`
+- Rashomon — Victor Santos · pasta `HQs`
+- Ruído — sem autor · pasta `HQs`
 - Tesouros Medievais — sem autor · pasta `historia`
+- Trilogia Lovecraft — sem autor · pasta `HQs`
 
 ## Itens que não são livros
 
@@ -259,9 +273,11 @@ Apostilas, revistas, artigos e afins: ficam no inventário e não entram no cat�
 - artigo: Imaginário Político Grego e Moderno (in: A Ascensão da Insignificância) · pasta `Sociedade e politica`
 - artigo: O Lugar da Psicanálise na Medicina · pasta `psicanalise`
 - artigo: Os Saberes da Medicina Medieval · pasta `historia`
+- outro: BTN - Si______ra · pasta `HQs`
 - outro: Ideias RI · pasta `Sociedade e politica`
 - outro: Linguag · pasta `Filosofia`
 - outro: Lista Livros · pasta `psicologia`
+- outro: Lo_____d - Mo_____no · pasta `HQs`
 - periodico: Científica Ficção 003 · pasta `pasta livros`
 - periodico: Científica Ficção 004 · pasta `pasta livros`
 - periodico: Cult 194: Franz Kafka · pasta `pasta livros`
@@ -273,7 +289,13 @@ Apostilas, revistas, artigos e afins: ficam no inventário e não entram no cat�
 - periodico: Gritos de Horror 001 · pasta `pasta livros`
 - periodico: Gritos de Horror 002 · pasta `pasta livros`
 - periodico: Gritos de Horror 003 · pasta `pasta livros`
+- periodico: Heavy Metal 08 (1977) · pasta `HQs`
+- periodico: Heavy Metal, vol. 33, nº 6 (2009) · pasta `HQs`
 
 ## Fora desta importação
 
-- Quadrinhos: as listagens `HQs`, `novashqs`, `novasHQSS` (236 arquivos, fora as pastas de séries) ficam guardadas, mas não foram importadas em bloco. Só entram as HQs que têm linha própria no inventário.
+O que existe na biblioteca virtual e não foi conferido arquivo por arquivo.
+
+- Edições dentro das pastas de séries: de cada uma das 104 pastas de séries de quadrinhos só o nome é conhecido. Quantas e quais edições há dentro delas não foi conferido.
+- Subpastas sem listagem: `HQs/Mangás`, `novashqs/novas`. Só o nome delas é conhecido; o que há dentro não entrou. Para entrar, gere a listagem de cada uma e ponha em `biblioteca-virtual/listagens/`.
+- Arquivos que não são livro nem quadrinho (ignorados): `novasHQSS/plano_policia_penal_rs.html`.

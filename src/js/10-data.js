@@ -70,6 +70,8 @@ const TIPOS = {
   F: { n: 'Ficção', cor: 'var(--c1)' }, NF: { n: 'Não ficção', cor: 'var(--c2)' }, P: { n: 'Poesia', cor: 'var(--c5)' },
   HQ: { n: 'HQ', cor: 'var(--c3)' }, ANT: { n: 'Antologia', cor: 'var(--c4)' }, X: { n: 'Sem tipo', cor: 'var(--c9)' },
 };
+/* filtro "Tipo": ficção, não ficção e HQ têm botão próprio; poesia, antologia e sem tipo ficam em "Outros" */
+const tipoFiltro = t => (t === 'F' || t === 'NF' || t === 'HQ' ? t : 'O');
 const NIVEIS = { 1: { n: 'Leve', cor: 'var(--c6)' }, 2: { n: 'Média', cor: 'var(--c3)' }, 3: { n: 'Exigente', cor: 'var(--c1)' }, 0: { n: 'Não informada', cor: 'var(--c9)' } };
 const EXTENSOES = { 1: { n: 'Curta', d: 'até ~250 p.', cor: 'var(--c2)' }, 2: { n: 'Média', d: '~250–500 p.', cor: 'var(--c4)' }, 3: { n: 'Longa', d: '500+ p. ou série', cor: 'var(--c5)' }, 0: { n: 'Não informada', d: '', cor: 'var(--c9)' } };
 const SITUACOES = { agora: { n: 'Comprar agora', cor: 'var(--good)' }, quase: { n: 'Quase lá', cor: 'var(--c3)' }, aguardar: { n: 'Aguardar', cor: 'var(--c9)' }, semalvo: { n: 'Sem alvo', cor: 'var(--c8)' }, sem: { n: 'Sem cotação', cor: 'var(--c8)' } };
@@ -93,9 +95,9 @@ function derivar(b) {
   b._d = T.includes('d1') ? 1 : T.includes('d2') ? 2 : T.includes('d3') ? 3 : 0;
   b._e = T.includes('e1') ? 1 : T.includes('e2') ? 2 : T.includes('e3') ? 3 : 0;
   b._top = T.includes('top');
-  const g = b._dg;                               // biblioteca virtual: [formatos, nº de arquivos, pastas, títulos das edições, ids dos arquivos]
+  const g = b._dg;                               // biblioteca virtual: [formatos, nº de arquivos, pastas, títulos das edições, ids dos arquivos, subpastas da série?]
   // a busca também acha o livro pelo nome que ele tinha antes de ser corrigido no catálogo
-  b._busca = norm(b.t + ' ' + b.a + ' ' + T.map(rotTag).join(' ') + ' ' + T.join(' ') + ' ' + (EIXOS[b.eixo] ? EIXOS[b.eixo].n : '') + (g ? ' ' + g[0] + ' ' + (g[2] || []).join(' ') + ' ' + (g[3] || []).join(' ') : '') + (b._ant ? ' ' + b._ant.map(n => n.join(' ')).join(' ') : ''));
+  b._busca = norm(b.t + ' ' + b.a + ' ' + T.map(rotTag).join(' ') + ' ' + T.join(' ') + ' ' + (EIXOS[b.eixo] ? EIXOS[b.eixo].n : '') + (g ? ' ' + g[0] + ' ' + (g[2] || []).join(' ') + ' ' + (g[3] || []).join(' ') + ' ' + (g[5] || []).join(' ') : '') + (b._ant ? ' ' + b._ant.map(n => n.join(' ')).join(' ') : ''));
   return b;
 }
 const virtual = b => b.fmt === 'ebook' || b.fmt === 'audio';

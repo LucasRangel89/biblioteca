@@ -4,6 +4,8 @@ Gerado em 09/11/2026. Consolida todos os livros citados na conversa (listas ante
 
 Atualizado em 10/11/2026 com a **biblioteca virtual**: os livros digitais que já estavam aqui (na estante ou entre as recomendações) ganharam `#tenho-digital`, e os demais entraram na seção 17, separados pelos mesmos eixos. Essa parte é mantida por `tools/importar_digital.py` a partir de `biblioteca-virtual/inventario.tsv`; os números e as pendências ficam em `biblioteca-virtual/RESUMO.md`.
 
+Os **quadrinhos** da biblioteca virtual entraram na mesma data, também na seção 17, com `#HQ`. Uma série é uma linha só, sejam quantas forem as edições guardadas. A adaptação de um livro tem linha própria, com "(em quadrinhos)" ou o nome da coleção no título, e não marca o livro original como `#tenho-digital`.
+
 Formato das linhas: `Título | Autor | Tags`. As tags usam `#` (compatível com Obsidian e Notion). Para classificar depois, filtre por qualquer tag.
 
 ## Legenda de tags
@@ -24,7 +26,7 @@ Formato das linhas: `Título | Autor | Tags`. As tags usam `#` (compatível com 
 
 **Gêneros:** `#ficcao-cientifica` `#fantasia` `#distopia` `#utopia` `#historia-alternativa` `#horror` `#gotico` `#lovecraftiano` `#misterio` `#thriller` `#thriller-medico` `#romance-historico` `#medieval` `#antiguidade` `#roma` `#renascimento` `#pre-historia` `#neandertal` `#regional-gaucho` `#teatro`
 
-**Vindos das pastas da biblioteca virtual** (seção 17): os temas e gêneros acima, mais `#contos` `#autoconhecimento` `#tecnologia` `#fisica` `#introducao` `#behaviorismo` `#tcc` `#psicometria` `#psicopatologia` `#psicologia-analitica` `#psicologia-humanista` `#psicologia-social`. As linhas da seção 17 não têm `#d` nem `#e`: dificuldade e extensão não foram avaliadas.
+**Vindos das pastas da biblioteca virtual** (seção 17): os temas e gêneros acima, mais `#contos` `#autoconhecimento` `#tecnologia` `#fisica` `#introducao` `#behaviorismo` `#tcc` `#psicometria` `#psicopatologia` `#psicologia-analitica` `#psicologia-humanista` `#psicologia-social`. As linhas da seção 17 não têm `#d` nem `#e`: dificuldade e extensão não foram avaliadas. Os quadrinhos da seção 17 têm só `#HQ`: o gênero de cada um ainda não foi marcado (o eixo já separa ficção científica e super-heróis, clássicos adaptados, Brasil, horror…).
 
 **Trilhas (relacionados):** `#rel-imortais` (afins a Os Imortais/Os Herdeiros) · `#rel-widows-bay` (afins a Lovecraft e Widow's Bay) · `#rel-cornwell` (afins a O Arqueiro/O Físico) · `#rel-asimov-clarke` · `#rel-yalom` · `#rel-fromm` (autoritarismo e psicologia social)
 
@@ -795,7 +797,7 @@ Formato das linhas: `Título | Autor | Tags`. As tags usam `#` (compatível com 
 
 ## 17. Biblioteca virtual (tenho: digital)
 
-Livros da biblioteca virtual que não estavam nas seções anteriores, separados pelos mesmos eixos. Os que já estavam catalogados continuam na seção de origem e ganharam `#tenho-digital`.
+Livros e quadrinhos da biblioteca virtual que não estavam nas seções anteriores, separados pelos mesmos eixos. Os que já estavam catalogados continuam na seção de origem e ganharam `#tenho-digital`. Os quadrinhos levam `#HQ`; uma série é uma linha só, sejam quantas forem as edições.
 
 > Seção gerada por `tools/importar_digital.py` a partir de `biblioteca-virtual/inventario.tsv`. Para corrigir título, autor ou eixo, corrija o inventário e rode o script; aqui, só os marcadores acrescentados à mão (`#lido`, `#top`, temas…) são preservados.
 
@@ -803,6 +805,11 @@ Livros da biblioteca virtual que não estavam nas seções anteriores, separados
 
 | Título | Autor | Tags |
 |---|---|---|
+| 18 Dias | Grant Morrison | #HQ #tenho-digital |
+| 1984 (em quadrinhos) | George Orwell e Fido Nesti | #HQ #tenho-digital |
+| 20 Mil Léguas Submarinas: Edição Comentada e Ilustrada | Júlio Verne | #F #tenho-digital |
+| 2001: Uma Odisseia no Espaço (em quadrinhos) | Jack Kirby | #HQ #tenho-digital |
+| 20th Century Boys | Naoki Urasawa | #HQ #tenho-digital |
 | A Cidade do Sol | Tommaso Campanella | #F #tenho-digital |
 | A Cidade Inteira Dorme | Ray Bradbury | #F #contos #tenho-digital |
 | A Cidade Perdida de Marte | Ray Bradbury | #F #tenho-digital |
@@ -811,87 +818,184 @@ Livros da biblioteca virtual que não estavam nas seções anteriores, separados
 | A Cor da Magia | Terry Pratchett | #F #tenho-digital |
 | A Filha do Império | Raymond E. Feist e Janny Wurts | #F #tenho-digital |
 | A Floresta Sombria | Cixin Liu | #F #tenho-digital |
+| A Fome e o Crepúsculo | G. Willow Wilson e Chris Wildgoose | #HQ #tenho-digital |
 | A Fúria do Assassino | Robin Hobb | #F #tenho-digital |
 | A Garra do Conciliador | Gene Wolfe | #F #tenho-digital |
+| A Guerra dos Reinos | Jason Aaron e Russell Dauterman | #HQ #tenho-digital |
 | A História sem Fim | Michael Ende | #F #tenho-digital |
 | A Liga da Lei (Mistborn: Segunda Era, vol. 1) | Brandon Sanderson | #F #tenho-digital |
 | A Máquina de Uriel | Robert Lomas | #F #tenho-digital |
 | A Máquina Diferencial | William Gibson e Bruce Sterling | #F #tenho-digital |
 | A Morte da Terra | J.H. Rosny Aîné | #F #tenho-digital |
+| A Morte de X | Jeff Lemire, Charles Soule e Aaron Kuder | #HQ #tenho-digital |
 | A Música do Silêncio | Patrick Rothfuss | #F #tenho-digital |
 | A Nuvem | Neal Shusterman | #F #tenho-digital |
 | A Quinta Estação | N.K. Jemisin | #F #tenho-digital |
 | A Redenção do Anjo Caído | Fabio Baptista | #F #tenho-digital |
 | A Revolta de Atlas | Ayn Rand | #F #tenho-digital |
+| A Revolução dos Bichos (em quadrinhos) | George Orwell, Lillo Parra e Chairim Arrais | #HQ #tenho-digital |
 | A Saga de Elric, Livro 1 | Michael Moorcock | #F #tenho-digital |
 | A Saga de Elric, Livro 2 | Michael Moorcock | #F #tenho-digital |
 | A Senhora do Império | Raymond E. Feist e Janny Wurts | #F #tenho-digital |
 | A Serva do Império | Raymond E. Feist e Janny Wurts | #F #tenho-digital |
 | A Sombra do Torturador | Gene Wolfe | #F #tenho-digital |
+| A Torre | Jan Kounen, Omar Ladgham e Mr Fab | #HQ #tenho-digital |
 | A Última Colônia | John Scalzi | #F #tenho-digital |
+| Abaddon | Christophe Bec e Robert Carey | #HQ #tenho-digital |
+| Akira | Katsuhiro Otomo | #HQ #tenho-digital |
 | Alerta de Risco | Neil Gaiman | #F #tenho-digital |
 | Alerta Vermelho | Martha Wells | #F #tenho-digital |
 | Alice no País do Quantum | Robert Gilmore | #F #tenho-digital |
+| Aliens: Labyrinth | Jim Woodring e Kilian Plunkett | #HQ #tenho-digital |
+| Amanhã | Leo, Rodolphe e Louis Alloing | #HQ #tenho-digital |
+| Androides Sonham com Ovelhas Elétricas? (em quadrinhos) | Philip K. Dick e Tony Parker | #HQ #tenho-digital |
+| Anões | Nicolas Jarry e outros | #HQ #tenho-digital |
 | Antologia da Literatura Fantástica | Jorge Luis Borges, Adolfo Bioy Casares e Silvina Ocampo | #F #contos #tenho-digital |
 | As Brigadas Fantasma | John Scalzi | #F #tenho-digital |
 | As Crônicas de Âmbar, tomo I | Roger Zelazny | #F #tenho-digital |
 | As Crônicas de Âmbar, tomo II | Roger Zelazny | #F #tenho-digital |
+| As Eras Perdidas | Jérôme Le Gris e Didier Poli | #HQ #tenho-digital |
 | As Sereias de Titã | Kurt Vonnegut | #F #tenho-digital |
 | As Sombras de Si Mesmo (Mistborn: Segunda Era, vol. 2) | Brandon Sanderson | #F #tenho-digital |
 | As Trevas de Sethanon | Raymond E. Feist | #F #tenho-digital |
+| Asgard | Xavier Dorison e Ralph Meyer | #HQ #tenho-digital |
+| Astronauta: Assimetria (Graphic MSP) | Danilo Beyruth | #HQ #tenho-digital |
+| Astronauta: Entropia (Graphic MSP) | Danilo Beyruth | #HQ #tenho-digital |
+| Batman | Vários autores | #HQ #tenho-digital |
+| Batman '89 | Sam Hamm e Joe Quinones | #HQ #tenho-digital |
+| Batman '89: Ecos | Sam Hamm e Joe Quinones | #HQ #tenho-digital |
+| Batman Absoluto | Scott Snyder e Nick Dragotta | #HQ #tenho-digital |
+| Batman: O Cavaleiro das Trevas III – A Raça Superior | Frank Miller, Brian Azzarello e Andy Kubert | #HQ #tenho-digital |
+| Batman: O Último Cavaleiro da Terra | Scott Snyder e Greg Capullo | #HQ #tenho-digital |
+| Batman: Padrões Sombrios | Dan Watters e Hayden Sherman | #HQ #tenho-digital |
+| Bomba X | Vincent Brugeas e outros | #HQ #tenho-digital |
+| Bran Mak Morn: O Último Rei dos Pictos | Robert E. Howard | #F #tenho-digital |
 | Caçadores de Trolls | Guillermo del Toro e Daniel Kraus | #F #tenho-digital |
 | Calamidade | Brandon Sanderson | #F #tenho-digital |
 | Cama de Gato | Kurt Vonnegut | #F #tenho-digital |
+| Castelo de Areia | Pierre Oscar Lévy e Frederik Peeters | #HQ #tenho-digital |
+| Cavaleiro vs. Samurai | David Dastmalchian e Fede Mele | #HQ #tenho-digital |
+| Cavalgada dos Quadrinhos Amaldiçoados | Vários autores | #HQ #tenho-digital |
+| Celestia | Manuele Fior | #HQ #tenho-digital |
+| Charada: Ano Um | Paul Dano e Stevan Subic | #HQ #tenho-digital |
 | Ciclo Terramar (volume único) | Ursula K. Le Guin | #F #tenho-digital |
+| Cirurgião X | Sara Kenney e John Watkiss | #HQ #tenho-digital |
+| Coda | Simon Spurrier e Matías Bergara | #HQ #tenho-digital |
+| Coleção Oficial de Graphic Novels Marvel (Salvat) | Vários autores | #HQ #tenho-digital |
 | Conan | Robert E. Howard | #F #tenho-digital |
+| Conan: A Torre do Elefante | Robert E. Howard | #HQ #tenho-digital |
+| Conan, o Bárbaro (em quadrinhos) | Vários autores | #HQ #tenho-digital |
 | Conan, o Bárbaro, Livro 1 | Robert E. Howard | #F #tenho-digital |
 | Conan, o Bárbaro, Livro 2 | Robert E. Howard | #F #tenho-digital |
 | Conan, o Cimério: Edição Definitiva, vol. 1 | Robert E. Howard | #F #tenho-digital |
 | Conan, o Sangue da Serpente | S.M. Stirling | #F #tenho-digital |
 | Condição Artificial | Martha Wells | #F #tenho-digital |
+| Contágio | Vários autores | #HQ #verificar #tenho-digital |
+| Contos do Multiverso Sombrio | Vários autores | #HQ #tenho-digital |
 | Coração de Aço | Brandon Sanderson | #F #tenho-digital |
 | Count Zero | William Gibson | #F #tenho-digital |
+| Crise Final | Grant Morrison e J.G. Jones | #HQ #tenho-digital |
+| Crise Infinita | Geoff Johns e Phil Jimenez | #HQ #tenho-digital |
 | Crônicas de Espada e Feitiçaria | Gardner Dozois (org.) | #F #tenho-digital |
+| Dark Engine | Ryan Burton e John Bivens | #HQ #tenho-digital |
+| Dawnrunner | Ram V e Evan Cagle | #HQ #tenho-digital |
+| Deadpool: Dog Park | Stefan Petrucha | #F #tenho-digital |
+| Deadpool Mata o Universo Marvel | Cullen Bunn e Dalibor Talajić | #HQ #tenho-digital |
+| Deadpool vs. Velho Logan | Declan Shalvey e Mike Henderson | #HQ #tenho-digital |
+| Death Dealer: Mercador da Morte | Mitch Iverson e Stefano Martino | #HQ #tenho-digital |
+| Depois do Incal | Alejandro Jodorowsky e Moebius | #HQ #tenho-digital |
+| Deuses Americanos (em quadrinhos) | Neil Gaiman, P. Craig Russell e Scott Hampton | #HQ #tenho-digital |
 | Dinossauros! | Arthur C. Clarke | #F #tenho-digital |
 | Doadores de Sono | Karen Russell | #F #tenho-digital |
+| Doutor Destino | Christopher Cantwell e Salvador Larroca | #HQ #tenho-digital |
+| Doutor Estranho: Sina dos Sonhos | Devin Grayson | #F #tenho-digital |
 | Dragões do Crepúsculo do Outono | Margaret Weis e Tracy Hickman | #F #tenho-digital |
 | Duas Narrativas Fantásticas | Fiódor Dostoiévski | #F #tenho-digital |
+| Earthdivers | Stephen Graham Jones e Davide Gianfelice | #HQ #tenho-digital |
 | Elantris | Brandon Sanderson | #F #tenho-digital |
+| Elfos | Vários autores | #HQ #tenho-digital |
 | Elric de Melniboné | Michael Moorcock | #F #tenho-digital |
+| Elric: Stormbringer | Michael Moorcock e P. Craig Russell | #HQ #tenho-digital |
 | Encontro com Rama | Arthur C. Clarke | #F #tenho-digital |
+| Era de Ultron | Brian Michael Bendis e Bryan Hitch | #HQ #tenho-digital |
+| Escória | Carlos Trillo e Juan Giménez | #HQ #tenho-digital |
 | Espada da Galáxia | Marcelo Cassaro | #F #tenho-digital |
+| Espadas e Bruxas | Esteban Maroto | #HQ #tenho-digital |
+| Especial: As Espadas | (autor não informado) | #HQ #verificar #tenho-digital |
 | Estação Perdido | China Miéville | #F #tenho-digital |
 | Estado Elétrico | Simon Stålenhag | #F #tenho-digital |
+| Ex Machina | Brian K. Vaughan e Tony Harris | #HQ #tenho-digital |
+| Fábulas | Bill Willingham e Mark Buckingham | #HQ #tenho-digital |
+| Febre Tifoide | Clay McLeod Chapman | #HQ #tenho-digital |
+| Ficção de Polpa: Aventura! | Samir Machado de Machado (org.) | #F #tenho-digital |
 | Ficção de Polpa, vol. 1 | Samir Machado de Machado (org.) | #F #tenho-digital |
 | Filhos da Degradação | Felipe Castilho | #F #tenho-digital |
 | Forward | Blake Crouch, N.K. Jemisin e Veronica Roth | #F #contos #tenho-digital |
 | Fumaça e Espelhos | Neil Gaiman | #F #contos #tenho-digital |
 | Galápagos | Kurt Vonnegut | #F #tenho-digital |
+| Gamora | Nicole Perlman e Marco Checchetto | #HQ #tenho-digital |
+| Gavião Arqueiro | Vários autores | #HQ #tenho-digital |
+| Grandes Astros: Batman | Scott Snyder e John Romita Jr. | #HQ #tenho-digital |
+| Grandes Clássicos DC | Vários autores | #HQ #tenho-digital |
+| Groo | Sergio Aragonés e Mark Evanier | #HQ #tenho-digital |
+| Guerra Civil II | Brian Michael Bendis e David Marquez | #HQ #tenho-digital |
 | Guerra do Velho | John Scalzi | #F #tenho-digital |
+| Guerra dos Reis | Dan Abnett, Andy Lanning e Paul Pelletier | #HQ #tenho-digital |
+| Guerreiro Eterno | Vários autores | #HQ #tenho-digital |
+| Habitat | Simon Roy | #HQ #verificar #tenho-digital |
+| Hawkmoon | Jérôme Le Gris, Benoît Dellac e Didier Poli | #HQ #tenho-digital |
 | Herdeiros do Tempo | Adrian Tchaikovsky | #F #tenho-digital |
+| Heróis em Crise | Tom King e Clay Mann | #HQ #tenho-digital |
+| Heróis Renascem | Vários autores | #HQ #tenho-digital |
 | Hex | Thomas Olde Heuvelt | #F #tenho-digital |
+| História do Universo Marvel | Mark Waid e Javier Rodríguez | #HQ #tenho-digital |
+| Holy Avenger | Marcelo Cassaro e Erica Awano | #HQ #tenho-digital |
+| Homem-Aranha: Entre Trovões | Christopher L. Bennett | #F #tenho-digital |
+| Horizonte Negro | Philippe Pelaez e Benjamin Blasco-Martinez | #HQ #tenho-digital |
+| Império Secreto | Nick Spencer e outros | #HQ #tenho-digital |
+| Incríveis X-Men (2025) | Jed MacKay e Mahmud Asrar | #HQ #tenho-digital |
+| Infinito | Jonathan Hickman | #HQ #tenho-digital |
+| Inumanos vs. X-Men | Charles Soule e Jeff Lemire | #HQ #tenho-digital |
+| Invasores de Corpos | Jack Finney | #F #tenho-digital |
+| John Carpenter's Tales of Science Fiction | Vários autores | #HQ #tenho-digital |
 | Kallocaína | Karin Boye | #F #tenho-digital |
+| Kingsway Oeste | Greg Pak e Mirko Colak | #HQ #tenho-digital |
+| Klarion | Vários autores | #HQ #tenho-digital |
 | Kull: Exílio da Atlântida | Robert E. Howard | #F #tenho-digital |
+| Lago de Fogo | Nathan Fairbairn e Matt Smith | #HQ #tenho-digital |
 | Lázaro, Dê um Passo à Frente | Ray Bradbury | #F #tenho-digital |
+| Leito de Morte | Joshua Williamson e Riley Rossmo | #HQ #tenho-digital |
+| Lone Sloane | Philippe Druillet | #HQ #tenho-digital |
+| Longshot Salva o Universo Marvel | Christopher Hastings e Jacopo Camagni | #HQ #tenho-digital |
 | Lua de Sangue (Dreamblood, vol. 1) | N.K. Jemisin | #F #tenho-digital |
+| Lugar Nenhum (em quadrinhos) | Neil Gaiman, Mike Carey e Glenn Fabry | #HQ #tenho-digital |
 | Mago: Aprendiz | Raymond E. Feist | #F #tenho-digital |
 | Mago: Espinho de Prata | Raymond E. Feist | #F #tenho-digital |
 | Mago: Mestre | Raymond E. Feist | #F #tenho-digital |
+| Marvel Knights: X-Men | Brahm Revel | #HQ #tenho-digital |
 | Matéria Escura | Blake Crouch | #F #tenho-digital |
+| Meia-Noite e Apolo | Steve Orlando e Fernando Blanco | #HQ #tenho-digital |
 | Merlin: A Profecia | M.K. Hume | #F #tenho-digital |
 | Mestre Gil de Ham | J.R.R. Tolkien | #F #tenho-digital |
 | Metropolis | Thea von Harbou | #F #tenho-digital |
 | Mona Lisa Overdrive | William Gibson | #F #tenho-digital |
+| Morbius: O Vampiro Vivo | Vários autores | #HQ #tenho-digital |
+| Motoqueiro Fantasma Cósmico | Donny Cates e Dylan Burnett | #HQ #tenho-digital |
 | Mulheres Perigosas | George R.R. Martin e Gardner Dozois (orgs.) | #F #contos #tenho-digital |
 | Na Floresta | Erin Hunter | #F #tenho-digital |
+| Natureza Brutal | Luciano Saracino e Ariel Olivetti | #HQ #tenho-digital |
+| Nós, os Mortos | Darko Macan e Igor Kordey | #HQ #tenho-digital |
 | Nós Somos a Cidade (Grandes Cidades, vol. 1) | N.K. Jemisin | #F #tenho-digital |
 | Nova | Samuel R. Delany | #F #tenho-digital |
 | Nove Amanhãs | Isaac Asimov | #F #contos #tenho-digital |
+| O Anel dos Sete Mundos | Giovanni Gualdoni, Gabriele Clima e Matteo Piana | #HQ #tenho-digital |
 | O Ano do Dilúvio | Margaret Atwood | #F #tenho-digital |
 | O Assassino do Rei | Robin Hobb | #F #tenho-digital |
 | O Cair da Noite | Isaac Asimov | #F #tenho-digital |
 | O Ceifador | Neal Shusterman | #F #tenho-digital |
+| O Cerco | Brian Michael Bendis e Olivier Coipel | #HQ #tenho-digital |
 | O Céu de Pedra | N.K. Jemisin | #F #tenho-digital |
+| O Conto da Aia (em quadrinhos) | Margaret Atwood e Renée Nault | #HQ #tenho-digital |
 | O Conto de Zoe | John Scalzi | #F #tenho-digital |
 | O Coração é o Último a Morrer | Margaret Atwood | #F #tenho-digital |
 | O Dia das Trífides | John Wyndham | #F #tenho-digital |
@@ -902,6 +1006,7 @@ Livros da biblioteca virtual que não estavam nas seções anteriores, separados
 | O Fim de Todas as Coisas | John Scalzi | #F #tenho-digital |
 | O Grande Silêncio e Outras Histórias | Ted Chiang | #F #contos #tenho-digital |
 | O Império Final (Mistborn, vol. 1) | Brandon Sanderson | #F #tenho-digital |
+| O Incal Negro (O Incal, vol. 1) | Alejandro Jodorowsky e Moebius | #HQ #tenho-digital |
 | O Inimigo do Mundo (Trilogia da Tormenta, vol. 1) | Leonel Caldela | #F #tenho-digital |
 | O Livro e a Espada | Antoine Rouaud | #F #tenho-digital |
 | O Longo Amanhã | Leigh Brackett | #F #tenho-digital |
@@ -913,35 +1018,78 @@ Livros da biblioteca virtual que não estavam nas seções anteriores, separados
 | O Poço da Ascensão (Mistborn, vol. 2) | Brandon Sanderson | #F #tenho-digital |
 | O Portão do Obelisco | N.K. Jemisin | #F #tenho-digital |
 | O Príncipe de Westeros e Outras Histórias | George R.R. Martin e Gardner Dozois (orgs.) | #F #tenho-digital |
+| O Próprio Medo | Matt Fraction e Stuart Immonen | #HQ #tenho-digital |
+| O Sentinela | Vários autores | #HQ #tenho-digital |
 | O Sol Desvelado | Isaac Asimov | #F #tenho-digital |
 | O Temor do Sábio | Patrick Rothfuss | #F #tenho-digital |
 | O Timbre | Neal Shusterman | #F #tenho-digital |
 | O Triângulo das Bermudas | Charles Berlitz | #F #tenho-digital |
+| O Túmulo do Batman | Warren Ellis e Bryan Hitch | #HQ #tenho-digital |
+| O Último Deus | Phillip Kennedy Johnson e Riccardo Federici | #HQ #tenho-digital |
+| Ogiva | Bruno Zago e Guilherme Petreca | #HQ #tenho-digital |
 | Oryx e Crake | Margaret Atwood | #F #tenho-digital |
 | Os Braceletes da Perdição (Mistborn: Segunda Era, vol. 3) | Brandon Sanderson | #F #tenho-digital |
 | Os Cem Mil Reinos (Trilogia Legado, vol. 1) | N.K. Jemisin | #F #tenho-digital |
+| Os Fabulosos X-Men | Vários autores | #HQ #tenho-digital |
+| Os Futuros de Liu Cixin | Liu Cixin e outros | #HQ #tenho-digital |
+| Os Invisíveis | Grant Morrison | #HQ #tenho-digital |
+| Os Pequenos Guardiões | David Petersen | #HQ #tenho-digital |
 | Os Reinos Partidos (Trilogia Legado, vol. 2) | N.K. Jemisin | #F #tenho-digital |
+| Patrulha do Destino | Vários autores | #HQ #tenho-digital |
 | Periféricos | William Gibson | #F #tenho-digital |
 | Pines | Blake Crouch | #F #tenho-digital |
 | Poeira Lunar | Arthur C. Clarke | #F #tenho-digital |
+| Por Deus ou pelo Acaso | Becky Cloonan | #HQ #tenho-digital |
+| Porto da Terra | Zack Kaplan e Andrea Mutti | #HQ #tenho-digital |
 | Prince of Thorns | Mark Lawrence | #F #tenho-digital |
 | Protocolo Rebelde | Martha Wells | #F #tenho-digital |
+| Quarteto Fantástico | Vários autores | #HQ #tenho-digital |
+| Rapa Nui | Mikaël e Fabrizio Russo | #HQ #tenho-digital |
 | Reconhecimento de Padrões | William Gibson | #F #tenho-digital |
 | Recursão | Blake Crouch | #F #tenho-digital |
+| Rei Conan: Lobos Além da Fronteira | Timothy Truman e Tomás Giorello | #HQ #tenho-digital |
+| Reino do Amanhã | Mark Waid e Alex Ross | #HQ #tenho-digital |
+| Renascimento | Fred Duval e Emem | #HQ #tenho-digital |
+| Ronin | Frank Miller | #HQ #tenho-digital |
+| Saga | Brian K. Vaughan e Fiona Staples | #HQ #tenho-digital |
 | Saída Estratégica | Martha Wells | #F #tenho-digital |
+| Sandman | Neil Gaiman | #HQ #tenho-digital |
 | Santo Guerreiro: Roma Invicta | Eduardo Spohr | #F #tenho-digital |
 | Santo Guerreiro: Ventos do Norte | Eduardo Spohr | #F #tenho-digital |
 | Santuário dos Ventos | George R.R. Martin | #F #tenho-digital |
+| Self/Made | Mathieu Groux e Eduardo Ferigato | #HQ #tenho-digital |
 | Senhor da Luz | Roger Zelazny | #F #tenho-digital |
+| Senhor das Estrelas | Vários autores | #HQ #tenho-digital |
 | Seres Mágicos e Histórias Sombrias | Neil Gaiman (org.) | #F #contos #tenho-digital |
+| Sheltered | Ed Brisson e Johnnie Christmas | #HQ #tenho-digital |
+| Siegfried | Alex Alice | #HQ #tenho-digital |
+| SilverHawks | Ed Brisson e George Kambadais | #HQ #tenho-digital |
+| Skinbreaker | Robert Kirkman e David Finch | #HQ #tenho-digital |
+| Skulldigger e o Garoto Esqueleto | Jeff Lemire e Tonci Zonjic | #HQ #tenho-digital |
+| Snow Crash | Neal Stephenson | #F #tenho-digital |
 | Solomon Kane | Robert E. Howard | #F #tenho-digital |
 | Sombras do Sol (Dreamblood, vol. 2) | N.K. Jemisin | #F #tenho-digital |
 | Sonhos Elétricos | Philip K. Dick | #F #tenho-digital |
+| Spawn: The Dark Ages | Brian Holguin e Liam Sharp | #HQ #tenho-digital |
 | Star Wars: Dívida de Honra | Chuck Wendig | #F #tenho-digital |
 | Star Wars: Marcas da Guerra | Chuck Wendig | #F #tenho-digital |
+| Superman vs. Apocalypse | Vários autores | #HQ #tenho-digital |
+| Surfista Prateado: Os Escravistas (Graphic Marvel, vol. 14) | Stan Lee e Keith Pollard | #HQ #tenho-digital |
+| Sword of Ages | Gabriel Rodríguez | #HQ #tenho-digital |
+| Tartarugas Ninja: O Último Ronin | Kevin Eastman, Peter Laird e Tom Waltz | #HQ #tenho-digital |
+| Tartarugas Ninja: O Último Ronin – Anos Perdidos | Kevin Eastman, Tom Waltz e S.L. Gallant | #HQ #tenho-digital |
 | Tehanu | Ursula K. Le Guin | #F #tenho-digital |
+| Terra Proibida | Denis-Pierre Filippi e Patrick Laumond | #HQ #tenho-digital |
 | Território Fantasma | William Gibson | #F #tenho-digital |
+| Thanos: Em Busca de Poder / Legado | Vários autores | #HQ #tenho-digital |
+| Thanos II | Vários autores | #HQ #tenho-digital |
+| The Realm | Seth M. Peck e Jeremy Haun | #HQ #tenho-digital |
+| Thor | Vários autores | #HQ #tenho-digital |
+| Thor, vol. 5 | Jason Aaron e Mike del Mundo | #HQ #tenho-digital |
+| Tokyo Ghost | Rick Remender e Sean Murphy | #HQ #tenho-digital |
 | Tormenta de Fogo | Brandon Sanderson | #F #tenho-digital |
+| Torneio dos Campeões | Vários autores | #HQ #tenho-digital |
+| Transmetropolitan | Warren Ellis e Darick Robertson | #HQ #tenho-digital |
 | Trilogia da Fundação (box: Fundação · Fundação e Império · Segunda Fundação) | Isaac Asimov | #F #tenho-digital |
 | Trilogia do Sprawl (box: Neuromancer · Count Zero · Mona Lisa Overdrive) | William Gibson | #F #tenho-digital |
 | Trilogia dos Guardiões: Volume Único | I.M. Martins | #F #tenho-digital |
@@ -951,11 +1099,25 @@ Livros da biblioteca virtual que não estavam nas seções anteriores, separados
 | Uma Desolação Chamada Paz | Arkady Martine | #F #tenho-digital |
 | Uma Lembrança Chamada Império | Arkady Martine | #F #tenho-digital |
 | Utopia | Thomas More | #F #tenho-digital |
+| V de Vingança | Alan Moore e David Lloyd | #HQ #tenho-digital |
 | Vencer o Dragão | Barbara Hambly | #F #tenho-digital |
+| Viagem ao Centro da Terra (em quadrinhos) | Júlio Verne | #HQ #tenho-digital |
 | Viagem Fantástica | Isaac Asimov | #F #tenho-digital |
 | Vilão Iniciante | John Scalzi | #F #tenho-digital |
+| Vingadores (2017) | Vários autores | #HQ #tenho-digital |
+| Vingadores: Sem Rumo | Al Ewing, Jim Zub e Mark Waid | #HQ #tenho-digital |
+| Vingadores: Todos Querem Dominar o Mundo | Dan Abnett | #F #tenho-digital |
+| Vingadores vs. X-Men | Vários autores | #HQ #tenho-digital |
+| Vingadores vs. X-Men: Consequências | Kieron Gillen | #HQ #tenho-digital |
+| Watchmen | Alan Moore e Dave Gibbons | #HQ #tenho-digital |
 | Wayne de Gotham | Tracy Hickman | #F #tenho-digital |
 | Wild Cards: O Começo de Tudo | George R.R. Martin (org.) | #F #contos #tenho-digital |
+| WildC.A.T.s/X-Men | Vários autores | #HQ #tenho-digital |
+| Wolverine: Arma X | Marc Cerasini | #F #tenho-digital |
+| Wolverine: Inimigo do Estado | Mark Millar e John Romita Jr. | #HQ #tenho-digital |
+| X-Men: Massacre | Vários autores | #HQ #tenho-digital |
+| X-Men: Programa de Extermínio | Chris Claremont, Louise Simonson e Jim Lee | #HQ #tenho-digital |
+| Y: O Último Homem | Brian K. Vaughan e Pia Guerra | #HQ #tenho-digital |
 
 ### 17.3 Clássicos universais e romances de ideias
 
@@ -963,7 +1125,14 @@ Livros da biblioteca virtual que não estavam nas seções anteriores, separados
 |---|---|---|
 | A Arte de Amar | Ovídio | #F #classico #tenho-digital |
 | A Briga dos Dois Ivans | Nikolai Gógol | #F #classico #tenho-digital |
+| A História de uma Mãe | Peter Madsen | #HQ #tenho-digital |
+| A Ilha do Tesouro (em quadrinhos) | Robert Louis Stevenson | #HQ #tenho-digital |
+| A Odisseia (em quadrinhos) | Homero | #HQ #tenho-digital |
+| A Sabedoria dos Mitos: Afrodite | Luc Ferry e Clotilde Bruneau | #HQ #tenho-digital |
 | A Submissa e Outras Histórias | Fiódor Dostoiévski | #F #contos #tenho-digital |
+| A Tempestade (Shakespeare em Quadrinhos, vol. 4) | William Shakespeare, Lillo Parra e Jefferson Costa | #HQ #tenho-digital |
+| A Volta ao Mundo em 80 Dias (em quadrinhos) | Júlio Verne | #HQ #tenho-digital |
+| Beowulf | Santiago García e David Rubín | #HQ #tenho-digital |
 | Bola de Sebo e Outros Contos | Guy de Maupassant | #F #contos #tenho-digital |
 | Contos | Ernest Hemingway | #F #contos #tenho-digital |
 | Contos Completos | Liev Tolstói | #F #contos #tenho-digital |
@@ -973,15 +1142,20 @@ Livros da biblioteca virtual que não estavam nas seções anteriores, separados
 | Essencial Franz Kafka | Franz Kafka | #F #tenho-digital |
 | Fuga sem Fim | Joseph Roth | #F #tenho-digital |
 | Gente Pobre | Fiódor Dostoiévski | #F #classico #tenho-digital |
+| Hamlet (Shakespeare em Quadrinhos) | William Shakespeare, Wellington Srbek e Alex Shibao | #HQ #tenho-digital |
 | Mar de Histórias: Antologia do Conto Mundial, vol. 1: Das Origens à Idade Média | Aurélio Buarque de Holanda Ferreira e Paulo Rónai | #F #contos #tenho-digital |
+| Moby Dick (em quadrinhos) | Christophe Chabouté | #HQ #tenho-digital |
 | Noites Brancas | Fiódor Dostoiévski | #F #classico #tenho-digital |
 | Nova Antologia do Conto Russo | Bruno Barretto Gomide (org.) | #F #contos #tenho-digital |
 | O Diabo | Liev Tolstói | #F #classico #tenho-digital |
+| O Inferno de Dante | Paul Brizzi e Gaëtan Brizzi | #HQ #tenho-digital |
 | O Ladrão Honesto e Outras Histórias | Fiódor Dostoiévski | #F #contos #tenho-digital |
 | O Retrato | Nikolai Gógol | #F #contos #tenho-digital |
 | Os Sofrimentos do Jovem Werther | Johann W. von Goethe | #F #classico #tenho-digital |
 | Pais e Filhos | Ivan Turguêniev | #F #tenho-digital |
 | Rashômon e Outros Contos | Ryunosuke Akutagawa | #F #contos #tenho-digital |
+| Rei Arthur e os Cavaleiros da Távola Redonda: Edição Comentada e Ilustrada | Howard Pyle | #F #tenho-digital |
+| Sonho de uma Noite de Verão (Shakespeare em Quadrinhos) | William Shakespeare, Lillo Parra e Wanderson de Souza | #HQ #tenho-digital |
 
 ### 17.4 América Latina, Brasil e lusofonia (ficção)
 
@@ -992,6 +1166,7 @@ Livros da biblioteca virtual que não estavam nas seções anteriores, separados
 | 50 Contos de Machado de Assis | Machado de Assis | #F #contos #tenho-digital |
 | 70 Historinhas | Carlos Drummond de Andrade | #F #contos #tenho-digital |
 | A Bagagem do Viajante | José Saramago | #F #contos #tenho-digital |
+| A Cartomante (Literatura Brasileira em Quadrinhos, vol. 4) | Machado de Assis e Jô Fevereiro | #HQ #tenho-digital |
 | A Causa Secreta e Outros Contos | Machado de Assis | #F #contos #tenho-digital |
 | A Cegueira do Rio | Mia Couto | #F #contos #tenho-digital |
 | A Confissão da Leoa | Mia Couto | #F #contemporaneo #tenho-digital |
@@ -1013,6 +1188,7 @@ Livros da biblioteca virtual que não estavam nas seções anteriores, separados
 | Contos Completos | José Donoso | #F #tenho-digital |
 | Contos do Nascer da Terra | Mia Couto | #F #contos #tenho-digital |
 | Crônicas de Bustos Domecq / Novos Contos de Bustos Domecq | Jorge Luis Borges e Adolfo Bioy Casares | #F #contos #tenho-digital |
+| Daytripper | Fábio Moon e Gabriel Bá | #HQ #tenho-digital |
 | De Onde Eles Vêm | Jeferson Tenório | #F #contemporaneo #tenho-digital |
 | Dois Mortos e a Morte e Outras Histórias | Tanto Tupiassu | #F #contos #tenho-digital |
 | Doramar ou a Odisseia: Histórias | Itamar Vieira Junior | #F #tenho-digital |
@@ -1027,10 +1203,14 @@ Livros da biblioteca virtual que não estavam nas seções anteriores, separados
 | Levantado do Chão | José Saramago | #F #contemporaneo #tenho-digital |
 | Lituma nos Andes | Mario Vargas Llosa | #F #contemporaneo #tenho-digital |
 | Livro de Sonhos | Jorge Luis Borges | #F #contos #tenho-digital |
+| Louco: Fuga (Graphic MSP) | Rogério Coelho | #HQ #tenho-digital |
+| Luzes de Niterói | Marcello Quintanilha | #HQ #tenho-digital |
 | Memórias de Minhas Putas Tristes | Gabriel García Márquez | #F #contemporaneo #tenho-digital |
+| Memórias Póstumas de Brás Cubas (Literatura Brasileira em Quadrinhos, vol. 2) | Machado de Assis, Maria Sonia Barbosa e Sebastião Seabra | #HQ #tenho-digital |
 | Meu Destino é Ser Onça | Alberto Mussa | #F #contos #tenho-digital |
 | Nihonjin | Oscar Nakasato | #F #tenho-digital |
 | Noturno do Chile | Roberto Bolaño | #F #contemporaneo #tenho-digital |
+| O Beijo no Asfalto (em quadrinhos) | Nelson Rodrigues, Arnaldo Branco e Gabriel Góes | #HQ #tenho-digital |
 | O Buraco na Parede | Rubem Fonseca | #F #contos #tenho-digital |
 | O Cobrador | Rubem Fonseca | #F #contos #tenho-digital |
 | O Conto da Ilha Desconhecida | José Saramago | #F #contos #tenho-digital |
@@ -1042,20 +1222,25 @@ Livros da biblioteca virtual que não estavam nas seções anteriores, separados
 | O Melhor de Rubem Fonseca | Rubem Fonseca | #F #contos #tenho-digital |
 | O Ouro dos Tigres | Jorge Luis Borges | #F #contos #tenho-digital |
 | O Outro, o Mesmo | Jorge Luis Borges | #F #contos #tenho-digital |
+| O Triste Fim de Policarpo Quaresma (Literatura Brasileira em Quadrinhos, vol. 1) | Lima Barreto, Ronaldo Antonelli e Francisco Vilachã | #HQ #tenho-digital |
 | Os Cem Melhores Contos Brasileiros do Século | Italo Moriconi (org.) | #F #contos #tenho-digital |
 | Os Chefes / Os Filhotes | Mario Vargas Llosa | #F #contos #tenho-digital |
 | Os Conjurados | Jorge Luis Borges | #F #contos #tenho-digital |
 | Os Dragões Não Conhecem o Paraíso | Caio Fernando Abreu | #F #tenho-digital |
 | Os Prisioneiros | Rubem Fonseca | #F #contos #tenho-digital |
 | Pássaros na Boca e Sete Casas Vazias: Contos Reunidos | Samanta Schweblin | #F #contos #tenho-digital |
+| Penadinho: Vida (Graphic MSP) | Paulo Crumbim e Cristina Eiko | #HQ #tenho-digital |
 | Pequenas Criaturas | Rubem Fonseca | #F #contos #tenho-digital |
 | Percatempos: Tudo que Faço Quando Não Sei o que Fazer | Gregorio Duvivier | #F #contos #tenho-digital |
+| Quincas Borba (em quadrinhos) | Machado de Assis | #HQ #tenho-digital |
 | Rinha de Galos | María Fernanda Ampuero | #F #contos #tenho-digital |
 | Salvar o Fogo | Itamar Vieira Junior | #F #contemporaneo #tenho-digital |
 | Sete Monstros Brasileiros | Braulio Tavares | #F #contos #tenho-digital |
+| Talco de Vidro | Marcello Quintanilha | #HQ #tenho-digital |
 | Todos os Contos | Clarice Lispector | #F #contos #tenho-digital |
 | Todos os Contos de Machado de Assis (box) | Machado de Assis | #F #contos #tenho-digital |
 | Tudo é Rio | Carla Madeira | #F #contemporaneo #tenho-digital |
+| Tungstênio | Marcello Quintanilha | #HQ #tenho-digital |
 | Um Rio Chamado Tempo, uma Casa Chamada Terra | Mia Couto | #F #contos #tenho-digital |
 | Um Sonho de Três Noites | Tiago Cabral | #F #contos #tenho-digital |
 | Venenos de Deus, Remédios do Diabo | Mia Couto | #F #contos #tenho-digital |
@@ -1066,23 +1251,30 @@ Livros da biblioteca virtual que não estavam nas seções anteriores, separados
 |---|---|---|
 | 1Q84, vol. 1 | Haruki Murakami | #F #contemporaneo #tenho-digital |
 | 20 Contos de Truman Capote | Truman Capote | #F #contos #tenho-digital |
+| A Chegada | Shaun Tan | #HQ #tenho-digital |
+| A Espera | Keum Suk Gendry-Kim | #HQ #tenho-digital |
 | A Extraordinária Cozinha dos Livros | Kim Jee-Hye | #F #contemporaneo #tenho-digital |
 | A Fábrica | Hiroko Oyamada | #F #contemporaneo #tenho-digital |
 | A Inconveniente Loja de Conveniência | Kim Ho-yeon | #F #contemporaneo #tenho-digital |
 | A Mulher Mais Linda da Cidade | Charles Bukowski | #F #contos #tenho-digital |
+| A Obsolescência Programada dos Nossos Sentimentos | Zidrou e Aimée de Jongh | #HQ #tenho-digital |
 | A Papelaria Tsubaki | Ito Ogawa | #F #tenho-digital |
+| A Vida | (autor não informado) | #HQ #verificar #tenho-digital |
 | Ao Sul de Lugar Nenhum | Charles Bukowski | #F #contemporaneo #tenho-digital |
 | Atos Humanos | Han Kang | #F #contemporaneo #tenho-digital |
 | Baratas | Scholastique Mukasonga | #F #contemporaneo #tenho-digital |
 | Blackbird | Pierre Maurel | #F #tenho-digital |
 | Caçando Carneiros | Haruki Murakami | #F #contemporaneo #tenho-digital |
 | Cidades da Planície | Cormac McCarthy | #F #tenho-digital |
+| Conto de Areia | Jim Henson, Jerry Juhl e Ramón K. Pérez | #HQ #tenho-digital |
 | Contraponto | Aldous Huxley | #F #contemporaneo #tenho-digital |
 | Cores Vivas | Patrice Lawrence | #F #contemporaneo #tenho-digital |
+| Deus em Pessoa | Marc-Antoine Mathieu | #HQ #tenho-digital |
 | Folhas Inúteis | Aldous Huxley | #F #contemporaneo #tenho-digital |
 | Homens sem Mulheres | Haruki Murakami | #F #contos #tenho-digital |
 | Jerusalém | Alan Moore | #F #contemporaneo #tenho-digital |
 | Meridiano de Sangue | Cormac McCarthy | #F #tenho-digital |
+| Meu Amigo Dahmer | Derf Backderf | #HQ #tenho-digital |
 | Nossa Senhora do Nilo | Scholastique Mukasonga | #F #contemporaneo #tenho-digital |
 | Noturnos: Histórias de Música e Anoitecer | Kazuo Ishiguro | #F #tenho-digital |
 | O Desertor | Abdulrazak Gurnah | #F #tenho-digital |
@@ -1092,11 +1284,18 @@ Livros da biblioteca virtual que não estavam nas seções anteriores, separados
 | O Museu do Silêncio | Yoko Ogawa | #F #tenho-digital |
 | O Pássaro Pintado | Jerzy Kosinski | #F #tenho-digital |
 | O que Lhes Restou | Ghassan Kanafani | #F #tenho-digital |
+| O Relatório de Brodeck | Manu Larcenet | #HQ #tenho-digital |
 | Onde Vivem as Monstras | Aoko Matsuda | #F #contos #tenho-digital |
+| Os Impostos | (autor não informado) | #HQ #verificar #tenho-digital |
+| Pílulas Azuis | Frederik Peeters | #HQ #tenho-digital |
 | Primeira Pessoa do Singular | Haruki Murakami | #F #contos #tenho-digital |
+| Rádio Imaginação | Seiko Ito | #F #tenho-digital |
 | Relatos de um Gato Viajante | Hiro Arikawa | #F #contemporaneo #tenho-digital |
 | Sobrevidas | Abdulrazak Gurnah | #F #tenho-digital |
+| Solitário | Christophe Chabouté | #HQ #tenho-digital |
 | Sono | Haruki Murakami | #F #contos #tenho-digital |
+| Tio Sam | Steve Darnall e Alex Ross | #HQ #tenho-digital |
+| Traço de Giz | Miguelanxo Prado | #HQ #tenho-digital |
 | Um Artista do Mundo Flutuante | Kazuo Ishiguro | #F #tenho-digital |
 | Uma Visita dos Espíritos | Randall Kenan | #F #contos #tenho-digital |
 | Vidas Seguintes | Abdulrazak Gurnah | #F #tenho-digital |
@@ -1108,22 +1307,30 @@ Livros da biblioteca virtual que não estavam nas seções anteriores, separados
 | 1356 (Busca do Graal, vol. 4) | Bernard Cornwell | #F #romance-historico #tenho-digital |
 | A Lição de Anatomia | Nina Siegal | #F #romance-historico #tenho-digital |
 | Almas Divididas | Toby Clements | #F #romance-historico #tenho-digital |
+| Barracuda | Jean Dufaux e Jérémy | #HQ #tenho-digital |
+| Bórgia | Alejandro Jodorowsky e Milo Manara | #HQ #tenho-digital |
 | Cães do Rei | Martin Jensen | #F #romance-historico #tenho-digital |
 | Civilizações | Laurent Binet | #F #tenho-digital |
 | Como Tigres na Neve | Juhea Kim | #F #romance-historico #tenho-digital |
 | Desafiando a Morte | David Gilman | #F #romance-historico #tenho-digital |
 | Hamnet | Maggie O'Farrell | #F #tenho-digital |
 | Herança de Sangue (Guerra das Rosas, vol. 3) | Conn Iggulden | #F #romance-historico #tenho-digital |
+| Ira Dei | Vincent Brugeas e Ronan Toulhoat | #HQ #tenho-digital |
 | Kingmaker: Uma Jornada no Inverno | Toby Clements | #F #romance-historico #tenho-digital |
+| Lobo Solitário | Kazuo Koike e Goseki Kojima | #HQ #tenho-digital |
 | Mestre da Guerra: Uma Lenda Forjada em Batalha | David Gilman | #F #romance-historico #tenho-digital |
+| Miyamoto Musashi | Shotaro Ishinomori | #HQ #tenho-digital |
 | O Abandono da Fé | Toby Clements | #F #romance-historico #tenho-digital |
 | O Cirurgião de Almas | Luis Zueco | #F #romance-historico #tenho-digital |
 | O Espelho e a Luz | Hilary Mantel | #F #tenho-digital |
 | O Forte | Bernard Cornwell | #F #romance-historico #tenho-digital |
 | O Portão dos Mortos | David Gilman | #F #romance-historico #tenho-digital |
+| O Procurador | Gianfranco Manfredi e Pedro Mauro | #HQ #tenho-digital |
+| O Último Voo das Borboletas | Kan Takahama | #HQ #tenho-digital |
 | Pássaros da Tempestade (Guerra das Rosas, vol. 1) | Conn Iggulden | #F #romance-historico #tenho-digital |
 | Rebelde | Bernard Cornwell | #F #romance-historico #tenho-digital |
 | Sangue de Víbora | David Gilman | #F #romance-historico #tenho-digital |
+| Trilogia Gatilho | Carlos Estefan e Pedro Mauro | #HQ #tenho-digital |
 | Troia: O Romance de uma Guerra | Cláudio Moreno | #F #tenho-digital |
 | Um Trem do Inferno | Alistair MacLean | #F #romance-historico #tenho-digital |
 
@@ -1131,18 +1338,27 @@ Livros da biblioteca virtual que não estavam nas seções anteriores, separados
 
 | Título | Autor | Tags |
 |---|---|---|
+| 100 Balas | Brian Azzarello e Eduardo Risso | #HQ #tenho-digital |
 | A Baía dos Mortos | Edith Wharton | #F #contos #tenho-digital |
 | A Causa Secreta e Outros Contos de Horror | Edgar Allan Poe, Machado de Assis e outros | #F #tenho-digital |
 | A Enchente | Michael McDowell | #F #tenho-digital |
 | A Estrada Enluarada e Outras Histórias | Ambrose Bierce | #F #contos #tenho-digital |
+| A Floresta das Árvores Retorcidas | Alexandre Callari | #F #tenho-digital |
 | A Longa Marcha | Stephen King | #F #tenho-digital |
+| A Mordida do Cão Morto | Tyler Boss | #HQ #tenho-digital |
 | A Paciente Silenciosa | Alex Michaelides | #F #thriller #tenho-digital |
 | A Última Casa da Rua Needless | Catriona Ward | #F #tenho-digital |
 | Agosto | Rubem Fonseca | #F #thriller #tenho-digital |
 | Antologia de Contos Extraordinários | Edgar Allan Poe | #F #contos #tenho-digital |
 | Antologia H.P. Lovecraft | H.P. Lovecraft | #F #horror #tenho-digital |
+| Ar Frio (em quadrinhos) | Romeu Martins, Val Oliveira e Sandro Zambi | #HQ #tenho-digital |
+| B.P.D.P.: O Diabo que Você Conhece | Mike Mignola, Scott Allie e Laurence Campbell | #HQ #tenho-digital |
+| Bedlam | Nick Spencer e Riley Rossmo | #HQ #tenho-digital |
 | Biblioteca Lovecraft, vol. 1: O Chamado de Cthulhu e Outras Histórias | H.P. Lovecraft | #F #horror #tenho-digital |
+| Black Hole | Charles Burns | #HQ #tenho-digital |
+| Britannia | Peter Milligan e Juan José Ryp | #HQ #tenho-digital |
 | Cabo do Medo | John D. MacDonald | #F #thriller #tenho-digital |
+| Caminhos Misteriosos | Jason Rubin e Tyler Kirkham | #HQ #verificar #tenho-digital |
 | Candyman | Clive Barker | #F #horror #tenho-digital |
 | Carmilla | J. Sheridan Le Fanu | #F #horror #tenho-digital |
 | Casas Estranhas | Uketsu | #F #horror #tenho-digital |
@@ -1150,30 +1366,48 @@ Livros da biblioteca virtual que não estavam nas seções anteriores, separados
 | Cego | Robin Cook | #F #thriller #tenho-digital |
 | Cérebro | Robin Cook | #F #thriller #tenho-digital |
 | Ciclo Antarktos (The Antarktos Cycle) | Robert M. Price (org.) | #F #horror #verificar #tenho-digital |
+| Coelho Morto / Olhos Mortos | Gerry Duggan e John McCrea | #HQ #tenho-digital |
 | Colheita Macabra | Tess Gerritsen | #F #thriller #tenho-digital |
 | Com Sangue | Stephen King | #F #horror #tenho-digital |
 | Coma | Robin Cook | #F #thriller #tenho-digital |
 | Como Vender uma Casa Assombrada | Grady Hendrix | #F #tenho-digital |
+| Condado Maldito | Cullen Bunn e Tyler Crook | #HQ #tenho-digital |
+| Contos de Horror (Vertigo) | Vários autores | #HQ #tenho-digital |
 | Contos Fantásticos 01 | Vários autores | #F #contos #tenho-digital |
 | Contos Fantásticos 02 | Vários autores | #F #contos #tenho-digital |
 | Contos Fantásticos 03 | Vários autores | #F #contos #tenho-digital |
 | Coração Satânico | William Hjortsberg | #F #thriller #tenho-digital |
 | Corpo Estranho | Robin Cook | #F #thriller #tenho-digital |
 | Corrente Sanguínea | Tess Gerritsen | #F #thriller #tenho-digital |
+| Cripta | Vários autores | #HQ #verificar #tenho-digital |
 | Crise | Robin Cook | #F #thriller #tenho-digital |
 | Cura Fatal | Robin Cook | #F #thriller #tenho-digital |
 | Dias Perfeitos | Raphael Montes | #F #thriller #tenho-digital |
+| Do Inferno | Alan Moore e Eddie Campbell | #HQ #tenho-digital |
 | Dolores Claiborne | Stephen King | #F #tenho-digital |
 | Esfinge | Robin Cook | #F #thriller #tenho-digital |
 | Eu Sou a Lenda | Richard Matheson | #F #tenho-digital |
+| Evil Dead | Vários autores | #HQ #tenho-digital |
 | Gélido | Tess Gerritsen | #F #thriller #tenho-digital |
 | Gravidade | Tess Gerritsen | #F #thriller #tenho-digital |
 | H.P. Lovecraft, vol. 2: Miskatonic Edition | H.P. Lovecraft | #F #horror #tenho-digital |
+| Hailstone | Rafael Scavone e Rafael de Latorre | #HQ #tenho-digital |
+| Hellblazer | Vários autores | #HQ #tenho-digital |
+| Hellboy | Mike Mignola | #HQ #tenho-digital |
+| Hellraiser | Vários autores | #HQ #tenho-digital |
+| Histórias Extraordinárias | Edgar Allan Poe | #F #tenho-digital |
 | Imagens Estranhas | Uketsu | #F #horror #tenho-digital |
+| Infiel | Pornsak Pichetshote e Aaron Campbell | #HQ #tenho-digital |
 | Jantar Secreto | Raphael Montes | #F #thriller #tenho-digital |
 | Lágrimas de Aço | S.A. Cosby | #F #tenho-digital |
+| Lovecraft | Hans Rodionoff, Keith Giffen e Enrique Breccia | #HQ #verificar #tenho-digital |
 | Manual das Donas de Casa Caçadoras de Vampiros | Grady Hendrix | #F #tenho-digital |
+| Missa Negra: Ascensão | Theo Prasidis e Jodie Muir | #HQ #tenho-digital |
+| Monstro do Pântano | Vários autores | #HQ #tenho-digital |
+| Monstros | Barry Windsor-Smith | #HQ #tenho-digital |
+| Monstros São Meu Negócio | Cullen Bunn e Patrick Piazzalunga | #HQ #tenho-digital |
 | Morte na Cornualha | Daniel Silva | #F #tenho-digital |
+| Nas Montanhas da Loucura (em quadrinhos) | H.P. Lovecraft | #HQ #tenho-digital |
 | Natureza Morta | Kay Chronister | #F #tenho-digital |
 | O Bazar dos Sonhos Ruins | Stephen King | #F #horror #tenho-digital |
 | O Bebê é Meu | Oyinkan Braithwaite | #F #thriller #tenho-digital |
@@ -1185,6 +1419,7 @@ Livros da biblioteca virtual que não estavam nas seções anteriores, separados
 | O Horror em Red Hook | H.P. Lovecraft | #F #horror #tenho-digital |
 | O Jardim de Ossos | Tess Gerritsen | #F #thriller #tenho-digital |
 | O Papel de Parede Amarelo | Charlotte Perkins Gilman | #F #horror #tenho-digital |
+| O Pátio | Alan Moore e Jacen Burrows | #HQ #tenho-digital |
 | O Pescador | John Langan | #F #horror #tenho-digital |
 | O Sacrifício | Joe Hill | #F #tenho-digital |
 | O Selo Amarelo | Robert W. Chambers | #F #tenho-digital |
@@ -1195,17 +1430,31 @@ Livros da biblioteca virtual que não estavam nas seções anteriores, separados
 | Os Fantasmas da Baía Looking Glass | Catriona Ward | #F #tenho-digital |
 | Os Melhores Contos de H.P. Lovecraft | H.P. Lovecraft | #F #horror #tenho-digital |
 | Os Nomes das Coisas e Outros Contos Estranhos | Hugh Behm-Steinberg | #F #tenho-digital |
+| Out | Rob Williams e Will Conrad | #HQ #tenho-digital |
+| Papa-Capim: Noite Branca (Graphic MSP) | Marcela Godoy e Renato Guedes | #HQ #tenho-digital |
+| Pestilência | Frank Tieri e Oleg Okunev | #HQ #tenho-digital |
+| Preacher | Garth Ennis e Steve Dillon | #HQ #tenho-digital |
 | Protocolo Zero | Anthony McCarten | #F #tenho-digital |
+| Rashomon | Victor Santos | #HQ #verificar #tenho-digital |
 | Romance Negro | Rubem Fonseca | #F #thriller #tenho-digital |
 | Servidão Mental | Robin Cook | #F #thriller #tenho-digital |
 | Sete Anos de Escuridão | You-jeong Jeong | #F #thriller #tenho-digital |
+| Severed | Scott Snyder, Scott Tuft e Attila Futaki | #HQ #tenho-digital |
+| Sin City | Frank Miller | #HQ #tenho-digital |
 | Slow Horses | Mick Herron | #F #tenho-digital |
 | Sombras da Noite | Stephen King | #F #horror #tenho-digital |
+| Sombrio e Sangrento | Shawn Aldridge e Scott Godlewski | #HQ #tenho-digital |
 | Suicidas | Raphael Montes | #F #thriller #tenho-digital |
 | Todo Mundo Neste Trem é Suspeito | Benjamin Stevenson | #F #tenho-digital |
 | Tormenta | C.J. Tudor | #F #thriller #tenho-digital |
+| Torso | Brian Michael Bendis e Marc Andreyko | #HQ #tenho-digital |
+| Trilogia Lovecraft | (autor não informado) | #HQ #verificar #tenho-digital |
+| Um Estudo em Esmeralda | Neil Gaiman e Rafael Albuquerque | #HQ #tenho-digital |
+| Um Passeio no Inferno | Garth Ennis e Goran Sudžuka | #HQ #tenho-digital |
 | Uma Família Feliz | Raphael Montes | #F #thriller #tenho-digital |
 | Vendemos Nossas Almas | Grady Hendrix | #F #tenho-digital |
+| Vertigo: Contos Inquietantes | Vários autores | #HQ #tenho-digital |
+| Vertigo (Opera Graphica) | Vários autores | #HQ #tenho-digital |
 | Vida Assistida | Tess Gerritsen | #F #thriller #tenho-digital |
 | Voo Fantasma | Bear Grylls | #F #thriller #tenho-digital |
 
@@ -1355,6 +1604,7 @@ Livros da biblioteca virtual que não estavam nas seções anteriores, separados
 | Nietzsche e a Filosofia Budista | Antoine Panaïoti | #NF #filosofia #tenho-digital |
 | Nietzsche e a Grande Política da Linguagem | Viviane Mosé | #NF #filosofia #tenho-digital |
 | Nietzsche em 90 Minutos | Paul Strathern | #NF #introducao #filosofia #tenho-digital |
+| Nietzsche (em quadrinhos) | Michel Onfray e Maximilien Le Roy | #HQ #tenho-digital |
 | Nietzscheanismo | Ashley Woodward | #NF #filosofia #tenho-digital |
 | Niilismo | Rossano Pecoraro | #NF #filosofia #tenho-digital |
 | No Enxame | Byung-Chul Han | #NF #filosofia #tenho-digital |
@@ -1541,10 +1791,12 @@ Livros da biblioteca virtual que não estavam nas seções anteriores, separados
 | Manifestações Ideológicas do Autoritarismo Brasileiro | Marilena Chaui | #NF #politica #tenho-digital |
 | Manual de Filosofia Política: A História do Pensamento Político Ocidental | Hugo Brandão | #NF #politica #tenho-digital |
 | Manual Prático do Ódio | Ferréz | #NF #politica #tenho-digital |
+| Marx: Uma Biografia em Quadrinhos | Corinne Maier e Anne Simon | #HQ #tenho-digital |
 | Mensalão: O Julgamento do Maior Caso de Corrupção da História Política Brasileira | Merval Pereira | #NF #politica #tenho-digital |
 | Multilateralismo nas Relações Internacionais | Elena Lazarou | #NF #politica #tenho-digital |
 | Normose: A Patologia da Normalidade | Pierre Weil, Jean-Yves Leloup e Roberto Crema | #NF #politica #tenho-digital |
 | O Brasil no Espectro de uma Guerra Híbrida | Piero C. Leirner | #NF #politica #tenho-digital |
+| O Capital em Quadrinhos, vol. 1 | K. Ploeckinger e G. Wolfram | #HQ #tenho-digital |
 | O Capital para Crianças | Liliana Fortuny e Joan Riera | #NF #politica #tenho-digital |
 | O Espetáculo da Corrupção: Como um Sistema Corrupto e o Modo de Combatê-lo Estão Destruindo o País | Walfrido Warde | #NF #politica #tenho-digital |
 | O Fim da Guerra: A Maconha e a Criação de um Novo Sistema para Lidar com as Drogas | Denis Russo Burgierman | #NF #politica #tenho-digital |
@@ -1570,6 +1822,7 @@ Livros da biblioteca virtual que não estavam nas seções anteriores, separados
 | Os Clássicos da Política | Francisco C. Weffort (org.) | #NF #politica #tenho-digital |
 | Os Engenheiros do Caos | Giuliano da Empoli | #NF #politica #tenho-digital |
 | Os Líderes e as Massas: Escritos de 1921 a 1926 | Antonio Gramsci | #NF #politica #tenho-digital |
+| Palestina | Joe Sacco | #HQ #tenho-digital |
 | Partidos Políticos no Brasil (1945-2000) | Rogerio Augusto Schmitt | #NF #politica #tenho-digital |
 | Pepe Mujica: Simplesmente Humano | Allan Percy | #NF #politica #tenho-digital |
 | Política: Conceitos-Chave em Filosofia | Iain Mackenzie | #NF #politica #tenho-digital |
@@ -1617,6 +1870,7 @@ Livros da biblioteca virtual que não estavam nas seções anteriores, separados
 | A Fabulosa História do Hospital: Da Idade Média aos Dias de Hoje | Jean-Noël Fabiani | #NF #historia #tenho-digital |
 | A Guardiã de Todas as Coisas | Michael S. Malone | #NF #historia #tenho-digital |
 | A História da Ciência para Quem Tem Pressa | Nicola Chalton e Meredith MacArdle | #NF #historia #tenho-digital |
+| A História da Humanidade | Hendrik Willem van Loon | #NF #tenho-digital |
 | A História do Brasil para Quem Tem Pressa | Marcos Costa | #NF #historia #tenho-digital |
 | A História do Cinema para Quem Tem Pressa | Celso Sabadin | #NF #historia #tenho-digital |
 | A História do Mundo para Quem Tem Pressa | Emma Marriott | #NF #historia #tenho-digital |
@@ -1641,6 +1895,7 @@ Livros da biblioteca virtual que não estavam nas seções anteriores, separados
 | As 100 Maiores Invenções da História: Uma Classificação Cronológica | Tom Philbin | #NF #historia #tenho-digital |
 | As 100 Piores Ideias da História | Michael N. Smith e Eric Kasum | #NF #historia #tenho-digital |
 | As Relíquias Sagradas de Hitler | Sidney D. Kirkpatrick | #NF #historia #tenho-digital |
+| Casa-Grande & Senzala em Quadrinhos | Gilberto Freyre | #HQ #tenho-digital |
 | Conceitos Essenciais da Sociologia | Anthony Giddens e Philip W. Sutton | #NF #sociologia #tenho-digital |
 | Contos Fantásticos Filipinos: Igorot, Moro, Povos de Mindanau e Cristianizados | Mabel Cook Cole | #F #contos #tenho-digital |
 | Da Criação do Mundo e Outros Escritos | Fílon de Alexandria | #NF #historia #tenho-digital |
@@ -1670,6 +1925,7 @@ Livros da biblioteca virtual que não estavam nas seções anteriores, separados
 | Perdidos em Shangri-la | Mitchell Zuckoff | #NF #historia #tenho-digital |
 | Quatro Contos de Sabedoria dos Povos Africanos | Fabrice Alodji | #F #contos #tenho-digital |
 | Questões Fundamentais da Sociologia: Indivíduo e Sociedade | Georg Simmel | #NF #sociologia #tenho-digital |
+| Sapiens (em quadrinhos) | Yuval Noah Harari, David Vandermeulen e Daniel Casanave | #HQ #tenho-digital |
 | Ser Republicano no Brasil Colônia: A História de uma Tradição Esquecida | Heloisa Starling | #NF #historia #tenho-digital |
 | Sociedades Secretas | Sérgio Pereira Couto | #NF #historia #tenho-digital |
 | Sociolinguística Interacional: Antropologia, Linguística e Sociologia em Análise do Discurso | Branca Telles Ribeiro e Pedro M. Garcez (orgs.) | #NF #antropologia #sociologia #tenho-digital |
@@ -1829,6 +2085,7 @@ Livros da biblioteca virtual que não estavam nas seções anteriores, separados
 | Inteligência Artificial Aplicada: Uma Abordagem Introdutória | Luciano Frontino de Medeiros | #NF #ia #tecnologia #tenho-digital |
 | Inteligência Artificial: Uma Abordagem de Aprendizado de Máquina | Katti Faceli, Ana Carolina Lorena, João Gama e outros | #NF #ia #tecnologia #tenho-digital |
 | Inteligência Emocional para Gerenciamento de Projetos | Anthony Mersino | #NF #tecnologia #tenho-digital |
+| Introdução à Física em Quadrinhos | S.T. Butler e Robert Raymond | #HQ #tenho-digital |
 | Introdução à Programação: 500 Algoritmos Resolvidos | Anita Lopes e Guto Garcia | #NF #tecnologia #tenho-digital |
 | Introdução à Programação e aos Algoritmos | João Araujo Ribeiro | #NF #tecnologia #tenho-digital |
 | Introdução a Sistemas de Bancos de Dados | C.J. Date | #NF #tecnologia #tenho-digital |
@@ -2375,6 +2632,7 @@ Livros da biblioteca virtual que não estavam nas seções anteriores, separados
 | Relacionamento para Leigos | Frederico Mattos | #NF #autoconhecimento #tenho-digital |
 | Religião, Psicopatologia e Saúde Mental | Paulo Dalgalarrondo | #NF #psicologia #psicopatologia #tenho-digital |
 | Revolução na Psicologia: Da Alienação à Emancipação | Ian Parker | #NF #psicologia #tenho-digital |
+| Ruído | (autor não informado) | #NF #verificar #tenho-digital |
 | Sentir e Saber | António Damásio | #NF #psicologia #tenho-digital |
 | Seu Cérebro na Pornografia: Pornografia na Internet e a Ciência Emergente do Vício | Gary Wilson | #NF #autoconhecimento #tenho-digital |
 | Sexo na Cabeça | Kayt Sukel | #NF #psicologia #tenho-digital |
@@ -2500,6 +2758,7 @@ Livros da biblioteca virtual que não estavam nas seções anteriores, separados
 | Umbanda, Religião Brasileira: Um Guia para Leigos e Iniciantes | Flávia Pinto | #NF #religiao #tenho-digital |
 | Umbandas: Uma História do Brasil | Luiz Antonio Simas | #NF #religiao #tenho-digital |
 | Wabi Sabi: A Sabedoria Japonesa de Apreciar o Imperfeito | Nobuo Suzuki | #NF #tenho-digital |
+| Zen em Quadrinhos | Tsai Chih Chung | #HQ #tenho-digital |
 
 ### 17.16 Artes, escrita, cinema e parentalidade
 
@@ -2518,7 +2777,9 @@ Livros da biblioteca virtual que não estavam nas seções anteriores, separados
 | Ficções Amazônicas | Aparecida Vilaça e Francisco Vilaça Gaspar | #NF #arte #tenho-digital |
 | Filosofando no Cinema | Ollivier Pourriol | #NF #arte #tenho-digital |
 | Homens Difíceis: Os Bastidores do Processo Criativo de Breaking Bad, Família Soprano, Mad Men e Outras Séries Revolucionárias | Brett Martin | #NF #arte #tenho-digital |
+| Lobisomem: O Apocalipse – Livro da Wyrm | Brian Campbell, Sam Inabinet e outros | #NF #tenho-digital |
 | Machado e Borges e Outros Ensaios sobre Machado de Assis | Luis Augusto Fischer | #NF #arte #tenho-digital |
+| Marvel Universe: Map by Map | Nick Jones | #NF #tenho-digital |
 | Modus Operandi: Guia de True Crime | Carol Moreira e Mabê Bonafé | #NF #arte #tenho-digital |
 | O Ato Criativo | Rick Rubin | #NF #arte #tenho-digital |
 | O Livro da Literatura | Vários autores | #NF #introducao #tenho-digital |
@@ -2528,6 +2789,7 @@ Livros da biblioteca virtual que não estavam nas seções anteriores, separados
 | Outras Inquisições | Jorge Luis Borges | #NF #arte #tenho-digital |
 | Pequenas Resistências | Rivka Galchen | #NF #tenho-digital |
 | Sem Tempo a Perder | Ursula K. Le Guin | #NF #tenho-digital |
+| The Art of Rick and Morty | Justin Roiland | #NF #tenho-digital |
 | Vida: 4 Biografias | Paulo Leminski | #NF #arte #tenho-digital |
 
 ---
@@ -2535,7 +2797,7 @@ Livros da biblioteca virtual que não estavam nas seções anteriores, separados
 ## Como usar este catálogo
 
 - **Filtrar por tag** (Obsidian: busca `tag:#d1 tag:#e1`; Notion: importe o `.md`/CSV e crie propriedades; Excel: colar como tabela e filtrar a coluna Tags).
-- **Combinações úteis:** `#top #d1` (prioridades fáceis) · `#tenho-fisico #d3` (os pesados que já estão na prateleira) · `#tenho-fisico #tenho-digital` (tenho nos dois formatos) · `#tenho-digital #psicanalise` (o que há de psicanálise na biblioteca virtual) · `#rel-imortais #F` (afins a Os Imortais) · `#BR #RS` (gaúchos) · `#sem-pt` (títulos para conferir edição) · `#verificar` (dados a confirmar).
+- **Combinações úteis:** `#top #d1` (prioridades fáceis) · `#tenho-fisico #d3` (os pesados que já estão na prateleira) · `#tenho-fisico #tenho-digital` (tenho nos dois formatos) · `#tenho-digital #psicanalise` (o que há de psicanálise na biblioteca virtual) · `#HQ #tenho-digital` (os quadrinhos da biblioteca virtual) · `#rel-imortais #F` (afins a Os Imortais) · `#BR #RS` (gaúchos) · `#sem-pt` (títulos para conferir edição) · `#verificar` (dados a confirmar).
 - **Observações de dados:** na prateleira, *Guerra e Paz* aparece com autoria de Dostoiévski, mas é de Tolstói; *Notas do Subsolo* é a tradução do mesmo livro conhecido como *Memórias do Subsolo*; *O Xamã* e *Xamã* são o mesmo livro; *A Ilha* tem dois títulos diferentes (Huxley e Benchley). Itens com `#verificar` precisam de conferência de autor, título ou edição.
 - **Biblioteca virtual:** a seção 17 é gerada; para corrigir um livro digital, edite a linha dele em `biblioteca-virtual/inventario.tsv` e rode `python tools/atualizar.py`. Quando o arquivo tem um título e o catálogo outro (edição ou tradução diferente), a ligação fica na coluna `catalogo` do inventário e aparece em `biblioteca-virtual/RESUMO.md`.
 - **Título ou autor corrigido:** ao corrigir o título ou o autor de uma linha das seções 0 a 16, registre o nome antigo em `catalogo/renomeados.tsv` (título antigo, autor antigo, título novo, autor novo). Assim o painel reencontra o livro, mantém o que já foi anotado nele e continua a achá-lo pelo nome antigo.
