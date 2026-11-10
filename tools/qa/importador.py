@@ -1,17 +1,22 @@
 """O importador da biblioteca virtual (tools/importar_digital.py), numa cópia temporária dos dados:
 repetir não muda nada; arquivo novo, arquivo ausente, marcador posto à mão, correção no inventário e --conferir.
-Não precisa de navegador."""
-import contextlib, io, pathlib, shutil, sys, tempfile
+E a conversão do catálogo para o painel (tools/build_catalog.py): src/catalog.json em dia; nomes antigos das linhas
+corrigidas (catalogo/renomeados.tsv). Não precisa de navegador."""
+import contextlib, io, json, pathlib, shutil, sys, tempfile
 
 QA = pathlib.Path(__file__).resolve().parent
 sys.path.insert(0, str(QA.parent))
 import importar_digital as imp
+import build_catalog as bc
 from parse_catalog import parse
 
 erros = []
 def confere(cond, msg):
     print(('ok    ' if cond else 'FALHOU'), msg)
     if not cond: erros.append(msg)
+
+avisos_json = []
+json_em_dia = bc.build(avisos_json) == json.loads(bc.DEST.read_text(encoding='utf-8'))      # antes de trocar os dados pela cópia
 
 tmp = pathlib.Path(tempfile.mkdtemp(prefix='biblioteca-importador-'))
 shutil.copytree(imp.LISTAGENS, tmp / 'listagens')
@@ -88,6 +93,31 @@ confere(b['sec'] != 17 and 'tenho-digital' in b['tags'] and len(livros()) == n, 
 # 7 ▸ listagem em UTF-8 (em vez de CP850) também é lida
 (tmp / 'listagens' / 'poesia.txte').write_bytes(bruto.decode('cp850').encode('utf-8'))
 confere('Nada mudou.' in roda(), 'listagem em UTF-8 é lida do mesmo jeito')
+
+# 8 ▸ o que vai para o painel: src/catalog.json em dia, e o nome antigo das linhas corrigidas no catálogo
+confere(json_em_dia and not avisos_json, 'src/catalog.json está em dia com o catálogo e o inventário, sem avisos' + (': ' + ' | '.join(avisos_json) if avisos_json else ''))
+dados = json.loads(bc.DEST.read_text(encoding='utf-8'))
+forma = all(len(r) in (6, 7, 8) and (len(r) < 7 or r[6] is None or len(r[6]) == 5) and (len(r) < 8 or (r[7] and all(len(n) == 2 for n in n8)))
+            for r in dados for n8 in [r[7] if len(r) > 7 else []])
+confere(forma and not any(len(r) == 7 and r[6] is None for r in dados), 'cada linha do JSON tem 6 campos, mais os dados digitais e os nomes antigos quando existem')
+autor = lambda a: bc.AUTOR_FIX[a][0] if a in bc.AUTOR_FIX else a
+reais = [[b['t'], autor(b['a'])] for b in parse(antes['catalogo.md'])]
+n = sum(1 for l in bc.RENOMEADOS.read_text(encoding='utf-8-sig').splitlines()[1:] if l.strip())
+av = []; ant = bc.nomes_antigos(reais, av)
+confere(not av and sum(len(v) for v in ant.values()) == n and sum(len(r[7]) for r in dados if len(r) > 7) == n, f'renomeados.tsv: cada nome antigo ({n}) chega à sua linha no painel')
+
+def renomeados(*linhas_tsv):
+    (tmp / 'renomeados.tsv').write_text('titulo_antigo\tautor_antigo\ttitulo_novo\tautor_novo\n' + ''.join(l + '\n' for l in linhas_tsv), encoding='utf-8', newline='\n')
+    bc.RENOMEADOS, av = tmp / 'renomeados.tsv', []
+    return bc.nomes_antigos([['Livro Novo', 'Autora'], ['Outro', ''], ['Ímpar', 'José']], av), av
+confere(renomeados('Livro Velho\tAutora\tLivro Novo\tAutora') == ({0: [['Livro Velho', 'Autora']]}, []), 'linha renomeada leva o nome antigo')
+confere(renomeados('Mais Velho\tAutora\tLivro Velho\tAutora', 'Livro Velho\tAutora\tLivro Novo\tAutora') == ({0: [['Mais Velho', 'Autora'], ['Livro Velho', 'Autora']]}, []), 'renomeada duas vezes: os dois nomes antigos levam à linha atual')
+confere(renomeados('Sem Dono\t(autor não informado)\tOutro\t(autor não informado)') == ({1: [['Sem Dono', '']]}, []), '"(autor não informado)" vale como autor vazio, como no painel')
+r, av = renomeados('Antigo\tX\tNão Existe\tY')
+confere(r == {} and len(av) == 1 and 'não achei' in av[0], 'nome novo que não está no catálogo: aviso')
+r, av = renomeados('Outro\t\tLivro Novo\tAutora')
+confere(r == {} and len(av) == 1 and 'ainda é uma linha' in av[0], 'nome antigo que ainda é de outro livro: ignorado, com aviso')
+confere(renomeados('impar\tjose\tÍmpar\tJosé') == ({}, []), 'só acento ou maiúscula: para o painel é o mesmo nome, nada a fazer')
 
 shutil.rmtree(tmp, ignore_errors=True)
 print('ERROS:', len(erros))

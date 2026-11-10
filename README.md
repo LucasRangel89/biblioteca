@@ -7,6 +7,7 @@ painel que mostra as duas juntas ou separadas.
   que foi recomendado.
 - **Painel** (`Biblioteca_Lucas_Dashboard.html`): um único arquivo HTML. Abra no navegador; funciona sem internet e sem
   servidor.
+- **Roteiro** (`ROTEIRO.md`): o que já foi feito, o que vem pela frente e o que depende de você, em linguagem simples.
 
 | | Livros |
 | --- | ---: |
@@ -40,7 +41,9 @@ No catálogo, a posse é um marcador na linha do livro:
 | Caminho | O que é |
 | --- | --- |
 | `Biblioteca_Lucas_Dashboard.html` | O painel pronto (gerado; não edite à mão) |
+| `ROTEIRO.md` | As etapas de desenvolvimento e as pendências de cada uma |
 | `catalogo/Biblioteca_Lucas_Catalogo_Mestre.md` | O Catálogo Mestre |
+| `catalogo/renomeados.tsv` | O nome antigo de cada linha da estante ou das recomendações que teve título ou autor corrigido (ver "Corrigir o título ou o autor…") |
 | `biblioteca-virtual/listagens/*.txte` | A lista de arquivos de cada pasta da biblioteca virtual (uma listagem por pasta) |
 | `biblioteca-virtual/inventario.tsv` | Uma linha por arquivo, com título, autor, eixo e gênero **revisados** — é aqui que se corrige um livro digital |
 | `biblioteca-virtual/RESUMO.md` | Relatório da última importação: o que entrou e o que falta conferir (gerado) |
@@ -89,6 +92,23 @@ Corrija a linha no inventário e rode `python tools/atualizar.py`. As colunas:
 
 O painel acompanha a correção: o livro é reconhecido pelo arquivo, então o que você já tiver anotado nele (leitura,
 nota) continua no lugar mesmo que o título mude.
+
+### Corrigir o título ou o autor de um livro da estante ou de uma recomendação
+
+1. Corrija a linha no catálogo.
+2. Acrescente uma linha a `catalogo/renomeados.tsv`, com as quatro colunas separadas por tabulação: título antigo,
+   autor antigo, título novo, autor novo — escritos como estavam e como ficaram no catálogo.
+3. `python tools/atualizar.py`.
+
+O passo 2 existe por causa do que fica guardado no navegador. O painel liga as suas anotações (leitura, nota, preço)
+a uma linha do catálogo pelo título e pelo autor; se um dos dois muda, a ligação se perde, e um livro que você já
+tinha anotado apareceria **duas vezes**: uma com o nome antigo e as anotações, outra com o nome novo e vazia. Com o
+nome antigo registrado, o painel reencontra o livro e só troca o nome. Além disso, a busca continua achando o livro
+pelo nome antigo, e a gaveta dele mostra o **título anterior**. Se o nome novo não bater com nenhuma linha do catálogo,
+`build_catalog.py` avisa (`AVISO: renomeados.tsv: …`).
+
+As linhas do arquivo não devem ser apagadas depois: alguém pode abrir o painel novo com dados guardados há muito
+tempo. Livros da biblioteca virtual não precisam disto — são reconhecidos pelo arquivo.
 
 ### Chegou um livro na estante
 
@@ -140,8 +160,8 @@ de exemplo são gerados a partir da data de hoje. Capturas e registros vão para
 
 | Script | Cobre |
 | --- | --- |
-| `importador` | Leitura das listagens, arquivo novo e ausente, casamento com o catálogo, seção 17, execução repetida sem mudanças |
-| `posse` | Físico × digital × nos dois: indicadores, gaveta, formulário, filtros, cartão no celular; **migração do que o painel anterior salvou** no navegador e de um backup exportado por ele (o painel antigo é tirado do histórico do Git) |
+| `importador` | Leitura das listagens, arquivo novo e ausente, casamento com o catálogo, seção 17, execução repetida sem mudanças; `src/catalog.json` em dia com o catálogo; `renomeados.tsv` |
+| `posse` | Físico × digital × nos dois: indicadores, gaveta, formulário, filtros, cartão no celular; **migração do que o painel anterior salvou** no navegador e de um backup exportado por ele; livro anotado no painel e depois corrigido no catálogo ou no inventário (os painéis antigos são tirados do histórico do Git) |
 | `func3` … `func8` | Cotações, novo livro, limpar/restaurar exemplos, exportar/importar, períodos, filtros, CSV, dados corrompidos |
 | `valores`, `resto` | Valores digitados; excluir livro; período invertido; importação com registros ilegíveis |
 | `limpo` | Painel só com o catálogo (sem exemplos): indicadores, legendas e estados vazios |
@@ -157,11 +177,17 @@ rode os três, confira os valores impressos nas linhas `FALHA` e atualize os lit
 
 ## O que ainda pede conferência
 
-Está tudo listado em `biblioteca-virtual/RESUMO.md`. Em resumo:
+A lista do que só o dono da biblioteca pode responder está em `ROTEIRO.md` (etapa 1); o detalhe por arquivo, em
+`biblioteca-virtual/RESUMO.md`. Em resumo:
 
-- **36 arquivos com `verificar`** no inventário: título ou autor deduzido com pouca segurança, ou casamento com o
-  catálogo por outra tradução (por exemplo, o arquivo "A Curva do Sonho" foi ligado a *O Torno do Céu*).
-- **25 livros sem autor** identificado.
+- **12 arquivos com `verificar`** no inventário (eram 36): o nome do arquivo não diz o autor, ou é vago demais para
+  identificar o livro sem abri-lo. **10 livros continuam sem autor** (eram 25).
+- **3 livros da estante** com `#verificar`: *Noite do Sul* (Érico Veríssimo), *A Arte de Envelhecer* (na prateleira
+  consta Irvin D. Yalom) e *Coraline* (HQ ou romance ilustrado?). E **3 recomendações** marcadas desde antes da
+  biblioteca virtual.
+- As ligações de um arquivo com um livro do catálogo de título diferente (outra tradução, um volume de série) foram
+  conferidas; estão listadas no `RESUMO.md`, em "Edições com título diferente do catálogo". Seis recomendações que
+  estavam com um título traduzido ao pé da letra passaram a ter o da edição brasileira (ver `catalogo/renomeados.tsv`).
 - **Quadrinhos:** as três listagens de HQs estão guardadas, mas não foram importadas em bloco; só *Coraline* e *Maus*
   têm linha no inventário.
 - **Subpastas sem listagem:** `Revistas` (dentro de `pasta livros`), `Didáticos` e `Psicologia Aplicada e

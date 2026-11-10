@@ -70,6 +70,7 @@ Estavam no catálogo como recomendação; continuam na seção de origem, agora 
 - Senhor das Moscas — William Golding (seção 1)
 - Stonehenge — Bernard Cornwell (seção 1)
 - A Cidade e a Cidade — China Miéville (seção 2)
+- A Curva do Sonho — Ursula K. Le Guin (seção 2)
 - A Invenção de Morel — Adolfo Bioy Casares (seção 2)
 - A Mão Esquerda da Escuridão — Ursula K. Le Guin (seção 2)
 - A Polícia da Memória — Yoko Ogawa (seção 2)
@@ -80,28 +81,27 @@ Estavam no catálogo como recomendação; continuam na seção de origem, agora 
 - Eu, Robô — Isaac Asimov (seção 2)
 - Fahrenheit 451 — Ray Bradbury (seção 2)
 - Flores para Algernon — Daniel Keyes (seção 2)
+- Floresta é o Nome do Mundo — Ursula K. Le Guin (seção 2)
 - Hyperion — Dan Simmons (seção 2)
 - Não Me Abandone Jamais — Kazuo Ishiguro (seção 2)
 - Neuromancer — William Gibson (seção 2)
 - Nós — Ievguêni Zamiátin (seção 2)
 - O Conto da Aia — Margaret Atwood (seção 2)
+- O Feiticeiro de Terramar (Ciclo Terramar, vol. 1) — Ursula K. Le Guin (seção 2)
 - O Fim da Infância — Arthur C. Clarke (seção 2)
-- O Nome do Mundo é Floresta — Ursula K. Le Guin (seção 2)
 - O Nome do Vento — Patrick Rothfuss (seção 2)
 - O Problema dos Três Corpos — Cixin Liu (seção 2)
-- O Torno do Céu — Ursula K. Le Guin (seção 2)
 - Os Despossuídos — Ursula K. Le Guin (seção 2)
 - Solaris — Stanisław Lem (seção 2)
 - Um Estranho numa Terra Estranha — Robert A. Heinlein (seção 2)
-- Um Mago de Terramar — Ursula K. Le Guin (seção 2)
 - A Divina Comédia — Dante Alighieri (seção 3)
 - A Insustentável Leveza do Ser — Milan Kundera (seção 3)
 - Dom Quixote — Miguel de Cervantes (seção 3)
 - Fausto — Johann W. von Goethe (seção 3)
+- O Desconsolado — Kazuo Ishiguro (seção 3)
 - O Estrangeiro — Albert Camus (seção 3)
 - O Idiota — Fiódor Dostoiévski (seção 3)
 - O Processo — Franz Kafka (seção 3)
-- Os Inconsoláveis — Kazuo Ishiguro (seção 3)
 - Os Vestígios do Dia — Kazuo Ishiguro (seção 3)
 - Crônica de uma Morte Anunciada — Gabriel García Márquez (seção 4)
 - Ficções — Jorge Luis Borges (seção 4)
@@ -119,7 +119,7 @@ Estavam no catálogo como recomendação; continuam na seção de origem, agora 
 - Pachinko — Min Jin Lee (seção 5)
 - Sobre os Ossos dos Mortos — Olga Tokarczuk (seção 5)
 - A Coluna de Fogo — Ken Follett (seção 6)
-- A Escolha da Vida — Noah Gordon (seção 6)
+- A Escolha da Dra. Cole — Noah Gordon (seção 6)
 - Azincourt — Bernard Cornwell (seção 6)
 - Crônicas de Artur, vols. 2 e 3 (O Inimigo de Deus · Excalibur) — Bernard Cornwell (seção 6)
 - Crônicas Saxônicas (começa em O Último Reino) — Bernard Cornwell (seção 6)
@@ -167,8 +167,8 @@ Estavam no catálogo como recomendação; continuam na seção de origem, agora 
 - Vida 3.0 — Max Tegmark (seção 13)
 - A Arte de Amar — Erich Fromm (seção 14)
 - As Armas da Persuasão — Robert Cialdini (seção 14)
+- O Enigma de Espinosa — Irvin D. Yalom (seção 14)
 - O Mal-Estar na Civilização — Sigmund Freud (seção 14)
-- O Problema Spinoza — Irvin D. Yalom (seção 14)
 - Rápido e Devagar: Duas Formas de Pensar — Daniel Kahneman (seção 14)
 - Bhagavad Gita — (tradição hindu) (seção 15)
 - Chakras: Centros Energéticos de Transformação — Harish Johari (seção 15)
@@ -182,7 +182,6 @@ Estavam no catálogo como recomendação; continuam na seção de origem, agora 
 O arquivo tem um título; a linha do catálogo, outro. Confira se é mesmo o mesmo livro (se não for, apague a coluna `catalogo` da linha no inventário).
 
 - “Trilogia Kingsbridge (box)” → catálogo: **A Coluna de Fogo**
-- “A Escolha da Dra. Cole” → catálogo: **A Escolha da Vida**
 - “Trilogia Comando Sul (box)” → catálogo: **Aniquilação (trilogia: Aniquilação · Autoridade · Aceitação)**
 - “Assim Falava Zaratustra” → catálogo: **Assim Falou Zaratustra**
 - “Cartas do Inferno” → catálogo: **Cartas de um Diabo a seu Aprendiz**
@@ -205,15 +204,12 @@ O arquivo tem um título; a linha do catálogo, outro. Confira se é mesmo o mes
 - “Terra em Chamas (Crônicas Saxônicas, vol. 5)” → catálogo: **Crônicas Saxônicas (começa em O Último Reino)**
 - “Trilogia Kingsbridge (box)” → catálogo: **Mundo sem Fim**
 - “Memórias do Subsolo” → catálogo: **Notas do Subsolo (Memórias do Subsolo)**
+- “O Feiticeiro e a Sombra (Ciclo Terramar, vol. 1)” → catálogo: **O Feiticeiro de Terramar (Ciclo Terramar, vol. 1)**
 - “O Lobo das Planícies (série Gêngis Khan, vol. 1)” → catálogo: **O Lobo das Planícies (série Gêngis Khan)**
 - “Os Ossos das Colinas (série Gêngis Khan, vol. 3)” → catálogo: **O Lobo das Planícies (série Gêngis Khan)**
 - “Os Senhores do Arco (série Gêngis Khan, vol. 2)” → catálogo: **O Lobo das Planícies (série Gêngis Khan)**
 - “O Mal-Estar na Cultura” → catálogo: **O Mal-Estar na Civilização**
-- “Floresta é o Nome do Mundo” → catálogo: **O Nome do Mundo é Floresta**
-- “O Enigma de Espinosa” → catálogo: **O Problema Spinoza**
-- “A Curva do Sonho” → catálogo: **O Torno do Céu**
 - “Xamã” → catálogo: **O Xamã**
-- “O Desconsolado” → catálogo: **Os Inconsoláveis**
 - “Trilogia Kingsbridge (box)” → catálogo: **Os Pilares da Terra**
 - “A Morte dos Reis (série Imperador, vol. 2)” → catálogo: **Os Portões de Roma (série Imperador)**
 - “Campo de Espadas (série Imperador, vol. 3)” → catálogo: **Os Portões de Roma (série Imperador)**
@@ -225,48 +221,24 @@ O arquivo tem um título; a linha do catálogo, outro. Confira se é mesmo o mes
 - “O Tigre de Sharpe (Série Sharpe)” → catálogo: **Série Sharpe**
 - “O Triunfo de Sharpe (Série Sharpe)” → catálogo: **Série Sharpe**
 - “Sharpe em Trafalgar (Série Sharpe)” → catálogo: **Série Sharpe**
-- “O Feiticeiro de Terramar (Ciclo Terramar, vol. 1)” → catálogo: **Um Mago de Terramar**
-- “O Feiticeiro e a Sombra (Ciclo Terramar, vol. 1)” → catálogo: **Um Mago de Terramar**
 - “Walden ou A Vida nos Bosques” → catálogo: **Walden**
 
 ## A verificar
 
 Título, autor ou identificação incertos (coluna `obs` = `verificar`). No catálogo levam `#verificar`.
 
-- 101 Técnicas da Terapia Cognitivo-Comportamental — sem autor · pasta `psico cognitivo comportamental`
-- A Consciência: Uma Viagem pelo Cérebro — sem autor · pasta `psicologia`
-- A Curva do Sonho — Ursula K. Le Guin · pasta `autoconhecimento e desenvolvimento pessoal`
-- A Curvatura da Banana: Quem Tem um Projeto de Nação para o Brasil? — sem autor · pasta `Sociedade e politica`
-- A Escolha da Dra. Cole — Noah Gordon · pasta `suspense e thriller`
-- A Jornada do Empreendedor: O Herói da Nossa Era — sem autor · pasta `tecnologia e informacao`
 - Análise e Projeto de Sistemas — sem autor · pasta `tecnologia e informacao`
-- Antarktos Ciclo — Edgar Allan Poe · pasta `Terror e horror`
-- As 100 Melhores Histórias da Bíblia — A.S. Franchini e Carmen Seganfredo · pasta `Religiao espiritualidade e mitologia`
-- Comando Vermelho — Carlos Amorim · pasta `Sociedade e politica`
-- Do Romantismo a Nietzsche — sem autor · pasta `Filosofia`
-- Einstein, Freud e Relações Internacionais — sem autor · pasta `ciencias`
+- Ciclo Antarktos (The Antarktos Cycle) — Robert M. Price (org.) · pasta `Terror e horror`
+- Einstein, Freud e Relações Internacionais: Guerra e Paz num Diálogo Interdisciplinar — Luis Henrique Beust · pasta `ciencias`
 - El Proceso de Envejecimiento — sem autor · pasta `psicologia`
 - Engenharia Social — sem autor · pasta `Sociedade e politica`
-- Frases Up: 250 Frases para Motivar e Iluminar o seu Dia — sem autor · pasta `autoconhecimento e desenvolvimento pessoal`
 - Introdução à Psicologia (6ª ed.) — sem autor · pasta `historia fundamentos e introducoes psico`
-- Introdução à Psicologia Forense — sem autor · pasta `psicologia`
-- Já Entendi: Como Aprender Mais e Melhor Estudando Sozinho — sem autor · pasta `autoconhecimento e desenvolvimento pessoal`
 - Linguagem e Cognição — sem autor · pasta `Filosofia`
-- Linguagem: Os Segredos da Sedução pela Força das Palavras — sem autor · pasta `autoconhecimento e desenvolvimento pessoal`
+- Linguagem: Os Segredos da Sedução pela Poderosa Força das Palavras — sem autor · pasta `autoconhecimento e desenvolvimento pessoal`
 - Manipulação — sem autor · pasta `autoconhecimento e desenvolvimento pessoal`
 - Manual do Xaveco: Como Conquistar uma Mulher — sem autor · pasta `autoconhecimento e desenvolvimento pessoal`
-- Marx: A Criação Destruidora — sem autor · pasta `Filosofia`
-- Neurociências Ilustrada — Claudia Krebs, Joanne Weinberg e Elizabeth Akesson · pasta `Neurociencias e psicologia biologica`
-- O Código da Atração — sem autor · pasta `autoconhecimento e desenvolvimento pessoal`
-- O Livro de Ouro das Revoluções: Movimentos Políticos que Mudaram o Mundo — Mark Almond · pasta `Sociedade e politica`
-- O Livro Urgente da Política Brasileira — sem autor · pasta `Sociedade e politica`
-- O Método Fácil para Largar a Pornografia — sem autor · pasta `autoconhecimento e desenvolvimento pessoal`
-- Pepe Mujica: Simplesmente Humano — Allan Percy · pasta `Sociedade e politica`
-- Persuasão, PNL e Hipnose Aplicadas à Sedução — sem autor · pasta `autoconhecimento e desenvolvimento pessoal`
 - Psicologia e Sociologia — sem autor · pasta `psicologia social e cultural`
-- Relações Internacionais: Perspectivas Francesas — Carlos R.S. Milani (org.) · pasta `Sociedade e politica`
 - Tesouros Medievais — sem autor · pasta `historia`
-- Umbanda de A a Z — sem autor · pasta `Religiao espiritualidade e mitologia`
 
 ## Itens que não são livros
 

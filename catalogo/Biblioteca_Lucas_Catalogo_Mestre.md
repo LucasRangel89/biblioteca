@@ -48,7 +48,7 @@ Formato das linhas: `Título | Autor | Tags`. As tags usam `#` (compatível com 
 | O Herói Discreto | Mario Vargas Llosa | #F #latam #contemporaneo #d2 #e2 #tenho-fisico |
 | Os Tambores Silenciosos | Josué Guimarães | #F #BR #RS #regional-gaucho #d2 #e2 #tenho-fisico |
 | Camilo Mortágua | Josué Guimarães | #F #BR #RS #regional-gaucho #d2 #e2 #tenho-fisico |
-| Cevando Mate | Glênio Fagundes | #BR #RS #regional-gaucho #verificar #d1 #e1 #tenho-fisico |
+| Cevando Mate | Glênio Fagundes | #NF #BR #RS #regional-gaucho #d1 #e1 #tenho-fisico |
 | Porto de Histórias | Moacyr Scliar | #F #BR #RS #regional-gaucho #d1 #e1 #tenho-fisico |
 | O Continente (vol. 1 de O Tempo e o Vento) | Erico Veríssimo | #F #romance-historico #BR #RS #regional-gaucho #classico #d2 #e3 #tenho-fisico |
 | Do Amor e Outros Demônios | Gabriel García Márquez | #F #latam #d2 #e1 #tenho-fisico |
@@ -71,13 +71,13 @@ Formato das linhas: `Título | Autor | Tags`. As tags usam `#` (compatível com 
 | A Peste | Albert Camus | #F #existencialismo #etica #classico #d2 #e2 #tenho-fisico |
 | O Xamã | Noah Gordon | #F #romance-historico #medicina #d1 #e3 #tenho-fisico #tenho-digital #rel-cornwell |
 | O Profeta | Khalil Gibran | #F #poesia #espiritualidade #classico #d1 #e1 #tenho-fisico |
-| Megalomania de Freud | Israel Rosenfield | #F #psicanalise #verificar #d2 #e1 #tenho-fisico |
+| Megalomania de Freud | Israel Rosenfield | #F #psicanalise #d2 #e1 #tenho-fisico |
 | Mentiras no Divã | Irvin D. Yalom | #F #psicologia #d1 #e2 #tenho-fisico #rel-yalom |
 | Mamãe e o Sentido da Vida | Irvin D. Yalom | #F #psicologia #existencialismo #d1 #e2 #tenho-fisico #rel-yalom |
 | Quando Nietzsche Chorou | Irvin D. Yalom | #F #psicologia #filosofia #d1 #e2 #tenho-fisico #rel-yalom |
 | O Homem e seus Símbolos | Carl G. Jung | #NF #psicologia #psicanalise #d2 #e2 #tenho-fisico #tenho-digital |
 | Inteligência Emocional | Daniel Goleman | #NF #psicologia #d1 #e2 #tenho-fisico #tenho-digital |
-| Investigações Cognitivas | Oliveira & Oliveira | #NF #psicologia #neurociencia #verificar #d2 #tenho-fisico |
+| Investigações Cognitivas | Marcos Barbosa de Oliveira e Marta Kohl de Oliveira (orgs.) | #NF #psicologia #neurociencia #d2 #e1 #tenho-fisico |
 | Desvendando os Segredos da Linguagem Corporal | Allan e Barbara Pease | #NF #psicologia #d1 #e2 #tenho-fisico #tenho-digital |
 | Por que os Homens Fazem Sexo e as Mulheres Fazem Amor? | Allan e Barbara Pease | #NF #psicologia #d1 #e2 #tenho-fisico |
 | Além do Bem e do Mal | Friedrich Nietzsche | #NF #filosofia #classico #d3 #e2 #tenho-fisico #tenho-digital |
@@ -115,7 +115,7 @@ Formato das linhas: `Título | Autor | Tags`. As tags usam `#` (compatível com 
 | O Plano Perfeito | Sidney Sheldon | #F #thriller #d1 #e2 #tenho-fisico |
 | Corpo | Carlos Drummond de Andrade | #poesia #BR #classico #d2 #e2 #tenho-fisico |
 | Invictus: Nelson Mandela e o Jogo que Uniu a África do Sul | John Carlin | #NF #historia #africa #politica #esporte #d1 #e2 #tenho-fisico |
-| 71 Segundos: O Jogo de uma Vida | Luiz Zini Pires | #NF #esporte #BR #verificar #d1 #e2 #tenho-fisico |
+| 71 Segundos: O Jogo de uma Vida | Luiz Zini Pires | #NF #esporte #BR #d1 #e1 #tenho-fisico |
 | A Imperatriz de Ferro | Jung Chang | #NF #biografia #historia #asia #d2 #e3 #tenho-fisico |
 | História da Riqueza no Brasil | Jorge Caldeira | #NF #historia #economia #BR #d2 #e3 #tenho-fisico |
 | Sérgio Cabral: O Homem que Queria ser Rei | Hudson Corrêa | #NF #biografia #politica #BR #d1 #e2 #tenho-fisico |
@@ -130,7 +130,7 @@ Formato das linhas: `Título | Autor | Tags`. As tags usam `#` (compatível com 
 | Psicopatologia | David H. Barlow e V. Mark Durand | #NF #psiquiatria #psicologia #didatico #d3 #e3 #tenho-fisico #tenho-digital |
 | História da Psicologia Moderna | Duane P. Schultz e Sydney E. Schultz | #NF #psicologia #historia #didatico #d3 #e3 #tenho-fisico #tenho-digital |
 | Teorias da Personalidade | Hall, Lindzey e Campbell | #NF #psicologia #didatico #d3 #e3 #tenho-fisico |
-| 148 Tecnologias e Ferramentas de Gestão | (autor não informado) | #NF #gestao #didatico #verificar #d2 #tenho-fisico |
+| Tecnologias e Ferramentas de Gestão (PLT 148) | Décio Henrique Franco e outros (orgs.) | #NF #gestao #didatico #d2 #tenho-fisico |
 
 ---
 
@@ -179,9 +179,9 @@ Formato das linhas: `Título | Autor | Tags`. As tags usam `#` (compatível com 
 | Solaris | Stanisław Lem | #F #ficcao-cientifica #consciencia #filosofia #classico #d2 #e2 #top #rel-imortais #tenho-digital |
 | A Mão Esquerda da Escuridão | Ursula K. Le Guin | #F #ficcao-cientifica #genero #antropologia #classico #d2 #e2 #rel-imortais #tenho-digital |
 | Os Despossuídos | Ursula K. Le Guin | #F #ficcao-cientifica #politica #utopia #classico #d2 #e2 #rel-imortais #tenho-digital |
-| O Nome do Mundo é Floresta | Ursula K. Le Guin | #F #ficcao-cientifica #colonialismo #ecologia #classico #d1 #e1 #rel-imortais #tenho-digital |
-| O Torno do Céu | Ursula K. Le Guin | #F #ficcao-cientifica #consciencia #classico #d2 #e1 #tenho-digital |
-| Um Mago de Terramar | Ursula K. Le Guin | #F #fantasia #classico #d1 #e1 #tenho-digital |
+| Floresta é o Nome do Mundo | Ursula K. Le Guin | #F #ficcao-cientifica #colonialismo #ecologia #classico #d1 #e1 #rel-imortais #tenho-digital |
+| A Curva do Sonho | Ursula K. Le Guin | #F #ficcao-cientifica #consciencia #classico #d2 #e1 #tenho-digital |
+| O Feiticeiro de Terramar (Ciclo Terramar, vol. 1) | Ursula K. Le Guin | #F #fantasia #classico #d1 #e1 #tenho-digital |
 | Despertar (Xenogênese) | Octavia E. Butler | #F #ficcao-cientifica #raca #d2 #e2 #rel-imortais |
 | A Parábola do Semeador | Octavia E. Butler | #F #distopia #ecologia #sem-pt #d2 #e2 #rel-imortais |
 | Kindred: Laços de Sangue | Octavia E. Butler | #F #raca #historia #d2 #e2 |
@@ -265,7 +265,7 @@ Formato das linhas: `Título | Autor | Tags`. As tags usam `#` (compatível com 
 | Pastoral Americana | Philip Roth | #F #contemporaneo #d2 #e2 |
 | Amada | Toni Morrison | #F #raca #memoria #d2 #e2 |
 | Os Vestígios do Dia | Kazuo Ishiguro | #F #memoria #d1 #e2 #tenho-digital |
-| Os Inconsoláveis | Kazuo Ishiguro | #F #memoria #d3 #e3 #tenho-digital |
+| O Desconsolado | Kazuo Ishiguro | #F #memoria #d3 #e3 #tenho-digital |
 | Stoner | John Williams | #F #d1 #e2 |
 | As Ondas | Virginia Woolf | #F #classico #d3 #e2 |
 | A Elegância do Ouriço | Muriel Barbery | #F #d1 #e2 |
@@ -371,7 +371,7 @@ Formato das linhas: `Título | Autor | Tags`. As tags usam `#` (compatível com 
 | Azincourt | Bernard Cornwell | #F #romance-historico #medieval #guerra #d1 #e2 #rel-cornwell #tenho-digital |
 | Série Sharpe | Bernard Cornwell | #F #romance-historico #guerra #d1 #e3 #rel-cornwell #tenho-digital |
 | O Último Judeu | Noah Gordon | #F #romance-historico #medieval #religiao #d1 #e3 #rel-cornwell |
-| A Escolha da Vida | Noah Gordon | #F #medicina #d1 #e3 #rel-cornwell #tenho-digital |
+| A Escolha da Dra. Cole | Noah Gordon | #F #medicina #d1 #e3 #rel-cornwell #tenho-digital |
 | O Nome da Rosa | Umberto Eco | #F #romance-historico #medieval #misterio #filosofia #d3 #e3 #top |
 | Baudolino | Umberto Eco | #F #romance-historico #medieval #d3 #e3 |
 | O Rei de Ferro (Os Reis Malditos) | Maurice Druon | #F #romance-historico #medieval #d2 #e3 |
@@ -714,7 +714,7 @@ Formato das linhas: `Título | Autor | Tags`. As tags usam `#` (compatível com 
 | The Worm at the Core | Solomon, Greenberg e Pyszczynski | #NF #psicologia #morte #sem-pt #d2 #e2 |
 | A Vida Examinada | Stephen Grosz | #NF #psicanalise #psicologia #d1 #e1 |
 | Olhando para o Sol | Irvin D. Yalom | #NF #psicologia #morte #existencialismo #d1 #e2 #rel-yalom |
-| O Problema Spinoza | Irvin D. Yalom | #F #filosofia #psicologia #d1 #e3 #rel-yalom #tenho-digital |
+| O Enigma de Espinosa | Irvin D. Yalom | #F #filosofia #psicologia #d1 #e3 #rel-yalom #tenho-digital |
 | A Cura de Schopenhauer | Irvin D. Yalom | #F #filosofia #psicologia #d1 #e2 #rel-yalom |
 | A Arte de Amar | Erich Fromm | #NF #psicologia #classico #d1 #e1 #rel-fromm #tenho-digital |
 | Flow | Mihaly Csikszentmihalyi | #NF #psicologia #d1 #e2 |
@@ -1139,7 +1139,6 @@ Livros da biblioteca virtual que não estavam nas seções anteriores, separados
 | A Paciente Silenciosa | Alex Michaelides | #F #thriller #tenho-digital |
 | A Última Casa da Rua Needless | Catriona Ward | #F #tenho-digital |
 | Agosto | Rubem Fonseca | #F #thriller #tenho-digital |
-| Antarktos Ciclo | Edgar Allan Poe | #F #horror #verificar #tenho-digital |
 | Antologia de Contos Extraordinários | Edgar Allan Poe | #F #contos #tenho-digital |
 | Antologia H.P. Lovecraft | H.P. Lovecraft | #F #horror #tenho-digital |
 | Biblioteca Lovecraft, vol. 1: O Chamado de Cthulhu e Outras Histórias | H.P. Lovecraft | #F #horror #tenho-digital |
@@ -1150,6 +1149,7 @@ Livros da biblioteca virtual que não estavam nas seções anteriores, separados
 | Casas Estranhas 2 | Uketsu | #F #tenho-digital |
 | Cego | Robin Cook | #F #thriller #tenho-digital |
 | Cérebro | Robin Cook | #F #thriller #tenho-digital |
+| Ciclo Antarktos (The Antarktos Cycle) | Robert M. Price (org.) | #F #horror #verificar #tenho-digital |
 | Colheita Macabra | Tess Gerritsen | #F #thriller #tenho-digital |
 | Com Sangue | Stephen King | #F #horror #tenho-digital |
 | Coma | Robin Cook | #F #thriller #tenho-digital |
@@ -1268,6 +1268,7 @@ Livros da biblioteca virtual que não estavam nas seções anteriores, separados
 | Como Estudar Filosofia: Guia Prático para Estudantes | Clare Saunders e outros | #NF #filosofia #tenho-digital |
 | Como Ler Lacan | Slavoj Žižek | #NF #filosofia #tenho-digital |
 | Comunicação e Análise do Discurso | Roseli Figaro | #NF #filosofia #tenho-digital |
+| Curso Livre Marx-Engels: A Criação Destruidora | José Paulo Netto (org.) | #NF #filosofia #tenho-digital |
 | Da Árvore ao Labirinto: Estudos Históricos sobre o Signo e a Interpretação | Umberto Eco | #NF #tenho-digital |
 | De Frente para o Sol: Como Superar o Terror da Morte | Irvin D. Yalom | #NF #filosofia #tenho-digital |
 | Derrida em 90 Minutos | Paul Strathern | #NF #introducao #filosofia #tenho-digital |
@@ -1277,7 +1278,7 @@ Livros da biblioteca virtual que não estavam nas seções anteriores, separados
 | Dez Erros Filosóficos | Mortimer J. Adler | #NF #filosofia #tenho-digital |
 | Dialética do Esclarecimento | Theodor W. Adorno e Max Horkheimer | #NF #filosofia #tenho-digital |
 | Discurso de Metafísica e Outros Textos | Gottfried Wilhelm Leibniz | #NF #tenho-digital |
-| Do Romantismo a Nietzsche | (autor não informado) | #NF #filosofia #verificar #tenho-digital |
+| Do Romantismo a Nietzsche: Rupturas e Transformações na Filosofia do Século XIX | Clademir Luís Araldi | #NF #filosofia #tenho-digital |
 | Dossiê Nietzsche | Daniel Rodrigues Aurélio | #NF #filosofia #tenho-digital |
 | Em Defesa das Causas Perdidas | Slavoj Žižek | #NF #filosofia #tenho-digital |
 | Ensaios sobre a Moralidade | Maria Clara Dias | #NF #filosofia #tenho-digital |
@@ -1343,7 +1344,6 @@ Livros da biblioteca virtual que não estavam nas seções anteriores, separados
 | Linguagem e Cognição | (autor não informado) | #NF #filosofia #verificar #tenho-digital |
 | Linguagem e Mente: Pensamentos Atuais sobre Antigos Problemas | Noam Chomsky | #NF #filosofia #tenho-digital |
 | Maquiavel em 90 Minutos | Paul Strathern | #NF #introducao #filosofia #tenho-digital |
-| Marx: A Criação Destruidora | (autor não informado) | #NF #filosofia #verificar #tenho-digital |
 | Marx em 90 Minutos | Paul Strathern | #NF #introducao #filosofia #tenho-digital |
 | Marxismo | Geoff Boucher | #NF #filosofia #tenho-digital |
 | Mente: Conceitos-Chave em Filosofia | Eric Matthews | #NF #tenho-digital |
@@ -1446,7 +1446,7 @@ Livros da biblioteca virtual que não estavam nas seções anteriores, separados
 | Neurociência da Mente e do Comportamento | Roberto Lent | #NF #neurociencia #tenho-digital |
 | Neurociência para Leigos | Frank Amthor | #NF #neurociencia #tenho-digital |
 | Neurociências: Desvendando o Sistema Nervoso | Mark F. Bear, Barry W. Connors e Michael A. Paradiso | #NF #neurociencia #tenho-digital |
-| Neurociências Ilustrada | Claudia Krebs, Joanne Weinberg e Elizabeth Akesson | #NF #neurociencia #verificar #tenho-digital |
+| Neurociências Ilustrada | Claudia Krebs, Joanne Weinberg e Elizabeth Akesson | #NF #neurociencia #tenho-digital |
 | Neurofisiologia | Rithiele Cristina de Oliveira | #NF #neurociencia #tenho-digital |
 | Neuropsicologia | Katia Dumard | #NF #neurociencia #tenho-digital |
 | Neuropsicologia: Aplicações Clínicas | Leandro F. Malloy-Diniz e outros (orgs.) | #NF #neurociencia #tenho-digital |
@@ -1467,7 +1467,7 @@ Livros da biblioteca virtual que não estavam nas seções anteriores, separados
 |---|---|---|
 | 17 Contradições e o Fim do Capitalismo | David Harvey | #NF #politica #tenho-digital |
 | A Arte da Quarentena para Principiantes | Christian Dunker | #NF #politica #tenho-digital |
-| A Curvatura da Banana: Quem Tem um Projeto de Nação para o Brasil? | (autor não informado) | #NF #politica #verificar #tenho-digital |
+| A Curvatura da Banana: Quem Tem um Projeto de Nação para o Brasil? | Marcos Costa | #NF #politica #tenho-digital |
 | A Descoberta do Inconsciente Social: Contribuição ao Redirecionamento da Psicanálise | Erich Fromm | #NF #politica #tenho-digital |
 | A Diplomacia na Construção do Brasil: 1750–2016 | Rubens Ricupero | #NF #politica #tenho-digital |
 | A Era da Ilusão: A Diplomacia Nuclear em Tempos Traiçoeiros | Mohamed ElBaradei | #NF #politica #tenho-digital |
@@ -1494,7 +1494,7 @@ Livros da biblioteca virtual que não estavam nas seções anteriores, separados
 | Cidades Rebeldes | Slavoj Žižek e outros | #NF #politica #tenho-digital |
 | Collected Papers, vol. 1: Technology, War and Fascism | Herbert Marcuse | #NF #politica #tenho-digital |
 | Colonialismo Digital: Por uma Crítica Hacker-Fanoniana | Deivison Faustino e Walter Lippold | #NF #politica #tenho-digital |
-| Comando Vermelho | Carlos Amorim | #NF #politica #verificar #tenho-digital |
+| Comando Vermelho | Carlos Amorim | #NF #politica #tenho-digital |
 | Como a Democracia Chega ao Fim | David Runciman | #NF #politica #tenho-digital |
 | Como as Democracias Morrem | Steven Levitsky e Daniel Ziblatt | #NF #politica #tenho-digital |
 | Como Esmagar o Fascismo | Leon Trotsky | #NF #politica #tenho-digital |
@@ -1553,9 +1553,9 @@ Livros da biblioteca virtual que não estavam nas seções anteriores, separados
 | O Grande Experimento | Marcel Novaes | #NF #politica #tenho-digital |
 | O Livro da Economia | Vários autores | #NF #introducao #tenho-digital |
 | O Livro da Política | Vários autores | #NF #introducao #tenho-digital |
-| O Livro de Ouro das Revoluções: Movimentos Políticos que Mudaram o Mundo | Mark Almond | #NF #politica #verificar #tenho-digital |
+| O Livro de Ouro das Revoluções: Movimentos Políticos que Mudaram o Mundo | Mark Almond | #NF #politica #tenho-digital |
 | O Livro dos Negócios | Vários autores | #NF #introducao #tenho-digital |
-| O Livro Urgente da Política Brasileira | (autor não informado) | #NF #politica #verificar #tenho-digital |
+| O Livro Urgente da Política Brasileira | Alessandro Nicoli de Mattos | #NF #politica #tenho-digital |
 | O Minotauro Global: A Verdadeira Origem da Crise Financeira e o Futuro da Economia Global | Yanis Varoufakis | #NF #politica #tenho-digital |
 | O Mundo em 2050: As Grandes Tendências Globais e o que Podemos Esperar do Futuro | Hamish McRae | #NF #politica #tenho-digital |
 | O Negócio do Jair | Juliana Dal Piva | #NF #politica #tenho-digital |
@@ -1571,7 +1571,7 @@ Livros da biblioteca virtual que não estavam nas seções anteriores, separados
 | Os Engenheiros do Caos | Giuliano da Empoli | #NF #politica #tenho-digital |
 | Os Líderes e as Massas: Escritos de 1921 a 1926 | Antonio Gramsci | #NF #politica #tenho-digital |
 | Partidos Políticos no Brasil (1945-2000) | Rogerio Augusto Schmitt | #NF #politica #tenho-digital |
-| Pepe Mujica: Simplesmente Humano | Allan Percy | #NF #politica #verificar #tenho-digital |
+| Pepe Mujica: Simplesmente Humano | Allan Percy | #NF #politica #tenho-digital |
 | Política: Conceitos-Chave em Filosofia | Iain Mackenzie | #NF #politica #tenho-digital |
 | Política: Nós Também Sabemos Fazer | Clóvis de Barros Filho | #NF #politica #tenho-digital |
 | Política: Para Não Ser Idiota | Mario Sergio Cortella e Renato Janine Ribeiro | #NF #politica #tenho-digital |
@@ -1587,7 +1587,7 @@ Livros da biblioteca virtual que não estavam nas seções anteriores, separados
 | Reflexões sobre a Revolução na França | Edmund Burke | #NF #politica #historia #tenho-digital |
 | Relações Internacionais do Mundo Árabe: Os Desafios para a Realização da Utopia Pan-Arabista | Silvia Regina Ferabolli | #NF #politica #tenho-digital |
 | Relações Internacionais: Olhares Cruzados | Corival Alves do Carmo e outros (orgs.) | #NF #politica #tenho-digital |
-| Relações Internacionais: Perspectivas Francesas | Carlos R.S. Milani (org.) | #NF #politica #verificar #tenho-digital |
+| Relações Internacionais: Perspectivas Francesas | Carlos R.S. Milani (org.) | #NF #politica #tenho-digital |
 | Relações Internacionais: Teoria e História | Demétrio Magnoli | #NF #politica #tenho-digital |
 | Simulacro e Poder: Uma Análise da Mídia | Marilena Chaui | #NF #politica #tenho-digital |
 | Tecnofeudalismo | Yanis Varoufakis | #NF #politica #tenho-digital |
@@ -1717,7 +1717,7 @@ Livros da biblioteca virtual que não estavam nas seções anteriores, separados
 | A Incrível Viagem das Plantas | Stefano Mancuso | #NF #ciencia #tenho-digital |
 | A Inteligência Artificial | Wilson Luiz Sanvito | #NF #ia #tecnologia #tenho-digital |
 | A Invenção da Natureza | Andrea Wulf | #NF #ciencia #tenho-digital |
-| A Jornada do Empreendedor: O Herói da Nossa Era | (autor não informado) | #NF #tecnologia #verificar #tenho-digital |
+| A Jornada do Empreendedor: O Herói da Nossa Era | Edson Marqueto Rigonatti, Laura Mello Constantini e Martino Bagini | #NF #tecnologia #tenho-digital |
 | A Magia da Realidade | Richard Dawkins | #NF #ciencia #fisica #tenho-digital |
 | A Música dos Números Primos | Marcus du Sautoy | #NF #ciencia #tenho-digital |
 | A Nova Era Tecnológica: Redes Sociais, Realidade Virtual e Inteligência Artificial | Caio Garrido | #NF #ia #tenho-digital |
@@ -1772,7 +1772,7 @@ Livros da biblioteca virtual que não estavam nas seções anteriores, separados
 | Diversidade da Vida | Edward O. Wilson | #NF #ciencia #tenho-digital |
 | Do Big Bang ao Universo Eterno | Mário Novello | #NF #ciencia #fisica #tenho-digital |
 | Einstein e a Relatividade em 90 Minutos | Paul Strathern | #NF #introducao #ciencia #tenho-digital |
-| Einstein, Freud e Relações Internacionais | (autor não informado) | #NF #ciencia #verificar #tenho-digital |
+| Einstein, Freud e Relações Internacionais: Guerra e Paz num Diálogo Interdisciplinar | Luis Henrique Beust | #NF #ciencia #verificar #tenho-digital |
 | Em Busca do Infinito: Uma História da Matemática dos Primeiros Números à Teoria do Caos | Ian Stewart | #NF #ciencia #fisica #tenho-digital |
 | Engenharia de Software | Ian Sommerville | #NF #tecnologia #tenho-digital |
 | Engenharia de Software | Roger S. Pressman e Bruce R. Maxim | #NF #tecnologia #tenho-digital |
@@ -1956,7 +1956,7 @@ Livros da biblioteca virtual que não estavam nas seções anteriores, separados
 | 100 Exercícios de Escrita Criativa, vol. 1: Iniciantes | Mário Falcão | #NF #autoconhecimento #tenho-digital |
 | 1001 Atividades para Fazer com suas Crianças | Carly Waller Krueger | #NF #autoconhecimento #tenho-digital |
 | 1001 Frases de Grandes Pensadores | Danilo E. Barba | #NF #autoconhecimento #tenho-digital |
-| 101 Técnicas da Terapia Cognitivo-Comportamental | (autor não informado) | #NF #psicologia #tcc #verificar #tenho-digital |
+| 101 Técnicas da Terapia Cognitivo-Comportamental | Jaquelini Conceição e Gabriela Bueno (orgs.) | #NF #psicologia #tcc #tenho-digital |
 | 12 Regras para a Vida: Um Antídoto para o Caos | Jordan B. Peterson | #NF #autoconhecimento #tenho-digital |
 | 365 Citações para Implementar em sua Vida | I.C. Robledo | #NF #autoconhecimento #tenho-digital |
 | 5 Lições de Storytelling | James McSill | #NF #autoconhecimento #tenho-digital |
@@ -1968,7 +1968,7 @@ Livros da biblioteca virtual que não estavam nas seções anteriores, separados
 | A Arte da Inteligência: Os Bastidores da CIA e do FBI | Henry A. Crumpton | #NF #autoconhecimento #tenho-digital |
 | A Arte da Sedução | Robert Greene | #NF #autoconhecimento #tenho-digital |
 | A Arte de Esquecer: Cérebro e Memória | Iván Izquierdo | #NF #psicologia #tenho-digital |
-| A Consciência: Uma Viagem pelo Cérebro | (autor não informado) | #NF #psicologia #verificar #tenho-digital |
+| A Consciência: Uma Viagem pelo Cérebro | Ronald Fiuza | #NF #psicologia #tenho-digital |
 | A Coragem de Não Agradar | Ichiro Kishimi e Fumitake Koga | #NF #autoconhecimento #tenho-digital |
 | A Cultura do Narcisismo | Christopher Lasch | #NF #psicologia #tenho-digital |
 | A Depressão como Mal-Estar Contemporâneo | Leandro A.T. Tavares | #NF #psicologia #tenho-digital |
@@ -2059,6 +2059,7 @@ Livros da biblioteca virtual que não estavam nas seções anteriores, separados
 | Cinema e Loucura: Conhecendo os Transtornos Mentais Através dos Filmes | J. Landeira-Fernandez e Elie Cheniaux | #NF #psicologia #tenho-digital |
 | Cinema, Imagem e Psicanálise | Tania Rivera | #NF #psicanalise #tenho-digital |
 | Clínica Humanista-Fenomenológica: Estudos em Psicoterapia e Psicopatologia Crítica | Virginia Moreira | #NF #psicologia #psicologia-humanista #tenho-digital |
+| Código da Atração | Eduardo Santorini | #NF #autoconhecimento #tenho-digital |
 | Comece pelo Porquê | Simon Sinek | #NF #autoconhecimento #tenho-digital |
 | Como Aumentar a Testosterona de Forma Natural | Editora Mente Livre | #NF #autoconhecimento #tenho-digital |
 | Como Convencer Alguém em 90 Segundos | Nicholas Boothman | #NF #introducao #autoconhecimento #tenho-digital |
@@ -2121,7 +2122,7 @@ Livros da biblioteca virtual que não estavam nas seções anteriores, separados
 | Evasivas Admiráveis | Theodore Dalrymple | #NF #psicologia #tenho-digital |
 | Fadas no Divã: Psicanálise nas Histórias Infantis | Diana Lichtenstein Corso e Mário Corso | #NF #psicanalise #tenho-digital |
 | Formas de Investigação Clínica em Psicologia | Walter Trinca | #NF #psicologia #psicopatologia #tenho-digital |
-| Frases Up: 250 Frases para Motivar e Iluminar o seu Dia | (autor não informado) | #NF #autoconhecimento #verificar #tenho-digital |
+| Frases Up: 250 Frases para Motivar e Iluminar o seu Dia | Vários autores | #NF #autoconhecimento #tenho-digital |
 | Freud, Criador da Psicanálise | Marco Antonio Coutinho Jorge e Nadiá Paulo Ferreira | #NF #psicanalise #tenho-digital |
 | Freud e a Cocaína: A História do Uso da Droga nos Primórdios da Psicanálise | David Cohen | #NF #tenho-digital |
 | Freud e a Filosofia | Joel Birman | #NF #psicanalise #tenho-digital |
@@ -2158,13 +2159,13 @@ Livros da biblioteca virtual que não estavam nas seções anteriores, separados
 | Introdução à Psicologia das Diferenças Individuais | Carmen Flores-Mendoza e Roberto Colom (orgs.) | #NF #psicologia #tenho-digital |
 | Introdução à Psicologia do Ser | Abraham Maslow | #NF #psicologia #tenho-digital |
 | Introdução à Psicologia Fenomenológica: A Nova Psicologia de Edmund Husserl | Tommy Akira Goto | #NF #psicologia #psicologia-humanista #tenho-digital |
-| Introdução à Psicologia Forense | (autor não informado) | #NF #psicologia #verificar #tenho-digital |
+| Introdução à Psicologia Forense | Paula Inez Cunha Gomide e Sérgio Said Staut Júnior (orgs.) | #NF #psicologia #tenho-digital |
 | Introdução à Psicologia Junguiana | Heráclito Pinheiro | #NF #psicologia #psicologia-analitica #tenho-digital |
 | Introdução à Topologia de Lacan | J.-D. Nasio | #NF #psicanalise #tenho-digital |
 | Introdução às Obras de Freud, Ferenczi, Groddeck, Klein, Winnicott, Dolto, Lacan | J.-D. Nasio (org.) | #NF #psicanalise #tenho-digital |
 | Introdução Clínica a Freud | Bruce Fink | #NF #tenho-digital |
 | Introdução Clínica à Psicanálise Lacaniana | Bruce Fink | #NF #psicanalise #tenho-digital |
-| Já Entendi: Como Aprender Mais e Melhor Estudando Sozinho | (autor não informado) | #NF #autoconhecimento #verificar #tenho-digital |
+| Já Entendi: Como Aprender Mais e Melhor Estudando Sozinho | Gladys Mariotto | #NF #autoconhecimento #tenho-digital |
 | Jean Piaget no Século XXI: Escritos de Epistemologia e Psicologia Genéticas | Adrián Oscar Dongo Montoya (org.) | #NF #psicologia #tenho-digital |
 | Jung e a Construção da Psicologia Moderna: O Sonho de uma Ciência | Sonu Shamdasani | #NF #psicologia #psicologia-analitica #tenho-digital |
 | Jung e o Tarô: Uma Jornada Arquetípica | Sallie Nichols | #NF #psicologia #psicologia-analitica #tenho-digital |
@@ -2177,7 +2178,7 @@ Livros da biblioteca virtual que não estavam nas seções anteriores, separados
 | Lições sobre os Sete Conceitos Cruciais da Psicanálise | J.-D. Nasio | #NF #psicanalise #tenho-digital |
 | Liderança: Seus Primeiros Passos para Ser o Líder | Frederico Aranha e Jefferson Lisboa Melo | #NF #autoconhecimento #tenho-digital |
 | Linguagem e Psicanálise | Leila Longo | #NF #psicanalise #tenho-digital |
-| Linguagem: Os Segredos da Sedução pela Força das Palavras | (autor não informado) | #NF #autoconhecimento #verificar #tenho-digital |
+| Linguagem: Os Segredos da Sedução pela Poderosa Força das Palavras | (autor não informado) | #NF #autoconhecimento #verificar #tenho-digital |
 | Mal-estar na Atualidade: A Psicanálise e as Novas Formas de Subjetivação | Joel Birman | #NF #psicanalise #tenho-digital |
 | Mal-estar, Sofrimento e Sintoma: Uma Psicopatologia do Brasil entre Muros | Christian Dunker | #NF #psicologia #tenho-digital |
 | Manipulação | (autor não informado) | #NF #autoconhecimento #verificar #tenho-digital |
@@ -2225,7 +2226,6 @@ Livros da biblioteca virtual que não estavam nas seções anteriores, separados
 | O Cérebro Leitor | Maryanne Wolf | #NF #psicologia #tenho-digital |
 | O Cérebro no Mundo Digital | Maryanne Wolf | #NF #psicologia #tenho-digital |
 | O Cérebro que Não Sabia de Nada | Dean Burnett | #NF #psicologia #tenho-digital |
-| O Código da Atração | (autor não informado) | #NF #autoconhecimento #verificar #tenho-digital |
 | O Código da Conquista | J.F. Rozza | #NF #autoconhecimento #tenho-digital |
 | O Código da Inteligência | Augusto Cury | #NF #autoconhecimento #tenho-digital |
 | O Comportamento Verbal | B.F. Skinner | #NF #psicologia #behaviorismo #tenho-digital |
@@ -2252,7 +2252,7 @@ Livros da biblioteca virtual que não estavam nas seções anteriores, separados
 | O Manto de Noé: Ensaio sobre a Paternidade | Philippe Julien | #NF #psicologia #tenho-digital |
 | O Mensageiro Milionário | Brendon Burchard | #NF #autoconhecimento #tenho-digital |
 | O Mentalista | Thorsten Havener | #NF #autoconhecimento #tenho-digital |
-| O Método Fácil para Largar a Pornografia | (autor não informado) | #NF #autoconhecimento #verificar #tenho-digital |
+| O Método Fácil para Largar a Pornografia | Hackauthor | #NF #autoconhecimento #tenho-digital |
 | O Mistério da Consciência | António Damásio | #NF #psicologia #tenho-digital |
 | O Mito da Liberdade | B.F. Skinner | #NF #psicologia #behaviorismo #tenho-digital |
 | O Nazista e o Psiquiatra | Jack El-Hai | #NF #psicologia #tenho-digital |
@@ -2304,7 +2304,7 @@ Livros da biblioteca virtual que não estavam nas seções anteriores, separados
 | Patologias do Social: Arqueologias do Sofrimento Psíquico | Vladimir Safatle, Nelson da Silva Junior e Christian Dunker (orgs.) | #NF #psicologia #psicologia-social #tenho-digital |
 | Pérolas para a Vida: 5.000 Citações | John Blanchard | #NF #autoconhecimento #tenho-digital |
 | Personalidade, Ideologia e Psicopatologia Crítica | Virginia Moreira e Tod Sloan | #NF #psicologia #psicopatologia #tenho-digital |
-| Persuasão, PNL e Hipnose Aplicadas à Sedução | (autor não informado) | #NF #autoconhecimento #verificar #tenho-digital |
+| Persuasão, PNL e Hipnose Aplicadas à Sedução | Rafael B. Correa | #NF #autoconhecimento #tenho-digital |
 | Perversão | Flávio Carvalho Ferraz | #NF #tenho-digital |
 | Piaget, Vygotsky, Wallon: Teorias Psicogenéticas em Discussão | Yves de La Taille, Marta Kohl de Oliveira e Heloysa Dantas | #NF #psicologia #tenho-digital |
 | Playbook: O Manual da Conquista | Barney Stinson | #NF #autoconhecimento #tenho-digital |
@@ -2438,7 +2438,7 @@ Livros da biblioteca virtual que não estavam nas seções anteriores, separados
 | A Força dos Mitos | Janer Cristaldo | #NF #religiao #tenho-digital |
 | A Nova Era | Roger Bottini Paranhos | #NF #religiao #tenho-digital |
 | A Semente de Mostarda | Osho | #NF #filosofia #religiao #tenho-digital |
-| As 100 Melhores Histórias da Bíblia | A.S. Franchini e Carmen Seganfredo | #NF #religiao #verificar #tenho-digital |
+| As 100 Melhores Histórias da Bíblia | A.S. Franchini e Carmen Seganfredo | #NF #religiao #tenho-digital |
 | As 100 Melhores Histórias da Mitologia | A.S. Franchini e Carmen Seganfredo | #NF #religiao #tenho-digital |
 | As 100 Melhores Lendas do Folclore Brasileiro | A.S. Franchini | #NF #religiao #tenho-digital |
 | As Grandes Histórias da Mitologia Greco-Romana | A.S. Franchini e Carmen Seganfredo | #NF #religiao #tenho-digital |
@@ -2495,7 +2495,7 @@ Livros da biblioteca virtual que não estavam nas seções anteriores, separados
 | Transurfing: Dirigindo sua Realidade | Vadim Zeland | #NF #tenho-digital |
 | Transurfing: Maçãs Caem ao Céu | Vadim Zeland | #NF #tenho-digital |
 | Umbanda Astrológica | Carlos Lima | #NF #religiao #tenho-digital |
-| Umbanda de A a Z | (autor não informado) | #NF #religiao #verificar #tenho-digital |
+| Umbanda de A a Z | Norberto Peixoto | #NF #religiao #tenho-digital |
 | Umbanda: Orixás e Entidades | Marcelo Alonso Morais | #NF #religiao #tenho-digital |
 | Umbanda, Religião Brasileira: Um Guia para Leigos e Iniciantes | Flávia Pinto | #NF #religiao #tenho-digital |
 | Umbandas: Uma História do Brasil | Luiz Antonio Simas | #NF #religiao #tenho-digital |
@@ -2538,3 +2538,4 @@ Livros da biblioteca virtual que não estavam nas seções anteriores, separados
 - **Combinações úteis:** `#top #d1` (prioridades fáceis) · `#tenho-fisico #d3` (os pesados que já estão na prateleira) · `#tenho-fisico #tenho-digital` (tenho nos dois formatos) · `#tenho-digital #psicanalise` (o que há de psicanálise na biblioteca virtual) · `#rel-imortais #F` (afins a Os Imortais) · `#BR #RS` (gaúchos) · `#sem-pt` (títulos para conferir edição) · `#verificar` (dados a confirmar).
 - **Observações de dados:** na prateleira, *Guerra e Paz* aparece com autoria de Dostoiévski, mas é de Tolstói; *Notas do Subsolo* é a tradução do mesmo livro conhecido como *Memórias do Subsolo*; *O Xamã* e *Xamã* são o mesmo livro; *A Ilha* tem dois títulos diferentes (Huxley e Benchley). Itens com `#verificar` precisam de conferência de autor, título ou edição.
 - **Biblioteca virtual:** a seção 17 é gerada; para corrigir um livro digital, edite a linha dele em `biblioteca-virtual/inventario.tsv` e rode `python tools/atualizar.py`. Quando o arquivo tem um título e o catálogo outro (edição ou tradução diferente), a ligação fica na coluna `catalogo` do inventário e aparece em `biblioteca-virtual/RESUMO.md`.
+- **Título ou autor corrigido:** ao corrigir o título ou o autor de uma linha das seções 0 a 16, registre o nome antigo em `catalogo/renomeados.tsv` (título antigo, autor antigo, título novo, autor novo). Assim o painel reencontra o livro, mantém o que já foi anotado nele e continua a achá-lo pelo nome antigo.
