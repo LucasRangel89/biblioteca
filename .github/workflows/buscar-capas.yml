@@ -19,10 +19,6 @@ on:
         description: Procurar de novo as capas que não foram achadas
         type: boolean
         default: false
-  # Provisório (rodada 5): a primeira busca roda no ramo de trabalho, antes de o serviço existir em `main`.
-  push:
-    branches: ['arena/8468f0f9-biblioteca']
-    paths: ['.github/workflows/buscar-capas.yml']
 
 permissions:
   contents: write   # gravar o catalogo/capas.tsv no ramo
