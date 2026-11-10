@@ -1,6 +1,7 @@
 """O importador da biblioteca virtual (tools/importar_digital.py), numa cópia temporária dos dados:
 repetir não muda nada; arquivo novo, arquivo ausente, marcador posto à mão, correção no inventário e --conferir;
-quadrinhos: subpasta de série, edição nova de série conhecida, série nova, adaptação com o título de um livro.
+quadrinhos: subpasta de série, edição nova de série conhecida, série nova, adaptação com o título de um livro,
+subpasta que é outra pasta com listagem própria.
 E a conversão do catálogo para o painel (tools/build_catalog.py): src/catalog.json em dia; nomes antigos das linhas
 corrigidas (catalogo/renomeados.tsv). Não precisa de navegador."""
 import contextlib, io, json, pathlib, shutil, sys, tempfile
@@ -101,6 +102,16 @@ hq = [r for r in inv if r['tipo'] == 'hq']
 series = [r for r in hq if r['formato'] == imp.FORMATO_PASTA]
 confere(len(series) > 50 and not any(imp.tem_obs(r, 'ausente') for r in hq), f'as subpastas de séries estão no inventário e nenhuma consta como ausente ({len(series)})')
 confere(all(r['genero'] == 'HQ' for r in hq) and all(imp.pasta_de_hq(r['pasta']) for r in series), 'toda linha de quadrinho tem gênero HQ; subpasta de série, só nas pastas de quadrinhos')
+# a subpasta "novas", de novashqs, não é uma série: é outra pasta, e a listagem dela chama-se novasHQSS
+bruto_novas = (tmp / 'listagens' / 'novashqs.txte').read_bytes()
+resumo = ler('RESUMO.md')
+fora = next((l for l in resumo.splitlines() if l.startswith(('- Subpasta sem listagem', '- Subpastas sem listagem'))), '')
+confere(b'\r\nnovas\r\n' in bruto_novas and not any(r['pasta'] == 'novashqs' and r['arquivo'] == 'novas' for r in inv)
+        and any(r['pasta'] == 'novasHQSS' for r in inv) and linha('novas') is None
+        and '`novas`, de `novashqs`, tem listagem própria, `novasHQSS`' in resumo and 'novas' not in fora and '`HQs/Mangás`' in fora,
+        'subpasta com listagem própria ("novas" = novasHQSS) não vira série nem consta como "sem listagem"; o resumo diz onde ela está')
+confere(imp.subpastas_listadas({'novashqs', 'novasHQSS'}) == {('novashqs', 'novas'): 'novasHQSS'} and imp.subpastas_listadas({'novashqs', 'HQs'}) == {},
+        'a regra só vale enquanto a listagem da subpasta existir')
 sem_linha = [o['t'] for (kt, ka), o in obras.items() if o['genero'] == 'HQ' and not any(imp.chave(x['t']) == kt and 'HQ' in x['tags'] for x in L)]
 confere(not sem_linha, 'cada quadrinho do inventário está numa linha #HQ do catálogo' + (f': {sem_linha[:5]}' if sem_linha else ''))
 nomes = {'Coda #03 [Ndrangheta & Yugifan].cbr': 'Coda', 'Earthdivers 004 (2023) (QI).cbz': 'Earthdivers', 'As.Eras.Perdidas.01(Ndrangheta&Yugifan).cbr': 'As Eras Perdidas',
@@ -147,6 +158,11 @@ confere(b'\r\nAkira\r\n' in bruto and linha('Akira') is not None, 'a série “A
 (tmp / 'listagens' / 'HQs.txte').write_bytes(bruto.replace(b'\r\nAkira\r\n', b'\r\n'))
 roda()
 confere(do_inv('Akira')['obs'] == 'ausente' and linha('Akira') is None and 'Nada mudou.' in roda(), 'subpasta que some da listagem fica "ausente" e a série sai do catálogo')
+(tmp / 'listagens' / 'novasHQSS.txte').rename(tmp / 'novasHQSS.guardada')
+roda()
+r = next((x for x in imp.ler_inventario(imp.INVENTARIO) if x['pasta'] == 'novashqs' and x['arquivo'] == 'novas'), None)
+confere(bool(r) and (r['formato'], r['tipo'], r['obs']) == ('pasta', 'hq', 'novo') and 'novashqs/novas' in ler('RESUMO.md'),
+        'sem a listagem da subpasta, "novas" volta ao inventário, marcada "novo": não some sem aviso')
 
 # 9 ▸ o que vai para o painel: src/catalog.json em dia, e o nome antigo das linhas corrigidas no catálogo
 confere(json_em_dia and not avisos_json, 'src/catalog.json está em dia com o catálogo e o inventário, sem avisos' + (': ' + ' | '.join(avisos_json) if avisos_json else ''))

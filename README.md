@@ -99,6 +99,10 @@ O caminho é o mesmo: listagem nova da pasta, `python tools/atualizar.py`. O que
   e o `genero` para F ou NF.
 - **Adaptação de um livro:** ponha "(em quadrinhos)" no título. Mesmo sem isso, um quadrinho nunca se liga a uma linha
   do catálogo que não tenha `#HQ`.
+- **Subpasta que é outra pasta, com listagem própria:** `novas`, dentro de `novashqs`, é a listagem `novasHQSS`
+  (informação do dono da biblioteca). Ela não vira série nem linha do inventário; o que há nela entra por essa
+  listagem. A relação está em `SUBPASTAS_LISTADAS`, no começo de `tools/importar_digital.py`; se a listagem da
+  subpasta for apagada, a subpasta volta a aparecer no inventário, marcada `novo`.
 
 ### Corrigir um livro digital
 
@@ -202,7 +206,7 @@ indicar. Só foram rodados no Chromium.
 
 | Script | Cobre |
 | --- | --- |
-| `importador` | Leitura das listagens, arquivo novo e ausente, casamento com o catálogo, seção 17, execução repetida sem mudanças; quadrinhos (subpasta de série, edição nova de série conhecida, série nova, adaptação com o título de um livro); `src/catalog.json` em dia com o catálogo; `renomeados.tsv` |
+| `importador` | Leitura das listagens, arquivo novo e ausente, casamento com o catálogo, seção 17, execução repetida sem mudanças; quadrinhos (subpasta de série, edição nova de série conhecida, série nova, adaptação com o título de um livro, subpasta com listagem própria); `src/catalog.json` em dia com o catálogo; `renomeados.tsv` |
 | `posse` | Físico × digital × nos dois: indicadores, gaveta, formulário, filtros, cartão no celular; quadrinhos (filtro "HQ", gaveta de uma série guardada em subpasta, busca pelo nome da subpasta, os cinco botões do filtro Tipo no celular); **migração do que o painel anterior salvou** no navegador e de um backup exportado por ele; livro anotado no painel e depois corrigido no catálogo ou no inventário (os painéis antigos são tirados do histórico do Git) |
 | `func3` … `func8` | Cotações, novo livro, limpar/restaurar exemplos, exportar/importar, períodos, filtros, CSV, dados corrompidos |
 | `valores`, `resto` | Valores digitados; excluir livro; período invertido; importação com registros ilegíveis |
@@ -235,10 +239,10 @@ A lista do que só o dono da biblioteca pode responder está em `ROTEIRO.md` (et
 - **Quadrinhos:** as três listagens de HQs foram importadas: 243 quadrinhos e 20 livros em prosa que estavam nas
   mesmas pastas. Onze deles levam `#verificar` (a lista está no `ROTEIRO.md`, etapa 2).
 - **O que ficou de fora dos quadrinhos:** as edições dentro das 104 pastas de séries (a listagem só traz o nome da
-  pasta); as subpastas `Mangás` (em `HQs`) e `novas` (em `novashqs`), que não têm listagem; quatro arquivos compactados
-  com o nome cortado (`BTN - Si______ra`, em três partes, e `Lo_____d - Mo_____no`); duas revistas *Heavy Metal*.
+  pasta); a subpasta `Mangás` (em `HQs`), que não tem listagem; quatro arquivos compactados com o nome cortado
+  (`BTN - Si______ra`, em três partes, e `Lo_____d - Mo_____no`); duas revistas *Heavy Metal*.
 - **Subpastas vazias** (informação do dono da biblioteca): `Revistas` (dentro de `pasta livros`), `Didáticos` e
   `Psicologia Aplicada e Popularização` (dentro de `psicologia`). Aparecem nas listagens como pastas; não há o que
   importar delas.
-- **Não são livros** (ficam só no inventário): 12 apostilas, 13 periódicos, 3 artigos e 9 outros (entre eles os quatro
-  arquivos compactados e as duas subpastas sem listagem).
+- **Não são livros** (ficam só no inventário): 12 apostilas, 13 periódicos, 3 artigos e 8 outros (entre eles os quatro
+  arquivos compactados e a subpasta sem listagem).

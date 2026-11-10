@@ -13,7 +13,7 @@ Este arquivo é atualizado ao fim de cada rodada. Para saber em que pé as coisa
 | --- | --- | --- |
 | 0 | Trazer a biblioteca virtual para o catálogo e para o painel | **Feita** (10/11/2026) |
 | 1 | Conferir o que foi importado | **Quase pronta** — falta só o que depende de você (lista abaixo) |
-| 2 | Decidir o que ficou de fora (quadrinhos, subpastas) | **Feita** (10/11/2026) — ficaram 13 perguntas para você (lista abaixo) |
+| 2 | Decidir o que ficou de fora (quadrinhos, subpastas) | **Feita** (10/11/2026) — ficaram 12 perguntas para você (lista abaixo) |
 | 3 | Trocar os dados de exemplo pelos seus | A fazer |
 | 4 | Classificar os livros digitais novos | A fazer |
 | 5 | Rotina à prova de erro | A fazer |
@@ -159,20 +159,22 @@ listagem e o que não é livro.
   (em quadrinhos)*. Ter a adaptação não marca o livro original como "tenho em digital".
 - **No painel:** o filtro **Tipo** ganhou o botão **HQ**; a ficha de um quadrinho mostra a subpasta em que as edições
   estão; a busca acha a série também pelo nome da subpasta.
+- **A listagem `novasHQSS` é a da subpasta `novas`**, que fica dentro de NovasHQs (resposta sua, em 10/11/2026). Essa
+  subpasta, portanto, já entrou inteira. Para atualizá-la, envie a listagem nova com o mesmo nome, `novasHQSS`.
 
 **O que continua de fora, e por quê:**
 
 | O quê | Por quê |
 | --- | --- |
 | As edições dentro das 104 pastas de séries | A listagem só traz o nome da pasta. O catálogo sabe que você tem *Akira*; não sabe quantos volumes |
-| Subpastas `Mangás` (dentro de HQs) e `novas` (dentro de NovasHQs) | Não têm listagem. Se quiser que entrem, rode o `gerador de nomes.bat` dentro de cada uma e envie |
+| Subpasta `Mangás` (dentro de HQs) | Não tem listagem. Se quiser que entre, rode o `gerador de nomes.bat` dentro dela e envie |
 | 4 arquivos compactados com o nome cortado: `BTN - Si______ra` (3 partes) e `Lo_____d - Mo_____no` | Não dá para saber o que são sem abrir |
 | 2 revistas *Heavy Metal* | São periódicos; ficam só no inventário, como as outras revistas |
 | `Revistas`, `Didáticos`, `Psicologia Aplicada e Popularização` | Estão vazias |
 | 12 apostilas, 13 periódicos e 3 artigos | Não são livros |
 
-**O que falta — e só você pode responder.** São onze obras que entraram com `#verificar` e mais duas dúvidas. Como
-na etapa 1, o que ficar sem resposta continua marcado e não atrapalha nada. As onze estão na pasta `HQs`.
+**O que falta — e só você pode responder.** São onze obras que entraram com `#verificar` e mais uma dúvida. Como na
+etapa 1, o que ficar sem resposta continua marcado e não atrapalha nada. As onze estão na pasta `HQs`.
 
 | No catálogo | A dúvida |
 | --- | --- |
@@ -188,8 +190,6 @@ na etapa 1, o que ficar sem resposta continua marcado e não atrapalha nada. As 
 | *Rashomon* (arquivo `Rashomon.rar`) | É a de Victor Santos? |
 | *Ruído* (arquivo `Ruído ( etc.) (Z-Library).epub`) | É o livro de Daniel Kahneman (*Ruído: Uma Falha no Julgamento Humano*) ou um quadrinho? Entrou como livro |
 
-- **A listagem `novasHQSS` é de qual pasta?** Ela não aparece dentro de nenhuma outra. Se for a subpasta `novas`, de
-  NovasHQs, então essa subpasta já entrou e não falta nada dela.
 - **Os quatro arquivos compactados de nome cortado:** se souber o que são, diga, que eles entram.
 
 **Pronta quando** cada pasta da biblioteca virtual estiver no catálogo ou tiver a decisão de ficar de fora anotada.

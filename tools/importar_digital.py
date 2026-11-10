@@ -18,7 +18,8 @@ O que faz (pode rodar quantas vezes quiser: se nada mudou, nenhum arquivo é alt
 
 Quadrinhos: nas pastas de HQ, cada subpasta guarda uma série, e também vira uma linha do inventário (formato "pasta").
 No catálogo a série é uma linha só, sejam quantas forem as edições: os arquivos soltos e a pasta de uma mesma série têm
-o mesmo título e o mesmo autor no inventário.
+o mesmo título e o mesmo autor no inventário. A exceção é a subpasta que não é uma série, e sim outra pasta da
+biblioteca, com a sua listagem (SUBPASTAS_LISTADAS): o que há nela entra por essa listagem.
 
 O inventário é a parte feita à mão: título, autor, eixo e gênero de cada arquivo foram revisados ali.
 Para corrigir um livro digital, corrija a linha dele no inventário e rode este script de novo.
@@ -37,7 +38,10 @@ RESUMO = DIGITAL / 'RESUMO.md'
 COLUNAS = ['pasta', 'arquivo', 'formato', 'tipo', 'titulo', 'autor', 'catalogo', 'eixo', 'genero', 'obs']
 TIPOS_CATALOGO = {'livro', 'hq'}                # o que entra no catálogo; apostila, periódico, artigo e outro ficam só no inventário
 EXT_ARQUIVO = {'epub', 'pdf', 'mobi', 'azw3', 'azw', 'djvu', 'doc', 'docx', 'rtf', 'txt', 'cbr', 'cbz', 'rar', 'zip', '7z'}
-PASTAS_HQ = {'HQs', 'novashqs', 'novasHQSS', 'novas'}   # pastas de quadrinhos ('novas' é subpasta de novashqs; ainda sem listagem)
+PASTAS_HQ = {'HQs', 'novashqs', 'novasHQSS', 'novas'}   # pastas de quadrinhos ('novas' é a subpasta de novashqs; a listagem dela chama-se novasHQSS)
+# Subpasta de uma pasta de quadrinhos que não é uma série: é outra pasta da biblioteca, e a listagem dela tem outro nome.
+# {(listagem da pasta, subpasta): listagem da subpasta} — quem sabe disso é o dono da biblioteca (resposta de 10/11/2026).
+SUBPASTAS_LISTADAS = {('novashqs', 'novas'): 'novasHQSS'}
 FORMATO_PASTA = 'pasta'                         # coluna `formato` de uma subpasta: nas pastas de quadrinhos, cada subpasta é uma série
 LISTAGEM_E_BAT = re.compile(r'\.(txte|bat)$', re.I)   # a própria listagem e o programa que a gera aparecem em toda pasta
 SEM_AUTOR = '(autor não informado)'
@@ -150,14 +154,25 @@ def _arquivos_de_listagem(pasta):
     return sorted(pathlib.Path(pasta).glob('*.txte'), key=lambda p: p.name.lower())
 
 
+def subpastas_listadas(nomes):
+    """Das subpastas de quadrinhos com listagem própria (SUBPASTAS_LISTADAS), as que valem para as listagens de nome
+    `nomes`: {(listagem, subpasta): listagem da subpasta}. Se a listagem da subpasta não estiver entre elas, a subpasta
+    volta a ser uma linha do inventário — fica à vista, em vez de sumir sem aviso."""
+    return {par: alvo for par, alvo in SUBPASTAS_LISTADAS.items() if par[0] in nomes and alvo in nomes}
+
+
 def ler_listagens(pasta=LISTAGENS):
     """{nome da listagem: [linhas]} — os arquivos de livro de cada pasta e, nas pastas de quadrinhos, também as subpastas
     (cada uma guarda uma série). Ficam de fora o .bat, as próprias listagens e os arquivos de outro tipo; nas pastas de
-    livros, também as subpastas (são outras pastas da biblioteca, cada uma com a sua listagem)."""
+    livros, também as subpastas (são outras pastas da biblioteca, cada uma com a sua listagem); nas de quadrinhos, a
+    subpasta que tem listagem própria (ver `subpastas_listadas`)."""
+    arquivos = _arquivos_de_listagem(pasta)
+    proprias = subpastas_listadas({arq.stem for arq in arquivos})
     out = collections.OrderedDict()
-    for arq in _arquivos_de_listagem(pasta):
+    for arq in arquivos:
         hq = pasta_de_hq(arq.stem)
-        out[arq.stem] = [l for l in _linhas_da_listagem(arq) if extensao(l) or (hq and not _outro_arquivo(l))]
+        out[arq.stem] = [l for l in _linhas_da_listagem(arq)
+                         if extensao(l) or (hq and not _outro_arquivo(l) and (arq.stem, l) not in proprias)]
     return out
 
 
@@ -507,7 +522,8 @@ def atualizar_catalogo(md, obras):
 
 # ───────────────────────── resumo ─────────────────────────
 def _subpasta_sem_listagem(r):
-    """Subpasta que não é uma série: é outra pasta de quadrinhos, ainda sem listagem (no inventário, tipo `outro`)."""
+    """Subpasta que não é uma série: é outra pasta de quadrinhos, ainda sem listagem (no inventário, tipo `outro`).
+    A que tem listagem própria nem chega ao inventário (ver `subpastas_listadas`)."""
     return r['formato'] == FORMATO_PASTA and r['tipo'] not in TIPOS_CATALOGO
 
 
@@ -547,6 +563,8 @@ def texto_resumo(inventario, obras, rel, listagens, sem_listagem, outros=()):
     fora = [(t, n) for t, n in sorted(por_tipo.items()) if t not in TIPOS_CATALOGO]
     if fora:
         T.append(f'- Ficaram só no inventário, fora do catálogo: {", ".join(f"{n} {t}" for t, n in fora)} (linhas do inventário).')
+    for (pai, sub), alvo in sorted(subpastas_listadas(set(listagens)).items()):
+        T.append(f'- A subpasta `{sub}`, de `{pai}`, tem listagem própria, `{alvo}`: o que há nela está contado nessa pasta.')
     hq17 = rel.get('secao17_hq', {})
     T += ['', '## Seção 17, por eixo', '', '| Eixo | Livros | Quadrinhos |', '|---|---|---|']
     T += [f'| {f"{e}. " + nomes.get(e, "") if e else "A classificar"} | {n - hq17.get(e, 0)} | {hq17.get(e, 0)} |'
@@ -587,8 +605,12 @@ def texto_resumo(inventario, obras, rel, listagens, sem_listagem, outros=()):
     subpastas = [r for r in ativos if _subpasta_sem_listagem(r)]
     if subpastas:
         nomes_sub = ', '.join('`%s/%s`' % (r['pasta'], r['arquivo']) for r in subpastas)
-        fora.append(f'- Subpastas sem listagem: {nomes_sub}. Só o nome delas é conhecido; o que há dentro não entrou. Para entrar, gere a '
-                    'listagem de cada uma e ponha em `biblioteca-virtual/listagens/`.')
+        if len(subpastas) == 1:
+            fora.append(f'- Subpasta sem listagem: {nomes_sub}. Só o nome dela é conhecido; o que há dentro não entrou. Para entrar, gere a '
+                        'listagem dela e ponha em `biblioteca-virtual/listagens/`.')
+        else:
+            fora.append(f'- Subpastas sem listagem: {nomes_sub}. Só o nome delas é conhecido; o que há dentro não entrou. Para entrar, gere a '
+                        'listagem de cada uma e ponha em `biblioteca-virtual/listagens/`.')
     if outros:
         fora.append('- Arquivos que não são livro nem quadrinho (ignorados): ' + ', '.join('`%s/%s`' % par for par in outros) + '.')
     if sem_listagem:

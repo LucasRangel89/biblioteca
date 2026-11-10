@@ -9,7 +9,8 @@ Gerado por `tools/importar_digital.py`. Não edite: é refeito a cada execução
 - **24** delas também estão na estante física (`#tenho-fisico #tenho-digital`).
 - **112** estavam entre as recomendações do catálogo e agora aparecem como `#tenho-digital`.
 - **1916** são novas no catálogo: entraram na seção 17.
-- Ficaram só no inventário, fora do catálogo: 12 apostila, 3 artigo, 9 outro, 13 periodico (linhas do inventário).
+- Ficaram só no inventário, fora do catálogo: 12 apostila, 3 artigo, 8 outro, 13 periodico (linhas do inventário).
+- A subpasta `novas`, de `novashqs`, tem listagem própria, `novasHQSS`: o que há nela está contado nessa pasta.
 
 ## Seção 17, por eixo
 
@@ -297,5 +298,5 @@ Apostilas, revistas, artigos e afins: ficam no inventário e não entram no cat�
 O que existe na biblioteca virtual e não foi conferido arquivo por arquivo.
 
 - Edições dentro das pastas de séries: de cada uma das 104 pastas de séries de quadrinhos só o nome é conhecido. Quantas e quais edições há dentro delas não foi conferido.
-- Subpastas sem listagem: `HQs/Mangás`, `novashqs/novas`. Só o nome delas é conhecido; o que há dentro não entrou. Para entrar, gere a listagem de cada uma e ponha em `biblioteca-virtual/listagens/`.
+- Subpasta sem listagem: `HQs/Mangás`. Só o nome dela é conhecido; o que há dentro não entrou. Para entrar, gere a listagem dela e ponha em `biblioteca-virtual/listagens/`.
 - Arquivos que não são livro nem quadrinho (ignorados): `novasHQSS/plano_policia_penal_rs.html`.
