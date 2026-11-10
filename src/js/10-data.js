@@ -94,7 +94,8 @@ function derivar(b) {
   b._e = T.includes('e1') ? 1 : T.includes('e2') ? 2 : T.includes('e3') ? 3 : 0;
   b._top = T.includes('top');
   const g = b._dg;                               // biblioteca virtual: [formatos, nº de arquivos, pastas, títulos das edições, ids dos arquivos]
-  b._busca = norm(b.t + ' ' + b.a + ' ' + T.map(rotTag).join(' ') + ' ' + T.join(' ') + ' ' + (EIXOS[b.eixo] ? EIXOS[b.eixo].n : '') + (g ? ' ' + g[0] + ' ' + (g[2] || []).join(' ') + ' ' + (g[3] || []).join(' ') : ''));
+  // a busca também acha o livro pelo nome que ele tinha antes de ser corrigido no catálogo
+  b._busca = norm(b.t + ' ' + b.a + ' ' + T.map(rotTag).join(' ') + ' ' + T.join(' ') + ' ' + (EIXOS[b.eixo] ? EIXOS[b.eixo].n : '') + (g ? ' ' + g[0] + ' ' + (g[2] || []).join(' ') + ' ' + (g[3] || []).join(' ') : '') + (b._ant ? ' ' + b._ant.map(n => n.join(' ')).join(' ') : ''));
   return b;
 }
 const virtual = b => b.fmt === 'ebook' || b.fmt === 'audio';
@@ -114,6 +115,7 @@ function novoLivro(o) {
     o: '',          // linha do catálogo de onde o livro veio (ver chaveCat); '' = criado no painel
     arq: '',        // identificadores dos arquivos da biblioteca virtual (reconhecem o livro se o título mudar no catálogo)
     _dg: null,      // dados da biblioteca virtual; vêm sempre do catálogo embutido e não são salvos
+    _ant: null,     // [[título, autor], …] que a linha do catálogo já teve (catalogo/renomeados.tsv); também vêm do catálogo e não são salvos
   }, o));
 }
 /* Registro vindo de fora (armazenamento do navegador ou arquivo de backup): devolve um livro íntegro, ou null.
@@ -163,7 +165,7 @@ function estadoBase(b) {
 const chaveCat = r => norm(r[0]) + '|' + norm(r[1]);
 const chaveLivro = b => norm(b.t) + '|' + norm(b.a);
 const tagsCat = r => r[2].split(' ').filter(Boolean);
-const doCatalogo = (r, id) => estadoBase(novoLivro({ id, t: r[0], a: r[1], tags: tagsCat(r), sec: r[3], eixo: r[4], obs: r[5] || '', o: chaveCat(r), arq: r[6] ? r[6][4] : '', _dg: r[6] || null }));
+const doCatalogo = (r, id) => estadoBase(novoLivro({ id, t: r[0], a: r[1], tags: tagsCat(r), sec: r[3], eixo: r[4], obs: r[5] || '', o: chaveCat(r), arq: r[6] ? r[6][4] : '', _dg: r[6] || null, _ant: r[7] || null }));
 function livrosDoCatalogo() { return CATALOGO.map((r, i) => doCatalogo(r, 'c' + i)); }
 
 /* os marcadores de posse acompanham a lista e o formato do livro (e o que o catálogo diz da biblioteca virtual) */
@@ -185,10 +187,11 @@ function marcarPosse(b) {
 const ASSINATURA = CATALOGO.length + '.' + hashStr(JSON.stringify(CATALOGO)).toString(36);
 function anexarDigital(livros) {
   const linhas = new Map(CATALOGO.map(r => [chaveCat(r), r]));
-  for (const b of livros) { const r = b.o ? linhas.get(b.o) : null; b._dg = (r && r[6]) || null; if (b._dg) b.arq = b._dg[4]; derivar(b); }
+  for (const b of livros) { const r = b.o ? linhas.get(b.o) : null; b._dg = (r && r[6]) || null; b._ant = (r && r[7]) || null; if (b._dg) b.arq = b._dg[4]; derivar(b); }
 }
 function conciliarCatalogo(livros) {
-  const linhas = CATALOGO.map((r, i) => ({ r, i, k: chaveCat(r), b: null })), soltos = new Set(livros);
+  // ant: os nomes que a linha já teve (título ou autor corrigido no catálogo — catalogo/renomeados.tsv)
+  const linhas = CATALOGO.map((r, i) => ({ r, i, k: chaveCat(r), ant: (r[7] || []).map(chaveCat), b: null })), soltos = new Set(livros);
   // liga cada linha do catálogo a um livro salvo, do vínculo mais forte para o mais fraco
   const passo = (chavesDoLivro, chavesDaLinha, serve) => {
     const indice = new Map();
@@ -198,8 +201,8 @@ function conciliarCatalogo(livros) {
       for (const k of chavesDaLinha(x)) { const b = indice.get(k); if (b && soltos.has(b) && (!serve || serve(b, x))) { x.b = b; soltos.delete(b); break; } }
     }
   };
-  passo(b => [b.o], x => [x.k]);                                                          // 1 ▸ a mesma linha de antes
-  passo(b => [chaveLivro(b)], x => [x.k]);                                                // 2 ▸ mesmo título e autor (dados antigos; livro criado no painel)
+  passo(b => [b.o], x => [x.k].concat(x.ant));                                            // 1 ▸ a mesma linha de antes (pelo nome atual ou por um antigo)
+  passo(b => [chaveLivro(b)], x => [x.k].concat(x.ant));                                  // 2 ▸ mesmo título e autor (dados antigos; livro criado no painel)
   passo(b => (b.arq ? b.arq.split(' ') : []), x => (x.r[6] && x.r[6][4] ? x.r[6][4].split(' ') : []));   // 3 ▸ mesmo arquivo: título corrigido no inventário
   passo(b => [b.u && !b.o ? b.id : ''], x => ['c' + x.i], (b, x) => b.sec === x.r[3]);    // 4 ▸ dados antigos: livro do catálogo renomeado no painel
   const usados = new Set(livros.map(b => b.id)), novos = [];
@@ -208,7 +211,7 @@ function conciliarCatalogo(livros) {
     if (!b) { let id = 'c' + x.i; while (usados.has(id)) id += 'n'; usados.add(id); novos.push(doCatalogo(r, id)); continue; }
     if (!b.u) Object.assign(b, { t: r[0], a: r[1], tags, sec: r[3], eixo: r[4], obs: r[5] || '' });
     else {
-      if (chaveLivro(b) === (b.o || x.k)) { b.t = r[0]; b.a = r[1]; }                     // título e autor não foram mexidos no painel: valem os do catálogo
+      if (chaveLivro(b) === (b.o || x.k) || x.ant.includes(chaveLivro(b))) { b.t = r[0]; b.a = r[1]; }   // título e autor não foram mexidos no painel: valem os do catálogo
       b.sec = r[3];
       if (!tags.includes('verificar')) defTag(b, 'verificar', false);
       const fis = tags.includes('tenho-fisico'), dig = tags.includes('tenho-digital'), tinhaEbook = b.col === 'acervo' && b.fmt === 'ebook';

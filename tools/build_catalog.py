@@ -1,20 +1,24 @@
 #!/usr/bin/env python3
 """Converte o Catálogo Mestre (.md) no JSON compacto embutido no painel.
 
-Saída: lista de [titulo, autor, "tags separadas por espaço", secao, eixo, observacao, digital]
+Saída: lista de [titulo, autor, "tags separadas por espaço", secao, eixo, observacao, digital, nomes antigos]
 - secao:   seção original do catálogo (0 = estante física, 17 = biblioteca virtual)
 - eixo:    eixo temático 1..16 (na estante, deduzido das tags — ver eixos.py; na seção 17, o número da subseção)
 - digital: só nos livros que estão na biblioteca virtual (biblioteca-virtual/inventario.tsv):
            ["formatos", nº de arquivos, [pastas], [títulos das edições, quando diferem do catálogo], "identificadores dos arquivos"]
            Os identificadores deixam o painel reconhecer o livro mesmo depois de o título ser corrigido no inventário.
+- nomes antigos: só nas linhas cujo título ou autor foi corrigido no catálogo (catalogo/renomeados.tsv):
+           [[título antigo, autor antigo], …]. Com eles o painel reencontra o que o usuário já tinha anotado naquele livro.
 """
-import hashlib, json, pathlib, sys
+import csv, hashlib, json, pathlib, sys, unicodedata
 sys.path.insert(0, str(pathlib.Path(__file__).parent))
 from parse_catalog import parse, SRC
 from eixos import eixo_estante
 import importar_digital as digital
 
-DEST = pathlib.Path(__file__).resolve().parent.parent / 'src' / 'catalog.json'
+RAIZ = pathlib.Path(__file__).resolve().parent.parent
+DEST = RAIZ / 'src' / 'catalog.json'
+RENOMEADOS = RAIZ / 'catalogo' / 'renomeados.tsv'
 AUTOR_FIX = {
     'Liev Tolstói (na prateleira consta Dostoiévski; autor correto: Tolstói)': ('Liev Tolstói', 'Na prateleira consta Dostoiévski; o autor correto é Tolstói.'),
     'Irvin D. Yalom (conforme a prateleira)': ('Irvin D. Yalom', 'Autoria conforme a prateleira — conferir.'),
@@ -69,6 +73,43 @@ def dados_digitais(books, avisos):
     return out
 
 
+def _norm(s):
+    """A normalização que o painel usa para comparar nomes (norm, em src/js/00-util.js): sem acentos e em minúsculas."""
+    return ''.join(c for c in unicodedata.normalize('NFD', s or '') if not '\u0300' <= c <= '\u036f').lower()
+
+
+def nomes_antigos(linhas, avisos):
+    """{posição da linha: [[título antigo, autor antigo], …]}, lido de catalogo/renomeados.tsv.
+
+    O painel liga o que o usuário anotou a uma linha do catálogo pelo título e pelo autor. Se um dos dois é corrigido no
+    catálogo, a ligação se perde (e o livro anotado apareceria duas vezes); o nome antigo, registrado no arquivo, a refaz.
+    Os livros da biblioteca virtual não precisam disto: são reconhecidos pelo arquivo."""
+    if not RENOMEADOS.exists():
+        return {}
+    campo = lambda r, k: (r.get(k) or '').strip()
+    autor = lambda a: AUTOR_FIX[a][0] if a in AUTOR_FIX else a
+    with open(RENOMEADOS, encoding='utf-8-sig', newline='') as f:
+        pares = [((campo(r, 'titulo_antigo'), autor(campo(r, 'autor_antigo'))), (campo(r, 'titulo_novo'), autor(campo(r, 'autor_novo'))))
+                 for r in csv.DictReader(f, delimiter='\t') if campo(r, 'titulo_antigo')]
+    chave = lambda nome: (_norm(nome[0]), _norm(nome[1]))
+    nome = lambda n: f'“{n[0]}” ({n[1] or "sem autor"})'
+    pos, para, out = {chave(l): i for i, l in enumerate(linhas)}, {chave(a): n for a, n in pares}, {}
+    for antigo, novo in pares:
+        vistos = {chave(antigo)}
+        while chave(novo) not in pos and chave(novo) in para and chave(novo) not in vistos:      # renomeado mais de uma vez: segue até o nome atual
+            vistos.add(chave(novo))
+            novo = para[chave(novo)]
+        if chave(novo) not in pos:
+            avisos.append(f'renomeados.tsv: não achei no catálogo a linha {nome(novo)}, para onde iria {nome(antigo)}')
+        elif chave(antigo) == chave(novo):
+            continue                                                       # só mudou acento ou maiúscula: para o painel é o mesmo nome
+        elif chave(antigo) in pos:
+            avisos.append(f'renomeados.tsv: {nome(antigo)} ainda é uma linha do catálogo; o nome antigo foi ignorado')
+        elif list(antigo) not in out.setdefault(pos[chave(novo)], []):
+            out[pos[chave(novo)]].append(list(antigo))
+    return {i: v for i, v in out.items() if v}
+
+
 def build(avisos=None):
     avisos = [] if avisos is None else avisos
     books = parse(SRC.read_text(encoding='utf-8'))
@@ -87,6 +128,8 @@ def build(avisos=None):
         if i in dig:
             linha.append(dig[i])
         out.append(linha)
+    for i, antigos in nomes_antigos(out, avisos).items():
+        out[i] += [None] * (7 - len(out[i])) + [antigos]          # a 7ª posição é a dos dados digitais (vazia quando não há)
     return out
 
 
