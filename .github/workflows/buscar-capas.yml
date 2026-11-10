@@ -6,6 +6,10 @@
 # O que este serviço muda: apenas o arquivo catalogo/capas.tsv, no ramo em que rodou. Ele não monta o painel nem
 # publica o site: isso continua sendo feito numa rodada, com os testes (tools/atualizar.py e tools/qa/tudo.py).
 # Nenhuma imagem entra no repositório — o painel mostra as capas direto da Open Library.
+#
+# No fim, o serviço pede 40 das capas guardadas para conferir se as imagens abrem de verdade. Se essa conferência
+# falhar (a Open Library fora do ar, por exemplo), a execução fica marcada em vermelho, mas o resultado da busca já
+# foi guardado no passo anterior.
 name: Buscar capas
 
 on:
@@ -58,3 +62,19 @@ jobs:
           git pull --rebase origin "$GITHUB_REF_NAME"
           git push origin "HEAD:$GITHUB_REF_NAME"
           python3 tools/capas.py --conferir >> "$GITHUB_STEP_SUMMARY"
+
+      - name: Conferir se as imagens abrem (amostra)
+        run: |
+          codigo=0
+          python3 tools/capas.py --testar 40 > "$RUNNER_TEMP/amostra.txt" || codigo=$?
+          cat "$RUNNER_TEMP/amostra.txt"
+          cat "$RUNNER_TEMP/amostra.txt" >> "$GITHUB_STEP_SUMMARY"
+          # O resultado também vira um aviso da execução: aparece na página dela, sem precisar abrir o registro.
+          resumo=$(grep -m1 '^Amostra das capas' "$RUNNER_TEMP/amostra.txt" || true)
+          ruins=$(grep 'não abriu' "$RUNNER_TEMP/amostra.txt" | head -n 5 | sed 's/^ *//' | paste -sd ';' - || true)
+          if [ "$codigo" = 0 ]; then
+            echo "::notice title=Capas::${resumo}"
+          else
+            echo "::error title=Capas::${resumo:-a conferência não chegou ao fim} ${ruins}"
+          fi
+          exit $codigo

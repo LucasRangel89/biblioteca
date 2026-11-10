@@ -6,6 +6,8 @@
     python tools/capas.py --minutos 50    # para de procurar depois de 50 minutos (o resto fica para a próxima vez)
     python tools/capas.py --refazer       # procura de novo as que não foram achadas
     python tools/capas.py --conferir      # só conta o que falta; não consulta nem grava
+    python tools/capas.py --arrumar       # não consulta: põe o arquivo na ordem do catálogo e tira capas repetidas
+    python tools/capas.py --testar 40     # pede 40 das capas guardadas e confere se abrem como imagem; não grava
 
 Precisa de internet (openlibrary.org). No GitHub, quem roda é .github/workflows/buscar-capas.yml.
 
@@ -227,6 +229,38 @@ def texto_capas(livros, capas):
     return s.getvalue()
 
 
+def sem_repetidas(capas):
+    """Uma capa não serve a dois livros. Quando a busca dá a mesma capa a mais de uma linha, é sinal de série: a edição
+    achada tem só o título principal ("Transurfing") e casou com cada volume ("Transurfing: Maçãs Caem ao Céu").
+    A capa fica nas linhas sem subtítulo e sai das que têm (que voltam a "nao-achei"). Capas postas à mão não entram
+    na conta. Devolve quantas capas saíram."""
+    por_capa = {}
+    for k, r in capas.items():
+        if r['capa'] and r['origem'] != 'manual':
+            por_capa.setdefault(r['capa'], []).append(k)
+    tiradas = 0
+    for ks in por_capa.values():
+        if len(ks) < 2:
+            continue
+        for k in ks:
+            r = capas[k]
+            if nt(principal(r['titulo'])) != nt(r['titulo']):
+                r['capa'], r['origem'] = '', 'nao-achei'
+                tiradas += 1
+    return tiradas
+
+
+def para_o_painel(livros, capas=None):
+    """Uma posição por livro do catálogo, na mesma ordem: o número da capa na Open Library, o endereço de uma imagem
+    posta à mão, ou 0 quando não há capa. É o que vai embutido no painel (src/capas.json)."""
+    capas = ler_capas() if capas is None else capas
+    out = []
+    for b in livros:
+        c = (capas.get((chave(b['t']), chave(b['a']))) or {}).get('capa', '').strip()
+        out.append(int(c) if c.isdigit() and int(c) > 0 else c if c.lower().startswith('https://') and not re.search(r'[\s"<>\\]', c) else 0)
+    return out
+
+
 def endereco(capa, tamanho='M'):
     """O endereço da imagem: número da Open Library ou, se posto à mão, o endereço completo."""
     capa = (capa or '').strip()
@@ -235,11 +269,47 @@ def endereco(capa, tamanho='M'):
     return capa if capa.lower().startswith('https://') else ''
 
 
+IMAGEM = (b'\xff\xd8\xff', b'\x89PNG\r\n\x1a\n', b'GIF8', b'RIFF')      # começo de um arquivo JPEG, PNG, GIF ou WebP
+INEXISTENTE = '999999999'                                                  # número que nenhuma capa tem
+
+
+def abrir_imagem(url):
+    """(código da resposta, tipo do conteúdo, primeiros bytes) de um endereço de imagem; código 0 se a rede falhar."""
+    req = urllib.request.Request(url, headers={'User-Agent': AGENTE, 'Accept': 'image/*'})
+    try:
+        with urllib.request.urlopen(req, timeout=40) as r:
+            return r.status, r.headers.get('Content-Type', ''), r.read(4096)
+    except urllib.error.HTTPError as e:
+        return e.code, '', b''
+    except (urllib.error.URLError, TimeoutError, ConnectionError) as e:
+        return 0, type(e).__name__, b''
+
+
+def testar(capas, quantas=40, abrir=abrir_imagem, pausa=0.3):
+    """Confere, por amostragem, se as capas guardadas abrem: pede `quantas` delas (espalhadas pelo arquivo) no mesmo
+    endereço que o painel usa e vê se a resposta é mesmo uma imagem — e não o quadradinho em branco que a Open Library
+    manda quando não tem a capa. Pede também uma capa que não existe: a resposta tem de ser "não encontrada" (404),
+    porque é com isso que o painel conta para desenhar a inicial do título no lugar da imagem.
+    Devolve (quantas abriram, quantas foram pedidas, as que não abriram, a inexistente deu 404?)."""
+    numeros = [r['capa'] for r in capas.values() if r['capa'].isdigit()]
+    quantas = max(0, min(quantas, len(numeros)))
+    amostra = [numeros[i * len(numeros) // quantas] for i in range(quantas)]
+    ruins = []
+    for n in amostra:
+        codigo, tipo, comeco = abrir(endereco(n) + '?default=false')
+        if not (codigo == 200 and comeco.startswith(IMAGEM) and len(comeco) >= 1000):
+            ruins.append((n, codigo, tipo if codigo != 200 else f'{tipo}, {len(comeco)} bytes'))
+        if pausa:
+            time.sleep(pausa)
+    codigo, _, _ = abrir(endereco(INEXISTENTE) + '?default=false')
+    return len(amostra) - len(ruins), len(amostra), ruins, codigo == 404
+
+
 def main(argv):
     limite_n = int(argv[argv.index('--limite') + 1]) if '--limite' in argv else None
     pausa = float(argv[argv.index('--pausa') + 1]) if '--pausa' in argv else 0.4
     prazo = time.time() + 60 * float(argv[argv.index('--minutos') + 1]) if '--minutos' in argv else None
-    conferir, refazer = '--conferir' in argv, '--refazer' in argv
+    conferir, refazer, arrumar = '--conferir' in argv, '--refazer' in argv, '--arrumar' in argv
     for saida in (sys.stdout, sys.stderr):
         try: saida.reconfigure(encoding='utf-8', errors='replace')
         except Exception: pass
@@ -255,20 +325,42 @@ def main(argv):
     print(f'Catálogo: {len(livros)} livros · {sum(1 for r in capas.values() if r["capa"])} com capa · {len(falta)} a procurar')
     if conferir:
         return 0
+    if '--testar' in argv:
+        i = argv.index('--testar')
+        quantas = int(argv[i + 1]) if i + 1 < len(argv) and argv[i + 1].isdigit() else 40
+        boas, pedidas, ruins, falta_ok = testar(capas, quantas, abrir_imagem, pausa if '--pausa' in argv else 0.3)
+        print(f'Amostra das capas: {boas} de {pedidas} abriram como imagem · capa que não existe responde "não encontrada": {"sim" if falta_ok else "NÃO"}')
+        for n, codigo, tipo in ruins[:10]:
+            print(f'   não abriu: capa {n} — resposta {codigo or "nenhuma"} {tipo}'.rstrip())
+        return 0 if pedidas and boas >= 0.9 * pedidas and falta_ok else 1
+    if arrumar:
+        tiradas = sem_repetidas(capas)
+        with open(CAPAS, 'w', encoding='utf-8', newline='\n') as f:
+            f.write(texto_capas(livros, capas))
+        print(f'Arquivo arrumado: {tiradas} capa(s) repetida(s) retirada(s).')
+        return 0
     if limite_n is not None:
         falta = falta[:limite_n]
     lim, feitos, adiados, falhas, t0 = Limite(pausa), 0, 0, [], time.time()
 
-    estado = {'desistiu': False}
+    estado = {'desistiu': False, 'tentados': 0, 'falhos': 0}
+    trava = threading.Lock()
 
     def um(item):
         k, b = item
         if estado['desistiu'] or (prazo and time.time() > prazo):
-            return k, b, None, ''                                       # acabou o tempo: fica para a próxima execução
+            return k, b, None, ''                                       # acabou o tempo (ou a rede não responde): fica para a próxima execução
         try:
-            return k, b, procurar(b['t'], b['a'], 'HQ' in b['tags'], lim), None
+            res, erro = procurar(b['t'], b['a'], 'HQ' in b['tags'], lim), None
         except Exception as e:                                          # rede fora, limite de consultas…
-            return k, b, None, f'{type(e).__name__}: {e}'
+            res, erro = None, f'{type(e).__name__}: {e}'
+        with trava:
+            estado['tentados'] += 1
+            estado['falhos'] += 1 if erro else 0
+            if estado['tentados'] >= 30 and estado['falhos'] == estado['tentados'] and not estado['desistiu']:
+                estado['desistiu'] = True                               # nada responde: não adianta insistir
+                print('As 30 primeiras consultas falharam; parei de procurar.', flush=True)
+        return k, b, res, erro
 
     def gravar():
         with open(CAPAS, 'w', encoding='utf-8', newline='\n') as f:
@@ -283,18 +375,18 @@ def main(argv):
                 falhas.append((b['t'], erro))
             else:
                 capas[k] = {'titulo': b['t'], 'autor': b['a'], 'capa': res[0], 'origem': res[1]}
-            if feitos >= 30 and len(falhas) == feitos and not estado['desistiu']:
-                estado['desistiu'] = True                               # nada responde: não adianta insistir
-                print('As 30 primeiras consultas falharam; parei de procurar.', flush=True)
             if feitos % 100 == 0 and not adiados:
                 gravar()
                 print(f'  {feitos}/{len(falta)} · {time.time() - t0:.0f}s · {len(falhas)} falha(s)', flush=True)
+    tiradas = sem_repetidas(capas)
     gravar()
+    if tiradas:
+        print(f'{tiradas} capa(s) retirada(s): a mesma imagem tinha sido dada a mais de um livro (volumes de uma série).')
     cont = {}
     for r in capas.values():
         cont[r['origem']] = cont.get(r['origem'], 0) + 1
     print('Resultado: ' + ' · '.join(f'{n} {o}' for o, n in sorted(cont.items())) + f' · {len(falhas)} consulta(s) falharam'
-          + (f' · {adiados} ficaram para a próxima execução (acabou o tempo)' if adiados else ''))
+          + (f' · {adiados} ficaram para a próxima execução ({"a Open Library não respondeu" if estado["desistiu"] else "acabou o tempo"})' if adiados else ''))
     for t, e in falhas[:10]:
         print(f'   falhou: {t} — {e}')
     return 1 if estado['desistiu'] else 0
