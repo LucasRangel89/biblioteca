@@ -1,6 +1,8 @@
 /* ───────────────────────── tabela ordenável e filtrável ───────────────────────── */
 const numCsv = v => (v == null || isNaN(v) ? '' : String(Math.round(v * 100) / 100).replace('.', ','));
 const mudo = '<span class="mudo">—</span>';
+// formato de um livro; no acervo, os dois ícones quando há o livro na estante e na biblioteca virtual
+const fmtHtml = (b, t = 14) => { const fs = b.col === 'acervo' ? formatosDe(b) : b.fmt ? [b.fmt] : []; return fs.length ? `<span class="fmt">${fs.map(f => icone(ICONE_FMT[f] || 'livro', t)).join('')}${rotuloFmt(b)}</span>` : mudo; };
 // a estrela de prioridade nunca fica sozinha em uma linha: anda junto com a última palavra do título
 function tituloTop(b) {
   if (!b._top) return esc(b.t);
@@ -18,17 +20,17 @@ const COLS = {
   lista: { n: 'Lista', ord: b => ORD_COL[b.col], csv: b => COLECOES[b.col].n, html: b => `<span class="pill col-${b.col}">${COLECOES[b.col].n}</span>` },
   eixo: { n: 'Eixo', cls: 'c-eixo', ord: b => b.eixo, csv: b => (EIXOS[b.eixo] ? EIXOS[b.eixo].n : ''), html: b => (EIXOS[b.eixo] ? esc(EIXOS[b.eixo].n) : mudo) },
   tipo: { n: 'Tipo', ord: b => TIPOS[b._tipo].n, csv: b => TIPOS[b._tipo].n, html: b => TIPOS[b._tipo].n },
-  fmt: { n: 'Formato', ord: b => (b.fmt ? FORMATOS[b.fmt].n : ''), csv: b => (b.fmt ? FORMATOS[b.fmt].n : ''), html: b => (b.fmt ? `<span class="fmt">${icone(ICONE_FMT[b.fmt], 14)}${FORMATOS[b.fmt].n}</span>` : mudo) },
+  fmt: { n: 'Formato', ord: b => rotuloFmt(b), csv: b => rotuloFmt(b), html: b => fmtHtml(b) },
   dif: { n: 'Dificuldade', ord: b => b._d || null, csv: b => (b._d ? NIVEIS[b._d].n : ''), html: b => (b._d ? `${pontos(b._d)}<span class="pt-r">${NIVEIS[b._d].n}</span>` : mudo) },
   ext: { n: 'Extensão', ord: b => b._e || null, csv: b => (b._e ? EXTENSOES[b._e].n : ''), html: b => (b._e ? `${pontos(b._e)}<span class="pt-r">${EXTENSOES[b._e].n}</span>` : mudo) },
   folego: { n: 'Dificuldade', ord: b => (b._d ? b._d * 10 + b._e : null), csv: b => (b._d ? NIVEIS[b._d].n : ''), dica: 'Dificuldade e extensão da leitura',
     html: b => (b._d || b._e ? `${b._d ? pontos(b._d) + '<span class="pt-r">' + NIVEIS[b._d].n + '</span>' : mudo}<span class="sub">${b._e ? 'extensão ' + EXTENSOES[b._e].n.toLowerCase() : 'extensão não informada'}</span>` : mudo) },
   extCsv: { n: 'Extensão', oculto: true, csv: b => (b._e ? EXTENSOES[b._e].n : '') },
-  data: { n: 'Data', num: true, ord: b => dataRef(b), csv: b => iso(dataRef(b)), html: b => (dataRef(b) == null ? mudo : fData(dataRef(b))), dica: 'Aquisição (acervo) ou inclusão na lista' },
-  adq: { n: 'Aquisição', num: true, dica: 'Data em que o livro entrou no acervo', ord: b => b.adq, csv: b => iso(b.adq), html: b => (b.adq == null ? mudo : fData(b.adq)) },
+  data: { n: 'Data', num: true, ord: b => dataDe(b), csv: b => iso(dataDe(b)), html: b => (dataDe(b) == null ? mudo : fData(dataDe(b))), dica: 'Aquisição (acervo) ou inclusão na lista' },
+  adq: { n: 'Aquisição', num: true, dica: 'Data em que o livro entrou no acervo', ord: b => adqDe(b), csv: b => iso(adqDe(b)), html: b => (adqDe(b) == null ? mudo : fData(adqDe(b))) },
   add: { n: 'Inclusão', num: true, dica: 'Data em que o livro entrou na lista', ord: b => b.add, csv: b => iso(b.add), html: b => (b.add == null ? mudo : fData(b.add)) },
-  origem: { n: 'Origem', ord: b => b.loja || '', csv: b => b.loja || '', html: b => (b.loja ? esc(b.loja) + (b.cond === 'usado' ? '<span class="sub">usado</span>' : '') : mudo) },
-  pago: { n: 'Pago', num: true, ord: b => b.pago, csv: b => numCsv(b.pago), html: b => (b.pago == null ? mudo : b.pago === 0 ? `<span class="mudo">${b.cond === 'presente' ? 'presente' : 'gratuito'}</span>` : fBRL(b.pago)) },
+  origem: { n: 'Origem', ord: b => lojaDe(b) || '', csv: b => lojaDe(b) || '', html: b => (lojaDe(b) ? esc(b.loja) + (b.cond === 'usado' ? '<span class="sub">usado</span>' : '') : mudo) },
+  pago: { n: 'Pago', num: true, ord: b => pagoDe(b), csv: b => numCsv(pagoDe(b)), html: b => (pagoDe(b) == null ? mudo : pagoDe(b) === 0 ? `<span class="mudo">${b.cond === 'presente' ? 'presente' : 'gratuito'}</span>` : fBRL(b.pago)) },
   leit: { n: 'Leitura', ord: b => ORD_LEIT[b.leit], csv: b => (b.leit ? LEITURAS[b.leit].n : ''),
     html: b => (!b.leit ? mudo : `<span class="pill leit-${b.leit}">${LEITURAS[b.leit].n}${b.leit === 'lendo' || b.leit === 'aband' ? ` · ${b.prog || 0}%` : ''}</span>${b.leit === 'lido' && b.lidoEm != null ? `<span class="sub">${fData(b.lidoEm)}</span>` : ''}`) },
   nota: { n: 'Nota', ord: b => b.nota || null, csv: b => b.nota || '', html: b => (b.nota ? estrelas(b.nota) : mudo) },
@@ -58,8 +60,8 @@ const COLS = {
   spark: { n: 'Tendência', cls: 'c-spark', html: (b, c) => { const r = c.px(b).res; return r ? spark(amostra(r.serie, r.de, r.ate, 24), { w: 84, h: 26, cor: SITUACOES[c.px(b).sit].cor, area: false }) : mudo; } },
   sit: { n: 'Situação', ord: (b, c) => ORD_SIT[c.px(b).sit], csv: (b, c) => SITUACOES[c.px(b).sit].n, html: (b, c) => badgeSit(c.px(b).sit) },
   ult: { n: 'Atualizado', num: true, dica: 'Data da última cotação registrada', ord: b => ultCotacao(b), csv: b => iso(ultCotacao(b)), html: (b, c) => { const u = ultCotacao(b); if (u == null) return mudo; const n = c.T - u; return `${fData(u)}<span class="sub">${n <= 0 ? 'hoje' : n === 1 ? 'ontem' : 'há ' + plural(n, 'dia', 'dias')}</span>`; } },
-  valor: { n: 'Valor', num: true, ord: (b, c) => (b.col === 'acervo' ? b.pago : c.px(b).hoje ? c.px(b).hoje.p : null), csv: (b, c) => numCsv(b.col === 'acervo' ? b.pago : c.px(b).hoje ? c.px(b).hoje.p : null), dica: 'Valor pago (acervo) ou melhor preço de hoje (itens acompanhados)',
-    html: (b, c) => { if (b.col === 'acervo') return b.pago == null ? mudo : b.pago === 0 ? `<span class="mudo">${b.cond === 'presente' ? 'presente' : 'gratuito'}</span>` : `${fBRL(b.pago)}<span class="sub">pago</span>`; const h = c.px(b).hoje; return h ? `${fBRL(h.p)}<span class="sub">melhor preço</span>` : mudo; } },
+  valor: { n: 'Valor', num: true, ord: (b, c) => (b.col === 'acervo' ? pagoDe(b) : c.px(b).hoje ? c.px(b).hoje.p : null), csv: (b, c) => numCsv(b.col === 'acervo' ? pagoDe(b) : c.px(b).hoje ? c.px(b).hoje.p : null), dica: 'Valor pago (acervo) ou melhor preço de hoje (itens acompanhados)',
+    html: (b, c) => { if (b.col === 'acervo') return pagoDe(b) == null ? mudo : pagoDe(b) === 0 ? `<span class="mudo">${b.cond === 'presente' ? 'presente' : 'gratuito'}</span>` : `${fBRL(b.pago)}<span class="sub">pago</span>`; const h = c.px(b).hoje; return h ? `${fBRL(h.p)}<span class="sub">melhor preço</span>` : mudo; } },
 };
 
 /* red: colunas de que a tabela abre mão quando aperta (2 sai primeiro, 4 por último); continuam na gaveta e no CSV.

@@ -1,13 +1,14 @@
 """Roda toda a verificação do painel e diz, no fim, se passou.
 
-Uso:  python tools/qa/tudo.py            (todos os testes, ~10 min)
-      python tools/qa/tudo.py foco a11y  (só os citados)
+Uso:  python tools/qa/tudo.py              (todos os testes, ~12 min)
+      python tools/qa/tudo.py foco a11y    (só os citados)
+      python tools/qa/tudo.py importador   (o único que não precisa de navegador)
 Requisitos (uma vez): pip install playwright pillow  &&  python -m playwright install chromium
 """
 import os, re, subprocess, sys, time
 from caminhos import QA, TMP
 
-TESTES = ['medir3', 'limpo', 'foco', 'func3', 'func4', 'func5', 'func6', 'func7', 'func8', 'sandbox', 'run7', 'run9', 'valores', 'resto', 'a11y', 'varredura']
+TESTES = ['importador', 'medir3', 'limpo', 'posse', 'foco', 'func3', 'func4', 'func5', 'func6', 'func7', 'func8', 'sandbox', 'run7', 'run9', 'valores', 'resto', 'a11y', 'varredura']
 RUIM = re.compile(r'ERROS: [1-9]|erros: [1-9]|FALHAS: \[[^\]]|AVISOS: [1-9]|PROBLEMAS: \{[^}]')
 RESUMO = re.compile(r'^(ERROS|FALHAS|AVISOS|PROBLEMAS)\b|erros:')
 

@@ -49,7 +49,7 @@ function montarFiltros() {
         <div class="f-ph"><b>Filtros</b><button type="button" class="ib" data-fechar-folha aria-label="Fechar filtros">${icone('fechar')}</button></div>
         <div class="f-corpo">
           <div class="f-g f-custom" id="f-custom" hidden><span class="f-r">Período</span><label><span>de</span><input type="date" id="f-de" aria-label="Data inicial"></label><label><span>até</span><input type="date" id="f-ate" aria-label="Data final"></label></div>
-          <div class="f-g" data-g="acervo"><span class="f-r">Acervo</span>${seg('f-acervo', 'Acervo', [['tudo', 'Tudo'], ['fisico', 'Física'], ['virtual', 'Virtual']])}</div>
+          <div class="f-g" data-g="acervo"><span class="f-r">Acervo</span>${seg('f-acervo', 'Acervo', [['tudo', 'Tudo'], ['fisico', 'Física'], ['virtual', 'Virtual'], ['ambos', 'Nas duas']])}</div>
           <div class="f-g"><span class="f-r">Tipo</span>${seg('f-tipo', 'Tipo', [['', 'Todos'], ['F', 'Ficção'], ['NF', 'Não ficção'], ['O', 'Outros']])}</div>
           <div class="f-g pop-w" id="pw-eixo"><button type="button" class="btn pop-b" aria-expanded="false" aria-controls="pop-eixo">Eixo<span class="cont" hidden></span>${icone('baixo', 14)}</button>
             <div class="pop" id="pop-eixo"><div class="pop-h"><b>Eixo temático</b><button type="button" class="lk" data-limpar="eixos">limpar</button></div><div class="pop-l">${EIXOS.slice(1).map((e, i) => `<label class="opt"><input type="checkbox" value="${i + 1}"><span>${esc(e.n)}</span><em></em></label>`).join('')}</div></div></div>
@@ -122,7 +122,7 @@ function sincronizarFiltros() {
   // chips dos filtros ativos
   const ch = [], add = (rm, txt) => ch.push(`<button type="button" class="ativo" data-rm="${esc(rm)}" title="Remover filtro">${esc(txt)}${icone('fechar', 12)}</button>`);
   if (custom) add('periodo:', `${fData(I.de)} – ${fData(I.ate)}`);
-  if (S.acervo !== 'tudo' && S.visao !== 'recs') add('acervo:', S.acervo === 'fisico' ? 'Biblioteca física' : 'Biblioteca virtual');
+  if (S.acervo !== 'tudo' && S.visao !== 'recs') add('acervo:', ROTULO_ACERVO[S.acervo]);
   if (S.tipo) add('tipo:', { F: 'Ficção', NF: 'Não ficção', O: 'Poesia, HQ e outros' }[S.tipo]);
   for (const e of [...S.eixos].sort((a, z) => a - z)) add('eixos:' + e, EIXOS[e].n);
   if (S.top) add('top:', 'Só prioridades');
@@ -145,7 +145,7 @@ function pintarCasca(c) {
   $('#b-exemplo').hidden = !DB.exemplos;
   const av = $('#aviso'), mostrar = DB.exemplos && !S.avisoVisto;
   av.hidden = !mostrar;
-  if (mostrar) setHtml(av, `<span class="av-i">${icone('info', 18)}</span><div><b>Seu catálogo é real; o movimento é de exemplo.</b><p>Os ${fInt(DB.livros.filter(b => b.sec >= 0).length)} títulos, autores, marcadores, eixos e a estante física vieram do seu catálogo. Datas, valores pagos, e-books e audiolivros, leituras, a lista de próximas aquisições e os históricos de preço são <b>simulados</b> para dar vida aos gráficos, e os preços não vêm das lojas: entram por cotações que você registra.</p></div><div class="av-a"><button type="button" class="btn sm" data-av="dados">Gerenciar dados</button><button type="button" class="btn sm pri" data-av="ok">Entendi</button></div>`);
+  if (mostrar) setHtml(av, `<span class="av-i">${icone('info', 18)}</span><div><b>Seu catálogo é real; o movimento é de exemplo.</b><p>Os ${fInt(DB.livros.filter(b => b.sec >= 0).length)} títulos, autores, marcadores, eixos, a estante física e a biblioteca virtual vieram do seu catálogo. Datas e valores pagos, leituras, a lista de próximas aquisições e os históricos de preço são <b>simulados</b> para dar vida aos gráficos, e os preços não vêm das lojas: entram por cotações que você registra.</p></div><div class="av-a"><button type="button" class="btn sm" data-av="dados">Gerenciar dados</button><button type="button" class="btn sm pri" data-av="ok">Entendi</button></div>`);
   $('#rodape-n').textContent = `${plural(DB.livros.length, 'livro', 'livros')} · ${c.I.tudo ? 'todo o histórico' : c.I.rot}${nFiltros() ? ' · ' + plural(nFiltros(), 'filtro ativo', 'filtros ativos') : ''}`;
 }
 function aplicarTema() {
@@ -225,6 +225,8 @@ function iniciar() {
   if (window.matchMedia) { const mq = matchMedia('(prefers-color-scheme: dark)'), f = () => { if (!S.tema) aplicarTema(); }; if (mq.addEventListener) mq.addEventListener('change', f); }
   irPara(S.visao, true);
   document.documentElement.classList.add('pronto');
+  // o painel chegou com outro catálogo: os dados salvos já foram conciliados (ver conciliarCatalogo); grava e avisa
+  if (DB.novidade) { salvar(); if (textoNovidade()) toast(textoNovidade().trim() + ' O que você editou no painel foi mantido.'); }
   try { if (sessionStorage.getItem('bl-falha')) { sessionStorage.removeItem('bl-falha'); toast('Os dados salvos não puderam ser abertos e o painel recomeçou do catálogo. A cópia do que havia está em “Seus dados”.', 'aviso');
     // a recarga da rede de segurança abre no topo (ver abaixo); depois disso a rolagem volta a ser lembrada pelo navegador
     const volta = () => setTimeout(() => { try { history.scrollRestoration = 'auto'; } catch (e) { /* nada */ } }, 600);

@@ -1,4 +1,8 @@
-"""Item sem preço-alvo ("Sem alvo") e o painel sem os dados de exemplo: indicadores, legendas e estados vazios."""
+"""Item sem preço-alvo ("Sem alvo") e o painel sem os dados de exemplo: indicadores, legendas e estados vazios.
+
+Os números esperados são um retrato do catálogo atual (1.865 livros no acervo: 97 na estante + 1.768 só digitais;
+435 recomendações, 2 delas já lidas). Se o catálogo mudar, rode, confira as linhas FALHA e atualize os literais.
+"""
 from caminhos import PAINEL_URL
 from relogio import fixa
 from playwright.sync_api import sync_playwright
@@ -17,7 +21,7 @@ with sync_playwright() as p:
     pg.goto(URL); pg.wait_for_timeout(1000); pg.click('#aviso .pri'); pg.wait_for_timeout(200)
     print('DEMO')
     pg.click('#nav [data-ir=desejos]'); pg.wait_for_timeout(800); k = pg.evaluate(K)
-    ok('cesta: 26 itens · 32,1% abaixo da capa', k['cesta']['s'] == '26 itens · 32,1% abaixo da capa', k['cesta'])
+    ok('cesta: 26 itens · 33% abaixo da capa', k['cesta']['s'] == '26 itens · 33% abaixo da capa', k['cesta'])
     ok('itens: 26 incluídos em 12 meses', k['itens']['t'] == '26 incluídos em 12 meses', k['itens']['t'])
     print('ITEM SEM ALVO')
     pg.click('#b-novo'); pg.wait_for_timeout(400); pg.fill('#dlg [data-f=t]', 'Um Livro Sem Alvo'); pg.fill('#dlg [data-f=a]', 'Autora Teste'); pg.select_option('#dlg [data-f=col]', 'desejo'); pg.click('#dlg footer .pri'); pg.wait_for_timeout(700)
@@ -29,7 +33,7 @@ with sync_playwright() as p:
     f = fatos(); ok('situação "Sem alvo" com R$ 48,00 na Amazon', f.get('Situação') == 'Sem alvo' and 'R$ 48,00' in f.get('Melhor preço', '') and 'Amazon' in f.get('Melhor preço', ''), f)
     pg.keyboard.press('Escape'); pg.wait_for_timeout(400)
     ok('Esc fecha a gaveta', pg.evaluate("() => !document.querySelector('#gaveta').classList.contains('on')"))
-    k = pg.evaluate(K); ok('item sem capa não distorce o desconto (32,1%)', k['cesta']['s'] == '27 itens · 32,1% abaixo da capa', k['cesta'])
+    k = pg.evaluate(K); ok('item sem capa não distorce o desconto (33%)', k['cesta']['s'] == '27 itens · 33% abaixo da capa', k['cesta'])
     pg.fill('#p-tab-desejos input[type=search]', 'sem alvo'); pg.wait_for_timeout(600)
     lin = pg.evaluate("() => [...document.querySelectorAll('#p-tab-desejos tbody tr td')].map(t => t.innerText.replace(/\\u00a0/g, ' ').replace(/\\n/g, ' / '))")
     ok('linha da tabela com o selo "Sem alvo"', len(lin) > 3 and lin[-1] == 'Sem alvo' and 'R$ 48,00 / Amazon' in lin, lin)
@@ -37,9 +41,9 @@ with sync_playwright() as p:
     print('SEM OS DADOS DE EXEMPLO')
     pg.click('#b-dados'); pg.wait_for_timeout(400); pg.click('#dlg [data-x=limpar]'); pg.wait_for_timeout(400); pg.click('#dlg footer .pri'); pg.wait_for_timeout(900); pg.keyboard.press('Escape'); pg.wait_for_timeout(300)
     esperado = {
-        'geral': {'acervo': ('97', 'sem datas de aquisição'), 'investido': ('R$ 0', ''), 'leituras': ('2', ''), 'cesta': ('R$ 48', 'histórico começa hoje'), 'oport': ('0', 'histórico começa hoje'), 'recs': ('545', '')},
-        'biblioteca': {'acervo': ('97', 'sem datas de aquisição'), 'investido': ('R$ 0', ''), 'leituras': ('2', ''), 'fila': ('97', '')},
-        'recs': {'recs': ('545', ''), 'top': ('51', '9,4% da fila'), 'leves': ('67', '12,3% da fila'), 'pend': ('61', '')},
+        'geral': {'acervo': ('1.865', 'sem datas de aquisição'), 'investido': ('R$ 0', ''), 'leituras': ('2', ''), 'cesta': ('R$ 48', 'histórico começa hoje'), 'oport': ('0', 'histórico começa hoje'), 'recs': ('433', '')},
+        'biblioteca': {'acervo': ('1.865', 'sem datas de aquisição'), 'investido': ('R$ 0', ''), 'leituras': ('2', ''), 'fila': ('1.865', '')},
+        'recs': {'recs': ('433', ''), 'top': ('32', '7,4% da fila'), 'leves': ('50', '11,5% da fila'), 'pend': ('61', '')},
         'desejos': {'itens': ('1', '1 incluído em 12 meses'), 'cesta': ('R$ 48', 'histórico começa hoje'), 'oport': ('0', 'histórico começa hoje'), 'minimo': ('R$ 48', None)},
         'precos': {'monit': ('1', 'em 1 loja'), 'oport': ('0', 'histórico começa hoje'), 'queda': ('—', ''), 'cot': ('1', None)},
     }
