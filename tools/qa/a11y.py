@@ -1,6 +1,9 @@
 """Auditoria rápida de acessibilidade em tempo de execução: ids duplicados, controles sem nome acessível, campos sem rótulo,
-contraste de texto (WCAG AA) nos temas claro e escuro, alvos de toque pequenos no celular."""
-from caminhos import PAINEL_URL
+contraste de texto (WCAG AA) nos temas claro e escuro, alvos de toque pequenos no celular.
+
+Cada tela é auditada duas vezes: com os dados de exemplo (gráficos e tabelas cheios) e como o painel abre, só com o
+catálogo — é aí que aparecem os estados vazios, as abas sem nenhum livro e as linhas zeradas."""
+from caminhos import PAINEL_LIMPO, PAINEL_URL
 from relogio import fixa
 from playwright.sync_api import sync_playwright
 import sys
@@ -49,39 +52,54 @@ def junta(rot, r):
         if r[k]: achados.setdefault(k, {})[rot] = r[k][:6]
 with sync_playwright() as p:
     b = p.chromium.launch()
+    # cada tamanho e tema, duas vezes: com os dados de exemplo (telas cheias) e como o painel abre (só o catálogo: telas vazias)
     for w, h, tema in [(1440, 900, 'light'), (1440, 900, 'dark'), (390, 844, 'light'), (390, 844, 'dark')]:
+      for modo, url in (('exemplo', URL), ('limpo', PAINEL_LIMPO)):
         ctx = b.new_context(viewport={'width': w, 'height': h}, color_scheme=tema, locale='pt-BR', timezone_id='America/Sao_Paulo')
         pg = ctx.new_page(); fixa(pg)
         pg.on('pageerror', lambda e: achados.setdefault('pageerror', {}).update({str(e)[:80]: 1}))
-        pg.goto(URL); pg.wait_for_timeout(1000)
-        nav = '#nav' if w > 820 else '#nav-m'; contr = {}; tot = 0
+        pg.goto(url); pg.wait_for_timeout(1000)
+        nav = '#nav' if w > 820 else '#nav-m'; contr = {}; tot = 0; R = f'{w}{tema}{"" if modo == "exemplo" else "-limpo"}'
         def contraste(rot):
             global tot
             c = pg.evaluate(CONTRASTE)
             for k, v in c['ruins'].items():
                 if k not in contr or v['r'] < contr[k][0]['r']: contr[k] = (v, rot)
             return c['n']
-        junta(f'{w}{tema}/aviso', pg.evaluate(AUD)); n = contraste('aviso')
+        def camada(rot, abrir, fechar=True):
+            """Abre uma camada (gaveta, diálogo, folha), audita e fecha."""
+            abrir(); pg.wait_for_timeout(600); junta(f'{R}/{rot}', pg.evaluate(AUD)); m = contraste(rot)
+            if fechar: pg.keyboard.press('Escape'); pg.wait_for_timeout(300)
+            return m
+        junta(f'{R}/aviso', pg.evaluate(AUD)); n = contraste('aviso')
         pg.click('#aviso .pri'); pg.wait_for_timeout(200)
-        for v in ['geral', 'biblioteca', 'recs', 'desejos', 'precos']:
+        for v in ['geral', 'biblioteca', 'recs', 'financas', 'desejos', 'precos']:
             pg.evaluate(f"() => document.querySelector('{nav} [data-ir={v}]').click()"); pg.wait_for_timeout(900)
-            junta(f'{w}{tema}/{v}', pg.evaluate(AUD)); n += contraste(v)
+            junta(f'{R}/{v}', pg.evaluate(AUD)); n += contraste(v)
             if w <= 820 and tema == 'light':
                 t = pg.evaluate(TOQUE)
-                if t: achados.setdefault('toque<24', {})[v] = t
-        pg.evaluate(f"() => document.querySelector('{nav} [data-ir=desejos]').click()"); pg.wait_for_timeout(700)
-        pg.click('#p-tab-desejos tbody tr'); pg.wait_for_timeout(700); junta(f'{w}{tema}/gaveta', pg.evaluate(AUD)); n += contraste('gaveta')
-        pg.click('#gaveta [data-acao=cotar]'); pg.wait_for_timeout(500); junta(f'{w}{tema}/dlg-cotar', pg.evaluate(AUD)); n += contraste('dlg-cotar'); pg.keyboard.press('Escape'); pg.wait_for_timeout(300)
-        pg.click('#gv-acoes [data-acao=editar]'); pg.wait_for_timeout(500); junta(f'{w}{tema}/dlg-editar', pg.evaluate(AUD)); n += contraste('dlg-editar'); pg.keyboard.press('Escape'); pg.wait_for_timeout(300)
+                if t: achados.setdefault('toque<24', {})[f'{v}{"" if modo == "exemplo" else "-limpo"}'] = t
+        if modo == 'exemplo':               # um item da lista de compra: gaveta, cotação e edição
+            pg.evaluate(f"() => document.querySelector('{nav} [data-ir=desejos]').click()"); pg.wait_for_timeout(700)
+            n += camada('gaveta', lambda: pg.click('#p-tab-desejos tbody tr'), fechar=False)
+            n += camada('dlg-cotar', lambda: pg.click('#gaveta [data-acao=cotar]'))
+            n += camada('dlg-editar', lambda: pg.click('#gv-acoes [data-acao=editar]'))
+        else:                               # um livro do acervo sem nada registrado: gaveta, "Já li" (com "Terminei hoje") e edição
+            pg.evaluate(f"() => document.querySelector('{nav} [data-ir=biblioteca]').click()"); pg.wait_for_timeout(700)
+            n += camada('gaveta', lambda: pg.click('#p-tab-biblioteca tbody tr[data-id]'), fechar=False)
+            n += camada('dlg-lido', lambda: pg.click('#gv-acoes [data-acao=lido]'))
+            n += camada('dlg-editar', lambda: pg.click('#gv-acoes [data-acao=editar]'))
         pg.keyboard.press('Escape'); pg.wait_for_timeout(300)
-        pg.click('#b-dados'); pg.wait_for_timeout(500); junta(f'{w}{tema}/dlg-dados', pg.evaluate(AUD)); n += contraste('dlg-dados'); pg.keyboard.press('Escape'); pg.wait_for_timeout(300)
-        if w <= 820: pg.click('#f-abrir'); pg.wait_for_timeout(500); junta(f'{w}{tema}/folha', pg.evaluate(AUD)); n += contraste('folha'); pg.keyboard.press('Escape'); pg.wait_for_timeout(300)
-        print(f'== {w}px {tema}: {n} textos medidos; abaixo de AA: {len(contr)}')
+        n += camada('dlg-novo', lambda: pg.click('#b-novo'))
+        n += camada('dlg-dados', lambda: pg.click('#b-dados'))
+        if w <= 820: n += camada('folha', lambda: pg.click('#f-abrir'))
+        else: n += camada('mais-filtros', lambda: pg.click('#pw-mais .pop-b'))
+        print(f'== {w}px {tema} · {"com exemplos" if modo == "exemplo" else "só o catálogo"}: {n} textos medidos; abaixo de AA: {len(contr)}')
         for k, (v, rot) in sorted(contr.items(), key=lambda kv: kv[1][0]['r']): print(f'   {v["r"]:>5}  {k}  [{rot}] “{v["ex"]}” {v["tam"]}px/{v["peso"]}')
         # as estrelas da nota são desenho (a nota vai no aria-label): vazias são decorativas, cheias precisam de 3:1
         for k, (v, rot) in contr.items():
             if v['ex'] == '★' and (k.startswith('i ') or (k.startswith('i.on ') and v['r'] >= 3)): continue
-            achados.setdefault('contraste', {})[f'{w}{tema} {k}'] = v['r']
+            achados.setdefault('contraste', {})[f'{R} {k}'] = v['r']
         ctx.close()
     b.close()
 print('ACHADOS:'); [print('  ', k, v) for k, v in achados.items()]

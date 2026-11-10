@@ -7,6 +7,9 @@ import sys
 URL = PAINEL_URL
 errs = []; avisos = []
 ALVOS = "() => { const v = document.querySelector('.visao:not([hidden])'); const vis = e => { const r = e.getBoundingClientRect(); return r.width > 0 && r.height > 0 && getComputedStyle(e).visibility !== 'hidden'; }; const els = [...v.querySelectorAll('button, [role=button], [data-id], [data-k], .leg, .hb-l, .db-l, .mz-c, tbody tr, .li, a[href]')].filter(vis).filter(e => !e.matches('[data-csv], a[target=_blank], a[href^=http]') && !e.closest('a[target=_blank]')); els.forEach((e, i) => e.setAttribute('data-vr', i)); return els.length; }"
+def periodo(pg, v):
+    """Escolhe o período. O controle fica dentro de "Mais filtros" (fechado): o clique é dado direto no botão."""
+    pg.evaluate(f"() => document.querySelector('#f-periodo button[data-v=\"{v}\"]').click()")
 def varrer(pg, rotulo, limite=400):
     n = pg.evaluate(ALVOS); feitos = 0
     for i in range(min(n, limite)):
@@ -36,18 +39,18 @@ with sync_playwright() as p:
         nav = '#nav' if w > 820 else '#nav-m'; tot = 0
         for etapa in ['demo', 'filtros', 'limpo']:
             if etapa == 'filtros':
-                if w > 820: pg.click('#f-periodo button[data-v="90d"]'); pg.wait_for_timeout(300); pg.click('#f-tipo button[data-v="F"]'); pg.wait_for_timeout(300)
+                if w > 820: periodo(pg, '90d'); pg.wait_for_timeout(300); pg.click('#f-tipo button[data-v="F"]'); pg.wait_for_timeout(300)
                 else: continue
             if etapa == 'limpo':
                 pg.evaluate("() => document.querySelector('#f-ativos [data-limpar]')?.click()"); pg.wait_for_timeout(300)
-                if w > 820: pg.click('#f-periodo button[data-v="tudo"]'); pg.wait_for_timeout(200)
+                if w > 820: periodo(pg, 'tudo'); pg.wait_for_timeout(200)
                 pg.click('#b-dados'); pg.wait_for_timeout(300); pg.click('#dlg [data-x=limpar]'); pg.wait_for_timeout(300); pg.click('#dlg footer .pri'); pg.wait_for_timeout(700); pg.keyboard.press('Escape'); pg.wait_for_timeout(200)
-            for v in ['geral', 'biblioteca', 'recs', 'desejos', 'precos']:
+            for v in ['geral', 'biblioteca', 'recs', 'financas', 'desejos', 'precos']:
                 pg.evaluate(f"() => document.querySelector('{nav} [data-ir={v}]').click()"); pg.wait_for_timeout(600)
                 n = varrer(pg, f'{w}/{tema}/{etapa}/{v}'); tot += n
                 # o estado pode ter mudado (filtros por clique em gráfico): volta ao recorte da etapa
                 pg.evaluate("() => document.querySelector('#f-ativos [data-limpar]')?.click()"); pg.wait_for_timeout(150)
-                if etapa == 'filtros': pg.click('#f-periodo button[data-v="90d"]'); pg.wait_for_timeout(150)
+                if etapa == 'filtros': periodo(pg, '90d'); pg.wait_for_timeout(150)
         print(f'{w}px {tema}: {tot} cliques')
         ctx.close()
     b.close()
