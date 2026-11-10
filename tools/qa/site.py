@@ -2,19 +2,22 @@
 (.github/workflows/publicar-site.yml copia o painel para `index.html`).
 
 Os outros testes abrem o arquivo por file://. Aqui se confere o que só aparece num site:
-  · o painel vem inteiro numa única requisição: nenhum arquivo ao lado dele, nada buscado em outro endereço;
-  · é o mesmo painel: os indicadores são iguais aos do arquivo aberto direto;
+  · o painel vem inteiro numa única requisição: nenhum arquivo ao lado dele. De outro endereço só vêm as imagens das
+    capas (Open Library), pedidas sem dizer de que página; com as capas desligadas, não vem nada;
+  · é o mesmo painel: os indicadores são iguais aos do arquivo aberto direto, e ele abre sem dados de exemplo
+    (que só entram com ?exemplo no fim do endereço);
   · o navegador guarda o que se anota, e isso continua lá depois de recarregar a página;
   · o backup sai como download;
   · quem já usava o arquivo no computador leva os dados para o site por um backup.
 """
-from caminhos import PAINEL, PAINEL_URL, TMP
+from caminhos import PAINEL, PAINEL_LIMPO, TMP
 from relogio import fixa
-import functools, http.server, json, shutil, threading
+import functools, http.server, json, re, shutil, threading
 from playwright.sync_api import sync_playwright
 
 CHAVE = 'biblioteca-lucas:v1'
-errs = []; falhas = []
+CAPA = 'https://covers.openlibrary.org/b/id/'       # as imagens das capas: a única coisa que o painel busca fora (relogio.py responde no lugar da internet)
+errs = []; falhas = []; origens = []
 K = "() => Object.fromEntries([...document.querySelectorAll('.visao:not([hidden]) .kpi')].map(k => [k.dataset.k, k.querySelector('.kpi-v b').textContent + ' ¦ ' + k.querySelector('.kpi-s').textContent]))"
 TOASTS = "() => [...document.querySelectorAll('#toasts .toast')].map(t => t.textContent).join(' ¦ ')"
 GUARDADOS = "() => JSON.parse(localStorage.getItem('%s') || '{\"livros\":[]}').livros.map(b => b.t)" % CHAVE
@@ -36,7 +39,7 @@ def pagina(b, pedidos=None):
     pg = ctx.new_page(); fixa(pg)
     pg.on('console', lambda m: errs.append(f'[{m.type}] {m.text}') if m.type in ('error', 'warning') else None)
     pg.on('pageerror', lambda e: errs.append(f'[pageerror] {e}'))
-    if pedidos is not None: pg.on('request', lambda r: pedidos.append(r.url))
+    if pedidos is not None: pg.on('request', lambda r: (pedidos.append(r.url), origens.append(r.headers.get('referer', '')) if r.url.startswith(CAPA) else None))
     return pg
 
 
@@ -79,10 +82,14 @@ with sync_playwright() as p:
     pg.click('#aviso .pri'); pg.wait_for_timeout(200)
     no_site = pg.evaluate(K)
 
-    arq = pagina(b); arq.goto(PAINEL_URL); arq.wait_for_selector('html.pronto', timeout=15000); arq.wait_for_timeout(1200)
+    arq = pagina(b); arq.goto(PAINEL_LIMPO); arq.wait_for_selector('html.pronto', timeout=15000); arq.wait_for_timeout(1200)
     arq.click('#aviso .pri'); arq.wait_for_timeout(200)
     no_arquivo = arq.evaluate(K)
     ok('mesmos indicadores do arquivo aberto direto', bool(no_site) and no_site == no_arquivo, no_site if no_site != no_arquivo else f'{len(no_site)} indicadores')
+    ok('o site abre sem dados de exemplo', not pg.is_visible('#b-exemplo') and pg.evaluate("() => JSON.parse(localStorage.getItem('%s') || '{}').exemplos" % CHAVE) is not True, no_site.get('leituras'))
+    ex = pagina(b); ex.goto(SITE + '?exemplo=1'); ex.wait_for_selector('html.pronto', timeout=15000); ex.wait_for_timeout(1200)
+    ok('com ?exemplo=1 no fim do endereço, os dados de exemplo entram', ex.is_visible('#b-exemplo') and ex.evaluate(K) != no_site, ex.evaluate(K).get('leituras'))
+    ex.context.close()
 
     print('O NAVEGADOR GUARDA OS DADOS')
     estado = pg.evaluate("() => document.querySelector('#st-dados').textContent")
@@ -112,9 +119,22 @@ with sync_playwright() as p:
     achados = busca(pg, 'Livro Anotado no')
     ok('depois de recarregar, o site tem o que estava no arquivo', achados == ['Livro Anotado no Arquivo'], achados)
 
-    print('NADA VEM DE FORA')
-    fora = sorted({u for u in pedidos if u != SITE and not u.startswith(('data:', 'blob:'))})
-    ok('tudo o que o navegador buscou foi a própria página', pedidos.count(SITE) >= 3 and not fora, fora or f'{pedidos.count(SITE)} cargas da página')
+    print('DE FORA, SÓ AS CAPAS')
+    capas = [u for u in pedidos if u.startswith(CAPA)]
+    fora = sorted({u for u in pedidos if u != SITE and not u.startswith(('data:', 'blob:', CAPA))})
+    ok('além da própria página, o navegador só buscou imagens de capa', pedidos.count(SITE) >= 3 and not fora, fora or f'{pedidos.count(SITE)} cargas da página, {len(capas)} pedidos de capa')
+    com_capa = pg.evaluate("() => document.querySelectorAll('.capa img').length")
+    ok('há pedidos de capa quando há capas na tela, e só então', (len(capas) > 0) == (com_capa > 0), (len(capas), com_capa))
+    ruins = [u for u in capas if not re.fullmatch(re.escape(CAPA) + r'\d+-M\.jpg\?default=false', u)]
+    ok('cada pedido de capa leva só o número da capa', not ruins, ruins[:3])
+    ok('e não diz de que página veio (sem "referer")', not any(origens), sorted(set(origens))[:3])
+    # capas desligadas em "Seus dados": depois disso, o painel não busca mais nada fora
+    pg.click('#b-dados'); pg.wait_for_timeout(400); pg.click('#dlg [data-x=capas]'); pg.wait_for_timeout(500); pg.keyboard.press('Escape'); pg.wait_for_timeout(300)
+    ok('desligar as capas tira as imagens da tela', pg.evaluate("() => document.querySelectorAll('.capa img').length") == 0)
+    del pedidos[:]
+    pg.reload(); pg.wait_for_selector('html.pronto', timeout=15000); pg.wait_for_timeout(1200)
+    pg.click('#nav [data-ir=biblioteca]'); pg.wait_for_timeout(900)
+    ok('com as capas desligadas, tudo o que o navegador busca é a própria página', pedidos == [SITE], sorted(set(pedidos))[:4])
     b.close()
 servidor.shutdown()
 print('FALHAS:', falhas); print('ERROS:', len(errs) + len(falhas)); [print('  ', x[:300]) for x in errs[:10]]

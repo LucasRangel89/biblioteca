@@ -6,7 +6,7 @@
 
 Passos (cada um também roda sozinho):
   1. importar_digital.py   listagens + inventário → Catálogo Mestre (seção 17 e marcadores #tenho-digital) e RESUMO.md
-  2. build_catalog.py      Catálogo Mestre + inventário → src/catalog.json
+  2. build_catalog.py      Catálogo Mestre + inventário → src/catalog.json; catalogo/capas.tsv → src/capas.json
   3. build.py              src/ → Biblioteca_Lucas_Dashboard.html
 """
 import pathlib, subprocess, sys

@@ -45,8 +45,10 @@ with sync_playwright() as p:
     confere('livro do catálogo não tem botão Excluir', pg.locator('#gv-acoes [data-acao=excluir]').count() == 0, pg.evaluate("() => document.querySelector('#gaveta.on h2, #gaveta.on .gv-t').textContent")[:40])
     pg.keyboard.press('Escape'); pg.wait_for_timeout(300)
 
-    print('— período personalizado')
-    pg.click('#f-cal'); pg.wait_for_timeout(400)
+    print('— período personalizado (no fim de "Mais filtros")')
+    def mais():
+        if not pg.is_visible('#pop-mais'): pg.click('#pw-mais .pop-b'); pg.wait_for_timeout(250)
+    mais(); pg.click('#f-cal'); pg.wait_for_timeout(400)
     pg.fill('#f-de', '2026-10-01'); pg.dispatch_event('#f-de', 'change'); pg.fill('#f-ate', '2026-08-01'); pg.dispatch_event('#f-ate', 'change'); pg.wait_for_timeout(600)
     v = pg.evaluate("() => [document.querySelector('#f-de').value, document.querySelector('#f-ate').value]")
     confere('datas invertidas são trocadas', v == ['2026-08-01', '2026-10-01'], v)
@@ -57,11 +59,13 @@ with sync_playwright() as p:
     pg.fill('#f-de', '2026-11-09'); pg.dispatch_event('#f-de', 'change'); pg.wait_for_timeout(600)
     v = pg.evaluate("() => [document.querySelector('#f-de').value, document.querySelector('#f-ate').value]")
     confere('intervalo de um único dia funciona', v == ['2026-11-09', '2026-11-09'] and pg.evaluate(K).get('acervo') is not None, [v, pg.evaluate(K)])
-    for vis in ['biblioteca', 'recs', 'desejos', 'precos', 'geral']:
+    pg.keyboard.press('Escape'); pg.wait_for_timeout(200)
+    for vis in ['biblioteca', 'recs', 'financas', 'desejos', 'precos', 'geral']:
         pg.click(f'#nav [data-ir={vis}]'); pg.wait_for_timeout(500)
-    pg.fill('#f-de', ''); pg.dispatch_event('#f-de', 'change'); pg.wait_for_timeout(300)
+    mais(); pg.fill('#f-de', ''); pg.dispatch_event('#f-de', 'change'); pg.wait_for_timeout(300)
     pg.wait_for_timeout(500); confere('data apagada não quebra nada', pg.evaluate(K).get('acervo') is not None)
-    pg.click('#f-periodo button[data-v="tudo"]'); pg.wait_for_timeout(900)   # a contagem dos KPIs dura 550 ms
+    mais(); pg.click('#f-periodo button[data-v="tudo"]'); pg.wait_for_timeout(900)   # a contagem dos KPIs dura 550 ms
+    pg.keyboard.press('Escape'); pg.wait_for_timeout(200)
     confere('volta para Tudo', pg.evaluate(K) == k0, pg.evaluate(K))
 
     print('— importação com registros ilegíveis')

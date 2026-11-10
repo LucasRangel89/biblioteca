@@ -78,7 +78,8 @@ with sync_playwright() as p:
     pg.click('#f-acervo button[data-v="ambos"]'); pg.wait_for_timeout(900)
     k = pg.evaluate(K); ok('filtro "Nas duas": 25 livros', k['acervo']['v'] == '25', k['acervo'])
     pg.click('#f-acervo button[data-v="virtual"]'); pg.wait_for_timeout(900)
-    k = pg.evaluate(K); ok('filtro "Virtual": 2.053 livros, nenhuma compra', k['acervo']['v'] == '2.053' and k['investido']['v'] == 'R$ 0', (k['acervo']['v'], k['investido']['v']))
+    k = pg.evaluate(K); pg.click('#nav [data-ir=financas]'); pg.wait_for_timeout(900); f = pg.evaluate(K)
+    ok('filtro "Virtual": 2.053 livros, nenhuma compra', k['acervo']['v'] == '2.053' and f['investido']['v'] == 'R$ 0', (k['acervo']['v'], f['investido']['v']))
     pg.context.close()
 
     print('QUADRINHOS: O FILTRO "HQ" E A SUBPASTA DA SÉRIE')

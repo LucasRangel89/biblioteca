@@ -18,7 +18,8 @@ with sync_playwright() as p:
     pg.goto(URL); pg.wait_for_timeout(1200)
     # J) aviso
     print('aviso visível:', pg.is_visible('#aviso')); pg.click('#aviso .pri, #aviso [data-ok]'); pg.wait_for_timeout(300); print('  após Entendi:', pg.is_visible('#aviso'))
-    # A) .li em Melhores oportunidades
+    # A) .li em Melhores oportunidades (guia Finanças)
+    ir(pg, 'financas'); print('A) Finanças: KPIs', pg.evaluate(K))
     pg.click('#p-ranking .li >> nth=0'); pg.wait_for_timeout(600); print('A) li ->', pg.evaluate(GV)); pg.keyboard.press('Escape'); pg.wait_for_timeout(400); print('   esc ->', pg.evaluate(GV))
     # B) biblioteca: cabeceira → progresso; editar nota
     ir(pg, 'biblioteca'); k0 = pg.evaluate(K); print('B) KPIs', k0)
@@ -51,11 +52,14 @@ with sync_playwright() as p:
     pg.click('#gaveta [data-acao=tirar]'); pg.wait_for_timeout(700); print('   tirar ->', pg.evaluate(TOAST), '|', pg.evaluate(GV)); pg.keyboard.press('Escape'); pg.wait_for_timeout(400)
     print('   KPIs', pg.evaluate(K))
     ir(pg, 'geral'); print('   geral', pg.evaluate(K)); ir(pg, 'biblioteca'); print('   biblioteca', pg.evaluate(K), '(antes', k0, ')')
-    # F) período personalizado
-    ir(pg, 'geral'); pg.click('#f-cal'); pg.wait_for_timeout(300); print('F) custom visível:', pg.is_visible('#f-custom'), '| de/até:', pg.input_value('#f-de'), pg.input_value('#f-ate'))
+    # F) período personalizado (o período fica no fim de "Mais filtros")
+    ir(pg, 'geral'); pg.click('#pw-mais .pop-b'); pg.wait_for_timeout(300); print('F) período dentro de Mais filtros:', pg.is_visible('#f-periodo'))
+    pg.click('#f-periodo button[data-v="90d"]'); pg.wait_for_timeout(700); print('   90 dias -> KPIs', pg.evaluate(K), '| chips:', pg.inner_text('#f-ativos').replace('\n', ' · '), '| contador de Mais filtros:', pg.inner_text('#pw-mais .pop-b .cont'))
+    pg.click('#f-cal'); pg.wait_for_timeout(300); print('   custom visível:', pg.is_visible('#f-custom'), '| de/até:', pg.input_value('#f-de'), pg.input_value('#f-ate'))
     pg.fill('#f-de', '2026-01-01'); pg.dispatch_event('#f-de', 'change'); pg.fill('#f-ate', '2026-06-30'); pg.dispatch_event('#f-ate', 'change'); pg.wait_for_timeout(900)
     print('   KPIs', pg.evaluate(K), '| chips:', pg.inner_text('#f-ativos').replace('\n', ' · '), '| sub gráfico:', pg.inner_text('#p-evolucao .card-s'))
     pg.fill('#f-de', '2026-08-01'); pg.dispatch_event('#f-de', 'change'); pg.wait_for_timeout(700); print('   de > até:', pg.input_value('#f-de'), pg.input_value('#f-ate'), '| KPIs', pg.evaluate(K), '| chips:', pg.inner_text('#f-ativos').replace('\n', ' · '))
+    pg.keyboard.press('Escape'); pg.wait_for_timeout(300)
     pg.click('#f-ativos [data-rm^=periodo]'); pg.wait_for_timeout(700); print('   chip removido -> período ativo:', pg.evaluate("() => (document.querySelector('#f-periodo button[aria-pressed=true], #f-periodo button.on') || {textContent: '?'}).textContent"), '| custom visível:', pg.is_visible('#f-custom'))
     # G) mais filtros
     pg.click('#pw-mais .pop-b'); pg.wait_for_timeout(300)

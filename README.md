@@ -46,18 +46,21 @@ livro tem linha própria — *1984 (em quadrinhos)* — e não marca o livro ori
 | --- | --- |
 | `Biblioteca_Lucas_Dashboard.html` | O painel pronto (gerado; não edite à mão). É este arquivo que vai para o site |
 | `.github/workflows/publicar-site.yml` | Publica o painel como site a cada mudança em `main` (ver "O site") |
+| `.github/workflows/buscar-capas.yml` | Procura as capas dos livros na Open Library e grava `catalogo/capas.tsv`. Só roda quando pedido, pela aba Actions (ver "As capas") |
 | `ROTEIRO.md` | As etapas de desenvolvimento e as pendências de cada uma |
 | `catalogo/Biblioteca_Lucas_Catalogo_Mestre.md` | O Catálogo Mestre |
 | `catalogo/renomeados.tsv` | O nome antigo de cada linha da estante ou das recomendações que teve título ou autor corrigido (ver "Corrigir o título ou o autor…") |
+| `catalogo/capas.tsv` | A capa de cada livro: o número da imagem na Open Library, ou vazio quando não foi achada (ver "As capas") |
 | `biblioteca-virtual/listagens/*.txte` | A lista de arquivos de cada pasta da biblioteca virtual (uma listagem por pasta) |
 | `biblioteca-virtual/inventario.tsv` | Uma linha por arquivo (e por subpasta de série de quadrinhos), com título, autor, eixo e gênero **revisados** — é aqui que se corrige um livro digital |
 | `biblioteca-virtual/RESUMO.md` | Relatório da última importação: o que entrou, o que falta conferir e o que ficou de fora (gerado) |
 | `biblioteca-virtual/Biblioteca virtual.md` | A listagem original, como foi enviada (só para consulta; os acentos estão corrompidos) |
-| `src/` | Fontes do painel: `index.html`, `styles.css`, `js/00-util.js` … `70-app.js`, `catalog.json` (gerado) |
+| `src/` | Fontes do painel: `index.html`, `styles.css`, `js/00-util.js` … `70-app.js`; `catalog.json` e `capas.json` (gerados) |
 | `tools/atualizar.py` | Faz tudo de uma vez: importa a biblioteca virtual, converte o catálogo e monta o painel |
 | `tools/importar_digital.py` | Listagens + inventário → Catálogo Mestre (seção 17 e `#tenho-digital`) e `RESUMO.md` |
-| `tools/build_catalog.py` | Catálogo Mestre + inventário → `src/catalog.json` (usa `parse_catalog.py` e `eixos.py`) |
+| `tools/build_catalog.py` | Catálogo Mestre + inventário → `src/catalog.json`; `catalogo/capas.tsv` → `src/capas.json` (usa `parse_catalog.py`, `eixos.py` e `capas.py`) |
 | `tools/build.py` | `src/` → `Biblioteca_Lucas_Dashboard.html`; confere que não sobrou referência externa |
+| `tools/capas.py` | Busca das capas na Open Library → `catalogo/capas.tsv`. É o único script que precisa de internet; no GitHub, quem o roda é o serviço "Buscar capas" |
 | `tools/qa/` | Testes automatizados |
 | `referencias/` | Material antigo guardado só como referência (um painel de inspiração e um protótipo abandonado) |
 
@@ -145,28 +148,76 @@ só no navegador.
 
 ## O painel
 
-- **Acervo: Tudo / Física / Virtual / Nas duas** — o filtro vale para todas as visões. O livro que está nas duas
+Seis guias: **Visão geral**, **Biblioteca**, **Recomendações**, **Finanças**, **Próximas aquisições** e **Preços**.
+
+- **Acervo: Tudo / Física / Virtual / Nas duas** — o filtro vale para todas as guias. O livro que está nas duas
   bibliotecas aparece como "Físico e digital".
-- A gaveta de cada livro digital mostra **onde ele está**: pasta, formato, número de arquivos e, quando for outra
-  edição, o título do arquivo. Na de uma série de quadrinhos guardada em pasta própria, o nome da subpasta.
 - **Tipo: Todos / Ficção / Não ficção / HQ / Outros** — "Outros" são poesia, antologias e o que não tem tipo. A busca
   também acha um quadrinho pelo nome da subpasta ("Marvel Salvat").
+- **Mais filtros** reúne prioridade, dificuldade, extensão, marcadores e o **período** (30 dias, 90 dias, 12 meses,
+  este ano, tudo, ou datas à escolha). O período vale pela data de aquisição ou de leitura; sem escolha, o painel
+  mostra todo o histórico. No celular, os filtros ficam na folha "Filtros".
+- **Dinheiro tem lugar próprio.** Visão geral, Biblioteca e Recomendações não mostram valores. **Finanças** reúne o
+  que foi investido, o preço médio pago, os gastos por período e por loja e a tabela das compras registradas;
+  Próximas aquisições e Preços continuam com a lista de compra e as cotações.
+- A gaveta de cada livro digital mostra **onde ele está**: pasta, formato, número de arquivos e, quando for outra
+  edição, o título do arquivo. Na de uma série de quadrinhos guardada em pasta própria, o nome da subpasta.
+- **Só o título é obrigatório.** Data de aquisição, loja, valor, condição e data de leitura são opcionais em todos os
+  formulários ("Novo livro", "Editar", "Já tenho", "Comprei", "Já li"). O que não foi informado aparece como "sem
+  data" ou fica fora da conta: um livro sem valor não entra no investimento; uma leitura sem data conta como
+  leitura, mas não aparece nos gráficos por mês nem quando há um período escolhido.
 - Os arquivos da biblioteca virtual **não têm data nem valor de compra**. Por isso entram nas contagens, mas não nos
   gráficos de evolução e de investimento; no filtro "Virtual", a compra do exemplar físico de um livro que está nas
   duas não é contada.
-- **Real (do catálogo):** títulos, autores, marcadores, eixos, a estante e a biblioteca virtual.
-- **Exemplo (gerado, semente fixa):** datas e valores de compra da estante, leituras e notas, a lista de próximas
-  aquisições e os históricos de preço. Tudo isso é marcado na interface e sai com "Limpar dados de exemplo".
 - **Preços:** o painel não consulta lojas. Cada preço é uma cotação registrada à mão (há atalhos de busca por loja).
 
-Os dados do usuário ficam no `localStorage` do navegador (chave `biblioteca-lucas:v1`); o backup é pelo botão de dados.
-**O que já estava salvo pela versão anterior é mantido:** ao abrir o painel novo, os livros que você criou ou editou
-continuam como estavam, e o painel avisa quantos livros entraram com o catálogo novo.
+### O que o painel mostra ao abrir
+
+**Só o que é seu:** o catálogo (títulos, autores, marcadores, eixos, a estante e a biblioteca virtual) e o que você
+registrar. Nada é inventado: sem compras registradas, Finanças fica zerada e cada gráfico diz o que falta para ele se
+preencher.
+
+Os **dados de exemplo** (datas e valores de compra, leituras, notas, lista de próximas aquisições e históricos de
+preço simulados, com semente fixa) só entram **a pedido**: botão "Seus dados" → "Ver com dados de exemplo". Enquanto
+estão ligados, o painel avisa no alto da tela; saem em "Limpar dados de exemplo", sem mexer no que você registrou.
+
+**Quem usava a versão anterior**, que abria com os exemplos ligados: na primeira abertura do painel novo os exemplos
+saem sozinhos, uma única vez, com aviso. Os livros que a pessoa criou ou editou enquanto os exemplos estavam ligados
+ficam como estavam — podem trazer datas ou valores de exemplo misturados ao que foi anotado, porque o painel não tem
+como separar um do outro. O aviso leva até esses livros (lista "Editados por você"); se eram só testes, "Seus dados" →
+"Recomeçar do catálogo original" apaga tudo.
+
+Os dados do usuário ficam no `localStorage` do navegador (chave `biblioteca-lucas:v1`); o backup é pelo botão "Seus
+dados". **O que já estava salvo por uma versão anterior é mantido:** os livros que você criou ou editou continuam, e o
+painel avisa quantos livros entraram com o catálogo novo.
 
 O arquivo do painel mudou de lugar (saiu de `biblioteca-dashboard/` para a raiz). Se, ao abri-lo no lugar novo, o que
 você tinha anotado não aparecer — há navegadores que guardam os dados por caminho de arquivo —, ponha o painel novo no
 mesmo lugar e com o mesmo nome do antigo, ou exporte um backup no antigo (botão de dados) e importe no novo: a
 importação faz a mesma conciliação.
+
+### As capas
+
+O painel mostra a capa do livro nas listas, nas tabelas e na ficha. Hoje **762 dos 2.560** livros têm capa; os outros
+aparecem com um desenho com a inicial do título.
+
+- **De onde vêm.** Da [Open Library](https://openlibrary.org), um catálogo aberto de livros. Nenhuma imagem fica no
+  repositório: `catalogo/capas.tsv` guarda só o número da capa de cada livro, e o navegador busca a imagem em
+  `covers.openlibrary.org` quando ela aparece na tela. É o único pedido que o painel faz à internet, e nada do que
+  foi anotado vai junto. Sem internet, ou se a imagem faltar, fica o desenho. Em "Seus dados" há uma chave para
+  desligar as capas.
+- **Por que só 762.** A busca só aceita uma capa quando o título **e** o autor conferem com os do catálogo, de
+  preferência a de uma edição em português — e as edições brasileiras são minoria na Open Library. Livro sem autor
+  certo (ou de "Vários autores") e adaptação em quadrinhos com um autor só não são procurados: o resultado não seria
+  confiável. Os volumes de uma série nunca ficam com a mesma capa.
+- **Procurar de novo** (depois de entrarem livros, por exemplo): no GitHub, aba **Actions** → **Buscar capas** →
+  **Run workflow**. O serviço procura só os livros que ainda não foram procurados (marcando "refazer", também os que
+  não tinham sido achados), grava `catalogo/capas.tsv` e, no fim, pede 40 das capas guardadas para conferir se as
+  imagens abrem — o resultado ("40 de 40 abriram como imagem") aparece na página da execução. Ele não monta o
+  painel: as capas novas aparecem depois de `python tools/atualizar.py`, numa rodada.
+- **Corrigir uma capa errada:** em `catalogo/capas.tsv`, troque o número da linha (ou ponha o endereço `https://…` de
+  uma imagem) e escreva `manual` na coluna `origem` — a busca nunca mexe nessas linhas. Para um livro ficar sem
+  capa, apague o número e deixe `manual`. Depois, `python tools/atualizar.py`.
 
 ### O site
 
@@ -183,6 +234,11 @@ mais: `.github/workflows/publicar-site.yml` copia `Biblioteca_Lucas_Dashboard.ht
   "Exportar backup (.json)" num, "Importar backup…" no outro.
 - **O endereço é público.** Quem o tiver vê o catálogo — o mesmo que já está neste repositório. Leituras, notas e
   preços não saem do navegador de quem os anotou. A página pede aos buscadores que não a listem (`noindex`).
+- **O site vem inteiro num arquivo só.** Depois de aberto, a única coisa que ele pede à internet são as imagens das
+  capas (ver "As capas"); o pedido não diz de que página veio.
+- **Para mostrar o painel a alguém com os gráficos cheios:** o endereço terminado em `?exemplo=1` abre com os dados de
+  exemplo. Só vale num navegador que ainda não tem nada salvo — no seu, os exemplos nunca se misturam ao que é seu
+  sem você pedir.
 
 Módulos: `00-util` (datas, formatos) · `10-data` (livros, posse, conciliação com o catálogo, exemplos, armazenamento) ·
 `20-charts` (gráficos SVG) · `30-state` (filtros, período, contexto) · `40-panels` (indicadores e painéis) ·
@@ -192,35 +248,47 @@ inicialização).
 ## Testes
 
 ```bash
-python tools/qa/tudo.py importador      # o importador; não precisa de navegador
+python tools/qa/tudo.py importador busca_capas   # os dois que não precisam de navegador
 pip install playwright pillow
 python -m playwright install chromium   # no Linux, se faltarem bibliotecas: python -m playwright install-deps chromium
-python tools/qa/tudo.py                 # tudo, ~12 min; termina com "TUDO CERTO"
+python tools/qa/tudo.py                 # tudo, ~16 min; termina com "TUDO CERTO"
 python tools/qa/tudo.py posse func6     # só alguns
 ```
 
-Os testes de navegador abrem o HTML final por `file://` (o `site` também o serve por HTTP, como no GitHub Pages) e
-fixam o relógio em 09/11/2026 (`relogio.py`), porque os dados de exemplo são gerados a partir da data de hoje. Capturas
-e registros vão para a pasta temporária do sistema (`biblioteca-qa/`) ou para onde a variável `BIBLIOTECA_QA_TMP`
-indicar. Só foram rodados no Chromium.
+Os testes de navegador abrem o HTML final por `file://` (o `site` também o serve por HTTP, como no GitHub Pages).
+Para darem sempre o mesmo resultado, `relogio.py` fixa o relógio em 09/11/2026 — os dados de exemplo são gerados a
+partir da data de hoje — e responde aos pedidos de capa ali mesmo, sem ir à internet. A maioria abre o painel com
+`?exemplo=1`, para ter números a conferir; `limpo`, `inicio`, `opcionais`, `capas_painel` e `financas` abrem-no como
+ele é. Capturas e registros vão para a pasta temporária do sistema (`biblioteca-qa/`) ou para onde a variável
+`BIBLIOTECA_QA_TMP` indicar. Só foram rodados no Chromium.
+
+`posse` e `inicio` tiram painéis antigos do histórico do Git. Numa cópia do repositório sem o histórico inteiro, essas
+partes são puladas: o teste não falha, mas o `tudo.py` marca a linha dele com "[partes puladas: N]" e avisa no fim, em
+vez de dar o teste por completo. `git fetch --unshallow` traz o histórico que falta.
 
 | Script | Cobre |
 | --- | --- |
 | `importador` | Leitura das listagens, arquivo novo e ausente, casamento com o catálogo, seção 17, execução repetida sem mudanças; quadrinhos (subpasta de série, edição nova de série conhecida, série nova, adaptação com o título de um livro, subpasta com listagem própria); `src/catalog.json` em dia com o catálogo; `renomeados.tsv` |
 | `posse` | Físico × digital × nos dois: indicadores, gaveta, formulário, filtros, cartão no celular; quadrinhos (filtro "HQ", gaveta de uma série guardada em subpasta, busca pelo nome da subpasta, os cinco botões do filtro Tipo no celular); **migração do que o painel anterior salvou** no navegador e de um backup exportado por ele; livro anotado no painel e depois corrigido no catálogo ou no inventário (os painéis antigos são tirados do histórico do Git) |
-| `func3` … `func8` | Cotações, novo livro, limpar/restaurar exemplos, exportar/importar, períodos, filtros, CSV, dados corrompidos |
+| `busca_capas` | A busca de capas (`tools/capas.py`), sem internet: a consulta feita para cada livro, a capa escolhida (edição em português antes da capa da obra), a segunda tentativa só pelo título, o `capas.tsv` (retomar de onde parou, não mexer no que foi posto à mão, a mesma capa em volumes de uma série), a amostra de `--testar`; `src/capas.json` em dia com `catalogo/capas.tsv` |
+| `inicio` | Como o painel abre e os dados de exemplo: primeira abertura só com o catálogo; "Ver com dados de exemplo", "Limpar dados de exemplo" e "Recomeçar"; o endereço com `?exemplo=1`; **a saída dos exemplos de fábrica** para quem usava o painel anterior — sem edições, com um e com três livros editados, no computador e no celular, e com o painel que estava no ar antes da mudança (tirado do histórico do Git) |
+| `opcionais` | Só o título é obrigatório: "Novo livro", "Já tenho", "Comprei", "Já li" e "Terminei hoje" sem data, loja ou valor; o que a ficha, os indicadores, Finanças, o CSV e o backup mostram nesses casos; data futura e valor ilegível recusados |
+| `capas_painel` | As capas no painel, com uma lista de capas conhecida: tabela, listas e ficha; imagem que falta; o que o navegador pede, e quando; a chave "Mostrar as capas"; a capa não é guardada nem aceita de um backup; endereços inválidos; celular |
+| `financas` | A guia Finanças e a navegação: nenhum valor em reais em Visão geral, Biblioteca e Recomendações; indicadores, cartões e tabela de Finanças, com e sem compras; ocultar valores; as seis guias numa linha só no celular (412 a 320 px) e nenhuma guia estourando a largura da tela |
+| `func3` … `func8` | Cotações, novo livro, limpar/restaurar exemplos, exportar/importar, períodos (dentro de "Mais filtros"), filtros, Finanças, CSV, dados corrompidos |
 | `valores`, `resto` | Valores digitados; excluir livro; período invertido; importação com registros ilegíveis |
-| `limpo` | Painel só com o catálogo (sem exemplos): indicadores, legendas e estados vazios |
-| `foco`, `a11y` | Foco e Tab nas camadas; ids duplicados, nomes acessíveis, rótulos, contraste AA nos dois temas |
+| `limpo` | Painel só com o catálogo, sem exemplos — depois de "Limpar dados de exemplo" e como ele abre: indicadores, legendas e estados vazios de todas as guias; a guia Preços sem nenhum livro para cotar (o quadro "Registrar cotação" explica como começar e só vira formulário quando há o que cotar) |
+| `foco`, `a11y` | Foco e Tab nas camadas; ids duplicados, nomes acessíveis, rótulos, contraste AA nos dois temas e alvos de toque no celular — em todas as guias, fichas e diálogos, com os dados de exemplo e só com o catálogo (é onde aparecem os estados vazios e as abas zeradas) |
 | `varredura` | Clica em tudo, em todas as visões, nos dois temas e no celular, à procura de erros |
 | `sandbox` | Página dentro de um iframe isolado (sem `localStorage`): funciona em memória |
-| `site` | O painel servido por HTTP, de dentro de uma pasta, como no site: vem inteiro numa única requisição, guarda os dados, exporta o backup e importa o que foi feito no arquivo |
+| `site` | O painel servido por HTTP, de dentro de uma pasta, como no site: vem inteiro numa única requisição (de fora, só as imagens das capas, pedidas sem dizer de que página vieram), abre sem exemplos — e com eles pelo endereço `?exemplo=1` —, guarda os dados, exporta o backup e importa o que foi feito no arquivo |
 | `medir3`, `tabs`, `largo` | Larguras de 2560 a 820 px: colunas das tabelas, quebras e estouros |
 | `run1`, `run5` … `run13` | Capturas de tela para conferência visual (só `run7` e `run9` entram no `tudo.py`) |
 
-**Depois de mudar o catálogo, alguns testes precisam de números novos.** `func6`, `limpo` e `posse` comparam o painel
-com contagens do catálogo atual (2.125 livros no acervo, 407 recomendações na fila etc.). Quando entrarem livros,
-rode os três, confira os valores impressos nas linhas `FALHA` e atualize os literais.
+**Depois de mudar o catálogo, alguns testes precisam de números novos.** `func6`, `limpo`, `posse`, `inicio`,
+`opcionais`, `financas` e `capas_painel` comparam o painel com contagens do catálogo atual (2.125 livros no acervo,
+433 recomendações na fila, 407 com os dados de exemplo etc.). Quando entrarem livros, rode-os, confira os valores
+impressos nas linhas `FALHA` e atualize os literais.
 
 ## O que ainda pede conferência
 

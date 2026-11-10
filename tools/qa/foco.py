@@ -69,9 +69,10 @@ with sync_playwright() as p:
             ok('atributos de diálogo saem ao fechar', pg.evaluate("() => { const p = document.querySelector('#f-painel'); return !p.hasAttribute('role') && !p.hasAttribute('tabindex'); }"))
             pg.click('#f-abrir'); pg.wait_for_timeout(450); pg.click('#f-ver'); pg.wait_for_timeout(400)
             ok('"Ver resultados" fecha e devolve o foco', (not aberta()) and pg.evaluate("() => document.activeElement.id") == 'f-abrir')
-            pg.click('#f-cal'); pg.wait_for_timeout(500)
-            ok('calendário abre a folha com foco na data inicial', aberta() and pg.evaluate("() => document.activeElement.id") == 'f-de', pg.evaluate("() => document.activeElement.id"))
-            pg.wait_for_timeout(400); ok('…e o foco continua na data', pg.evaluate("() => document.activeElement.id") == 'f-de')
+            # o período fica dentro da folha (no fim de "Mais filtros"): "Personalizar" mostra as duas datas e põe o foco na primeira
+            pg.click('#f-abrir'); pg.wait_for_timeout(450); pg.click('#f-cal'); pg.wait_for_timeout(500)
+            ok('na folha, "Personalizar" mostra as datas com foco na data inicial', aberta() and pg.is_visible('#f-custom') and pg.evaluate("() => document.activeElement.id") == 'f-de', pg.evaluate("() => document.activeElement.id"))
+            pg.wait_for_timeout(400); ok('…e o foco continua na data, com a folha aberta', aberta() and pg.evaluate("() => document.activeElement.id") == 'f-de')
             # alargar a janela com a folha aberta: fecha e destrava a rolagem
             pg.set_viewport_size({'width': 1100, 'height': 800}); pg.wait_for_timeout(500)
             ok('alargar a janela fecha a folha e destrava a página', (not aberta()) and pg.evaluate("() => !document.documentElement.classList.contains('travado')"))

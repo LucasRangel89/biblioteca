@@ -50,6 +50,12 @@ const K = {
     const t = tend(cur, ant, 'neutro');   // sem valor nos dois períodos não há comparação (nem legenda de comparação)
     return { v: val, fmt: fBRL0, tend: t, cmp: t ? I.cmp : '', sub: pagos ? `${plural(pagos, 'compra', 'compras')} · média de ${fBRL(val / pagos)}` : 'nenhuma compra com valor registrado', spark: porBalde(baldes(I.de, I.ate, 20), c.ac, b => adqDe(b), b => pagoDe(b) || 0), zero: true };
   },
+  medio(c) {
+    const pagos = c.acP.filter(b => pagoDe(b) > 0), val = soma(pagos, b => pagoDe(b));
+    if (!pagos.length) return { txt: '—', sub: 'nenhuma compra com valor registrado' };
+    const maior = pagos.reduce((m, b) => (pagoDe(b) > pagoDe(m) ? b : m));
+    return { v: val / pagos.length, fmt: fBRL, cmp: `em ${plural(pagos.length, 'compra', 'compras')} com valor`, sub: `a mais cara: ${fBRL(pagoDe(maior))} · ${maior.t}`, dica: maior.t };
+  },
   leituras(c) {
     const I = c.I, n = c.lidosP.length;
     const cur = c.lidos.filter(b => dentro(b.lidoEm, I.cur)).length, ant = c.lidos.filter(b => dentro(b.lidoEm, I.ant)).length;
@@ -81,6 +87,10 @@ const K = {
     const datado = c.rec.some(b => b.add != null);
     return { v: fila.length, tend: datado ? tendAbs(novos, 'neutro') : null, cmp: datado ? `${novos === 1 ? 'incluída' : 'incluídas'} ${I.cmpC}` : '', sub: `${plural(fila.filter(b => b._top).length, 'prioridade marcada', 'prioridades marcadas')} com #top`, spark: acumulado(baldes(I.de, I.ate, 20), fila, b => b.add) };
   },
+  lendo(c) {
+    const lendo = c.ac.filter(b => b.leit === 'lendo'), media = lendo.length ? soma(lendo, b => b.prog || 0) / lendo.length : 0, perto = lendo.slice().sort((a, z) => (z.prog || 0) - (a.prog || 0))[0];
+    return { v: lendo.length, cmp: lendo.length ? `em média ${Math.round(media)}% lido` : '', sub: perto ? `mais adiantado: ${perto.t}` : 'abra um livro e use “Começar a ler”', dica: perto ? perto.t : '' };
+  },
   fila(c) {
     const I = c.I, fila = c.ac.filter(b => b.leit !== 'lido' && b.leit !== 'aband'), lendo = c.ac.filter(b => b.leit === 'lendo').length, lidos = c.ac.filter(b => b.leit === 'lido').length;
     const entrou = c.ac.filter(b => dentro(adqDe(b), I.cur)).length, saiu = c.ac.filter(b => b.leit === 'lido' && dentro(b.lidoEm, I.cur)).length;
@@ -91,15 +101,14 @@ const K = {
 
 /* ───────── painéis compartilhados ───────── */
 const rotEixoX = (d, span) => (span > 150 ? fMesAno(d) : fDiaMes(d));
-function pEvolucao() {
-  return { id: 'evolucao', w: 'p-8', tit: 'Evolução do acervo', montar(k) {
-    segmento(k.tools, [['qtd', 'Livros'], ['valor', 'Valor']], 'evo');
-    const g = GraficoLinha(k.corpo, { legenda: k.pe, rotulo: 'Evolução do acervo por formato' });
+function pEvolucao(val) {      // val: em reais (Finanças); sem val: em livros (Visão geral)
+  return { id: val ? 'evo-valor' : 'evolucao', w: 'p-8', tit: val ? 'Evolução do investimento' : 'Evolução do acervo', montar(k) {
+    const g = GraficoLinha(k.corpo, { legenda: k.pe, rotulo: val ? 'Valor investido acumulado, por formato' : 'Evolução do acervo por formato' });
     return c => {
-      const B = baldes(c.I.de, c.I.ate, 64), x = B.lista.map(b => b.f), val = S.ui.evo === 'valor', semData = c.ac.filter(b => adqDe(b) == null).length;
+      const B = baldes(c.I.de, c.I.ate, 64), x = B.lista.map(b => b.f), semData = c.ac.filter(b => adqDe(b) == null && (!val || pagoDe(b) > 0)).length;
       const series = Object.keys(FORMATOS).map(f => ({ k: f, n: FORMATOS[f].n, cor: FORMATOS[f].cor, area: true, v: acumulado(B, c.ac.filter(b => b.fmt === f), b => adqDe(b), val ? b => pagoDe(b) || 0 : null) })).filter(s => s.v[s.v.length - 1] > 0);
-      k.sub.textContent = `${val ? 'Valor investido acumulado' : 'Livros acumulados'} por formato · ${c.I.rot}${semData ? ` · ${plural(semData, 'livro sem data não entra', 'livros sem data não entram')}` : ''}`;
-      g.atualizar({ x, series, empilhar: true, inteiro: !val, fmtY: val ? fBRL : fInt, fmtEixo: val ? fBRLc : fInt, rot: i => (B.g === 'dia' || B.g === 'semana' ? fDiaMes(x[i]) : B.g === 'ano' ? String(partes(x[i]).y) : fMesAno(x[i])), tit: i => 'Até ' + fData(x[i]), vazio: 'Nenhum livro com data de aquisição neste recorte. Edite um livro para informar quando ele chegou.' });
+      k.sub.textContent = `${val ? 'Valor investido acumulado' : 'Livros acumulados'} por formato · ${c.I.rot}${semData ? ` · ${plural(semData, val ? 'compra sem data não entra' : 'livro sem data não entra', val ? 'compras sem data não entram' : 'livros sem data não entram')}` : ''}`;
+      g.atualizar({ x, series, empilhar: true, inteiro: !val, fmtY: val ? fBRL : fInt, fmtEixo: val ? fBRLc : fInt, rot: i => (B.g === 'dia' || B.g === 'semana' ? fDiaMes(x[i]) : B.g === 'ano' ? String(partes(x[i]).y) : fMesAno(x[i])), tit: i => 'Até ' + fData(x[i]), vazio: val ? 'Nenhuma compra com data e valor neste recorte. Edite um livro para informar quando ele chegou e quanto custou.' : 'Nenhum livro com data de aquisição neste recorte. A data é opcional: edite um livro para informar quando ele chegou.' });
     };
   } };
 }
@@ -119,15 +128,14 @@ function pComposicao() {
     };
   } };
 }
-function pAquisicoes() {
-  return { id: 'aquisicoes', w: 'p-6 m-6', tit: 'Aquisições por período', montar(k) {
-    segmento(k.tools, [['qtd', 'Livros'], ['valor', 'Valor']], 'aq');
-    const g = GraficoBarras(k.corpo, { legenda: k.pe, rotulo: 'Aquisições por período e formato' });
+function pAquisicoes(val, w) {  // val: em reais (Finanças); sem val: em livros (Visão geral)
+  return { id: val ? 'gastos' : 'aquisicoes', w: w || 'p-6 m-6', tit: val ? 'Gastos por período' : 'Aquisições por período', montar(k) {
+    const g = GraficoBarras(k.corpo, { legenda: k.pe, rotulo: val ? 'Valor pago por período e formato' : 'Aquisições por período e formato' });
     return c => {
-      const B = baldes(c.I.de, c.I.ate, 24), val = S.ui.aq === 'valor', L = B.lista;
+      const B = baldes(c.I.de, c.I.ate, 24), L = B.lista;
       k.sub.textContent = `${val ? 'Valor pago' : 'Livros adquiridos'} por ${L.length > 1 ? NOME_GRAN[B.g] + ' e ' : ''}formato · ${c.I.rot}`;
       g.atualizar({ rot: L.map(b => b.rot), tit: L.map(b => b.tit), parcial: L.length && L[L.length - 1].parcial ? L.length - 1 : -1, inteiro: !val, fmtY: val ? fBRL : fInt, fmtEixo: val ? fBRLc : fInt,
-        series: Object.keys(FORMATOS).map(f => ({ k: f, n: FORMATOS[f].n, cor: FORMATOS[f].cor, v: porBalde(B, c.ac.filter(b => b.fmt === f), b => adqDe(b), val ? b => pagoDe(b) || 0 : null) })), vazio: 'Nenhuma aquisição com data neste recorte.' });
+        series: Object.keys(FORMATOS).map(f => ({ k: f, n: FORMATOS[f].n, cor: FORMATOS[f].cor, v: porBalde(B, c.ac.filter(b => b.fmt === f), b => adqDe(b), val ? b => pagoDe(b) || 0 : null) })), vazio: val ? 'Nenhuma compra com data e valor neste recorte.' : 'Nenhuma aquisição com data neste recorte.' });
     };
   } };
 }
@@ -167,15 +175,18 @@ function pEixos(modo, w) {
     };
   } };
 }
-const linhaLivro = (b, meio, fim) => `<button type="button" class="li" data-id="${b.id}"><span class="li-m"><b>${esc(b.t)}</b><span>${esc(b.a || 'Autor não informado')}</span></span>${meio || ''}${fim || ''}</button>`;
-function pRanking() {
-  return { id: 'ranking', w: 'p-5', tit: 'Melhores oportunidades', montar(k) {
+/* capa de um livro: a imagem, quando há; por baixo dela, um "livro" desenhado com a inicial do título (é o que se vê
+   enquanto a imagem carrega, quando ela falha e nos livros sem capa). A inicial vai num atributo: não entra no texto. */
+const capaHtml = (b, cls) => { const u = urlCapa(b), l = (b.t.match(/[\p{L}\p{N}]/u) || ['?'])[0].toUpperCase(); return `<span class="capa${cls ? ' ' + cls : ''}" data-l="${esc(l)}" aria-hidden="true">${u ? `<img src="${esc(u)}" alt="" loading="lazy" decoding="async">` : ''}</span>`; };
+const linhaLivro = (b, meio, fim) => `<button type="button" class="li" data-id="${b.id}">${capaHtml(b)}<span class="li-m"><b>${esc(b.t)}</b><span>${esc(b.a || 'Autor não informado')}</span></span>${meio || ''}${fim || ''}</button>`;
+function pRanking(w) {
+  return { id: 'ranking', w: w || 'p-5', tit: 'Melhores oportunidades', montar(k) {
     k.tools.innerHTML = `<button type="button" class="btn sm fantasma" data-ir="desejos">Ver lista${icone('dir', 14)}</button>`;
     k.corpo.classList.add('lista');
     return c => {
       const it = c.des.map(b => ({ b, x: c.px(b) })).filter(o => o.x.hoje && o.b.alvo).sort((a, z) => a.x.hoje.p / a.b.alvo - z.x.hoje.p / z.b.alvo).slice(0, 7);
       k.sub.textContent = 'Itens da lista de compra mais perto (ou abaixo) do preço-alvo';
-      setHtml(k.corpo, it.length ? it.map(({ b, x }) => `<button type="button" class="li" data-id="${b.id}"><span class="li-m"><b>${esc(b.t)}</b><span>${esc(x.hoje.f)} · alvo ${fBRL0(b.alvo)}</span></span>` +
+      setHtml(k.corpo, it.length ? it.map(({ b, x }) => `<button type="button" class="li" data-id="${b.id}">${capaHtml(b)}<span class="li-m"><b>${esc(b.t)}</b><span>${esc(x.hoje.f)} · alvo ${fBRL0(b.alvo)}</span></span>` +
         `<span class="li-sp">${x.res ? spark(amostra(x.res.serie, x.res.de, x.res.ate, 20), { w: 60, h: 24, cor: SITUACOES[x.sit].cor, area: false }) : ''}</span>` +
         `<span class="li-pb"><b class="num">${fBRL(x.hoje.p)}</b>${badgeSit(x.sit)}</span></button>`).join('')
         : vazioHtml(c.des.length ? 'Defina um preço-alvo e registre cotações para ver as oportunidades.' : 'Nenhum item na lista de próximas aquisições neste recorte.'));
@@ -219,31 +230,30 @@ function pLeituras() {
     };
   } };
 }
-function pOrigens() {
-  return { id: 'origens', w: 'p-6 m-6', tit: 'Onde comprei', montar(k) {
-    segmento(k.tools, [['qtd', 'Livros'], ['valor', 'Valor']], 'origem');
+function pOrigens(val) {        // val: em reais (Finanças); sem val: em livros (Biblioteca)
+  return { id: val ? 'gasto-loja' : 'origens', w: 'p-6 m-6', tit: val ? 'Gasto por loja ou origem' : 'Onde comprei', montar(k) {
     const g = BarrasH(k.corpo, {});
     return c => {
-      const val = S.ui.origem === 'valor', m = new Map();
+      const m = new Map();
       for (const b of c.acP) { if (!lojaDe(b)) continue; const o = m.get(b.loja) || { n: 0, v: 0, f: {} }; o.n++; o.v += pagoDe(b) || 0; o.f[b.fmt] = (o.f[b.fmt] || 0) + (val ? pagoDe(b) || 0 : 1); m.set(b.loja, o); }
-      const linhas = [...m].sort((a, z) => (val ? z[1].v - a[1].v : z[1].n - a[1].n)).slice(0, 10).map(([loja, o]) => ({ k: loja, n: loja, segs: Object.keys(FORMATOS).map(f => ({ n: FORMATOS[f].n, cor: FORMATOS[f].cor, v: o.f[f] || 0 })), rodape: `<span>${plural(o.n, 'livro', 'livros')} · ${fBRL(o.v)}${o.n ? ' · média ' + fBRL(o.v / o.n) : ''}</span>` }));
+      const linhas = [...m].sort((a, z) => (val ? z[1].v - a[1].v : z[1].n - a[1].n)).slice(0, 10).map(([loja, o]) => ({ k: loja, n: loja, segs: Object.keys(FORMATOS).map(f => ({ n: FORMATOS[f].n, cor: FORMATOS[f].cor, v: o.f[f] || 0 })), rodape: val ? `<span>${plural(o.n, 'livro', 'livros')} · ${fBRL(o.v)}${o.n ? ' · média ' + fBRL(o.v / o.n) : ''}</span>` : `<span>${plural(o.n, 'livro', 'livros')}</span>` }));
       k.sub.textContent = `${val ? 'Valor pago' : 'Livros'} por loja ou origem · ${c.I.rot}`;
       legendaFixa(k.pe, Object.keys(FORMATOS).filter(f => linhas.some(l => l.segs.some(s => s.n === FORMATOS[f].n && s.v > 0))).map(f => [FORMATOS[f].n, FORMATOS[f].cor]));
       g.atualizar({ linhas, fmt: val ? fBRL0 : fInt, vazio: 'Nenhuma origem registrada neste recorte. Informe a loja ao editar um livro.' });
     };
   } };
 }
-function pLendo() {
-  return { id: 'lendo', w: 'p-5 m-6', tit: 'Na cabeceira', montar(k) {
+function pLendo(w, id) {
+  return { id: id || 'lendo', w: w || 'p-5 m-6', tit: 'Na cabeceira', montar(k) {
     k.corpo.classList.add('lista');
     return c => {
       const lendo = c.ac.filter(b => b.leit === 'lendo').sort((a, z) => (z.prog || 0) - (a.prog || 0)).slice(0, 4);
-      const ult = c.lidosP.filter(b => b.lidoEm != null).sort((a, z) => z.lidoEm - a.lidoEm).slice(0, 5);
+      const ult = c.lidosP.slice().sort((a, z) => (z.lidoEm == null ? -1 : z.lidoEm) - (a.lidoEm == null ? -1 : a.lidoEm) || a._busca.localeCompare(z._busca)).slice(0, 5);   // com data primeiro, da mais recente para trás; depois as sem data
       k.sub.textContent = 'Em leitura agora e últimas leituras concluídas' + (c.I.tudo ? '' : ' ' + c.I.rot);
       let h = '';
       if (lendo.length) h += '<h4 class="li-t">Lendo agora</h4>' + lendo.map(b => linhaLivro(b, '', `<span class="li-prog" title="${b.prog || 0}% lido"><span class="barra"><i style="width:${clamp(b.prog || 0, 0, 100)}%"></i></span><b class="num">${b.prog || 0}%</b></span><span class="fmt so-ic" title="${FORMATOS[b.fmt] ? FORMATOS[b.fmt].n : ''}">${icone(ICONE_FMT[b.fmt] || 'livro', 15)}</span>`)).join('');
-      if (ult.length) h += '<h4 class="li-t">Concluídas</h4>' + ult.map(b => linhaLivro(b, '', `<span class="li-v"><b>${b.nota ? estrelas(b.nota) : '<span class="mudo">sem nota</span>'}</b><span>${fData(b.lidoEm)}</span></span>`)).join('');
-      setHtml(k.corpo, h || vazioHtml('Nada em leitura nem leituras concluídas neste recorte. Abra um livro do acervo e use “Começar a ler”.'));
+      if (ult.length) h += '<h4 class="li-t">Concluídas</h4>' + ult.map(b => linhaLivro(b, '', `<span class="li-v"><b>${b.nota ? estrelas(b.nota) : '<span class="mudo">sem nota</span>'}</b><span>${b.lidoEm != null ? fData(b.lidoEm) : 'sem data'}</span></span>`)).join('');
+      setHtml(k.corpo, h || vazioHtml('Nada em leitura nem leituras concluídas neste recorte. Abra um livro e use “Começar a ler” ou “Já li”.'));
     };
   } };
 }
@@ -297,8 +307,8 @@ function pTemas() {
     };
   } };
 }
-function pSugestoes() {
-  return { id: 'sugestoes', w: 'p-4 m-6', tit: 'Sugestões da vez', montar(k) {
+function pSugestoes(w, id) {
+  return { id: id || 'sugestoes', w: w || 'p-4 m-6', tit: 'Sugestões da vez', montar(k) {
     k.tools.innerHTML = `<button type="button" class="btn sm" data-sortear>${icone('sortear', 14)}Sortear</button>`;
     k.tools.addEventListener('click', e => { if (e.target.closest('[data-sortear]')) { S.ui.sorteio = (S.ui.sorteio || 0) + 1; render(); } });
     k.corpo.classList.add('lista');
@@ -358,6 +368,7 @@ function pLojasBaratas() {
 }
 
 /* ───────── preços ───────── */
+const cotavel = b => b.col === 'desejo' || (b.col === 'rec' && b.track);      // pode receber cotação: está na lista de compra ou é uma recomendação monitorada
 function livroSel(c) {
   let b = c.rast.find(x => x.id === S.sel);
   if (!b) b = c.rast.find(x => c.px(x).sit === 'agora') || c.rast[0] || null;
@@ -377,7 +388,7 @@ function pPrecoLoja() {
       const grupo = (n, arr) => (arr.length ? `<optgroup label="${n}">${ord(arr).map(x => `<option value="${x.id}">${esc(x.t)}</option>`).join('')}</optgroup>` : '');
       setHtml(sel, grupo('Próximas aquisições', c.rast.filter(x => x.col === 'desejo')) + grupo('Recomendações monitoradas', c.rast.filter(x => x.col !== 'desejo')));
       sel.value = b ? b.id : ''; sel.disabled = !b; sel.parentNode.hidden = !b;
-      if (!b) { k.sub.textContent = 'Histórico de cotações de um livro, loja a loja'; setHtml(res, ''); g.atualizar({ x: [], series: [], rot: () => '', vazio: 'Nenhum item com cotações neste recorte. Abra um livro e use “Registrar cotação” para começar a acompanhar.' }); return; }
+      if (!b) { k.sub.textContent = 'Histórico de cotações de um livro, loja a loja'; setHtml(res, ''); g.atualizar({ x: [], series: [], rot: () => '', vazio: c.seg.some(cotavel) ? 'Nenhum item com cotações neste recorte. Use “Registrar cotação”, nesta página, para começar a acompanhar.' : DB.livros.some(cotavel) ? 'Nenhum item com cotações com os filtros atuais.' : 'Nenhum item com cotações ainda. Abra uma recomendação e use “Monitorar preço” para começar a acompanhar.' }); return; }
       const fontes = Object.keys(b.px).filter(f => b.px[f].length), prim = Math.min(...fontes.map(f => b.px[f][0][0])), ini = Math.max(c.I.de, prim), fim = c.I.ate;
       let x = [];
       if (fim >= ini) { const dias = new Set([ini, fim]); for (const f of fontes) for (const p of b.px[f]) if (p[0] > ini && p[0] < fim) dias.add(p[0]); x = [...dias].sort((a, z) => a - z); }
@@ -430,8 +441,13 @@ function pCotacao() {
     // a lista traz também quem ainda não tem nenhuma cotação (é aqui que a primeira entra)
     let novo = '';
     const f = formCotacao(k.corpo, { comLivro: true, aoEscolher(b) { novo = b.id; }, aoSalvar(b) { S.sel = b.id; novo = ''; } });
+    const sem = document.createElement('div'); sem.className = 'cot-sem'; sem.hidden = true; k.corpo.appendChild(sem);
     return c => {
-      const lista = c.seg.filter(b => b.col === 'desejo' || (b.col === 'rec' && b.track));
+      const lista = c.seg.filter(cotavel);
+      // sem nenhum livro para cotar, um formulário que não pode ser usado só confunde: no lugar dele, como começar
+      f.el.hidden = !lista.length; sem.hidden = !!lista.length;
+      if (!lista.length) setHtml(sem, vazioHtml(DB.livros.some(cotavel) ? 'Nenhum item da lista de compra com os filtros atuais.'
+        : 'Nenhum livro para cotar ainda. Abra uma recomendação e use “Quero comprar” ou “Monitorar preço”: ela passa a aparecer aqui.'));
       f.atualizar(lista, lista.find(b => b.id === novo && !rastreado(b)) || livroSel(c) || lista[0] || null);
     };
   } };
@@ -445,20 +461,27 @@ function selecionarPreco(id) {
 const VIS = {
   geral: {
     kpis: [
-      { k: 'acervo', n: 'Acervo', ic: 'estante', cor: 'var(--c2)' }, { k: 'investido', n: 'Investido', ic: 'carteira', cor: 'var(--c1)' },
-      { k: 'leituras', n: 'Leituras concluídas', ic: 'livro', cor: 'var(--c6)' }, { k: 'cesta', n: 'Cesta de aquisições', ic: 'sacola', cor: 'var(--c1)' },
-      { k: 'oport', n: 'Abaixo do preço-alvo', ic: 'alvo', cor: 'var(--good)' }, { k: 'recs', n: 'Recomendações na fila', ic: 'bussola', cor: 'var(--c4)' },
+      { k: 'acervo', n: 'Acervo', ic: 'estante', cor: 'var(--c2)' }, { k: 'leituras', n: 'Leituras concluídas', ic: 'livro', cor: 'var(--c6)' },
+      { k: 'fila', n: 'Por ler', ic: 'pilha', cor: 'var(--c4)' }, { k: 'recs', n: 'Recomendações na fila', ic: 'bussola', cor: 'var(--c4)' },
     ],
-    valores: c => ({ acervo: K.acervo(c), investido: K.investido(c), leituras: K.leituras(c), cesta: K.cesta(c), oport: K.oport(c), recs: K.recs(c) }),
-    paineis: () => [pEvolucao(), pComposicao(), pAquisicoes(), pCesta('p-6'), pEixos('geral', 'p-7'), pRanking()],
+    valores: c => ({ acervo: K.acervo(c), leituras: K.leituras(c), fila: K.fila(c), recs: K.recs(c) }),
+    paineis: () => [pComposicao(), pEixos('geral', 'p-8'), pLendo('p-6 m-6', 'lendo-geral'), pSugestoes('p-6 m-6', 'sugestoes-geral'), pEvolucao(), pAquisicoes(false, 'p-4 m-6')],
   },
   biblioteca: {
     kpis: [
-      { k: 'acervo', n: 'Livros no acervo', ic: 'estante', cor: 'var(--c2)' }, { k: 'investido', n: 'Investido', ic: 'carteira', cor: 'var(--c1)' },
-      { k: 'leituras', n: 'Leituras concluídas', ic: 'livro', cor: 'var(--c6)' }, { k: 'fila', n: 'Por ler', ic: 'pilha', cor: 'var(--c4)' },
+      { k: 'acervo', n: 'Livros no acervo', ic: 'estante', cor: 'var(--c2)' }, { k: 'leituras', n: 'Leituras concluídas', ic: 'livro', cor: 'var(--c6)' },
+      { k: 'fila', n: 'Por ler', ic: 'pilha', cor: 'var(--c4)' }, { k: 'lendo', n: 'Lendo agora', ic: 'livro', cor: 'var(--c3)' },
     ],
-    valores: c => ({ acervo: K.acervo(c), investido: K.investido(c), leituras: K.leituras(c), fila: K.fila(c) }),
+    valores: c => ({ acervo: K.acervo(c), leituras: K.leituras(c), fila: K.fila(c), lendo: K.lendo(c) }),
     paineis: () => [pAdqLidos(), pStatus(), pLeituras(), pOrigens(), pEixos('acervo', 'p-7'), pLendo()],
+  },
+  financas: {
+    kpis: [
+      { k: 'investido', n: 'Investido', ic: 'carteira', cor: 'var(--c1)' }, { k: 'medio', n: 'Preço médio pago', ic: 'etiqueta', cor: 'var(--c2)' },
+      { k: 'cesta', n: 'Cesta de aquisições', ic: 'sacola', cor: 'var(--c1)' }, { k: 'oport', n: 'Abaixo do preço-alvo', ic: 'alvo', cor: 'var(--good)' },
+    ],
+    valores: c => ({ investido: K.investido(c), medio: K.medio(c), cesta: K.cesta(c), oport: K.oport(c) }),
+    paineis: () => [pEvolucao(true), pAquisicoes(true, 'p-4 m-6'), pOrigens(true), pRanking('p-6 m-6'), pCesta('p-12')],
   },
   recs: {
     kpis: [

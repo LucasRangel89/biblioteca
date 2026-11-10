@@ -2,7 +2,7 @@
 const REG = {};
 let CTX = null, pendente = 0;
 const ctxAtual = () => CTX || (CTX = contexto());
-const cfgAtual = () => ({ tema: S.tema, ocultar: S.ocultar, avisoVisto: S.avisoVisto, visao: S.visao, ui: S.ui, tam: Object.fromEntries(Object.entries(S.tab).map(([k, v]) => [k, v.tam])) });
+const cfgAtual = () => ({ tema: S.tema, ocultar: S.ocultar, avisoVisto: S.avisoVisto, saiu: S.saiu || undefined, capas: S.capas, visao: S.visao, ui: S.ui, tam: Object.fromEntries(Object.entries(S.tab).map(([k, v]) => [k, v.tam])) });
 const salvar = debounce(() => { const ok = Loja.gravar(serializar(cfgAtual())); pintarStatus(ok); }, 350);
 
 function montarVisao(v) {
@@ -43,12 +43,10 @@ function montarFiltros() {
   const chips = (grupo, ops) => `<div class="chips" data-grupo="${grupo}">${ops.map(([v, n, d]) => `<button type="button" class="chip" data-v="${v}"${d ? ` title="${d}"` : ''}>${n}</button>`).join('')}</div>`;
   $('#filtros').innerHTML = `
     <div class="f-linha">
-      <div class="f-per">${seg('f-periodo', 'Período', PERIODOS)}<button type="button" class="btn f-cal" id="f-cal" aria-expanded="false" title="Período personalizado">${icone('calendario', 15)}<span id="f-cal-r">Personalizar</span></button></div>
       <button type="button" class="btn f-abrir" id="f-abrir">${icone('filtro', 15)}Filtros<span class="cont" id="f-n" hidden></span></button>
       <div class="f-painel" id="f-painel">
         <div class="f-ph"><b>Filtros</b><button type="button" class="ib" data-fechar-folha aria-label="Fechar filtros">${icone('fechar')}</button></div>
         <div class="f-corpo">
-          <div class="f-g f-custom" id="f-custom" hidden><span class="f-r">Período</span><label><span>de</span><input type="date" id="f-de" aria-label="Data inicial"></label><label><span>até</span><input type="date" id="f-ate" aria-label="Data final"></label></div>
           <div class="f-g" data-g="acervo"><span class="f-r">Acervo</span>${seg('f-acervo', 'Acervo', [['tudo', 'Tudo'], ['fisico', 'Física'], ['virtual', 'Virtual'], ['ambos', 'Nas duas']])}</div>
           <div class="f-g"><span class="f-r">Tipo</span>${seg('f-tipo', 'Tipo', [['', 'Todos'], ['F', 'Ficção'], ['NF', 'Não ficção'], ['HQ', 'HQ'], ['O', 'Outros']])}</div>
           <div class="f-g pop-w" id="pw-eixo"><button type="button" class="btn pop-b" aria-expanded="false" aria-controls="pop-eixo">Eixo<span class="cont" hidden></span>${icone('baixo', 14)}</button>
@@ -59,7 +57,10 @@ function montarFiltros() {
               <span class="pop-r">Dificuldade</span>${chips('dif', [1, 2, 3].map(d => [d, NIVEIS[d].n]))}
               <span class="pop-r">Extensão</span>${chips('ext', [1, 2, 3].map(e => [e, EXTENSOES[e].n, EXTENSOES[e].d]))}
               <label class="busca-t pop-q">${icone('busca', 14)}<input type="search" id="f-tagq" placeholder="Procurar marcador" aria-label="Procurar marcador"></label>
-              <div id="f-tags">${GRUPOS_TAG.map(([n, lista]) => `<div class="tg-g"><span class="pop-r">${n}</span>${chips('tags', lista.map(t => [t, maiuscula(rotTag(t)), '#' + t]))}</div>`).join('')}</div></div></div></div>
+              <div id="f-tags">${GRUPOS_TAG.map(([n, lista]) => `<div class="tg-g"><span class="pop-r">${n}</span>${chips('tags', lista.map(t => [t, maiuscula(rotTag(t)), '#' + t]))}</div>`).join('')}</div>
+              <div class="f-per" id="f-per"><span class="pop-r">Período <small>pela data de aquisição ou de leitura</small></span>
+                <div class="f-per-l">${seg('f-periodo', 'Período', PERIODOS).replace('class="seg"', 'class="seg mini"')}<button type="button" class="btn sm f-cal" id="f-cal" aria-expanded="false" title="Período personalizado">${icone('calendario', 14)}<span id="f-cal-r">Personalizar</span></button></div>
+                <div class="f-custom" id="f-custom" hidden><label><span>de</span><input type="date" id="f-de" aria-label="Data inicial"></label><label><span>até</span><input type="date" id="f-ate" aria-label="Data final"></label></div></div></div></div></div>
         </div>
         <div class="f-pf"><button type="button" class="btn" data-limpar="tudo">Limpar tudo</button><button type="button" class="btn pri" data-fechar-folha id="f-ver">Ver resultados</button></div>
       </div>
@@ -69,7 +70,7 @@ function montarFiltros() {
   $('#f-periodo').addEventListener('click', e => { const b = e.target.closest('button'); if (!b) return; S.periodo = b.dataset.v; $('#f-custom').hidden = true; filtrosMudaram(); });
   $('#f-cal').addEventListener('click', () => {
     const cx = $('#f-custom'), abrir = cx.hidden;
-    if (abrir) { if (S.de == null || S.ate == null) { const I = intervalo(); S.de = S.periodo === 'tudo' ? DB.hoje - 179 : I.de; S.ate = I.ate; } S.periodo = 'custom'; if (matchMedia('(max-width: 820px)').matches) folha(true, true); }
+    if (abrir) { if (S.de == null || S.ate == null) { const I = intervalo(); S.de = S.periodo === 'tudo' ? DB.hoje - 179 : I.de; S.ate = I.ate; } S.periodo = 'custom'; }
     else if (S.periodo === 'custom') S.periodo = 'tudo';
     cx.hidden = !abrir; filtrosMudaram(); if (abrir) $('#f-de').focus();
   });
@@ -82,17 +83,37 @@ function montarFiltros() {
   $('#f-tagq').addEventListener('input', e => { const q = norm(e.target.value.trim()); $$('#f-tags .chip').forEach(c => { c.hidden = !!q && !norm(c.textContent + ' ' + c.dataset.v).includes(q); }); $$('#f-tags .tg-g').forEach(g => { g.hidden = !$$('.chip', g).some(c => !c.hidden); }); });
   F.addEventListener('click', e => {
     const l = e.target.closest('[data-limpar]');
-    if (l) { const x = l.dataset.limpar; if (x === 'eixos') S.eixos.clear(); else if (x === 'mais') { S.dif.clear(); S.ext.clear(); S.tags.clear(); S.top = false; } else { limparFiltros(true); $('#f-custom').hidden = true; } filtrosMudaram(); return; }
+    if (l) { const x = l.dataset.limpar; if (x === 'eixos') S.eixos.clear(); else if (x === 'mais') { S.dif.clear(); S.ext.clear(); S.tags.clear(); S.top = false; S.periodo = 'tudo'; S.de = S.ate = null; $('#f-custom').hidden = true; } else { limparFiltros(true); $('#f-custom').hidden = true; } filtrosMudaram(); return; }
     const r = e.target.closest('[data-rm]');
-    if (r) { const [g, v] = r.dataset.rm.split(':'); if (g === 'acervo') S.acervo = 'tudo'; else if (g === 'tipo') S.tipo = ''; else if (g === 'top') S.top = false; else if (g === 'periodo') { S.periodo = 'tudo'; $('#f-custom').hidden = true; } else if (g === 'tags') S.tags.delete(v); else S[g].delete(+v); filtrosMudaram(); return; }
+    if (r) { const [g, v] = r.dataset.rm.split(':'); if (g === 'acervo') S.acervo = 'tudo'; else if (g === 'tipo') S.tipo = ''; else if (g === 'top') S.top = false; else if (g === 'periodo') { S.periodo = 'tudo'; S.de = S.ate = null; $('#f-custom').hidden = true; } else if (g === 'tags') S.tags.delete(v); else S[g].delete(+v); filtrosMudaram(); return; }
     const pb = e.target.closest('.pop-b');
-    if (pb) { const w = pb.parentElement, abrir = !w.classList.contains('aberto'); fecharPops(); if (abrir) { w.classList.add('aberto'); pb.setAttribute('aria-expanded', 'true'); } return; }
+    if (pb) {
+      const w = pb.parentElement, abrir = !w.classList.contains('aberto'); fecharPops();
+      if (abrir) {
+        w.classList.add('aberto'); pb.setAttribute('aria-expanded', 'true');
+        // o quadro não pode sair da janela pela direita: recua o quanto for preciso (sem passar da borda esquerda da barra)
+        const pop = $('.pop', w); pop.style.left = '';
+        const r = pop.getBoundingClientRect(), sobra = r.right - (document.documentElement.clientWidth - 12);
+        if (sobra > 0) pop.style.left = -Math.min(sobra, Math.max(0, r.left - F.getBoundingClientRect().left - 12)) + 'px';
+      }
+      return;
+    }
     if (e.target.closest('[data-fechar-folha]')) folha(false);
   });
   $('#f-abrir').addEventListener('click', () => folha(true));
   // se a janela alargar com a folha aberta (tablet girado, janela redimensionada), fecha: no layout largo ela não existe e a página ficaria travada
   if (window.matchMedia) { const mq = matchMedia('(max-width: 820px)'), f = () => { if (!mq.matches) folha(false); }; if (mq.addEventListener) mq.addEventListener('change', f); else if (mq.addListener) mq.addListener(f); }
   document.addEventListener('pointerdown', e => { if (!e.target.closest('.pop-w')) fecharPops(); if (F.classList.contains('folha') && !e.target.closest('#f-painel, #f-abrir, #f-cal')) folha(false); });
+}
+/* mostra, na tabela da visão geral, os livros que o usuário criou ou editou (aba "Editados por você") */
+function verEditados() {
+  limparFiltros(true); $('#f-custom').hidden = true;
+  S.tab.geral = Object.assign(S.tab.geral || {}, { aba: 'meus', q: '', pag: 0 });
+  irPara('geral');
+  const t = $('#p-tab-geral'); if (!t) return;
+  const q = $('input[type=search]', t), aba = $('.abas [aria-selected="true"]', t); if (q) q.value = '';
+  t.scrollIntoView({ block: 'start' });
+  if (aba) aba.scrollIntoView({ block: 'nearest', inline: 'end' });      // no celular as abas rolam de lado: a escolhida tem de aparecer
 }
 const fecharPops = () => $$('.pop-w.aberto').forEach(w => { w.classList.remove('aberto'); $('.pop-b', w).setAttribute('aria-expanded', 'false'); });
 /* folha de filtros (telas estreitas): comporta-se como um diálogo — recebe o foco ao abrir, prende o Tab (ver 60-drawer) e devolve o foco ao fechar */
@@ -116,12 +137,11 @@ function sincronizarFiltros() {
   $$('#pop-eixo .opt').forEach(o => { const inp = $('input', o), e = +inp.value; inp.checked = S.eixos.has(e); $('em', o).textContent = fInt(porEixo.get(e) || 0); });
   $('#f-top').checked = S.top;
   $$('#pop-mais .chip').forEach(c => { const g = c.parentElement.dataset.grupo; c.setAttribute('aria-pressed', String(S[g].has(g === 'tags' ? c.dataset.v : +c.dataset.v))); });
-  const nMais = S.dif.size + S.ext.size + S.tags.size + (S.top ? 1 : 0), cont = (sel, n) => { const el = $(sel); el.hidden = !n; el.textContent = n; };
-  cont('#pw-eixo .cont', S.eixos.size); cont('#pw-mais .cont', nMais); cont('#f-n', nFiltros() + (custom ? 1 : 0));
+  const nMais = S.dif.size + S.ext.size + S.tags.size + (S.top ? 1 : 0) + (S.periodo !== 'tudo' ? 1 : 0), cont = (sel, n) => { const el = $(sel); el.hidden = !n; el.textContent = n; };
+  cont('#pw-eixo .cont', S.eixos.size); cont('#pw-mais .cont', nMais); cont('#f-n', nFiltros());
   $('#pw-eixo').classList.toggle('ativo', S.eixos.size > 0); $('#pw-mais').classList.toggle('ativo', nMais > 0);
   // chips dos filtros ativos
   const ch = [], add = (rm, txt) => ch.push(`<button type="button" class="ativo" data-rm="${esc(rm)}" title="Remover filtro">${esc(txt)}${icone('fechar', 12)}</button>`);
-  if (custom) add('periodo:', `${fData(I.de)} – ${fData(I.ate)}`);
   if (S.acervo !== 'tudo' && S.visao !== 'recs') add('acervo:', ROTULO_ACERVO[S.acervo]);
   if (S.tipo) add('tipo:', { F: 'Ficção', NF: 'Não ficção', HQ: 'HQ', O: 'Poesia e outros' }[S.tipo]);
   for (const e of [...S.eixos].sort((a, z) => a - z)) add('eixos:' + e, EIXOS[e].n);
@@ -129,6 +149,7 @@ function sincronizarFiltros() {
   for (const d of S.dif) add('dif:' + d, 'Dificuldade ' + NIVEIS[d].n.toLowerCase());
   for (const e of S.ext) add('ext:' + e, 'Extensão ' + EXTENSOES[e].n.toLowerCase());
   for (const t of S.tags) add('tags:' + t, '#' + rotTag(t));
+  if (S.periodo !== 'tudo') add('periodo:', custom ? `${fData(I.de)} – ${fData(I.ate)}` : 'Período: ' + (PERIODOS.find(([v]) => v === S.periodo) || ['', ''])[1].toLowerCase());
   const el = $('#f-ativos'); el.hidden = !ch.length;
   setHtml(el, ch.length ? `<span class="fa-r">Filtros ativos</span>${ch.join('')}${ch.length > 1 ? '<button type="button" class="lk" data-limpar="tudo">limpar tudo</button>' : ''}` : '');
 }
@@ -143,9 +164,21 @@ function pintarStatus(ok) {
 }
 function pintarCasca(c) {
   $('#b-exemplo').hidden = !DB.exemplos;
-  const av = $('#aviso'), mostrar = DB.exemplos && !S.avisoVisto;
+  const av = $('#aviso'), mostrar = !S.avisoVisto;
+  av.classList.toggle('inicio', !DB.exemplos);
+  // sem exemplos: um recado, uma vez, dizendo de onde vêm os números e como registrar o resto.
+  // S.saiu > 0: os exemplos de um painel antigo acabaram de sair (S.saiu - 1 = quantos livros editados ficaram como estavam)
+  if (mostrar && !DB.exemplos) {
+    const como = 'Leituras, datas e valores aparecem conforme você registra: abra um livro e use <b>Já li</b>, <b>Começar a ler</b> ou <b>Editar</b>. Nada disso é obrigatório — nem as datas.';
+    const meus = S.saiu > 1 ? S.saiu - 1 : 0;
+    setHtml(av, `<span class="av-i">${icone('info', 18)}</span><div>` + (S.saiu
+      ? `<b>Os dados de exemplo saíram.</b><p>As leituras, datas e valores inventados que o painel mostrava foram retirados: agora só aparece o que é seu. ${como}</p>` +
+        (meus ? `<p>${meus === 1 ? 'O livro que você criou ou editou' : 'Os ' + fInt(meus) + ' livros que você criou ou editou'} enquanto os exemplos estavam ligados <b>${meus === 1 ? 'ficou como estava' : 'ficaram como estavam'}</b>: ${meus === 1 ? 'pode' : 'podem'} trazer datas ou valores de exemplo misturados ao que você anotou. Se eram só testes, use <b>Recomeçar do catálogo original</b>, em <b>Seus dados</b>.</p>` : '')
+      : `<b>Aqui só aparece o que é seu.</b><p>Os ${fInt(DB.livros.filter(b => b.sec >= 0).length)} títulos, a estante física e a biblioteca virtual vieram do seu catálogo. ${como}</p>`) +
+      `</div><div class="av-a">${meus ? `<button type="button" class="btn sm" data-av="meus">Ver ${meus === 1 ? 'esse livro' : 'esses livros'}</button>` : ''}<button type="button" class="btn sm pri" data-av="ok">Entendi</button></div>`);
+  }
   av.hidden = !mostrar;
-  if (mostrar) setHtml(av, `<span class="av-i">${icone('info', 18)}</span><div><b>Seu catálogo é real; o movimento é de exemplo.</b><p>Os ${fInt(DB.livros.filter(b => b.sec >= 0).length)} títulos, autores, marcadores, eixos, a estante física e a biblioteca virtual vieram do seu catálogo. Datas e valores pagos, leituras, a lista de próximas aquisições e os históricos de preço são <b>simulados</b> para dar vida aos gráficos, e os preços não vêm das lojas: entram por cotações que você registra.</p></div><div class="av-a"><button type="button" class="btn sm" data-av="dados">Gerenciar dados</button><button type="button" class="btn sm pri" data-av="ok">Entendi</button></div>`);
+  if (mostrar && DB.exemplos) setHtml(av, `<span class="av-i">${icone('info', 18)}</span><div><b>Seu catálogo é real; o movimento é de exemplo.</b><p>Os ${fInt(DB.livros.filter(b => b.sec >= 0).length)} títulos, autores, marcadores, eixos, a estante física e a biblioteca virtual vieram do seu catálogo. Datas e valores pagos, leituras, a lista de próximas aquisições e os históricos de preço são <b>simulados</b> para dar vida aos gráficos, e os preços não vêm das lojas: entram por cotações que você registra.</p></div><div class="av-a"><button type="button" class="btn sm" data-av="dados">Gerenciar dados</button><button type="button" class="btn sm pri" data-av="ok">Entendi</button></div>`);
   $('#rodape-n').textContent = `${plural(DB.livros.length, 'livro', 'livros')} · ${c.I.tudo ? 'todo o histórico' : c.I.rot}${nFiltros() ? ' · ' + plural(nFiltros(), 'filtro ativo', 'filtros ativos') : ''}`;
 }
 function aplicarTema() {
@@ -166,7 +199,11 @@ function montarCasca() {
     const ir = e.target.closest('[data-ir]'); if (ir) { irPara(ir.dataset.ir); return; }
     const li = e.target.closest('.li[data-id]'); if (li) { abrirLivro(li.dataset.id); return; }
     const sl = e.target.closest('[data-sel]'); if (sl) { selecionarPreco(sl.dataset.sel); return; }
-    const av = e.target.closest('[data-av]'); if (av) { if (av.dataset.av === 'ok') { S.avisoVisto = true; salvar(); pintarCasca(ctxAtual()); } else dlgDados(); }
+    const av = e.target.closest('[data-av]'); if (av) {
+      if (av.dataset.av === 'ok') { S.avisoVisto = true; S.saiu = 0; salvar(); pintarCasca(ctxAtual()); }
+      else if (av.dataset.av === 'meus') verEditados();
+      else dlgDados();
+    }
   });
   $('#b-tema').addEventListener('click', () => { S.tema = document.documentElement.dataset.tema === 'escuro' ? 'claro' : 'escuro'; aplicarTema(); salvar(); });
   $('#b-olho').addEventListener('click', () => { S.ocultar = !S.ocultar; aplicarOlho(); salvar(); render(); if (Gaveta.id) desenharGaveta(); });
@@ -218,6 +255,12 @@ function iniciar() {
   // enquanto nada foi editado, os exemplos acompanham a data de hoje (assim os gráficos nunca "envelhecem")
   if (DB.exemplos && DB.criadoEm !== DB.hoje && !DB.livros.some(b => b.u || temCotacaoPropria(b))) { DB.livros = gerarExemplos(livrosDoCatalogo(), DB.hoje); DB.criadoEm = DB.hoje; }
   S.tema = cfg.tema === 'claro' || cfg.tema === 'escuro' ? cfg.tema : ''; S.ocultar = !!cfg.ocultar; S.avisoVisto = !!cfg.avisoVisto;
+  S.capas = cfg.capas !== false; MOSTRAR_CAPAS = S.capas;
+  // os exemplos de um painel antigo acabaram de sair: o recado inicial volta, agora contando isso, e fica até o "Entendi"
+  S.saiu = DB.saiuExemplo || (cfg.saiu > 0 && !DB.exemplos ? Math.round(+cfg.saiu) || 0 : 0);
+  if (DB.saiuExemplo) S.avisoVisto = false;
+  // imagem de capa que não carregou (sem rede, capa retirada do ar): some, e fica o desenho com a inicial do título
+  document.addEventListener('error', e => { const im = e.target; if (im && im.tagName === 'IMG' && im.parentElement && im.parentElement.classList.contains('capa')) { const c = im.parentElement; if (c.classList.contains('g')) c.remove(); else im.remove(); } }, true);
   if (cfg.visao && VISOES[cfg.visao]) S.visao = cfg.visao;
   if (cfg.ui && typeof cfg.ui === 'object') Object.assign(S.ui, cfg.ui);
   if (cfg.tam) for (const k in cfg.tam) if (TABELAS[k] && [10, 25, 50, 100].includes(cfg.tam[k])) S.tab[k] = { tam: cfg.tam[k] };
@@ -227,6 +270,8 @@ function iniciar() {
   document.documentElement.classList.add('pronto');
   // o painel chegou com outro catálogo: os dados salvos já foram conciliados (ver conciliarCatalogo); grava e avisa
   if (DB.novidade) { salvar(); if (textoNovidade()) toast(textoNovidade().trim() + ' O que você editou no painel foi mantido.'); }
+  // os dados de exemplo de um painel antigo saíram (ver carregarDB): grava e avisa
+  if (DB.saiuExemplo) { salvar(); toast('Os dados de exemplo saíram: agora o painel mostra só o que é seu.'); }
   try { if (sessionStorage.getItem('bl-falha')) { sessionStorage.removeItem('bl-falha'); toast('Os dados salvos não puderam ser abertos e o painel recomeçou do catálogo. A cópia do que havia está em “Seus dados”.', 'aviso');
     // a recarga da rede de segurança abre no topo (ver abaixo); depois disso a rolagem volta a ser lembrada pelo navegador
     const volta = () => setTimeout(() => { try { history.scrollRestoration = 'auto'; } catch (e) { /* nada */ } }, 600);

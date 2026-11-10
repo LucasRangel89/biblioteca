@@ -1,0 +1,76 @@
+# Procura na Open Library a capa dos livros do catálogo e guarda o resultado em catalogo/capas.tsv.
+#
+# Para rodar: aba Actions → "Buscar capas" → Run workflow (escolha o ramo). Só procura os livros que ainda não
+# foram procurados; marcando "refazer", tenta de novo os que não tinham sido achados.
+#
+# O que este serviço muda: apenas o arquivo catalogo/capas.tsv, no ramo em que rodou. Ele não monta o painel nem
+# publica o site: isso continua sendo feito numa rodada, com os testes (tools/atualizar.py e tools/qa/tudo.py).
+# Nenhuma imagem entra no repositório — o painel mostra as capas direto da Open Library.
+#
+# No fim, o serviço pede 40 das capas guardadas para conferir se as imagens abrem de verdade. Se essa conferência
+# falhar (a Open Library fora do ar, por exemplo), a execução fica marcada em vermelho, mas o resultado da busca já
+# foi guardado no passo anterior.
+name: Buscar capas
+
+on:
+  workflow_dispatch:
+    inputs:
+      refazer:
+        description: Procurar de novo as capas que não foram achadas
+        type: boolean
+        default: false
+
+permissions:
+  contents: write   # gravar o catalogo/capas.tsv no ramo
+
+# Uma busca por vez em cada ramo.
+concurrency:
+  group: capas-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  buscar:
+    name: Buscar
+    runs-on: ubuntu-latest
+    timeout-minutes: 80
+    steps:
+      - name: Baixar o repositório
+        uses: actions/checkout@v7
+        with:
+          fetch-depth: 0
+
+      - name: Procurar as capas
+        env:
+          REFAZER: ${{ inputs.refazer && '--refazer' || '' }}
+        run: python3 tools/capas.py --minutos 55 $REFAZER
+
+      - name: Guardar o resultado
+        if: always()
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add catalogo/capas.tsv
+          if git diff --cached --quiet; then
+            echo "Nada mudou em catalogo/capas.tsv."
+            exit 0
+          fi
+          git commit -m "Capas: resultado da busca na Open Library"
+          git pull --rebase origin "$GITHUB_REF_NAME"
+          git push origin "HEAD:$GITHUB_REF_NAME"
+          python3 tools/capas.py --conferir >> "$GITHUB_STEP_SUMMARY"
+
+      - name: Conferir se as imagens abrem (amostra)
+        run: |
+          codigo=0
+          python3 tools/capas.py --testar 40 > "$RUNNER_TEMP/amostra.txt" || codigo=$?
+          cat "$RUNNER_TEMP/amostra.txt"
+          cat "$RUNNER_TEMP/amostra.txt" >> "$GITHUB_STEP_SUMMARY"
+          # O resultado também vira um aviso da execução: aparece na página dela, sem precisar abrir o registro.
+          resumo=$(grep -m1 '^Amostra das capas' "$RUNNER_TEMP/amostra.txt" || true)
+          ruins=$(grep 'não abriu' "$RUNNER_TEMP/amostra.txt" | head -n 5 | sed 's/^ *//' | paste -sd ';' - || true)
+          if [ "$codigo" = 0 ]; then
+            echo "::notice title=Capas::${resumo}"
+          else
+            echo "::error title=Capas::${resumo:-a conferência não chegou ao fim} ${ruins}"
+          fi
+          exit $codigo

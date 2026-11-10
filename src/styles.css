@@ -113,7 +113,15 @@ kbd { font: 600 11px/1 var(--sans); padding: 3px 6px; border-radius: 5px; border
 /* ───────────── filtros ───────────── */
 .filtros { position: sticky; top: 0; z-index: 20; padding: 10px var(--pad); background: color-mix(in srgb, var(--bg) 86%, transparent); -webkit-backdrop-filter: blur(12px) saturate(1.2); backdrop-filter: blur(12px) saturate(1.2); border-bottom: 1px solid color-mix(in srgb, var(--line) 70%, transparent); }
 .f-linha { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
-.f-per { display: flex; align-items: center; gap: 8px; min-width: 0; }
+/* período: fica no fim de "Mais filtros" — filtra pela data de aquisição ou de leitura, e quase nenhum livro tem data */
+.f-per { margin-top: 6px; border-top: 1px solid var(--line); }
+.f-per .pop-r small { text-transform: none; letter-spacing: 0; font-weight: 500; }
+.f-per-l { display: flex; flex-wrap: wrap; align-items: center; gap: 6px; padding: 0 8px 4px; }
+.f-per-l .seg { flex-wrap: wrap; }
+.f-per-l .seg.mini button { height: 26px; padding: 0 9px; font-size: 12.5px; }
+.f-per-l .f-cal { height: 30px; }
+.f-custom { display: flex; flex-wrap: wrap; align-items: center; gap: 8px 12px; padding: 6px 8px 4px; }
+.f-custom[hidden] { display: none; }
 .f-painel { display: contents; }
 .f-corpo { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
 .f-ph, .f-pf, .f-abrir { display: none; }
@@ -165,8 +173,12 @@ input[type="checkbox"] { width: 16px; height: 16px; margin: 0; accent-color: var
 
 .aviso { display: flex; align-items: flex-start; gap: 12px; margin: 16px var(--pad) 0; padding: 14px 16px; border: 1px dashed color-mix(in srgb, var(--warn) 50%, var(--line)); border-radius: var(--r); background: var(--warn-soft); }
 .av-i { color: var(--warn); margin-top: 1px; }
+/* recado de boas-vindas (painel sem dados de exemplo): mesmo desenho, sem o tom de alerta */
+.aviso.inicio { border: 1px solid color-mix(in srgb, var(--accent) 28%, var(--line)); background: var(--accent-soft); }
+.aviso.inicio .av-i { color: var(--accent-forte); }
 .aviso > div:nth-child(2) { flex: 1; min-width: 0; }
 .aviso p { color: var(--ink-2); font-size: 13px; margin-top: 2px; max-width: 96ch; }
+.aviso p + p { margin-top: 6px; }
 .av-a { display: flex; gap: 8px; flex: none; align-self: center; }
 
 /* ───────────── conteúdo ───────────── */
@@ -233,7 +245,7 @@ button.leg:hover { background: var(--surface-3); color: var(--ink); }
 
 .rosca { display: grid; grid-template-columns: 1fr; justify-items: center; align-content: center; gap: 14px; height: 100%; }
 .rosca-g { position: relative; width: min(100%, 186px); aspect-ratio: 1; }
-.rosca svg { width: 100%; height: 100%; display: block; overflow: visible; touch-action: pan-y; }
+.rosca-g svg { width: 100%; height: 100%; display: block; overflow: visible; touch-action: pan-y; }   /* só o gráfico: o ícone do aviso de "vazio" fica do tamanho dele */
 .trilho { stroke: var(--surface-3); stroke-width: 23; }
 .fatia { stroke-width: 23; transition: stroke-dasharray .6s cubic-bezier(.3, .7, .2, 1), stroke-dashoffset .6s cubic-bezier(.3, .7, .2, 1), opacity .18s, stroke-width .18s; }
 .fatias.dim .fatia:not(.on) { opacity: .32; }
@@ -261,7 +273,8 @@ button.hb:hover { background: var(--surface-3); }
 .hb-t i { height: 100%; width: 0; transition: width .6s cubic-bezier(.3, .7, .2, 1); min-width: 0; }
 .hb-t i:first-child { border-radius: 4px 0 0 4px; }
 .hb-v { min-width: 30px; text-align: right; font-weight: 600; font-variant-numeric: tabular-nums; }
-.hb.zero { opacity: .5; }
+.hb.zero .hb-n, .hb.zero .hb-v { color: var(--ink-3); }      /* linha zerada: mais apagada, mas ainda legível (sem opacidade: o contraste cairia abaixo do AA) */
+.hb.zero .hb-v { font-weight: 500; }
 .hbar.tem-sel .hb:not(.sel) { opacity: .45; }
 .hb.sel .hb-n { font-weight: 650; color: var(--accent-forte); }
 
@@ -298,6 +311,15 @@ button.hb:hover { background: var(--surface-3); }
 .li-m b, .tt b { font-weight: 600; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 .li-m > span, .tt > span { color: var(--ink-3); font-size: 12.5px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 .li-sp { flex: none; }
+/* capa: a imagem (quando há) por cima de um "livro" desenhado com a inicial do título */
+.capa { position: relative; flex: none; display: inline-block; width: 30px; aspect-ratio: 2 / 3; border-radius: 3px; overflow: hidden; background: linear-gradient(140deg, var(--surface-3), color-mix(in srgb, var(--accent) 16%, var(--surface-3))); box-shadow: inset 3px 0 0 rgba(0, 0, 0, .07), 0 0 0 1px var(--line); }
+.capa::before { content: attr(data-l); position: absolute; inset: 0; display: grid; place-items: center; padding-left: 3px; font: 600 14px/1 var(--serif); color: var(--ink-3); }
+.capa img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }   /* sem fundo: enquanto a imagem não chega, vê-se o desenho */
+.capa.g { width: 104px; border-radius: 6px; box-shadow: var(--sombra-2), 0 0 0 1px var(--line); }
+.capa.g::before { font-size: 40px; }
+.tt-c { display: flex; align-items: center; gap: 10px; min-width: 0; }
+#gv-topo { display: flex; align-items: flex-start; gap: 16px; }
+.gv-tx { flex: 1; min-width: 0; }
 .li-pb { display: flex; align-items: center; gap: 12px; flex: none; }
 .li-pb b { font-weight: 650; }
 .li-v { display: flex; flex-direction: column; align-items: flex-end; flex: none; line-height: 1.3; text-align: right; }
@@ -391,6 +413,10 @@ button.hb:hover { background: var(--surface-3); }
 .cp.c3 { grid-column: span 2; }
 .cp > span { font-size: 12px; font-weight: 600; color: var(--ink-2); }
 .cp small { font-weight: 400; color: var(--ink-3); margin-left: 4px; }
+.form-n { grid-column: 1 / -1; margin: -2px 0 0; font-size: 12.5px; line-height: 1.45; color: var(--ink-3); }   /* recado do formulário: o que é opcional */
+.form-n.ini { margin: 0 0 2px; }
+.form-n b { color: var(--ink-2); }
+.form-n .lk { margin-left: 4px; white-space: nowrap; }
 .cp.chk { flex-direction: row; align-items: center; gap: 8px; align-self: end; height: 36px; cursor: pointer; grid-column: span 4; }
 .cp.chk > span { font-size: 13px; font-weight: 500; color: var(--ink); }
 .grp { border: 1px solid var(--line); border-radius: 11px; padding: 6px 12px 12px; margin: 0; display: grid; grid-template-columns: repeat(6, minmax(0, 1fr)); gap: 12px; min-width: 0; background: var(--surface-2); }
@@ -400,6 +426,7 @@ input[type="range"] { accent-color: var(--accent); width: 100%; height: 28px; pa
 .cot .cp { grid-column: span 1; }
 .cot .cp.c2 { grid-column: 1 / -1; }
 .cot-a .btn { width: 100%; }
+.cot-sem { display: flex; min-height: 150px; }                 /* quadro “Registrar cotação” sem nenhum livro para cotar */
 .lojas-b:empty { display: none; }
 .lb-t { display: block; font-size: 12px; color: var(--ink-3); margin-bottom: 7px; }
 .lb { display: flex; flex-wrap: wrap; gap: 6px; }
@@ -428,7 +455,9 @@ input[type="range"] { accent-color: var(--accent); width: 100%; height: 28px; pa
 .abas button[aria-selected="true"] { color: var(--accent-forte); border-bottom-color: var(--accent); }
 .abas .cont { background: var(--surface-3); color: var(--ink-2); font-weight: 600; }
 .abas button[aria-selected="true"] .cont { background: var(--accent-soft); color: var(--accent-forte); }
-.abas button.zero { opacity: .5; }
+.abas button.zero { color: var(--ink-3); }                    /* aba sem nenhum livro: apagada pela cor, não por opacidade (contraste AA) */
+.abas button.zero:hover { color: var(--ink); }
+.abas button.zero .cont { background: none; box-shadow: inset 0 0 0 1px var(--line-2); color: var(--ink-3); }
 .tb-w { margin: 0 -18px; overflow-x: auto; }
 .tb { width: 100%; border-collapse: collapse; font-size: 13px; }
 .tb th { position: relative; text-align: left; font-size: 11.5px; font-weight: 650; letter-spacing: .04em; text-transform: uppercase; color: var(--ink-3); padding: 0 10px; height: 38px; white-space: nowrap; border-bottom: 1px solid var(--line); background: var(--surface-2); }
@@ -451,7 +480,8 @@ input[type="range"] { accent-color: var(--accent); width: 100%; height: 28px; pa
 .tb tbody tr:focus-visible { outline-offset: -2px; }
 .tb th.c-tit { width: 30%; min-width: 200px; }
 .tb td.c-tit { white-space: normal; max-width: 360px; }
-.tb td.c-tit .tt { width: 0; min-width: 100%; }
+.tb td.c-tit .tt-c { width: 0; min-width: 100%; }
+.tb td.c-tit .tt { width: auto; min-width: 0; }
 .tb td.c-tit .tt b { white-space: normal; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
 td.c-eixo { white-space: normal; min-width: 150px; max-width: 176px; line-height: 1.3; color: var(--ink-2); }   /* 150px: todo eixo cabe em duas linhas */
 td.c-tags { white-space: normal; min-width: 150px; max-width: 236px; }
@@ -481,7 +511,7 @@ td.c-spark svg { margin-left: auto; margin-right: auto; }
   .tb td.c-tit { grid-column: 1 / -1; grid-row: 1; width: auto; min-width: 0; }
   .tb tr.tem-b td.c-tit { grid-column: 1 / 5; }
   .tb td.c-tit::before, .tb td.m-b::before, .tb td.c-spark, .tb td.m-x, .tb td.vz { display: none; }
-  .tb td.c-tit .tt { width: 100%; min-width: 0; }
+  .tb td.c-tit .tt-c { width: 100%; min-width: 0; }
   .tb td.c-tit .tt b { font-size: 14px; }
   /* o selo fica colado à direita; se for mais largo que a coluna, avança para a esquerda (nunca para fora do cartão) */
   .tb td.m-b { grid-column: 5 / 7; grid-row: 1; display: flex; flex-direction: column; align-items: flex-end; gap: 2px; text-align: right !important; }
@@ -628,8 +658,8 @@ td.c-spark svg { margin-left: auto; margin-right: auto; }
   html { scroll-padding-top: 64px; }
   .app { grid-template-columns: minmax(0, 1fr); padding-bottom: calc(62px + env(safe-area-inset-bottom)); }
   .lateral { display: none; }
-  .inferior { display: grid; grid-template-columns: repeat(5, 1fr); position: fixed; left: 0; right: 0; bottom: 0; z-index: 40; background: color-mix(in srgb, var(--surface) 94%, transparent); -webkit-backdrop-filter: blur(14px); backdrop-filter: blur(14px); border-top: 1px solid var(--line); padding: 5px 4px calc(5px + env(safe-area-inset-bottom)); }
-  .inferior button { display: flex; flex-direction: column; align-items: center; gap: 3px; padding: 6px 2px 5px; border-radius: 10px; color: var(--ink-3); font-size: 10.5px; font-weight: 600; min-width: 0; }
+  .inferior { display: grid; grid-template-columns: repeat(6, minmax(0, 1fr)); position: fixed; left: 0; right: 0; bottom: 0; z-index: 40; background: color-mix(in srgb, var(--surface) 94%, transparent); -webkit-backdrop-filter: blur(14px); backdrop-filter: blur(14px); border-top: 1px solid var(--line); padding: 5px 4px calc(5px + env(safe-area-inset-bottom)); }
+  .inferior button { display: flex; flex-direction: column; align-items: center; gap: 3px; padding: 6px 1px 5px; border-radius: 10px; color: var(--ink-3); font-size: 10px; font-weight: 600; letter-spacing: -.01em; min-width: 0; }   /* seis guias: 10px cabem em 360 px sem cortar nenhum nome */
   .inferior .nv-l { display: none; }
   .inferior .nv-c { display: block; max-width: 100%; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
   .inferior button[aria-current] { color: var(--accent-forte); background: var(--accent-soft); }
@@ -643,11 +673,13 @@ td.c-spark svg { margin-left: auto; margin-right: auto; }
   /* sem desfoque aqui: backdrop-filter prenderia a folha de filtros (position: fixed) dentro da barra */
   .filtros { padding: 8px var(--pad); background: var(--bg); -webkit-backdrop-filter: none; backdrop-filter: none; }
   .f-linha { flex-wrap: nowrap; }
-  .f-per { flex: 1; overflow-x: auto; scrollbar-width: none; margin: 0 -4px; padding: 0 22px 0 4px; -webkit-mask-image: linear-gradient(90deg, #000 calc(100% - 26px), transparent); mask-image: linear-gradient(90deg, #000 calc(100% - 26px), transparent); }
-  .f-per::-webkit-scrollbar { display: none; }
-  .f-cal span { display: none; }
-  .f-cal { width: 36px; padding: 0; flex: none; }
   .f-abrir { display: inline-flex; flex: none; }
+  .f-per { margin: 10px 8px 0; padding-top: 2px; }
+  .f-per .pop-r { padding-left: 0; }
+  .f-per-l, .f-custom { padding-left: 0; padding-right: 0; }
+  .f-g .f-per-l .seg { display: inline-flex; }
+  .f-g .f-per-l .seg.mini button { flex: none; height: 32px; padding: 0 10px; }
+  .f-per-l .f-cal { height: 36px; }
   .f-painel { display: none; position: fixed; left: 0; right: 0; bottom: 0; z-index: 80; max-height: 86dvh; flex-direction: column; background: var(--surface); border-radius: 18px 18px 0 0; border: 1px solid var(--line); box-shadow: var(--sombra-2); }
   .filtros.folha { z-index: 85; }
   .filtros.folha::before { content: ""; position: fixed; inset: 0; background: var(--veu); z-index: 79; }
@@ -660,8 +692,6 @@ td.c-spark svg { margin-left: auto; margin-right: auto; }
   .f-g { flex-direction: column; align-items: stretch; gap: 7px; }
   .f-g .seg { display: flex; }
   .f-g .seg button { flex: 1; height: 34px; padding: 0 6px; }   /* cinco opções no Tipo: com 11px de respiro, "Outros" saía da folha em telas de 320 px */
-  .f-custom { flex-direction: row; flex-wrap: wrap; align-items: center; }
-  .f-custom .f-r { width: 100%; }
   .f-custom label { flex: 1; }
   .f-custom input { flex: 1; width: 100%; }
   .pop-b { display: none; }
@@ -726,7 +756,7 @@ td.c-spark svg { margin-left: auto; margin-right: auto; }
 @media (max-width: 520px) { .card-tab .busca-t { flex: 1 1 100%; } }
 /* telefones estreitos (360px e menos): o título diminui; nos de 320px, o botão de ocultar valores cede o lugar a ele */
 @media (max-width: 380px) { .topo h1 { font-size: 16px; } }
-@media (max-width: 340px) { #b-olho { display: none; } .inferior { padding-left: 2px; padding-right: 2px; } .inferior button { font-size: 9.5px; letter-spacing: -.01em; padding-left: 0; padding-right: 0; } }
+@media (max-width: 340px) { #b-olho { display: none; } .inferior { padding-left: 2px; padding-right: 2px; } .inferior button { font-size: 9px; letter-spacing: -.02em; padding-left: 0; padding-right: 0; } }
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after { animation-duration: .001s !important; transition-duration: .001s !important; scroll-behavior: auto !important; }
 }
