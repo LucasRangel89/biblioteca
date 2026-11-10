@@ -18,8 +18,9 @@ Este arquivo é atualizado ao fim de cada rodada. Para saber em que pé as coisa
 | 4 | Classificar os livros digitais novos | A fazer |
 | 5 | Rotina à prova de erro | A fazer |
 | 6 | Melhorias do painel | **Em parte** (10/11/2026) — endereço próprio, guia Finanças, capas, só o título obrigatório |
+| 7 | A versão 3 do catálogo: camadas e trilhas de leitura | **A decidir** — o arquivo que você enviou em 10/11/2026 ainda não é usado; proposta abaixo |
 
-A ordem pode mudar: as etapas 2 a 6 não dependem umas das outras. Se alguma interessar mais, peça por ela.
+A ordem pode mudar: as etapas 2 a 7 não dependem umas das outras. Se alguma interessar mais, peça por ela.
 
 ## Como funciona uma rodada
 
@@ -271,6 +272,37 @@ Ideias em aberto; você escolhe quais valem a pena.
 - **"Tenho em digital, quero o físico":** hoje um livro ou está no acervo ou está na lista de compras, nunca nos dois.
 - **Anotações fora do navegador:** hoje leituras e notas ficam guardadas só no navegador em que foram feitas, e o
   backup é manual. Por isso o computador e o celular não mostram as mesmas anotações.
+
+## Etapa 7 — A versão 3 do catálogo: camadas e trilhas de leitura
+
+**O que chegou.** Em 10/11/2026 você enviou ao repositório o arquivo `Biblioteca_Lucas_Catalogo_Mestre (2).md`: a
+"versão 3" do catálogo, feita fora daqui. Ele está na pasta principal e **ainda não é usado**: o painel continua
+sendo gerado a partir de `catalogo/Biblioteca_Lucas_Catalogo_Mestre.md`.
+
+**O que ele traz de novo** (comparado, livro a livro, com o catálogo daqui):
+
+- **Camadas em 442 dos 644 livros da estante e das recomendações:** a pergunta central do livro (`#q-…`, 12
+  perguntas), o clima da leitura (`#clima-…`, 10), o papel na biblioteca (`#papel-…`, 6), pontes entre áreas
+  (`#ponte-…`, 8) e cenários (`#cenario-…`, 9).
+- **20 trilhas de leitura:** roteiros prontos, com os livros em ordem ("Alma Russa", "Do Aviso ao Espelho"…).
+- **Interseções** entre marcadores e um índice das camadas.
+
+**O que ele não traz.** Os 644 livros são os mesmos daqui, mas como estavam antes das correções: os seis títulos
+acertados na etapa 1 aparecem com o nome antigo, e 24 livros que você tem em arquivo aparecem como se não tivesse. A
+parte da biblioteca virtual veio direto dos nomes dos arquivos (249 livros sem autor) e não tem os quadrinhos. Por
+isso o arquivo **não pode simplesmente tomar o lugar do catálogo**: o trabalho das etapas 0 a 2 se perderia.
+
+**Proposta.** Trazer para o catálogo daqui só o que é novo — as camadas, livro a livro, e as trilhas — e mostrar
+isso no painel: as camadas na ficha de cada livro e nos filtros, e uma lista das trilhas, com o que você já tem e já
+leu de cada uma. A biblioteca virtual fica como está.
+
+**Um achado dessa comparação**, para corrigir na mesma rodada: *Olhando para o Sol* (recomendação) e *De Frente para
+o Sol* (que você tem em arquivo) são o mesmo livro de Irvin D. Yalom, e hoje aparecem como dois.
+
+**De você:** dizer se era isso que você queria ao enviar o arquivo — ou o que mais esperava dele.
+
+**Pronta quando** as camadas e as trilhas estiverem no catálogo e no painel, e o arquivo enviado tiver saído da pasta
+principal (fica guardado em `referencias/`).
 
 ---
 
