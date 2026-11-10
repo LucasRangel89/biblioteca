@@ -14,10 +14,10 @@ Este arquivo é atualizado ao fim de cada rodada. Para saber em que pé as coisa
 | 0 | Trazer a biblioteca virtual para o catálogo e para o painel | **Feita** (10/11/2026) |
 | 1 | Conferir o que foi importado | **Quase pronta** — falta só o que depende de você (lista abaixo) |
 | 2 | Decidir o que ficou de fora (quadrinhos, subpastas) | **Feita** (10/11/2026) — ficaram 12 perguntas para você (lista abaixo) |
-| 3 | Trocar os dados de exemplo pelos seus | A fazer |
+| 3 | Trocar os dados de exemplo pelos seus | **Em parte** (10/11/2026) — o painel já abre sem nada inventado; falta a sua lista de leituras |
 | 4 | Classificar os livros digitais novos | A fazer |
 | 5 | Rotina à prova de erro | A fazer |
-| 6 | Melhorias do painel | **Em parte** — o painel já abre por um endereço (10/11/2026) |
+| 6 | Melhorias do painel | **Em parte** (10/11/2026) — endereço próprio, guia Finanças, capas, só o título obrigatório |
 
 A ordem pode mudar: as etapas 2 a 6 não dependem umas das outras. Se alguma interessar mais, peça por ela.
 
@@ -46,6 +46,12 @@ O painel abre em <https://lucasrangel89.github.io/biblioteca/>, no computador ou
 - **Vale exportar um backup de vez em quando.** Limpar os dados de navegação do navegador apaga as anotações.
 - **O endereço é público.** Quem o tiver vê a lista de livros, que já é pública no GitHub. O que você anota não sai
   do seu navegador.
+- **O painel abre só com o que é seu.** Os dados de exemplo (leituras, datas e valores inventados) não vêm mais
+  ligados. Se você já usava o site, eles somem sozinhos na primeira abertura depois de 10/11/2026, e o painel avisa
+  (os detalhes estão na etapa 3, abaixo).
+- **As capas vêm da internet.** O site inteiro é um arquivo só; a única coisa que ele busca fora são as imagens das
+  capas, num catálogo aberto de livros chamado Open Library. Sem internet, ou quando o livro não tem capa, aparece
+  um desenho com a inicial do título. Quem preferir desliga as capas em "Seus dados".
 - **O arquivo continua valendo.** O `Biblioteca_Lucas_Dashboard.html` do repositório é o mesmo painel e abre sem
   internet. Quem preferir usá-lo baixa o arquivo novo a cada rodada e põe no lugar do antigo, na mesma pasta e com o
   mesmo nome, depois de exportar um backup.
@@ -197,17 +203,25 @@ Está: o que entrou e o que ficou de fora estão nas listas acima, e em `bibliot
 
 ## Etapa 3 — Trocar os dados de exemplo pelos seus
 
-**Por quê.** As leituras, as datas e os valores de compra que o painel mostra hoje são **inventados**, só para os
-gráficos não ficarem vazios (o painel avisa disso). De verdade, o catálogo só sabe de dois livros lidos: *O Arqueiro*
-e *O Físico*.
+**Feito** (10/11/2026): **o painel abre sem nenhum número inventado.** As leituras, as datas e os valores de exemplo
+saíram; ficou só o catálogo — que, de leituras, sabe de duas: *O Arqueiro* e *O Físico*. Sem compras registradas, a
+guia Finanças fica zerada, e cada gráfico vazio diz o que falta para ele se preencher.
 
-**De você:** uma lista simples do que já leu e do que está lendo — pode ser de memória, sem datas. Se lembrar de
-preços ou de quando comprou algum livro da estante, melhor, mas não é necessário.
+- **Se você já usava o site:** na primeira abertura depois desta mudança os dados de exemplo somem sozinhos, uma
+  única vez, e o painel avisa.
+- **Os livros que você criou ou editou ficam como estavam.** Se a edição foi num livro que trazia data ou valor de
+  exemplo, esses números continuam nele: o painel não tem como saber quais você digitou. O aviso mostra quais são
+  esses livros, para você conferir. Se eram só testes, "Seus dados" → "Recomeçar do catálogo original" apaga tudo.
+- **Para ver os gráficos cheios:** "Seus dados" → "Ver com dados de exemplo". Sai no mesmo lugar, em "Limpar dados de
+  exemplo", sem mexer no que você registrou.
 
-**O que será feito:** os lidos entram no catálogo (`#lido`), para não dependerem do navegador; o painel passa a abrir
-com os seus dados, e os de exemplo saem.
+**Falta, de você:** uma lista simples do que já leu e do que está lendo — pode ser de memória, sem datas. Se lembrar
+de preços ou de quando comprou algum livro da estante, melhor, mas não é necessário. Também dá para marcar direto no
+painel ("Já li", "Começar a ler"); aí a informação fica só no navegador em que foi marcada.
 
-**Pronta quando** o painel abrir sem nenhum número inventado.
+**O que será feito com a lista:** os lidos entram no catálogo (`#lido`), para não dependerem do navegador.
+
+**Pronta quando** as suas leituras estiverem no catálogo.
 
 ## Etapa 4 — Classificar os livros digitais novos
 
@@ -237,11 +251,23 @@ listagens de uma vez; o material antigo guardado em `referencias/` é revisto.
 
 ## Etapa 6 — Melhorias do painel
 
-**Feito** (10/11/2026): **o painel abre por um endereço**, inclusive no celular, em vez de ser um arquivo a baixar
-(ver "O site", acima).
+**Feito** (10/11/2026):
+
+- **O painel abre por um endereço**, inclusive no celular, em vez de ser um arquivo a baixar (ver "O site", acima).
+- **Guia Finanças.** Tudo o que é dinheiro — quanto foi investido, preço médio, gastos por período e por loja, as
+  compras registradas — saiu da Visão geral e da Biblioteca e foi para uma guia própria.
+- **O período foi para dentro de "Mais filtros"**, e a barra de filtros ficou mais curta.
+- **Só o título é obrigatório.** Data de aquisição, loja, valor e data de leitura são opcionais em todos os
+  formulários: dá para dizer "já tenho" sem dizer quanto custou, e "já li" sem dizer quando.
+- **Capas.** 762 dos 2.560 livros aparecem com a capa; os outros, com um desenho com a inicial do título. A busca só
+  aceita uma capa quando o título e o autor conferem, e o catálogo de onde elas vêm (Open Library) tem poucas
+  edições brasileiras — por isso não são mais.
 
 Ideias em aberto; você escolhe quais valem a pena.
 
+- **Mais capas:** procurar as que faltam em outra fonte, ou você indicar a capa certa de um livro (basta o endereço
+  de uma imagem).
+- **Juntar "Próximas aquisições" e "Preços" dentro de Finanças:** hoje são três guias que falam de dinheiro.
 - **"Tenho em digital, quero o físico":** hoje um livro ou está no acervo ou está na lista de compras, nunca nos dois.
 - **Anotações fora do navegador:** hoje leituras e notas ficam guardadas só no navegador em que foram feitas, e o
   backup é manual. Por isso o computador e o celular não mostram as mesmas anotações.
@@ -254,6 +280,8 @@ Ideias em aberto; você escolhe quais valem a pena.
 - **Nada entra sem teste e sem a sua aprovação.**
 - **O que você anota no painel é seu e é preservado.** Quando um título ou autor é corrigido no catálogo, o painel
   reencontra o livro e mantém as anotações (os detalhes estão no `README.md`).
+- **O painel não inventa nada.** Só mostra o catálogo e o que você registrou; dados de exemplo, só se você pedir.
+- **Só o título é obrigatório.** Datas, valores e lojas entram quando você souber e quiser.
 - **Na dúvida, fica marcado.** Título ou autor incerto leva `#verificar` em vez de um palpite.
 - **Quadrinhos: uma linha por série**, sejam quantas forem as edições guardadas.
 - **O que não é livro nem quadrinho fica só no inventário** (apostilas, revistas, artigos), fora do catálogo e do
