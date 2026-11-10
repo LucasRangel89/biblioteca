@@ -8,7 +8,7 @@ Requisitos (uma vez): pip install playwright pillow  &&  python -m playwright in
 import os, re, subprocess, sys, time
 from caminhos import QA, TMP
 
-TESTES = ['importador', 'medir3', 'limpo', 'posse', 'foco', 'func3', 'func4', 'func5', 'func6', 'func7', 'func8', 'sandbox', 'run7', 'run9', 'valores', 'resto', 'a11y', 'varredura']
+TESTES = ['importador', 'medir3', 'limpo', 'posse', 'foco', 'func3', 'func4', 'func5', 'func6', 'func7', 'func8', 'sandbox', 'site', 'run7', 'run9', 'valores', 'resto', 'a11y', 'varredura']
 RUIM = re.compile(r'ERROS: [1-9]|erros: [1-9]|FALHAS: \[[^\]]|AVISOS: [1-9]|PROBLEMAS: \{[^}]')
 RESUMO = re.compile(r'^(ERROS|FALHAS|AVISOS|PROBLEMAS)\b|erros:')
 
