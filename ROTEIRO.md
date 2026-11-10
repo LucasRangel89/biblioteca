@@ -5,6 +5,8 @@ trabalho é feito e testado, você aprova, e só então entra na versão oficial
 
 Este arquivo é atualizado ao fim de cada rodada. Para saber em que pé as coisas estão, basta ler a tabela abaixo.
 
+**O painel está no ar:** <https://lucasrangel89.github.io/biblioteca/>
+
 ## Onde estamos
 
 | Etapa | O que é | Situação |
@@ -15,7 +17,7 @@ Este arquivo é atualizado ao fim de cada rodada. Para saber em que pé as coisa
 | 3 | Trocar os dados de exemplo pelos seus | A fazer |
 | 4 | Classificar os livros digitais novos | A fazer |
 | 5 | Rotina à prova de erro | A fazer |
-| 6 | Melhorias do painel | A fazer |
+| 6 | Melhorias do painel | **Em parte** — o painel já abre por um endereço (10/11/2026) |
 
 A ordem pode mudar: as etapas 2 a 6 não dependem umas das outras. Se alguma interessar mais, peça por ela.
 
@@ -26,13 +28,27 @@ A ordem pode mudar: as etapas 2 a 6 não dependem umas das outras. Se alguma int
 2. **O trabalho é feito e testado.** Você recebe um resumo do que mudou e, se houver, as perguntas que só você pode
    responder.
 3. **Você aprova** escrevendo "pode enviar e fazer o merge". Enquanto isso não acontece, nada muda na versão oficial.
-4. **Você troca o painel.** Antes, no painel que já usa, exporte um backup: no alto da tela, o botão "Seus dados"
-   (o nome aparece ao parar o mouse sobre ele) → "Exportar backup (.json)". Depois baixe o
-   `Biblioteca_Lucas_Dashboard.html` novo e ponha no lugar do antigo, na mesma pasta e com o mesmo nome. O que você
-   anotou continua lá.
+4. **O site se atualiza sozinho**, um ou dois minutos depois. Se ainda aparecer a versão antiga, recarregue a
+   página. O que você anotou continua lá.
 
 Não é preciso entender de programação para nenhuma das etapas. O que se pede de você é sempre uma decisão ou uma
 informação que só você tem (o que está na sua estante, o que você já leu, o que há dentro de um arquivo).
+
+### O site
+
+O painel abre em <https://lucasrangel89.github.io/biblioteca/>, no computador ou no celular.
+
+- **O que você anota fica no navegador em que anotou.** O site no computador, o site no celular e o arquivo aberto
+  direto do computador guardam cada um os seus dados; um não enxerga os dos outros.
+- **Para levar os dados de um lugar para outro:** no alto da tela, o botão "Seus dados" (o nome aparece ao parar o
+  mouse sobre ele) → "Exportar backup (.json)". No outro lugar, "Seus dados" → "Importar backup…" e escolha o
+  arquivo que foi baixado. É assim que o que estava no arquivo do computador vai para o site.
+- **Vale exportar um backup de vez em quando.** Limpar os dados de navegação do navegador apaga as anotações.
+- **O endereço é público.** Quem o tiver vê a lista de livros, que já é pública no GitHub. O que você anota não sai
+  do seu navegador.
+- **O arquivo continua valendo.** O `Biblioteca_Lucas_Dashboard.html` do repositório é o mesmo painel e abre sem
+  internet. Quem preferir usá-lo baixa o arquivo novo a cada rodada e põe no lugar do antigo, na mesma pasta e com o
+  mesmo nome, depois de exportar um backup.
 
 ### Quando entrarem livros novos na biblioteca virtual
 
@@ -171,12 +187,14 @@ listagens de uma vez; o material antigo guardado em `referencias/` é revisto.
 
 ## Etapa 6 — Melhorias do painel
 
+**Feito** (10/11/2026): **o painel abre por um endereço**, inclusive no celular, em vez de ser um arquivo a baixar
+(ver "O site", acima).
+
 Ideias em aberto; você escolhe quais valem a pena.
 
-- **Abrir o painel por um endereço**, inclusive no celular, em vez de baixar o arquivo.
 - **"Tenho em digital, quero o físico":** hoje um livro ou está no acervo ou está na lista de compras, nunca nos dois.
-- **Anotações fora do navegador:** hoje leituras e notas ficam guardadas só no navegador em que foram feitas; o
-  backup é manual.
+- **Anotações fora do navegador:** hoje leituras e notas ficam guardadas só no navegador em que foram feitas, e o
+  backup é manual. Por isso o computador e o celular não mostram as mesmas anotações.
 
 ---
 

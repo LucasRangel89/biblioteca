@@ -5,8 +5,8 @@ painel que mostra as duas juntas ou separadas.
 
 - **Catálogo Mestre** (`catalogo/Biblioteca_Lucas_Catalogo_Mestre.md`): a fonte única. 2.300 linhas — o que tenho e o
   que foi recomendado.
-- **Painel** (`Biblioteca_Lucas_Dashboard.html`): um único arquivo HTML. Abra no navegador; funciona sem internet e sem
-  servidor.
+- **Painel**: no ar em <https://lucasrangel89.github.io/biblioteca/>. É um único arquivo HTML
+  (`Biblioteca_Lucas_Dashboard.html`), que também abre direto no navegador, sem internet e sem servidor.
 - **Roteiro** (`ROTEIRO.md`): o que já foi feito, o que vem pela frente e o que depende de você, em linguagem simples.
 
 | | Livros |
@@ -40,7 +40,8 @@ No catálogo, a posse é um marcador na linha do livro:
 
 | Caminho | O que é |
 | --- | --- |
-| `Biblioteca_Lucas_Dashboard.html` | O painel pronto (gerado; não edite à mão) |
+| `Biblioteca_Lucas_Dashboard.html` | O painel pronto (gerado; não edite à mão). É este arquivo que vai para o site |
+| `.github/workflows/publicar-site.yml` | Publica o painel como site a cada mudança em `main` (ver "O site") |
 | `ROTEIRO.md` | As etapas de desenvolvimento e as pendências de cada uma |
 | `catalogo/Biblioteca_Lucas_Catalogo_Mestre.md` | O Catálogo Mestre |
 | `catalogo/renomeados.tsv` | O nome antigo de cada linha da estante ou das recomendações que teve título ou autor corrigido (ver "Corrigir o título ou o autor…") |
@@ -139,6 +140,22 @@ você tinha anotado não aparecer — há navegadores que guardam os dados por c
 mesmo lugar e com o mesmo nome do antigo, ou exporte um backup no antigo (botão de dados) e importe no novo: a
 importação faz a mesma conciliação.
 
+### O site
+
+O painel está publicado em <https://lucasrangel89.github.io/biblioteca/> (GitHub Pages). É o mesmo arquivo, sem nada a
+mais: `.github/workflows/publicar-site.yml` copia `Biblioteca_Lucas_Dashboard.html` para a página inicial do site.
+
+- **Quando o site muda.** A cada mudança em `main`, sozinho, em um ou dois minutos. O navegador pode mostrar a versão
+  anterior por mais alguns minutos; recarregar a página resolve. Para publicar de novo à mão: no GitHub, aba
+  **Actions** → **Publicar o site** → **Run workflow**.
+- **O site mostra o painel que está no repositório**, não o catálogo. Mudar o catálogo sem rodar
+  `python tools/atualizar.py` não muda o site.
+- **Os dados continuam no navegador**, e cada endereço tem os seus: o que foi anotado no arquivo aberto do computador
+  não aparece no site, nem o do computador no celular. Para levar de um para o outro: botão "Seus dados" →
+  "Exportar backup (.json)" num, "Importar backup…" no outro.
+- **O endereço é público.** Quem o tiver vê o catálogo — o mesmo que já está neste repositório. Leituras, notas e
+  preços não saem do navegador de quem os anotou. A página pede aos buscadores que não a listem (`noindex`).
+
 Módulos: `00-util` (datas, formatos) · `10-data` (livros, posse, conciliação com o catálogo, exemplos, armazenamento) ·
 `20-charts` (gráficos SVG) · `30-state` (filtros, período, contexto) · `40-panels` (indicadores e painéis) ·
 `50-table` (tabelas e CSV) · `60-drawer` (gaveta do livro, formulários, cotações, backup) · `70-app` (navegação,
@@ -154,9 +171,10 @@ python tools/qa/tudo.py                 # tudo, ~12 min; termina com "TUDO CERTO
 python tools/qa/tudo.py posse func6     # só alguns
 ```
 
-Os testes de navegador abrem o HTML final por `file://` e fixam o relógio em 09/11/2026 (`relogio.py`), porque os dados
-de exemplo são gerados a partir da data de hoje. Capturas e registros vão para a pasta temporária do sistema
-(`biblioteca-qa/`) ou para onde a variável `BIBLIOTECA_QA_TMP` indicar. Só foram rodados no Chromium.
+Os testes de navegador abrem o HTML final por `file://` (o `site` também o serve por HTTP, como no GitHub Pages) e
+fixam o relógio em 09/11/2026 (`relogio.py`), porque os dados de exemplo são gerados a partir da data de hoje. Capturas
+e registros vão para a pasta temporária do sistema (`biblioteca-qa/`) ou para onde a variável `BIBLIOTECA_QA_TMP`
+indicar. Só foram rodados no Chromium.
 
 | Script | Cobre |
 | --- | --- |
@@ -168,6 +186,7 @@ de exemplo são gerados a partir da data de hoje. Capturas e registros vão para
 | `foco`, `a11y` | Foco e Tab nas camadas; ids duplicados, nomes acessíveis, rótulos, contraste AA nos dois temas |
 | `varredura` | Clica em tudo, em todas as visões, nos dois temas e no celular, à procura de erros |
 | `sandbox` | Página dentro de um iframe isolado (sem `localStorage`): funciona em memória |
+| `site` | O painel servido por HTTP, de dentro de uma pasta, como no site: vem inteiro numa única requisição, guarda os dados, exporta o backup e importa o que foi feito no arquivo |
 | `medir3`, `tabs`, `largo` | Larguras de 2560 a 820 px: colunas das tabelas, quebras e estouros |
 | `run1`, `run5` … `run13` | Capturas de tela para conferência visual (só `run7` e `run9` entram no `tudo.py`) |
 
