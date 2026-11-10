@@ -50,13 +50,14 @@ const ICONE_FMT = { fisico: 'livro', ebook: 'tablet', audio: 'fone' };
 
 const VISOES = {
   geral: { n: 'Visão geral', c: 'Geral', d: 'Panorama da biblioteca, das listas e dos preços', ic: 'painel' },
-  biblioteca: { n: 'Biblioteca', c: 'Biblioteca', d: 'Acervo físico e virtual, leituras e investimento', ic: 'estante' },
+  biblioteca: { n: 'Biblioteca', c: 'Biblioteca', d: 'Estante física e biblioteca virtual, leituras e investimento', ic: 'estante' },
   recs: { n: 'Recomendações', c: 'Recomend.', d: 'O catálogo de leituras sugeridas, por eixo, tema e fôlego', ic: 'bussola' },
   desejos: { n: 'Próximas aquisições', c: 'Aquisições', d: 'Lista de compra com prioridade, preço-alvo e melhor oferta', ic: 'sacola' },
   precos: { n: 'Preços', c: 'Preços', d: 'Histórico de cotações por loja, alertas e variações', ic: 'etiqueta' },
 };
 const ORDEM_VISOES = Object.keys(VISOES);
 const PERIODOS = [['30d', '30 dias'], ['90d', '90 dias'], ['12m', '12 meses'], ['ano', 'Este ano'], ['tudo', 'Tudo']];
+const ROTULO_ACERVO = { fisico: 'Biblioteca física', virtual: 'Biblioteca virtual', ambos: 'Nas duas: físico e digital' };
 const COLECOES = {
   acervo: { n: 'Acervo', cor: 'var(--c2)' },
   desejo: { n: 'Próxima aquisição', cor: 'var(--c1)' },
@@ -66,7 +67,8 @@ const COLECOES = {
 const S = {
   visao: 'geral',
   periodo: 'tudo', de: null, ate: null,
-  acervo: 'tudo', tipo: '', eixos: new Set(), dif: new Set(), ext: new Set(), tags: new Set(), top: false,
+  acervo: 'tudo',   // tudo | fisico (estante) | virtual (digital ou áudio) | ambos (tenho em físico e em digital)
+  tipo: '', eixos: new Set(), dif: new Set(), ext: new Set(), tags: new Set(), top: false,
   tema: '', ocultar: false, avisoVisto: false, sel: '',
   tab: {},
   ui: { compor: 'fmt', evo: 'qtd', aq: 'qtd', origem: 'qtd', temas: 1, prio: 'valor', sorteio: 0 },
@@ -81,8 +83,10 @@ const alternar = (conj, v) => { if (conj.has(v)) conj.delete(v); else conj.add(v
 /* filtros de segmento (o período é tratado à parte, porque filtra eventos e não livros) */
 function passaSeg(b, o = {}) {
   if (!o.semAcervo && S.acervo !== 'tudo') {
-    const f = b.fmt || (b.px ? 'fisico' : '');
-    if (S.acervo === 'fisico' ? f !== 'fisico' : !(f === 'ebook' || f === 'audio')) return false;
+    // no acervo vale o que eu tenho (um livro pode estar nas duas bibliotecas); nas listas, o formato desejado
+    const ac = b.col === 'acervo', f = b.fmt || (b.px ? 'fisico' : '');
+    const fis = f === 'fisico', vir = ac ? temDigital(b) || f === 'audio' : f === 'ebook' || f === 'audio';
+    if (!(S.acervo === 'fisico' ? fis : S.acervo === 'virtual' ? vir : fis && vir)) return false;
   }
   if (S.tipo) { const t = b._tipo; if (S.tipo === 'O' ? (t === 'F' || t === 'NF') : t !== S.tipo) return false; }
   if (!o.semEixo && S.eixos.size && !S.eixos.has(b.eixo)) return false;
@@ -91,6 +95,14 @@ function passaSeg(b, o = {}) {
   if (S.top && !b._top) return false;
   return true;
 }
+
+/* A compra registrada num livro que tenho em papel (data, valor, origem) é a do exemplar físico. No recorte "Virtual" ela não conta:
+   os arquivos da biblioteca virtual não têm data nem preço, e somá-la faria a biblioteca virtual parecer comprada. */
+const compraConta = b => S.acervo !== 'virtual' || b.col !== 'acervo' || b.fmt !== 'fisico';
+const adqDe = b => (compraConta(b) ? b.adq : null);
+const pagoDe = b => (compraConta(b) ? b.pago : null);
+const lojaDe = b => (compraConta(b) ? b.loja : '');
+const dataDe = b => (b.col === 'acervo' ? adqDe(b) : b.add);
 
 const dentro = (d, r) => d != null && d >= r.de && d <= r.ate;
 function primeiroDia() {
@@ -130,7 +142,7 @@ function recorte(I, o) {
   const seg = DB.livros.filter(b => passaSeg(b, Object.assign({ semAcervo: S.visao === 'recs' }, o)));
   const ac = [], des = [], rec = [];
   for (const b of seg) (b.col === 'acervo' ? ac : b.col === 'desejo' ? des : rec).push(b);
-  return { seg, ac, des, rec, acP: I.tudo ? ac : ac.filter(b => dentro(b.adq, I)), recP: I.tudo ? rec : rec.filter(b => dentro(b.add, I)) };
+  return { seg, ac, des, rec, acP: I.tudo ? ac : ac.filter(b => dentro(adqDe(b), I)), recP: I.tudo ? rec : rec.filter(b => dentro(b.add, I)) };
 }
 function contexto() {
   const I = intervalo(), c = recorte(I, {});

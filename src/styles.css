@@ -489,6 +489,9 @@ td.c-spark svg { margin-left: auto; margin-right: auto; }
   .tb td.m-6, .tb td.c-tags.m-6 { grid-column: 1 / -1; }
   .tb td.c-tags .tag { margin: 1px 4px 3px 0; }
   .tb td.c-eixo { overflow: visible; }
+  /* "Físico e digital" (dois ícones + texto) não cabe numa coluna do cartão: aqui o formato quebra de linha como texto comum */
+  .tb td .fmt { display: inline; white-space: normal; }
+  .tb td .fmt .ic { display: inline-block; vertical-align: -2px; margin-right: 5px; }
 }
 /* cartões largos (tablet, janela média): doze colunas, e os campos de cada livro cabem numa linha só */
 @container (min-width: 680px) and (max-width: 830px) {

@@ -21,7 +21,7 @@ const EIXOS = [null,
 const ROTULO_TAG = {
   F: 'ficção', NF: 'não ficção', HQ: 'HQ', poesia: 'poesia', antologia: 'antologia',
   d1: 'leve', d2: 'média', d3: 'exigente', e1: 'curta', e2: 'média', e3: 'longa',
-  'ja-tenho': 'já tenho', lido: 'lido', top: 'prioridade', verificar: 'a verificar', 'sem-pt': 'sem edição em PT',
+  'ja-tenho': 'já tenho', 'tenho-fisico': 'tenho em físico', 'tenho-digital': 'tenho em digital', lido: 'lido', top: 'prioridade', verificar: 'a verificar', 'sem-pt': 'sem edição em PT',
   classico: 'clássico', contemporaneo: 'contemporâneo', BR: 'Brasil', RS: 'Rio Grande do Sul', portugal: 'Portugal', latam: 'América Latina',
   africa: 'África', asia: 'Ásia', 'europa-leste': 'Leste Europeu',
   etica: 'ética', politica: 'política', geopolitica: 'geopolítica', psicanalise: 'psicanálise', neurociencia: 'neurociência',
@@ -30,14 +30,15 @@ const ROTULO_TAG = {
   'ficcao-cientifica': 'ficção científica', 'historia-alternativa': 'história alternativa', gotico: 'gótico', misterio: 'mistério',
   'thriller-medico': 'thriller médico', 'romance-historico': 'romance histórico', roma: 'Roma', 'pre-historia': 'pré-história',
   'regional-gaucho': 'regional gaúcho',
+  fisica: 'física', tcc: 'TCC', 'psicologia-analitica': 'psicologia analítica', 'psicologia-humanista': 'psicologia humanista', 'psicologia-social': 'psicologia social',
   'rel-imortais': 'afins a Os Imortais', 'rel-widows-bay': 'Lovecraft e Widow’s Bay', 'rel-cornwell': 'afins a O Arqueiro / O Físico',
   'rel-asimov-clarke': 'Asimov e Clarke', 'rel-yalom': 'Yalom', 'rel-fromm': 'Fromm · autoritarismo',
 };
 const rotTag = t => ROTULO_TAG[t] || t.replace(/-/g, ' ');
-const TAGS_ESTRUTURA = new Set(['F', 'NF', 'HQ', 'poesia', 'antologia', 'd1', 'd2', 'd3', 'e1', 'e2', 'e3', 'ja-tenho', 'lido', 'top']);
+const TAGS_ESTRUTURA = new Set(['F', 'NF', 'HQ', 'poesia', 'antologia', 'd1', 'd2', 'd3', 'e1', 'e2', 'e3', 'ja-tenho', 'tenho-fisico', 'tenho-digital', 'lido', 'top']);
 const GRUPOS_TAG = [
-  ['Gêneros', ['ficcao-cientifica', 'fantasia', 'distopia', 'utopia', 'historia-alternativa', 'horror', 'gotico', 'lovecraftiano', 'misterio', 'thriller', 'thriller-medico', 'romance-historico', 'medieval', 'antiguidade', 'roma', 'renascimento', 'pre-historia', 'neandertal', 'regional-gaucho', 'teatro', 'poesia', 'HQ', 'antologia']],
-  ['Temas', ['filosofia', 'existencialismo', 'etica', 'politica', 'autoritarismo', 'economia', 'geopolitica', 'psicologia', 'psicanalise', 'psiquiatria', 'neurociencia', 'consciencia', 'ciencia', 'ia', 'historia', 'antropologia', 'sociologia', 'religiao', 'espiritualidade', 'espiritismo', 'umbanda', 'oriental', 'mistica', 'morte', 'memoria', 'identidade', 'raca', 'genero', 'colonialismo', 'ecologia', 'linguagem', 'guerra', 'testemunho', 'medicina', 'biografia', 'escrita', 'cinema', 'arte', 'parentalidade', 'humor', 'introducao', 'gestao', 'esporte', 'didatico']],
+  ['Gêneros', ['ficcao-cientifica', 'fantasia', 'distopia', 'utopia', 'historia-alternativa', 'horror', 'gotico', 'lovecraftiano', 'misterio', 'thriller', 'thriller-medico', 'romance-historico', 'medieval', 'antiguidade', 'roma', 'renascimento', 'pre-historia', 'neandertal', 'regional-gaucho', 'teatro', 'contos', 'poesia', 'HQ', 'antologia']],
+  ['Temas', ['filosofia', 'existencialismo', 'etica', 'politica', 'autoritarismo', 'economia', 'geopolitica', 'psicologia', 'psicanalise', 'psiquiatria', 'neurociencia', 'consciencia', 'ciencia', 'ia', 'historia', 'antropologia', 'sociologia', 'religiao', 'espiritualidade', 'espiritismo', 'umbanda', 'oriental', 'mistica', 'morte', 'memoria', 'identidade', 'raca', 'genero', 'colonialismo', 'ecologia', 'linguagem', 'guerra', 'testemunho', 'medicina', 'biografia', 'escrita', 'cinema', 'arte', 'parentalidade', 'humor', 'introducao', 'gestao', 'esporte', 'didatico', 'tecnologia', 'fisica', 'autoconhecimento', 'behaviorismo', 'tcc', 'psicometria', 'psicopatologia', 'psicologia-analitica', 'psicologia-humanista', 'psicologia-social']],
   ['Época e origem', ['classico', 'contemporaneo', 'BR', 'RS', 'portugal', 'latam', 'africa', 'asia', 'europa-leste']],
   ['Trilhas', ['rel-imortais', 'rel-widows-bay', 'rel-cornwell', 'rel-asimov-clarke', 'rel-yalom', 'rel-fromm']],
   ['Pendências', ['verificar', 'sem-pt']],
@@ -46,9 +47,17 @@ const TRILHAS = GRUPOS_TAG[3][1];
 
 const FORMATOS = {
   fisico: { n: 'Físico', cor: 'var(--c1)' },
-  ebook: { n: 'E-book', cor: 'var(--c2)' },
+  ebook: { n: 'Digital', cor: 'var(--c2)' },
   audio: { n: 'Audiolivro', cor: 'var(--c3)' },
 };
+/* posse: o livro pode estar na estante física, na biblioteca virtual (arquivo digital) ou nas duas — #tenho-fisico e #tenho-digital no catálogo */
+const POSSES = {
+  fisico: { n: 'Só físico', cor: 'var(--c1)' },
+  ambos: { n: 'Físico e digital', cor: 'var(--c5)' },
+  digital: { n: 'Só digital', cor: 'var(--c2)' },
+  audio: { n: 'Audiolivro', cor: 'var(--c3)' },
+};
+const PLAT_DIGITAL = 'Biblioteca virtual';
 const LEITURAS = {
   lido: { n: 'Lido', cor: 'var(--c6)' },
   lendo: { n: 'Lendo', cor: 'var(--c3)' },
@@ -84,11 +93,17 @@ function derivar(b) {
   b._d = T.includes('d1') ? 1 : T.includes('d2') ? 2 : T.includes('d3') ? 3 : 0;
   b._e = T.includes('e1') ? 1 : T.includes('e2') ? 2 : T.includes('e3') ? 3 : 0;
   b._top = T.includes('top');
-  b._busca = norm(b.t + ' ' + b.a + ' ' + T.map(rotTag).join(' ') + ' ' + T.join(' ') + ' ' + (EIXOS[b.eixo] ? EIXOS[b.eixo].n : ''));
+  const g = b._dg;                               // biblioteca virtual: [formatos, nº de arquivos, pastas, títulos das edições, ids dos arquivos]
+  b._busca = norm(b.t + ' ' + b.a + ' ' + T.map(rotTag).join(' ') + ' ' + T.join(' ') + ' ' + (EIXOS[b.eixo] ? EIXOS[b.eixo].n : '') + (g ? ' ' + g[0] + ' ' + (g[2] || []).join(' ') + ' ' + (g[3] || []).join(' ') : ''));
   return b;
 }
 const virtual = b => b.fmt === 'ebook' || b.fmt === 'audio';
-const dataRef = b => (b.col === 'acervo' ? b.adq : b.add);
+const temFisico = b => b.col === 'acervo' && b.fmt === 'fisico';
+const temDigital = b => !!b._dg || b.tags.includes('tenho-digital') || (b.col === 'acervo' && b.fmt === 'ebook');   // arquivo na biblioteca virtual ou livro digital comprado
+const posseDe = b => (b.col !== 'acervo' ? '' : b.fmt === 'audio' ? 'audio' : b.fmt === 'fisico' ? (temDigital(b) ? 'ambos' : 'fisico') : 'digital');
+const formatosDe = b => (b.col !== 'acervo' ? [] : b.fmt === 'fisico' && temDigital(b) ? ['fisico', 'ebook'] : [b.fmt || 'fisico']);
+const soDigital = b => b.col === 'acervo' && b.fmt === 'ebook' && b.tags.includes('tenho-digital');                // está só na biblioteca virtual: sem compra a simular
+const rotuloFmt = b => (posseDe(b) === 'ambos' ? POSSES.ambos.n : b.fmt && FORMATOS[b.fmt] ? FORMATOS[b.fmt].n : '');
 
 function novoLivro(o) {
   return derivar(Object.assign({
@@ -96,6 +111,9 @@ function novoLivro(o) {
     col: 'rec', fmt: '', plat: '', adq: null, pago: null, loja: '', cond: '',
     add: null, leit: '', lidoEm: null, prog: 0, nota: 0, pg: 0,
     prio: 0, alvo: null, capa: null, track: false, px: null, demo: 0, u: 0,
+    o: '',          // linha do catálogo de onde o livro veio (ver chaveCat); '' = criado no painel
+    arq: '',        // identificadores dos arquivos da biblioteca virtual (reconhecem o livro se o título mudar no catálogo)
+    _dg: null,      // dados da biblioteca virtual; vêm sempre do catálogo embutido e não são salvos
   }, o));
 }
 /* Registro vindo de fora (armazenamento do navegador ou arquivo de backup): devolve um livro íntegro, ou null.
@@ -126,24 +144,96 @@ function lerLivro(o, usados) {
     col, fmt: de(o.fmt, Object.keys(FORMATOS), col === 'acervo' ? 'fisico' : ''), plat: txt(o.plat, 40), loja: txt(o.loja, 60), cond: txt(o.cond, 20),
     adq: dia(o.adq), add: dia(o.add), lidoEm: dia(o.lidoEm), pago: num(o.pago, 0, 1e6), alvo: num(o.alvo, 0.01, 1e6), capa: num(o.capa, 0.01, 1e6),
     leit: de(o.leit, Object.keys(LEITURAS), ''), prog: Math.round(num(o.prog, 0, 100) ?? 0), nota: Math.round(num(o.nota, 0, 5) ?? 0), pg: Math.round(num(o.pg, 0, 1e5) ?? 0),
-    prio: Math.round(num(o.prio, 0, 3) ?? 0), track: !!o.track, px, demo: o.demo ? 1 : 0, u: o.u ? 1 : 0,
+    prio: Math.round(num(o.prio, 0, 3) ?? 0), track: !!o.track, px, demo: o.demo ? 1 : 0, u: o.u ? 1 : 0, o: txt(o.o, 400), arq: txt(o.arq, 400).replace(/[^a-z0-9 ]/g, ''),
   });
 }
 const lerLivros = lista => { const usados = new Set(); return (Array.isArray(lista) ? lista : []).map(o => lerLivro(o, usados)).filter(Boolean); };
 
-/* estado "real": apenas o que o catálogo afirma (estante física, #lido, #top) */
+/* estado "real": apenas o que o catálogo afirma (estante física, biblioteca virtual, #lido, #top) */
 function estadoBase(b) {
-  const tem = b.tags.includes('ja-tenho');
+  const fis = b.tags.includes('tenho-fisico') || b.tags.includes('ja-tenho'), dig = b.tags.includes('tenho-digital');
   Object.assign(b, {
-    col: tem ? 'acervo' : 'rec', fmt: tem ? 'fisico' : '', plat: '', adq: null, pago: null, loja: '', cond: '',
+    col: fis || dig ? 'acervo' : 'rec', fmt: fis ? 'fisico' : dig ? 'ebook' : '', plat: !fis && dig ? PLAT_DIGITAL : '', adq: null, pago: null, loja: '', cond: '',
     add: null, leit: b.tags.includes('lido') ? 'lido' : '', lidoEm: null, prog: 0, nota: 0, pg: 0,
     prio: 0, alvo: null, capa: null, track: false, demo: 0,
   });
   if (b.px) { for (const f in b.px) { b.px[f] = b.px[f].filter(p => p[2]); if (!b.px[f].length) delete b.px[f]; } if (!Object.keys(b.px).length) b.px = null; else b.track = true; }
   return b;
 }
-function livrosDoCatalogo() {
-  return CATALOGO.map((r, i) => estadoBase(novoLivro({ id: 'c' + i, t: r[0], a: r[1], tags: r[2].split(' ').filter(Boolean), sec: r[3], eixo: r[4], obs: r[5] || '' })));
+const chaveCat = r => norm(r[0]) + '|' + norm(r[1]);
+const chaveLivro = b => norm(b.t) + '|' + norm(b.a);
+const tagsCat = r => r[2].split(' ').filter(Boolean);
+const doCatalogo = (r, id) => estadoBase(novoLivro({ id, t: r[0], a: r[1], tags: tagsCat(r), sec: r[3], eixo: r[4], obs: r[5] || '', o: chaveCat(r), arq: r[6] ? r[6][4] : '', _dg: r[6] || null }));
+function livrosDoCatalogo() { return CATALOGO.map((r, i) => doCatalogo(r, 'c' + i)); }
+
+/* os marcadores de posse acompanham a lista e o formato do livro (e o que o catálogo diz da biblioteca virtual) */
+const defTag = (b, t, on) => { const i = b.tags.indexOf(t); if (on && i < 0) b.tags.push(t); if (!on && i >= 0) b.tags.splice(i, 1); };
+function marcarPosse(b) {
+  const ac = b.col === 'acervo';
+  defTag(b, 'tenho-digital', !!b._dg || (ac && (b.fmt === 'ebook' || (b.fmt === 'fisico' && b.tags.includes('tenho-digital')))));
+  defTag(b, 'tenho-fisico', ac && b.fmt === 'fisico');
+  defTag(b, 'ja-tenho', false);
+}
+
+/* ───────── catálogo novo × dados salvos ─────────
+   Os livros ficam guardados no navegador. Quando o painel chega com outro catálogo (livros novos, a biblioteca virtual,
+   títulos corrigidos), os dados salvos são conciliados com ele:
+   · o que nunca foi editado no painel passa a seguir o catálogo novo;
+   · o que foi editado fica como está — o catálogo só acrescenta posse (#tenho-fisico, #tenho-digital), corrige título e
+     autor que não tenham sido mudados no painel e retira o #verificar que já foi resolvido;
+   · linhas novas entram; linhas que saíram do catálogo sem nunca terem sido editadas saem. */
+const ASSINATURA = CATALOGO.length + '.' + hashStr(JSON.stringify(CATALOGO)).toString(36);
+function anexarDigital(livros) {
+  const linhas = new Map(CATALOGO.map(r => [chaveCat(r), r]));
+  for (const b of livros) { const r = b.o ? linhas.get(b.o) : null; b._dg = (r && r[6]) || null; if (b._dg) b.arq = b._dg[4]; derivar(b); }
+}
+function conciliarCatalogo(livros) {
+  const linhas = CATALOGO.map((r, i) => ({ r, i, k: chaveCat(r), b: null })), soltos = new Set(livros);
+  // liga cada linha do catálogo a um livro salvo, do vínculo mais forte para o mais fraco
+  const passo = (chavesDoLivro, chavesDaLinha, serve) => {
+    const indice = new Map();
+    for (const b of soltos) for (const k of chavesDoLivro(b)) if (k && !indice.has(k)) indice.set(k, b);
+    for (const x of linhas) {
+      if (x.b) continue;
+      for (const k of chavesDaLinha(x)) { const b = indice.get(k); if (b && soltos.has(b) && (!serve || serve(b, x))) { x.b = b; soltos.delete(b); break; } }
+    }
+  };
+  passo(b => [b.o], x => [x.k]);                                                          // 1 ▸ a mesma linha de antes
+  passo(b => [chaveLivro(b)], x => [x.k]);                                                // 2 ▸ mesmo título e autor (dados antigos; livro criado no painel)
+  passo(b => (b.arq ? b.arq.split(' ') : []), x => (x.r[6] && x.r[6][4] ? x.r[6][4].split(' ') : []));   // 3 ▸ mesmo arquivo: título corrigido no inventário
+  passo(b => [b.u && !b.o ? b.id : ''], x => ['c' + x.i], (b, x) => b.sec === x.r[3]);    // 4 ▸ dados antigos: livro do catálogo renomeado no painel
+  const usados = new Set(livros.map(b => b.id)), novos = [];
+  for (const x of linhas) {
+    const r = x.r, b = x.b, tags = tagsCat(r);
+    if (!b) { let id = 'c' + x.i; while (usados.has(id)) id += 'n'; usados.add(id); novos.push(doCatalogo(r, id)); continue; }
+    if (!b.u) Object.assign(b, { t: r[0], a: r[1], tags, sec: r[3], eixo: r[4], obs: r[5] || '' });
+    else {
+      if (chaveLivro(b) === (b.o || x.k)) { b.t = r[0]; b.a = r[1]; }                     // título e autor não foram mexidos no painel: valem os do catálogo
+      b.sec = r[3];
+      if (!tags.includes('verificar')) defTag(b, 'verificar', false);
+      const fis = tags.includes('tenho-fisico'), dig = tags.includes('tenho-digital'), tinhaEbook = b.col === 'acervo' && b.fmt === 'ebook';
+      if (dig || (fis && tinhaEbook)) defTag(b, 'tenho-digital', true);
+      if (fis && !(b.col === 'acervo' && b.fmt === 'fisico')) Object.assign(b, { col: 'acervo', fmt: 'fisico', plat: '', prio: 0, track: false, leit: b.leit || 'fila' });
+      else if (dig && b.col === 'rec') Object.assign(b, { col: 'acervo', fmt: 'ebook', plat: PLAT_DIGITAL });
+    }
+    b.o = x.k; b.arq = r[6] ? r[6][4] : '';
+  }
+  const ficam = livros.filter(b => !soltos.has(b) || b.u || b.sec < 0);
+  return { livros: ficam.concat(novos), novos: novos.length, saidos: livros.length - ficam.length };
+}
+/* depois de abrir dados salvos ou de importar um backup: concilia com o catálogo embutido, se for outro, e religa a biblioteca virtual */
+function ajustarAoCatalogo(assinatura) {
+  DB.novidade = null;
+  if (assinatura === ASSINATURA) { anexarDigital(DB.livros); return; }
+  const r = conciliarCatalogo(DB.livros);
+  DB.livros = r.livros; anexarDigital(DB.livros);
+  for (const b of DB.livros) { if (b.u) { marcarPosse(b); derivar(b); } else estadoBase(b); }
+  if (DB.exemplos) gerarExemplos(DB.livros, DB.hoje);
+  DB.novidade = { novos: r.novos, saidos: r.saidos };
+}
+function textoNovidade() {
+  const n = DB.novidade; if (!n || (!n.novos && !n.saidos)) return '';
+  return ` O catálogo mudou: ${[n.novos ? plural(n.novos, 'livro entrou', 'livros entraram') : '', n.saidos ? plural(n.saidos, 'saiu', 'saíram') : ''].filter(Boolean).join(' e ')}.`;
 }
 
 /* ───────────────────────── preços ───────────────────────── */
@@ -196,10 +286,10 @@ function situacaoDe(b, d) {
 
 /* ───────────────────────── dados de exemplo ─────────────────────────
    O catálogo (títulos, autores, tags, estante física, #lido, #top) é real.
-   Tudo o que este gerador produz — datas, valores pagos, e-books e audiolivros,
-   leituras, lista de próximas aquisições e histórico de preços — é SIMULADO
-   de forma determinística, só para dar vida ao painel.                      */
-const DOMINIO_PUBLICO = new Set(['Machado de Assis', 'Aluísio Azevedo', 'Fiódor Dostoiévski', 'Liev Tolstói', 'Anton Tchekhov', 'Gustave Flaubert', 'Victor Hugo', 'Alexandre Dumas', 'Jane Austen', 'Emily Brontë', 'Oscar Wilde', 'Bram Stoker', 'Robert Louis Stevenson', 'Mary Shelley', 'Herman Melville', 'Joseph Conrad', 'Franz Kafka', 'Miguel de Cervantes', 'Dante Alighieri', 'Homero', 'Sófocles', 'William Shakespeare', 'Johann W. von Goethe', 'Voltaire', 'H.P. Lovecraft', 'Robert W. Chambers', 'William Hope Hodgson', 'H.G. Wells', 'Jack London', 'Simões Lopes Neto', 'Platão', 'Sêneca', 'Marco Aurélio', 'Epicteto']);
+   A biblioteca virtual também é real: os arquivos vêm do inventário, pelo catálogo.
+   Tudo o que este gerador produz — datas e valores pagos da estante, leituras,
+   lista de próximas aquisições e histórico de preços — é SIMULADO de forma
+   determinística, só para dar vida ao painel.                               */
 const PERFIL_LOJA = {
   'Amazon': { base: [0.66, 0.86], hold: [5, 18], vol: 0.055, bf: [0.78, 0.9], cons: [0.86, 0.95], prime: [0.84, 0.93], flash: 0.03, cent: 'livre' },
   'Estante Virtual': { base: [0.48, 0.92], hold: [6, 20], vol: 0.075, cent: 'meio' },
@@ -247,11 +337,12 @@ function gerarExemplos(livros, T) {
   const pesos = pares => { let s = 0; for (const p of pares) s += p[1]; let r = R() * s; for (const p of pares) { if ((r -= p[1]) <= 0) return p[0]; } return pares[pares.length - 1][0]; };
   const emb = arr => { const a = arr.slice(); for (let i = a.length - 1; i > 0; i--) { const j = Math.floor(R() * (i + 1)); [a[i], a[j]] = [a[j], a[i]]; } return a; };
   const tem = (b, t) => b.tags.includes(t);
-  const base = livros.filter(b => !b.u);                       // não mexe no que o usuário editou
+  // não mexe no que o usuário editou, nem no que está só na biblioteca virtual (arquivos de verdade, sem compra a simular)
+  const base = livros.filter(b => !b.u && !soDigital(b));
   for (const b of base) { b.pg = paginasAprox(b); b.demo = 1; }
 
   /* 1 ▸ estante física: quando e onde cada livro foi comprado */
-  const estante = base.filter(b => tem(b, 'ja-tenho'));
+  const estante = base.filter(b => tem(b, 'tenho-fisico'));
   const PESO_MES = [1.0, 0.7, 1.0, 0.9, 0.9, 0.8, 1.1, 0.9, 0.8, 1.2, 2.2, 1.5];
   const faixas = [[5400, 2190, 0.37], [2190, 1460, 0.135], [1460, 730, 0.175], [730, 365, 0.145], [365, 1, 0.175]];
   const fixos = estante.filter(b => tem(b, 'didatico') || tem(b, 'parentalidade'));
@@ -280,34 +371,16 @@ function gerarExemplos(livros, T) {
     Object.assign(b, { col: 'acervo', fmt: 'fisico', plat: '', adq: d, add: d, pago, loja: origem, cond });
   }
 
-  /* 2 ▸ biblioteca virtual (simulada): e-books e audiolivros escolhidos entre as recomendações */
-  const livres = base.filter(b => !tem(b, 'ja-tenho') && !tem(b, 'lido'));
+  /* 2 ▸ biblioteca virtual: é a de verdade (vem do catálogo); nada é simulado. Sobram, para as listas abaixo, os livros que não tenho */
+  const livres = base.filter(b => b.col === 'rec' && !tem(b, 'lido'));
   const usados = new Set();
   const toma = (lista, n) => { const out = []; for (const b of emb(lista)) { if (out.length >= n) break; if (!usados.has(b)) { usados.add(b); out.push(b); } } return out; };
   const semTop = b => !tem(b, 'top');
-  const vSemPt = toma(livres.filter(b => tem(b, 'sem-pt') && semTop(b)), 12);
-  const vDom = toma(livres.filter(b => DOMINIO_PUBLICO.has(b.a) && semTop(b)), 9);
-  const vFic = toma(livres.filter(b => (tem(b, 'ficcao-cientifica') || tem(b, 'fantasia') || tem(b, 'horror')) && semTop(b) && !tem(b, 'sem-pt')), 7);
-  const vNf = toma(livres.filter(b => tem(b, 'NF') && b._d === 1 && semTop(b) && !tem(b, 'sem-pt')), 7);
-  const vAudio = toma(livres.filter(b => b._e === 3 && b._d <= 2 && semTop(b) && !tem(b, 'sem-pt')), 9);
-  const vTop = toma(livres.filter(b => tem(b, 'top') && b._d <= 2 && b._e <= 2), 2);
-  const virt = (b, fmt, plat, diasMax, preco) => {
-    const d = T - Math.max(1, Math.floor(diasMax * (1 - Math.pow(R(), 0.75))));
-    Object.assign(b, { col: 'acervo', fmt, plat, adq: d, add: d, pago: preco, loja: plat, cond: 'novo' });
-  };
-  const p90 = (a, z) => Math.floor(rnd(a, z) / 5) * 5 + 4.9;
-  vSemPt.forEach(b => virt(b, 'ebook', 'Kindle', 1150, Math.round(rnd(27, 72) * 100) / 100));
-  vDom.forEach((b, i) => i < 5 ? virt(b, 'ebook', 'Domínio público', 1150, 0) : virt(b, 'ebook', 'Kindle', 1150, pesos([[1.99, 2], [3.9, 2], [5.9, 2], [9.9, 3]])));
-  vFic.forEach(b => virt(b, 'ebook', pesos([['Kindle', 8], ['Kobo', 1], ['Google Play Livros', 1]]), 1150, p90(14, 44)));
-  vNf.forEach(b => virt(b, 'ebook', pesos([['Kindle', 7], ['Kobo', 2], ['Google Play Livros', 1]]), 1150, p90(19, 49)));
-  vAudio.forEach(b => virt(b, 'audio', pesos([['Audible', 7], ['Storytel', 3]]), 620, p90(14, 39)));
-  if (vTop[0]) virt(vTop[0], 'ebook', 'Kindle', 400, p90(24, 44));
-  if (vTop[1]) virt(vTop[1], 'audio', 'Audible', 300, p90(19, 34));
 
   /* 3 ▸ leituras: uma linha do tempo de conclusões (ritmo de ~2 livros/mês hoje, mais lento no passado),
          atribuída a livros que já estavam no acervo naquela data — de preferência os comprados há pouco */
-  const acervo = base.filter(b => b.col === 'acervo');
-  const primeira = Math.min(...acervo.map(b => b.adq));
+  const acervo = base.filter(b => b.col === 'acervo' && b.adq != null);
+  const primeira = acervo.length ? Math.min(...acervo.map(b => b.adq)) : T;
   const fins = [];
   for (let d = T - int(2, 9); d > primeira + 40;) {
     fins.push(d);
@@ -315,6 +388,8 @@ function gerarExemplos(livros, T) {
     const media = anos < 1 ? 14.5 : anos < 2 ? 17 : anos < 4 ? 40 : anos < 8 ? 85 : 150;
     d -= Math.max(3, Math.round(media * rnd(0.45, 1.6)));
   }
+  // só a estante entra nesta simulação (a biblioteca virtual não tem datas): sem um teto, o ritmo acima a daria quase toda por lida
+  for (const teto = Math.round(acervo.length * 0.6); fins.length > teto;) fins.splice(Math.floor(R() * fins.length), 1);
   fins.reverse();
   for (const b of acervo) b.leit = 'fila';
   for (const d of fins) {
@@ -326,7 +401,7 @@ function gerarExemplos(livros, T) {
   }
   emb(acervo.filter(b => b.leit === 'fila' && T - b.adq > 240)).slice(0, 5).forEach(b => Object.assign(b, { leit: 'aband', prog: int(8, 40) }));
   const recentes = emb(acervo.filter(b => b.leit === 'fila' && T - b.adq < 200));
-  const lendo = [...recentes.filter(b => b.fmt === 'fisico').slice(0, 2), ...recentes.filter(b => b.fmt === 'ebook').slice(0, 1), ...recentes.filter(b => b.fmt === 'audio').slice(0, 1)].slice(0, 3);
+  const lendo = recentes.slice(0, 3);
   lendo.forEach(b => Object.assign(b, { leit: 'lendo', prog: int(14, 86) }));
 
   /* 4 ▸ recomendações: quando entraram na lista (em lotes, por eixo) */
@@ -410,10 +485,13 @@ const Loja = {
   falha() { if (!this.ok) return null; try { return localStorage.getItem(CHAVE + ':falha'); } catch (e) { return null; } },
   descartarFalha() { try { localStorage.removeItem(CHAVE + ':falha'); } catch (e) { /* nada */ } },
 };
-const limpo = b => { const o = {}; for (const k in b) if (k[0] !== '_') o[k] = b[k]; return o; };
+// O que é gravado de cada livro: nada de campos derivados (_…) nem de campos vazios — lerLivro devolve o valor padrão de quem falta.
+// Com os mais de dois mil livros da biblioteca virtual, isso corta o que vai para o armazenamento do navegador quase pela metade.
+const ZERO_PADRAO = new Set(['prog', 'nota', 'pg', 'prio', 'demo', 'u']);
+const limpo = b => { const o = {}; for (const k in b) { const v = b[k]; if (k[0] === '_' || v === null || v === '' || v === false || (v === 0 && ZERO_PADRAO.has(k))) continue; o[k] = v; } return o; };
 
-const DB = { livros: [], exemplos: true, hoje: 0, criadoEm: 0 };
-function serializar(cfg) { return { app: 'biblioteca-lucas', v: 1, salvoEm: new Date().toISOString(), exemplos: DB.exemplos, criadoEm: DB.criadoEm, cfg: cfg || {}, livros: DB.livros.map(limpo) }; }
+const DB = { livros: [], exemplos: true, hoje: 0, criadoEm: 0, novidade: null };
+function serializar(cfg) { return { app: 'biblioteca-lucas', v: 1, cat: ASSINATURA, salvoEm: new Date().toISOString(), exemplos: DB.exemplos, criadoEm: DB.criadoEm, cfg: cfg || {}, livros: DB.livros.map(limpo) }; }
 function carregarDB() {
   DB.hoje = hojeDia();
   Loja.testar();
@@ -421,6 +499,7 @@ function carregarDB() {
   const livros = salvo && typeof salvo === 'object' && salvo.app === 'biblioteca-lucas' ? lerLivros(salvo.livros) : [];
   if (livros.length) {
     DB.livros = livros; DB.exemplos = !!salvo.exemplos; DB.criadoEm = typeof salvo.criadoEm === 'number' && isFinite(salvo.criadoEm) ? salvo.criadoEm : DB.hoje;
+    ajustarAoCatalogo(salvo.cat);
     return salvo.cfg && typeof salvo.cfg === 'object' ? salvo.cfg : {};
   }
   DB.livros = gerarExemplos(livrosDoCatalogo(), DB.hoje); DB.exemplos = true; DB.criadoEm = DB.hoje;

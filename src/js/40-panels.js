@@ -39,16 +39,16 @@ function Kpis(host, defs) {
 const cmpPrecos = (c, normal, curto) => (c.refDe >= c.I.ate ? 'histórico começa hoje' : c.pxIni > c.I.cur.de ? curto || `desde ${fDiaMes(c.pxIni)}` : normal);
 const K = {
   acervo(c) {
-    const I = c.I, tot = c.ac.filter(b => b.adq == null || b.adq <= I.ate), novos = c.ac.filter(b => dentro(b.adq, I.cur)).length;
-    const fis = tot.filter(b => b.fmt === 'fisico').length;
-    const datado = c.ac.some(b => b.adq != null);   // sem nenhuma data de aquisição não há como falar em crescimento
-    return { v: tot.length, tend: datado ? tend(tot.length, tot.length - novos, 'alta') : null, cmp: datado ? `+${fInt(novos)} ${I.cmpC}` : tot.length ? 'sem datas de aquisição' : '', sub: `${plural(fis, 'físico', 'físicos')} · ${plural(tot.length - fis, 'virtual', 'virtuais')}`, spark: acumulado(baldes(I.de, I.ate, 20), c.ac, b => b.adq) };
+    const I = c.I, tot = c.ac.filter(b => adqDe(b) == null || adqDe(b) <= I.ate), novos = c.ac.filter(b => dentro(adqDe(b), I.cur)).length;
+    const fis = tot.filter(temFisico).length, dig = tot.filter(temDigital).length, amb = tot.filter(b => posseDe(b) === 'ambos').length, aud = tot.filter(b => b.fmt === 'audio').length;
+    const datado = c.ac.some(b => adqDe(b) != null);   // sem nenhuma data de aquisição não há como falar em crescimento
+    return { v: tot.length, tend: datado ? tend(tot.length, tot.length - novos, 'alta') : null, cmp: datado ? `+${fInt(novos)} ${I.cmpC}` : tot.length ? 'sem datas de aquisição' : '', sub: [plural(fis, 'físico', 'físicos'), plural(dig, 'digital', 'digitais'), aud ? `${fInt(aud)} em áudio` : '', amb ? `${fInt(amb)} nos dois` : ''].filter(Boolean).join(' · '), spark: acumulado(baldes(I.de, I.ate, 20), c.ac, b => adqDe(b)) };
   },
   investido(c) {
-    const I = c.I, val = soma(c.acP, b => b.pago || 0), pagos = c.acP.filter(b => b.pago > 0).length;
-    const cur = soma(c.ac, b => (dentro(b.adq, I.cur) ? b.pago || 0 : 0)), ant = soma(c.ac, b => (dentro(b.adq, I.ant) ? b.pago || 0 : 0));
+    const I = c.I, val = soma(c.acP, b => pagoDe(b) || 0), pagos = c.acP.filter(b => pagoDe(b) > 0).length;
+    const cur = soma(c.ac, b => (dentro(adqDe(b), I.cur) ? pagoDe(b) || 0 : 0)), ant = soma(c.ac, b => (dentro(adqDe(b), I.ant) ? pagoDe(b) || 0 : 0));
     const t = tend(cur, ant, 'neutro');   // sem valor nos dois períodos não há comparação (nem legenda de comparação)
-    return { v: val, fmt: fBRL0, tend: t, cmp: t ? I.cmp : '', sub: pagos ? `${plural(pagos, 'compra', 'compras')} · média de ${fBRL(val / pagos)}` : 'nenhuma compra com valor registrado', spark: porBalde(baldes(I.de, I.ate, 20), c.ac, b => b.adq, b => b.pago || 0), zero: true };
+    return { v: val, fmt: fBRL0, tend: t, cmp: t ? I.cmp : '', sub: pagos ? `${plural(pagos, 'compra', 'compras')} · média de ${fBRL(val / pagos)}` : 'nenhuma compra com valor registrado', spark: porBalde(baldes(I.de, I.ate, 20), c.ac, b => adqDe(b), b => pagoDe(b) || 0), zero: true };
   },
   leituras(c) {
     const I = c.I, n = c.lidosP.length;
@@ -83,8 +83,8 @@ const K = {
   },
   fila(c) {
     const I = c.I, fila = c.ac.filter(b => b.leit !== 'lido' && b.leit !== 'aband'), lendo = c.ac.filter(b => b.leit === 'lendo').length, lidos = c.ac.filter(b => b.leit === 'lido').length;
-    const entrou = c.ac.filter(b => dentro(b.adq, I.cur)).length, saiu = c.ac.filter(b => b.leit === 'lido' && dentro(b.lidoEm, I.cur)).length;
-    const datado = c.ac.some(b => b.adq != null || b.lidoEm != null);
+    const entrou = c.ac.filter(b => dentro(adqDe(b), I.cur)).length, saiu = c.ac.filter(b => b.leit === 'lido' && dentro(b.lidoEm, I.cur)).length;
+    const datado = c.ac.some(b => adqDe(b) != null || b.lidoEm != null);
     return { v: fila.length, tend: datado ? tendAbs(entrou - saiu, 'baixa') : null, cmp: datado ? I.cmpC : '', sub: `${fInt(lendo)} em leitura · ${c.ac.length ? fPct(lidos / c.ac.length) : '0%'} do acervo já lido` };
   },
 };
@@ -96,8 +96,8 @@ function pEvolucao() {
     segmento(k.tools, [['qtd', 'Livros'], ['valor', 'Valor']], 'evo');
     const g = GraficoLinha(k.corpo, { legenda: k.pe, rotulo: 'Evolução do acervo por formato' });
     return c => {
-      const B = baldes(c.I.de, c.I.ate, 64), x = B.lista.map(b => b.f), val = S.ui.evo === 'valor', semData = c.ac.filter(b => b.adq == null).length;
-      const series = Object.keys(FORMATOS).map(f => ({ k: f, n: FORMATOS[f].n, cor: FORMATOS[f].cor, area: true, v: acumulado(B, c.ac.filter(b => b.fmt === f), b => b.adq, val ? b => b.pago || 0 : null) })).filter(s => s.v[s.v.length - 1] > 0);
+      const B = baldes(c.I.de, c.I.ate, 64), x = B.lista.map(b => b.f), val = S.ui.evo === 'valor', semData = c.ac.filter(b => adqDe(b) == null).length;
+      const series = Object.keys(FORMATOS).map(f => ({ k: f, n: FORMATOS[f].n, cor: FORMATOS[f].cor, area: true, v: acumulado(B, c.ac.filter(b => b.fmt === f), b => adqDe(b), val ? b => pagoDe(b) || 0 : null) })).filter(s => s.v[s.v.length - 1] > 0);
       k.sub.textContent = `${val ? 'Valor investido acumulado' : 'Livros acumulados'} por formato · ${c.I.rot}${semData ? ` · ${plural(semData, 'livro sem data não entra', 'livros sem data não entram')}` : ''}`;
       g.atualizar({ x, series, empilhar: true, inteiro: !val, fmtY: val ? fBRL : fInt, fmtEixo: val ? fBRLc : fInt, rot: i => (B.g === 'dia' || B.g === 'semana' ? fDiaMes(x[i]) : B.g === 'ano' ? String(partes(x[i]).y) : fMesAno(x[i])), tit: i => 'Até ' + fData(x[i]), vazio: 'Nenhum livro com data de aquisição neste recorte. Edite um livro para informar quando ele chegou.' });
     };
@@ -107,13 +107,13 @@ function pComposicao() {
   return { id: 'composicao', w: 'p-4 m-6', tit: 'Composição do acervo', montar(k) {
     segmento(k.tools, [['fmt', 'Formato'], ['tipo', 'Tipo'], ['leit', 'Leitura']], 'compor');
     const g = GraficoRosca(k.corpo, { rotulo: 'Composição do acervo', aoClicar(key) {
-      if (S.ui.compor === 'fmt') { const alvo = key === 'fisico' ? 'fisico' : 'virtual'; S.acervo = S.acervo === alvo ? 'tudo' : alvo; }
+      if (S.ui.compor === 'fmt') { const alvo = key === 'fisico' || key === 'ambos' ? key : 'virtual'; S.acervo = S.acervo === alvo ? 'tudo' : alvo; }
       else if (S.ui.compor === 'tipo') { const alvo = key === 'F' || key === 'NF' ? key : 'O'; S.tipo = S.tipo === alvo ? '' : alvo; }
       else return;
       filtrosMudaram();
     } });
     return c => {
-      const m = S.ui.compor, mapa = m === 'fmt' ? FORMATOS : m === 'tipo' ? TIPOS : LEITURAS, cont = contarPor(c.acP, m === 'fmt' ? b => b.fmt : m === 'tipo' ? b => b._tipo : b => b.leit);
+      const m = S.ui.compor, mapa = m === 'fmt' ? POSSES : m === 'tipo' ? TIPOS : LEITURAS, cont = contarPor(c.acP, m === 'fmt' ? posseDe : m === 'tipo' ? b => b._tipo : b => b.leit);
       k.sub.textContent = `${c.I.tudo ? 'Todo o acervo' : 'Adquiridos ' + c.I.rot} · por ${m === 'fmt' ? 'formato' : m === 'tipo' ? 'tipo' : 'situação de leitura'}`;
       g.atualizar({ unidade: 'livros', fatias: Object.keys(mapa).map(key => ({ k: key, n: mapa[key].n, cor: mapa[key].cor, v: cont.get(key) || 0, filtravel: m !== 'leit' })), vazio: 'Nenhum livro do acervo neste recorte.' });
     };
@@ -127,7 +127,7 @@ function pAquisicoes() {
       const B = baldes(c.I.de, c.I.ate, 24), val = S.ui.aq === 'valor', L = B.lista;
       k.sub.textContent = `${val ? 'Valor pago' : 'Livros adquiridos'} por ${L.length > 1 ? NOME_GRAN[B.g] + ' e ' : ''}formato · ${c.I.rot}`;
       g.atualizar({ rot: L.map(b => b.rot), tit: L.map(b => b.tit), parcial: L.length && L[L.length - 1].parcial ? L.length - 1 : -1, inteiro: !val, fmtY: val ? fBRL : fInt, fmtEixo: val ? fBRLc : fInt,
-        series: Object.keys(FORMATOS).map(f => ({ k: f, n: FORMATOS[f].n, cor: FORMATOS[f].cor, v: porBalde(B, c.ac.filter(b => b.fmt === f), b => b.adq, val ? b => b.pago || 0 : null) })), vazio: 'Nenhuma aquisição com data neste recorte.' });
+        series: Object.keys(FORMATOS).map(f => ({ k: f, n: FORMATOS[f].n, cor: FORMATOS[f].cor, v: porBalde(B, c.ac.filter(b => b.fmt === f), b => adqDe(b), val ? b => pagoDe(b) || 0 : null) })), vazio: 'Nenhuma aquisição com data neste recorte.' });
     };
   } };
 }
@@ -189,7 +189,7 @@ function pAdqLidos() {
     const g = GraficoLinha(k.corpo, { legenda: k.pe, rotulo: 'Livros adquiridos e livros lidos, acumulados' });
     return c => {
       const B = baldes(c.I.de, c.I.ate, 64), x = B.lista.map(b => b.f);
-      const adq = acumulado(B, c.ac, b => b.adq), lid = acumulado(B, c.ac.filter(b => b.leit === 'lido'), b => b.lidoEm);
+      const adq = acumulado(B, c.ac, b => adqDe(b)), lid = acumulado(B, c.ac.filter(b => b.leit === 'lido'), b => b.lidoEm);
       const tem = adq.length && adq[adq.length - 1] > 0;
       k.sub.textContent = `Acumulado no acervo · a distância entre as linhas é a fila de leitura · ${c.I.rot}`;
       g.atualizar({ x: tem ? x : [], inteiro: true, zero: c.I.tudo, rot: i => (B.g === 'dia' || B.g === 'semana' ? fDiaMes(x[i]) : B.g === 'ano' ? String(partes(x[i]).y) : fMesAno(x[i])), tit: i => 'Até ' + fData(x[i]),
@@ -225,7 +225,7 @@ function pOrigens() {
     const g = BarrasH(k.corpo, {});
     return c => {
       const val = S.ui.origem === 'valor', m = new Map();
-      for (const b of c.acP) { if (!b.loja) continue; const o = m.get(b.loja) || { n: 0, v: 0, f: {} }; o.n++; o.v += b.pago || 0; o.f[b.fmt] = (o.f[b.fmt] || 0) + (val ? b.pago || 0 : 1); m.set(b.loja, o); }
+      for (const b of c.acP) { if (!lojaDe(b)) continue; const o = m.get(b.loja) || { n: 0, v: 0, f: {} }; o.n++; o.v += pagoDe(b) || 0; o.f[b.fmt] = (o.f[b.fmt] || 0) + (val ? pagoDe(b) || 0 : 1); m.set(b.loja, o); }
       const linhas = [...m].sort((a, z) => (val ? z[1].v - a[1].v : z[1].n - a[1].n)).slice(0, 10).map(([loja, o]) => ({ k: loja, n: loja, segs: Object.keys(FORMATOS).map(f => ({ n: FORMATOS[f].n, cor: FORMATOS[f].cor, v: o.f[f] || 0 })), rodape: `<span>${plural(o.n, 'livro', 'livros')} · ${fBRL(o.v)}${o.n ? ' · média ' + fBRL(o.v / o.n) : ''}</span>` }));
       k.sub.textContent = `${val ? 'Valor pago' : 'Livros'} por loja ou origem · ${c.I.rot}`;
       legendaFixa(k.pe, Object.keys(FORMATOS).filter(f => linhas.some(l => l.segs.some(s => s.n === FORMATOS[f].n && s.v > 0))).map(f => [FORMATOS[f].n, FORMATOS[f].cor]));

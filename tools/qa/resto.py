@@ -8,6 +8,7 @@ errs = []; falhas = []
 TOAST = "() => { const t = [...document.querySelectorAll('#toasts .toast')].map(t => t.textContent); return (t[t.length - 1] || '').replace(/\\u00a0/g, ' '); }"
 K = "() => Object.fromEntries([...document.querySelectorAll('.visao:not([hidden]) .kpi')].map(k => [k.dataset.k, k.querySelector('.kpi-v b').textContent.replace(/\\u00a0/g, ' ')]))"
 INFO = "v => (document.querySelector('#p-tab-' + v + ' .tb-info') || {}).textContent || ''"
+mil = lambda n: f'{n:,}'.replace(',', '.')   # 2301 → "2.301", como o painel escreve
 def confere(nome, ok, extra=''):
     print(('ok   ' if ok else 'FALHA') + ' ' + nome + (' — ' + str(extra) if extra != '' else ''))
     if not ok: falhas.append(nome)
@@ -34,10 +35,10 @@ with sync_playwright() as p:
     confere('toast "Livro excluído."', 'Livro excluído' in pg.evaluate(TOAST), pg.evaluate(TOAST))
     confere('gaveta fechou', pg.evaluate("() => !document.querySelector('#gaveta').classList.contains('on')"))
     confere('KPIs voltaram ao que eram', pg.evaluate(K) == k0, pg.evaluate(K))
-    pg.fill('#p-tab-geral input[type=search]', 'Zz Para'); pg.wait_for_timeout(500)
+    pg.fill('#p-tab-geral input[type=search]', 'Zz Para Excluir'); pg.wait_for_timeout(500)
     confere('não aparece mais na tabela', pg.locator('#p-tab-geral tbody tr[data-id]').count() == 0, pg.evaluate(INFO, 'geral'))
     pg.reload(); pg.wait_for_timeout(1000)
-    pg.fill('#p-tab-geral input[type=search]', 'Zz Para'); pg.wait_for_timeout(500)
+    pg.fill('#p-tab-geral input[type=search]', 'Zz Para Excluir'); pg.wait_for_timeout(500)
     confere('continua excluído depois de recarregar', pg.locator('#p-tab-geral tbody tr[data-id]').count() == 0)
     pg.fill('#p-tab-geral input[type=search]', ''); pg.wait_for_timeout(400)
     pg.locator('#p-tab-geral tbody tr[data-id]').first.click(); pg.wait_for_timeout(500)
@@ -74,11 +75,11 @@ with sync_playwright() as p:
     json.dump(o, open(f'{TMP}/bk-misto.json', 'w', encoding='utf-8'), ensure_ascii=False)
     pg.click('#b-dados'); pg.wait_for_timeout(400); pg.set_input_files('#arq', f'{TMP}/bk-misto.json'); pg.wait_for_timeout(800)
     txt = pg.inner_text('#dlg.on').replace('\u00a0', ' ')
-    confere('confirmação informa os ignorados', f'{len(lixo)} registros ilegíveis serão ignorados' in txt and f'{n + 1} livros' in txt, txt.replace('\n', ' ')[:200])
+    confere('confirmação informa os ignorados', f'{len(lixo)} registros ilegíveis serão ignorados' in txt and f'{mil(n + 1)} livros' in txt, txt.replace('\n', ' ')[:200])
     pg.click('#dlg footer .pri'); pg.wait_for_timeout(1000)
     confere('toast "Backup importado."', 'Backup importado' in pg.evaluate(TOAST), pg.evaluate(TOAST))
     for _ in range(2): pg.keyboard.press('Escape'); pg.wait_for_timeout(150)
-    info = pg.evaluate(INFO, 'geral'); confere('tabela com um livro a mais (o torto, saneado)', '645' in info, info)
+    info = pg.evaluate(INFO, 'geral'); confere('tabela com um livro a mais (o torto, saneado)', f'de {mil(n + 1)} livros' in info, info)
     pg.fill('#p-tab-geral input[type=search]', 'Zz Registro'); pg.wait_for_timeout(500)
     confere('registro torto aparece', pg.locator('#p-tab-geral tbody tr[data-id]').count() == 1)
     pg.locator('#p-tab-geral tbody tr[data-id]').first.click(); pg.wait_for_timeout(600)
@@ -89,6 +90,6 @@ with sync_playwright() as p:
     for vis in ['biblioteca', 'recs', 'desejos', 'precos', 'geral']:
         pg.click(f'#nav [data-ir={vis}]'); pg.wait_for_timeout(500)
     pg.reload(); pg.wait_for_timeout(1000)
-    info = pg.evaluate(INFO, 'geral'); confere('dados importados sobrevivem ao recarregar', '645' in info, info)
+    info = pg.evaluate(INFO, 'geral'); confere('dados importados sobrevivem ao recarregar', f'de {mil(n + 1)} livros' in info, info)
     b.close()
 print('FALHAS:', falhas); print('ERROS:', len(errs)); [print('  ', e[:300]) for e in errs[:10]]

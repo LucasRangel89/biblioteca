@@ -74,7 +74,8 @@ function importarBackup(arquivo) {
     const fora = o.livros.length - livros.length, quando = typeof o.salvoEm === 'string' && !isNaN(Date.parse(o.salvoEm)) ? ' · salvo em ' + esc(new Date(o.salvoEm).toLocaleString('pt-BR')) : '';
     confirmar('Importar backup', `Substituir os dados atuais pelos do arquivo <b>${esc(arquivo.name)}</b>?<br>${plural(livros.length, 'livro', 'livros')}${quando}${fora ? ` · ${plural(fora, 'registro ilegível será ignorado', 'registros ilegíveis serão ignorados')}` : ''}. Esta ação não pode ser desfeita.`, 'Importar', () => {
       DB.livros = livros; DB.exemplos = !!o.exemplos; DB.criadoEm = typeof o.criadoEm === 'number' && isFinite(o.criadoEm) ? o.criadoEm : DB.hoje; S.sel = '';
-      salvar(); fecharGaveta(); filtrosMudaram(); toast('Backup importado.');
+      ajustarAoCatalogo(o.cat);
+      salvar(); fecharGaveta(); filtrosMudaram(); toast('Backup importado.' + textoNovidade());
     });
   };
   leitor.readAsText(arquivo);
@@ -86,7 +87,7 @@ function dlgDados() {
       <div class="dd-st ${Loja.ok ? 'ok' : 'aviso'}">${icone(Loja.ok ? 'check' : 'info', 16)}<div><b>${Loja.ok ? 'Salvo neste navegador' : 'Pré-visualização: nada é salvo'}</b><span>${Loja.ok ? 'Tudo fica só neste dispositivo (armazenamento local do navegador). Nenhum dado é enviado para a internet.' : 'Este ambiente não permite gravar. Baixe o arquivo HTML e abra-o no navegador para que suas alterações fiquem salvas no seu dispositivo.'}</span></div></div>
       <dl class="dd-n"><div><dt>Livros</dt><dd>${fInt(DB.livros.length)}</dd></div><div><dt>Editados por você</dt><dd>${fInt(meus)}</dd></div><div><dt>Cotações suas</dt><dd>${fInt(cot)}</dd></div></dl>
       <section><h3>Backup</h3><p>Guarde uma cópia em arquivo ou leve seus dados para outro navegador.</p><div class="dd-b"><button type="button" class="btn" data-x="exportar">${icone('baixar', 15)}Exportar backup (.json)</button><button type="button" class="btn" data-x="importar">${icone('enviar', 15)}Importar backup…</button></div></section>
-      <section><h3>Dados de exemplo</h3><p>Títulos, autores, marcadores, eixos e a estante física vêm do seu catálogo. Datas, valores pagos, e-books e audiolivros, leituras, notas, a lista de próximas aquisições e os históricos de preço são <b>simulados</b> para dar vida aos gráficos. ${DB.exemplos ? 'Ao limpar, fica só o que é do catálogo e o que você editou ou registrou.' : 'Eles foram removidos; você pode trazê-los de volta para explorar o painel.'}</p>
+      <section><h3>Dados de exemplo</h3><p>Títulos, autores, marcadores, eixos, a estante física e a biblioteca virtual vêm do seu catálogo. Datas e valores pagos, leituras, notas, a lista de próximas aquisições e os históricos de preço são <b>simulados</b> para dar vida aos gráficos. ${DB.exemplos ? 'Ao limpar, fica só o que é do catálogo e o que você editou ou registrou.' : 'Eles foram removidos; você pode trazê-los de volta para explorar o painel.'}</p>
         <div class="dd-b">${DB.exemplos ? `<button type="button" class="btn" data-x="limpar">${icone('lixo', 15)}Limpar dados de exemplo</button>` : `<button type="button" class="btn" data-x="restaurar">${icone('desfazer', 15)}Restaurar dados de exemplo</button>`}</div></section>
       ${Loja.falha() ? `<section><h3>Cópia recuperada</h3><p>Em uma abertura anterior os dados salvos não puderam ser lidos e o painel recomeçou do catálogo. O conteúdo original ficou guardado aqui.</p><div class="dd-b"><button type="button" class="btn" data-x="falha-baixar">${icone('baixar', 15)}Baixar cópia (.json)</button><button type="button" class="btn" data-x="falha-descartar">${icone('lixo', 15)}Descartar cópia</button></div></section>` : ''}
       <section><h3>Recomeçar</h3><p>Apaga tudo o que foi salvo neste navegador e recarrega o catálogo original com os dados de exemplo.</p><div class="dd-b"><button type="button" class="btn perigo" data-x="zerar">${icone('lixo', 15)}Recomeçar do catálogo original</button></div></section>
@@ -98,7 +99,7 @@ function dlgDados() {
         else if (x === 'importar') { Dlg.fechar(); $('#arq').click(); }
         else if (x === 'falha-baixar') baixarArquivo(`biblioteca-lucas-copia-recuperada-${iso(DB.hoje)}.json`, Loja.falha() || '', 'application/json');
         else if (x === 'falha-descartar') { Loja.descartarFalha(); Dlg.fechar(); toast('Cópia descartada.'); }
-        else if (x === 'limpar') confirmar('Limpar dados de exemplo', 'Remover todas as datas, valores, leituras, e-books/audiolivros, itens da lista de compra e históricos de preço <b>simulados</b>?<br>Ficam o catálogo, a estante física e tudo o que você editou ou registrou.', 'Limpar', () => { removerExemplos(); S.sel = ''; S.avisoVisto = true; salvar(); fecharGaveta(); filtrosMudaram(); toast('Dados de exemplo removidos.'); });
+        else if (x === 'limpar') confirmar('Limpar dados de exemplo', 'Remover todas as datas, valores, leituras, itens da lista de compra e históricos de preço <b>simulados</b>?<br>Ficam o catálogo, a estante física, a biblioteca virtual e tudo o que você editou ou registrou.', 'Limpar', () => { removerExemplos(); S.sel = ''; S.avisoVisto = true; salvar(); fecharGaveta(); filtrosMudaram(); toast('Dados de exemplo removidos.'); });
         else if (x === 'restaurar') confirmar('Restaurar dados de exemplo', 'Gerar novamente os dados simulados para os livros que você ainda não editou?', 'Restaurar', () => { restaurarExemplos(); S.sel = ''; salvar(); filtrosMudaram(); toast('Dados de exemplo restaurados.'); });
         else if (x === 'zerar') confirmar('Recomeçar do catálogo original', 'Apagar <b>todas</b> as suas edições, cotações e livros adicionados e voltar ao estado inicial? Esta ação não pode ser desfeita.', 'Apagar tudo', () => { Loja.limpar(); DB.livros = gerarExemplos(livrosDoCatalogo(), DB.hoje); DB.exemplos = true; DB.criadoEm = DB.hoje; S.sel = ''; S.avisoVisto = false; limparFiltros(true); salvar(); fecharGaveta(); filtrosMudaram(); toast('Painel reiniciado.'); }, true);
       });
@@ -106,9 +107,8 @@ function dlgDados() {
 }
 
 /* ───────── ações sobre um livro ───────── */
-const defTag = (b, t, on) => { const i = b.tags.indexOf(t); if (on && i < 0) b.tags.push(t); if (!on && i >= 0) b.tags.splice(i, 1); };
 function tocar(b) {                            // o item passa a ser "do usuário": não é mais tratado como exemplo
-  b.u = 1; b.demo = 0; defTag(b, 'ja-tenho', b.col === 'acervo'); defTag(b, 'lido', b.leit === 'lido'); derivar(b);
+  b.u = 1; b.demo = 0; marcarPosse(b); defTag(b, 'lido', b.leit === 'lido'); derivar(b);
   salvar(); render(); if (Gaveta.id === b.id) desenharGaveta();
 }
 function registrarCotacao(b, loja, preco, d) {
@@ -167,12 +167,21 @@ function dlgCotacao(b) {
     aoAbrir(el) { formCotacao($('#dlg-cot', el), { fixo: b }); } });
 }
 const opcoes = (pares, atual) => pares.map(([v, n]) => `<option value="${esc(v)}"${String(v) === String(atual ?? '') ? ' selected' : ''}>${esc(n)}</option>`).join('');
+/* formato no acervo: além dos três formatos, "físico e digital" (o livro está na estante e na biblioteca virtual).
+   Quem tem arquivo na biblioteca virtual é, no mínimo, digital: "só físico" não é oferecido. */
+const opcoesFmt = o => [['fisico', 'Físico'], ['ambos', POSSES.ambos.n], ['ebook', FORMATOS.ebook.n], ['audio', FORMATOS.audio.n]].filter(([v]) => !(v === 'fisico' && o._dg));
+const fmtNoForm = o => (o.fmt === 'audio' ? 'audio' : temDigital(o) ? (o.fmt === 'fisico' ? 'ambos' : 'ebook') : o.fmt || 'fisico');
+function aplicarFmt(b, sel, loja) {
+  b.fmt = sel === 'ambos' ? 'fisico' : sel;
+  defTag(b, 'tenho-digital', sel === 'ambos' || sel === 'ebook');
+  b.plat = b.fmt === 'fisico' ? '' : loja || (b._dg ? PLAT_DIGITAL : '');
+}
 const LISTA_LOJAS = () => { const s = new Set(['Amazon', 'Estante Virtual', 'Mercado Livre', 'Travessa', 'Kindle', 'Kobo', 'Google Play Livros', 'Audible', 'Storytel', 'Livraria', 'Sebo', 'Feira do Livro', 'Presente']); for (const b of DB.livros) if (b.loja) s.add(b.loja); return [...s]; };
 function dlgComprei(b, jaTinha) {
-  const x = b.px ? melhorEm(b, DB.hoje) : null, fmt = b.fmt || 'fisico';
+  const x = b.px ? melhorEm(b, DB.hoje) : null;
   Dlg.abrir({ titulo: jaTinha ? 'Já tenho este livro' : 'Registrar compra', corpo: `<p class="dlg-sub"><b>${esc(b.t)}</b>${b.a ? ' · ' + esc(b.a) : ''}</p>
     <div class="form">
-      <label class="cp"><span>Formato</span><select data-f="fmt">${opcoes(Object.keys(FORMATOS).map(f => [f, FORMATOS[f].n]), fmt)}</select></label>
+      <label class="cp"><span>Formato</span><select data-f="fmt">${opcoes(opcoesFmt(b), fmtNoForm(b))}</select></label>
       <label class="cp"><span>${jaTinha ? 'Adquirido em (opcional)' : 'Data da compra'}</span><input data-f="adq" type="date" value="${jaTinha ? '' : iso(DB.hoje)}" max="${iso(DB.hoje)}"></label>
       <label class="cp"><span>Loja ou origem</span><input data-f="loja" type="text" list="dl-lojas" maxlength="40" value="${esc(!jaTinha && x ? x.f : '')}"><datalist id="dl-lojas">${LISTA_LOJAS().map(n => `<option value="${esc(n)}">`).join('')}</datalist></label>
       <label class="cp"><span>Valor pago (R$)</span><input data-f="pago" type="text" inputmode="decimal" placeholder="0,00" value="${!jaTinha && x ? valorCampo(x.p) : ''}"></label>
@@ -182,7 +191,7 @@ function dlgComprei(b, jaTinha) {
       if (pago != null && isNaN(pago)) return erroCampo(g('pago'), 'Informe um valor válido, por exemplo 49,90.');
       if (adq != null && adq > DB.hoje) return erroCampo(g('adq'), 'A data não pode estar no futuro.');
       const loja = g('loja').value.trim(), f = g('fmt').value;
-      Object.assign(b, { col: 'acervo', fmt: f, plat: f === 'fisico' ? '' : loja, adq, pago, loja, cond: g('cond').value, track: false, prio: 0, leit: b.leit === 'lido' ? 'lido' : 'fila' });
+      Object.assign(b, { col: 'acervo', adq, pago, loja, cond: g('cond').value, track: false, prio: 0, leit: b.leit === 'lido' ? 'lido' : 'fila' }); aplicarFmt(b, f, loja);
       if (b.add == null) b.add = adq;
       tocar(b); toast('Adicionado ao acervo.');
     } }] });
@@ -230,7 +239,7 @@ function dlgLivro(b) {
       <label class="cp c3"><span>Dificuldade</span><select data-f="d">${opcoes([[0, 'Não informada'], [1, 'Leve'], [2, 'Média'], [3, 'Exigente']], o._d)}</select></label>
       <label class="cp c3"><span>Extensão</span><select data-f="e">${opcoes([[0, 'Não informada'], [1, 'Curta (até ~250 p.)'], [2, 'Média (~250–500 p.)'], [3, 'Longa (500+ p. ou série)']], o._e)}</select></label>
       <fieldset class="c2 grp" data-g="acervo"><legend>No acervo</legend>
-        <label class="cp c3"><span>Formato</span><select data-f="fmt">${opcoes(Object.keys(FORMATOS).map(f => [f, FORMATOS[f].n]), o.fmt || 'fisico')}</select></label>
+        <label class="cp c3"><span>Formato</span><select data-f="fmt">${opcoes(opcoesFmt(o), fmtNoForm(o))}</select></label>
         <label class="cp c3"><span>Adquirido em</span><input data-f="adq" type="date" value="${iso(o.adq)}" max="${iso(DB.hoje)}"></label>
         <label class="cp c3"><span>Valor pago (R$)</span><input data-f="pago" type="text" inputmode="decimal" placeholder="0,00" value="${valorCampo(o.pago)}"></label>
         <label class="cp c3"><span>Loja ou origem</span><input data-f="loja" type="text" list="dl-lojas" maxlength="40" value="${v(o.loja)}"><datalist id="dl-lojas">${LISTA_LOJAS().map(n => `<option value="${esc(n)}">`).join('')}</datalist></label>
@@ -269,7 +278,8 @@ function dlgLivro(b) {
       x.tags = [...new Set([...tipoTags, d ? 'd' + d : '', e ? 'e' + e : '', ...extras, top ? 'top' : ''].filter(Boolean))];
       if (col === 'acervo') {
         const leit = val('leit'), f = val('fmt'), loja = val('loja');
-        Object.assign(x, { fmt: f, loja, plat: f === 'fisico' ? '' : loja, adq: deIso(val('adq')), pago: dinheiro.pago, cond: val('cond'), pg: clamp(+val('pg') || 0, 0, 9999), leit, prog: leit === 'lido' ? 100 : clamp(Math.round(+val('prog') || 0), 0, 100), lidoEm: leit === 'lido' ? deIso(val('lidoEm')) : null, nota: +val('nota') || 0, prio: 0, track: false });
+        aplicarFmt(x, f, loja);
+        Object.assign(x, { loja, adq: deIso(val('adq')), pago: dinheiro.pago, cond: val('cond'), pg: clamp(+val('pg') || 0, 0, 9999), leit, prog: leit === 'lido' ? 100 : clamp(Math.round(+val('prog') || 0), 0, 100), lidoEm: leit === 'lido' ? deIso(val('lidoEm')) : null, nota: +val('nota') || 0, prio: 0, track: false });
         if (x.add == null) x.add = x.adq;
       } else {
         Object.assign(x, { adq: null, pago: null, loja: '', plat: '', cond: '' });
@@ -328,7 +338,7 @@ function desenharGaveta() {
     <div class="gv-ch"><button type="button" class="tag lig" data-eixo="${b.eixo}" title="Filtrar por este eixo">${EIXOS[b.eixo] ? esc(EIXOS[b.eixo].n) : 'Sem eixo'}</button><span class="tag">${TIPOS[b._tipo].n}</span>${b._d ? `<span class="tag">${pontos(b._d)}${NIVEIS[b._d].n}</span>` : ''}${b._e ? `<span class="tag" title="${EXTENSOES[b._e].d}">${EXTENSOES[b._e].n} · ${EXTENSOES[b._e].d}</span>` : ''}${b._top ? `<span class="tag dest">${icone('estrela', 12)}Prioridade</span>` : ''}${b.tags.includes('sem-pt') ? '<span class="tag av">Sem edição em PT</span>' : ''}${b.tags.includes('verificar') ? '<span class="tag av">A verificar</span>' : ''}</div>`;
   let f = '';
   if (b.col === 'acervo') {
-    f += fato('Formato', `<span class="fmt">${icone(ICONE_FMT[b.fmt] || 'livro', 14)}${FORMATOS[b.fmt] ? FORMATOS[b.fmt].n : '—'}</span>${b.plat ? ` <span class="mudo">· ${esc(b.plat)}</span>` : ''}`);
+    f += fato('Formato', fmtHtml(b) + (b.plat ? ` <span class="mudo">· ${esc(b.plat)}</span>` : ''));
     f += fato('Adquirido em', b.adq == null ? '<span class="mudo">sem data</span>' : fData(b.adq));
     f += fato('Origem', b.loja ? esc(b.loja) + (b.cond && b.cond !== 'presente' ? ` <span class="mudo">· ${b.cond}</span>` : '') : '');
     f += fato('Valor pago', b.pago == null ? '' : b.pago === 0 ? (b.cond === 'presente' ? 'Presente' : 'Gratuito') : fBRL(b.pago));
@@ -363,9 +373,12 @@ function desenharGaveta() {
     $('#gv-fontes').innerHTML = `<table class="fontes"><thead><tr><th>Loja</th><th class="num">Último preço</th><th class="num">Cotado em</th></tr></thead><tbody>${ord.map(y => `<tr${y.n === melhor ? ' class="melhor"' : ''}><td><i class="pt" style="background:${corFonte(y.n)}"></i>${esc(y.n)}${doFmt.includes(y.n) ? '' : `<span class="mudo"> · ${tipoFonte(y.n) === 'virtual' ? 'e-book' : 'físico'}</span>`}</td><td class="num"><b>${fBRL(y.o[1])}</b></td><td class="num">${fData(y.o[0])}<span class="sub">${y.o[2] ? `cotação sua · <button type="button" class="lnk" data-apagar="${esc(y.n)}" data-dia="${y.o[0]}" aria-label="Apagar esta cotação de ${esc(y.n)}">apagar</button>` : 'exemplo'}</span></td></tr>`).join('')}</tbody></table>
       ${b.col === 'acervo' ? '' : `<button type="button" class="btn sm" data-acao="cotar">${icone('mais', 14)}Registrar cotação</button>`}`;
   }
-  const outras = b.tags.filter(t => !['F', 'NF', 'd1', 'd2', 'd3', 'e1', 'e2', 'e3', 'top', 'ja-tenho', 'lido', 'sem-pt', 'verificar'].includes(t));
+  const outras = b.tags.filter(t => !['F', 'NF', 'd1', 'd2', 'd3', 'e1', 'e2', 'e3', 'top', 'ja-tenho', 'tenho-fisico', 'tenho-digital', 'lido', 'sem-pt', 'verificar'].includes(t));
+  // o que há deste livro na biblioteca virtual: arquivos, formatos, pastas e, se for o caso, o título com que a edição está guardada
+  const g = b._dg, lista = (v, um, varios) => `${v.length > 1 ? varios : um}: ${v.map(x => `<b>${esc(x)}</b>`).join(' · ')}`;
+  const virt = g ? `<section id="gv-virtual"><div class="gv-st"><h4>Na biblioteca virtual</h4><span>${plural(g[1], 'arquivo', 'arquivos')} · ${esc(g[0].toUpperCase().split(' ').join(', '))}</span></div><p class="gv-obs">${lista(g[2], 'Pasta', 'Pastas')}${g[3].length ? '<br>' + lista(g[3], 'Lá, com o título', 'Lá, como') : ''}${b.col === 'acervo' ? '' : '<br>Você já tem este livro em digital.'}</p></section>` : '';
   $('#gv-resto').innerHTML = (b.col !== 'acervo' ? `<section><div class="gv-st"><h4>Buscar nas lojas</h4></div><div class="lb">${linksLojas(b).map(([n, u]) => `<a href="${esc(u)}" target="_blank" rel="noopener noreferrer">${esc(n)}${icone('externo', 12)}</a>`).join('')}</div>${Loja.ok ? '' : '<p class="nota">Na pré-visualização os links externos podem não abrir; funcionam com o arquivo aberto no navegador.</p>'}</section>` : '') +
-    (outras.length ? `<section><div class="gv-st"><h4>Marcadores</h4><span>clique para filtrar</span></div><div class="gv-tags">${outras.map(t => `<button type="button" class="tag lig" data-tag="${esc(t)}">${esc(rotTag(t))}</button>`).join('')}</div></section>` : '') +
+    virt + (outras.length ? `<section><div class="gv-st"><h4>Marcadores</h4><span>clique para filtrar</span></div><div class="gv-tags">${outras.map(t => `<button type="button" class="tag lig" data-tag="${esc(t)}">${esc(rotTag(t))}</button>`).join('')}</div></section>` : '') +
     (b.obs ? `<section><div class="gv-st"><h4>Observações</h4></div><p class="gv-obs">${esc(b.obs)}</p></section>` : '') +
     (b.demo ? `<p class="nota ex">${icone('info', 14)}<span>Título, autor, marcadores e eixo vêm do seu catálogo. ${b.col === 'acervo' ? 'Data, valor, origem, leitura e páginas' : b.px ? 'Datas, preço-alvo e histórico de preços' : 'A data de inclusão e as páginas'} deste item são <b>dados de exemplo</b>. Ao editar ou usar uma das ações abaixo, o item passa a ser tratado como seu.</span></p>` : '');
   const bt = (a, n, ic, cls) => `<button type="button" class="btn ${cls || ''}" data-acao="${a}">${ic ? icone(ic, 15) : ''}${n}</button>`;
