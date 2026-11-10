@@ -71,7 +71,7 @@ const S = {
   periodo: 'tudo', de: null, ate: null,
   acervo: 'tudo',   // tudo | fisico (estante) | virtual (digital ou áudio) | ambos (tenho em físico e em digital)
   tipo: '', eixos: new Set(), dif: new Set(), ext: new Set(), tags: new Set(), top: false,
-  tema: '', ocultar: false, avisoVisto: false, sel: '',
+  tema: '', ocultar: false, avisoVisto: false, saiu: 0, capas: true, sel: '',
   tab: {},
   ui: { compor: 'fmt', temas: 1, prio: 'valor', sorteio: 0 },
 };

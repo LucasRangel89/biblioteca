@@ -15,7 +15,7 @@ const ORD_LEIT = { lendo: 0, fila: 1, lido: 2, aband: 3, '': 4 }, ORD_SIT = { ag
 
 const COLS = {
   titulo: { n: 'Título', cls: 'c-tit', ord: b => norm(b.t), csv: b => b.t,
-    html: b => `<span class="tt" title="${esc(b.t)}"><b>${tituloTop(b)}</b><span>${esc(b.a || 'Autor não informado')}</span></span>` },
+    html: b => `<span class="tt-c">${capaHtml(b)}<span class="tt" title="${esc(b.t)}"><b>${tituloTop(b)}</b><span>${esc(b.a || 'Autor não informado')}</span></span></span>` },
   autor: { n: 'Autor', oculto: true, csv: b => b.a },
   lista: { n: 'Lista', ord: b => ORD_COL[b.col], csv: b => COLECOES[b.col].n, html: b => `<span class="pill col-${b.col}">${COLECOES[b.col].n}</span>` },
   eixo: { n: 'Eixo', cls: 'c-eixo', ord: b => b.eixo, csv: b => (EIXOS[b.eixo] ? EIXOS[b.eixo].n : ''), html: b => (EIXOS[b.eixo] ? esc(EIXOS[b.eixo].n) : mudo) },
@@ -69,7 +69,7 @@ const COLS = {
    mob: como cada coluna aparece quando as linhas viram cartões (b = selo no canto, x = oculta, s = largura em sextos). */
 const TABELAS = {
   geral: { tit: 'Todos os livros', cols: ['titulo', 'autor', 'lista', 'eixo', 'tipo', 'fmt', 'folego', 'extCsv', 'leit', 'data'], ord: 'data', dir: -1, linhas: c => c.acP.concat(c.des, c.recP), mob: { b: 'lista', x: ['tipo', 'folego'], s: { eixo: 4 } }, red: { fmt: 3, tipo: 4 },
-    abas: [['todos', 'Todos'], ['acervo', 'Acervo', b => b.col === 'acervo'], ['desejo', 'Próximas aquisições', b => b.col === 'desejo'], ['rec', 'Recomendações', b => b.col === 'rec']] },
+    abas: [['todos', 'Todos'], ['acervo', 'Acervo', b => b.col === 'acervo'], ['desejo', 'Próximas aquisições', b => b.col === 'desejo'], ['rec', 'Recomendações', b => b.col === 'rec'], ['meus', 'Editados por você', b => !!b.u]] },
   biblioteca: { tit: 'Livros do acervo', cols: ['titulo', 'autor', 'fmt', 'eixo', 'adq', 'origem', 'leit', 'nota', 'pg'], ord: 'adq', dir: -1, linhas: c => c.acP, mob: { b: 'leit', x: ['eixo', 'pg'] }, red: { pg: 2, nota: 3, origem: 4 },
     abas: [['todos', 'Todos'], ['lendo', 'Lendo', b => b.leit === 'lendo'], ['fila', 'Na fila', b => b.leit === 'fila' || b.leit === ''], ['lido', 'Lidos', b => b.leit === 'lido'], ['aband', 'Abandonados', b => b.leit === 'aband']] },
   recs: { tit: 'Lista de recomendações', cols: ['titulo', 'autor', 'eixo', 'tipo', 'dif', 'ext', 'tags', 'pend', 'add'], ord: 'eixo', dir: 1, linhas: c => c.recP, mob: { x: ['tipo', 'add'], s: { eixo: 4, tags: 4 } }, red: { add: 3, tipo: 4 },
@@ -80,8 +80,10 @@ const TABELAS = {
     vazio: 'Nenhuma compra registrada ainda. Para registrar, abra um livro do acervo e use “Editar”: valor pago, loja e data são opcionais — preencha só o que souber.',
     abas: [['todos', 'Todas'], ['pagas', 'Com valor', b => pagoDe(b) > 0], ['gratis', 'Presentes e gratuitos', b => pagoDe(b) === 0], ['semvalor', 'Sem valor', b => pagoDe(b) == null]] },
   desejos: { tit: 'Lista de próximas aquisições', cols: ['titulo', 'autor', 'prio', 'fmt', 'melhor', 'loja', 'alvo', 'difAlvo', 'min', 'spark', 'sit'], ord: 'difAlvo', dir: 1, linhas: c => c.des, mob: { b: 'sit', x: ['fmt'], s: { min: 4 } }, red: { fmt: 2, spark: 3, min: 4 },
+    vazio: 'A lista está vazia. Para pôr um livro aqui, abra uma recomendação e use “Quero comprar”.',
     abas: [['todos', 'Todos'], ['agora', 'Comprar agora', (b, c) => c.px(b).sit === 'agora'], ['quase', 'Quase lá', (b, c) => c.px(b).sit === 'quase'], ['aguardar', 'Aguardar', (b, c) => !['agora', 'quase'].includes(c.px(b).sit)]] },
   precos: { tit: 'Itens acompanhados', cols: ['titulo', 'autor', 'lista', 'melhor', 'loja', 'alvo', 'varP', 'faixa', 'minCsv', 'maxCsv', 'sit', 'ult'], ord: 'varP', dir: 1, linhas: c => c.rast, mob: { b: 'sit', x: ['lista', 'ult'], s: { faixa: 6 } }, red: { lista: 2, ult: 4 },
+    vazio: 'Nenhum preço acompanhado ainda. Os preços entram pelas cotações que você registra: abra uma recomendação e use “Monitorar preço”.',
     abas: [['todos', 'Todos'], ['desejo', 'Lista de compra', b => b.col === 'desejo'], ['monit', 'Só monitorados', b => b.col !== 'desejo'], ['queda', 'Em queda', (b, c) => c.px(b).res && c.px(b).res.var < -0.005], ['alta', 'Em alta', (b, c) => c.px(b).res && c.px(b).res.var > 0.005]] },
 };
 

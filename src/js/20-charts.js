@@ -107,13 +107,14 @@ function GraficoLinha(host, opt = {}) {
     const N = d.x.length;
     const temDados = N > 0 && series.some(s => s.v.some(v => v != null));
     vazio.hidden = temDados; svg.style.visibility = temDados ? '' : 'hidden';
+    // o tamanho vem antes de tudo: um <svg> sem tamanho mede 300 px, e o gráfico vazio estouraria um cartão mais estreito que isso
+    svg.setAttribute('width', W); svg.setAttribute('height', H); svg.setAttribute('viewBox', `0 0 ${W} ${H}`);
     if (!temDados) {
       const desligadas = N > 0 && d.series.some(s => st.ocultas.has(s.k) && s.v.some(v => v != null));   // vazio porque o usuário ocultou as séries
       vazio.innerHTML = vazioHtml(desligadas ? 'Todas as séries estão ocultas. Clique na legenda para mostrá-las de novo.' : d.vazio || 'Sem dados para o período e os filtros escolhidos.'); st.ant = null;
       if (desligadas) Legenda(); else if (opt.legenda) opt.legenda.innerHTML = '';
       return;
     }
-    svg.setAttribute('width', W); svg.setAttribute('height', H); svg.setAttribute('viewBox', `0 0 ${W} ${H}`);
 
     // empilhamento
     const topo = series.map(s => s.v.slice());
@@ -229,8 +230,8 @@ function GraficoBarras(host, opt = {}) {
     const totais = d.rot.map((_, i) => soma(d.series, s => s.v[i] || 0));
     const temDados = N > 0 && totais.some(t => t > 0);
     vazio.hidden = temDados; svg.style.visibility = temDados ? '' : 'hidden';
+    svg.setAttribute('width', W); svg.setAttribute('height', H); svg.setAttribute('viewBox', `0 0 ${W} ${H}`);      // antes de tudo, como no gráfico de linhas
     if (!temDados) { vazio.innerHTML = vazioHtml(d.vazio || 'Sem movimentação no período.'); st.ant = new Map(); if (opt.legenda) opt.legenda.innerHTML = ''; return; }
-    svg.setAttribute('width', W); svg.setAttribute('height', H); svg.setAttribute('viewBox', `0 0 ${W} ${H}`);
     const esc_ = ticksBonitos(0, Math.max(...totais), H < 220 ? 3 : 4, d.inteiro);
     const fmtE = d.fmtEixo || d.fmtY || fInt;
     const larguraRot = Math.max(...esc_.ticks.map(t => String(fmtE(t)).length)) * 6.2 + 12;

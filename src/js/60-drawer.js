@@ -84,24 +84,27 @@ function dlgDados() {
   const meus = DB.livros.filter(b => b.u).length, cot = soma(DB.livros, b => (b.px ? soma(Object.values(b.px), pts => pts.filter(p => p[2]).length) : 0));
   Dlg.abrir({ titulo: 'Seus dados', largo: true, corpo: `
     <div class="dados">
-      <div class="dd-st ${Loja.ok ? 'ok' : 'aviso'}">${icone(Loja.ok ? 'check' : 'info', 16)}<div><b>${Loja.ok ? 'Salvo neste navegador' : 'Pré-visualização: nada é salvo'}</b><span>${Loja.ok ? 'Tudo fica só neste dispositivo (armazenamento local do navegador). Nenhum dado é enviado para a internet.' : 'Este ambiente não permite gravar. Baixe o arquivo HTML e abra-o no navegador para que suas alterações fiquem salvas no seu dispositivo.'}</span></div></div>
+      <div class="dd-st ${Loja.ok ? 'ok' : 'aviso'}">${icone(Loja.ok ? 'check' : 'info', 16)}<div><b>${Loja.ok ? 'Salvo neste navegador' : 'Pré-visualização: nada é salvo'}</b><span>${Loja.ok ? 'Tudo fica só neste dispositivo (armazenamento local do navegador). Nada do que você anota é enviado para a internet.' : 'Este ambiente não permite gravar. Baixe o arquivo HTML e abra-o no navegador para que suas alterações fiquem salvas no seu dispositivo.'}</span></div></div>
       <dl class="dd-n"><div><dt>Livros</dt><dd>${fInt(DB.livros.length)}</dd></div><div><dt>Editados por você</dt><dd>${fInt(meus)}</dd></div><div><dt>Cotações suas</dt><dd>${fInt(cot)}</dd></div></dl>
       <section><h3>Backup</h3><p>Guarde uma cópia em arquivo ou leve seus dados para outro navegador.</p><div class="dd-b"><button type="button" class="btn" data-x="exportar">${icone('baixar', 15)}Exportar backup (.json)</button><button type="button" class="btn" data-x="importar">${icone('enviar', 15)}Importar backup…</button></div></section>
-      <section><h3>Dados de exemplo</h3><p>Títulos, autores, marcadores, eixos, a estante física e a biblioteca virtual vêm do seu catálogo. Datas e valores pagos, leituras, notas, a lista de próximas aquisições e os históricos de preço são <b>simulados</b> para dar vida aos gráficos. ${DB.exemplos ? 'Ao limpar, fica só o que é do catálogo e o que você editou ou registrou.' : 'Eles foram removidos; você pode trazê-los de volta para explorar o painel.'}</p>
-        <div class="dd-b">${DB.exemplos ? `<button type="button" class="btn" data-x="limpar">${icone('lixo', 15)}Limpar dados de exemplo</button>` : `<button type="button" class="btn" data-x="restaurar">${icone('desfazer', 15)}Restaurar dados de exemplo</button>`}</div></section>
+      <section><h3>Capas dos livros</h3><p>As imagens das capas vêm da <b>Open Library</b> (openlibrary.org), um catálogo aberto de livros. Para mostrá-las, o navegador pede cada imagem a esse site; nada do que você anota aqui é enviado. ${fInt(DB.livros.filter(temCapa).length)} dos ${fInt(DB.livros.length)} livros têm capa encontrada.</p>
+        <div class="dd-b"><label class="opt so dd-capas"><input type="checkbox" data-x="capas"${S.capas ? ' checked' : ''}><span>Mostrar as capas</span></label></div></section>
+      <section><h3>Dados de exemplo</h3><p>${DB.exemplos ? 'Os dados de exemplo estão <b>ligados</b>: datas e valores pagos, leituras, notas, a lista de próximas aquisições e os históricos de preço são <b>simulados</b>, para mostrar como os gráficos ficam. Ao limpar, fica só o que é do catálogo e o que você editou ou registrou.' : 'O painel mostra só o que é seu: o catálogo e o que você registrou aqui. Para ver como os gráficos ficam cheios, você pode ligar os dados de exemplo (datas, valores, leituras e preços <b>simulados</b>) — eles não mexem no que você editou e saem com um clique.'}</p>
+        <div class="dd-b">${DB.exemplos ? `<button type="button" class="btn" data-x="limpar">${icone('lixo', 15)}Limpar dados de exemplo</button>` : `<button type="button" class="btn" data-x="restaurar">${icone('desfazer', 15)}Ver com dados de exemplo</button>`}</div></section>
       ${Loja.falha() ? `<section><h3>Cópia recuperada</h3><p>Em uma abertura anterior os dados salvos não puderam ser lidos e o painel recomeçou do catálogo. O conteúdo original ficou guardado aqui.</p><div class="dd-b"><button type="button" class="btn" data-x="falha-baixar">${icone('baixar', 15)}Baixar cópia (.json)</button><button type="button" class="btn" data-x="falha-descartar">${icone('lixo', 15)}Descartar cópia</button></div></section>` : ''}
-      <section><h3>Recomeçar</h3><p>Apaga tudo o que foi salvo neste navegador e recarrega o catálogo original com os dados de exemplo.</p><div class="dd-b"><button type="button" class="btn perigo" data-x="zerar">${icone('lixo', 15)}Recomeçar do catálogo original</button></div></section>
+      <section><h3>Recomeçar</h3><p>Apaga tudo o que foi salvo neste navegador e recarrega o catálogo original, sem nenhuma anotação.</p><div class="dd-b"><button type="button" class="btn perigo" data-x="zerar">${icone('lixo', 15)}Recomeçar do catálogo original</button></div></section>
     </div>`, botoes: [{ n: 'Fechar', cls: 'pri' }],
     aoAbrir(el) {
+      el.addEventListener('change', e => { if (e.target.matches('[data-x="capas"]')) { S.capas = e.target.checked; MOSTRAR_CAPAS = S.capas; salvar(); render(); if (Gaveta.id) desenharGaveta(); toast(S.capas ? 'Capas ligadas.' : 'Capas desligadas: o painel não busca mais nenhuma imagem.'); } });
       el.addEventListener('click', e => {
-        const b = e.target.closest('[data-x]'); if (!b) return; const x = b.dataset.x;
+        const b = e.target.closest('[data-x]'); if (!b || b.dataset.x === 'capas') return; const x = b.dataset.x;
         if (x === 'exportar') baixarArquivo(`biblioteca-lucas-backup-${iso(DB.hoje)}.json`, JSON.stringify(serializar(cfgAtual())), 'application/json');
         else if (x === 'importar') { Dlg.fechar(); $('#arq').click(); }
         else if (x === 'falha-baixar') baixarArquivo(`biblioteca-lucas-copia-recuperada-${iso(DB.hoje)}.json`, Loja.falha() || '', 'application/json');
         else if (x === 'falha-descartar') { Loja.descartarFalha(); Dlg.fechar(); toast('Cópia descartada.'); }
         else if (x === 'limpar') confirmar('Limpar dados de exemplo', 'Remover todas as datas, valores, leituras, itens da lista de compra e históricos de preço <b>simulados</b>?<br>Ficam o catálogo, a estante física, a biblioteca virtual e tudo o que você editou ou registrou.', 'Limpar', () => { removerExemplos(); S.sel = ''; S.avisoVisto = true; salvar(); fecharGaveta(); filtrosMudaram(); toast('Dados de exemplo removidos.'); });
-        else if (x === 'restaurar') confirmar('Restaurar dados de exemplo', 'Gerar novamente os dados simulados para os livros que você ainda não editou?', 'Restaurar', () => { restaurarExemplos(); S.sel = ''; salvar(); filtrosMudaram(); toast('Dados de exemplo restaurados.'); });
-        else if (x === 'zerar') confirmar('Recomeçar do catálogo original', 'Apagar <b>todas</b> as suas edições, cotações e livros adicionados e voltar ao estado inicial? Esta ação não pode ser desfeita.', 'Apagar tudo', () => { Loja.limpar(); DB.livros = gerarExemplos(livrosDoCatalogo(), DB.hoje); DB.exemplos = true; DB.criadoEm = DB.hoje; S.sel = ''; S.avisoVisto = false; limparFiltros(true); salvar(); fecharGaveta(); filtrosMudaram(); toast('Painel reiniciado.'); }, true);
+        else if (x === 'restaurar') confirmar('Ver com dados de exemplo', 'Ligar os dados <b>simulados</b> (datas, valores, leituras e preços) nos livros que você ainda não editou? Eles saem quando você quiser, em “Limpar dados de exemplo”.', 'Ligar', () => { restaurarExemplos(); S.sel = ''; S.avisoVisto = false; salvar(); filtrosMudaram(); toast('Dados de exemplo ligados.'); });
+        else if (x === 'zerar') confirmar('Recomeçar do catálogo original', 'Apagar <b>todas</b> as suas edições, cotações e livros adicionados e voltar ao estado inicial? Esta ação não pode ser desfeita.', 'Apagar tudo', () => { Loja.limpar(); DB.livros = livrosDoCatalogo(); DB.exemplos = false; if (PEDE_EXEMPLO) { gerarExemplos(DB.livros, DB.hoje); DB.exemplos = true; } DB.criadoEm = DB.hoje; S.sel = ''; S.avisoVisto = false; limparFiltros(true); salvar(); fecharGaveta(); filtrosMudaram(); toast('Painel reiniciado.'); }, true);
       });
     } });
 }
@@ -182,10 +185,11 @@ function dlgComprei(b, jaTinha) {
   Dlg.abrir({ titulo: jaTinha ? 'Já tenho este livro' : 'Registrar compra', corpo: `<p class="dlg-sub"><b>${esc(b.t)}</b>${b.a ? ' · ' + esc(b.a) : ''}</p>
     <div class="form">
       <label class="cp"><span>Formato</span><select data-f="fmt">${opcoes(opcoesFmt(b), fmtNoForm(b))}</select></label>
-      <label class="cp"><span>${jaTinha ? 'Adquirido em (opcional)' : 'Data da compra'}</span><input data-f="adq" type="date" value="${jaTinha ? '' : iso(DB.hoje)}" max="${iso(DB.hoje)}"></label>
-      <label class="cp"><span>Loja ou origem</span><input data-f="loja" type="text" list="dl-lojas" maxlength="40" value="${esc(!jaTinha && x ? x.f : '')}"><datalist id="dl-lojas">${LISTA_LOJAS().map(n => `<option value="${esc(n)}">`).join('')}</datalist></label>
-      <label class="cp"><span>Valor pago (R$)</span><input data-f="pago" type="text" inputmode="decimal" placeholder="0,00" value="${!jaTinha && x ? valorCampo(x.p) : ''}"></label>
-      <label class="cp"><span>Condição</span><select data-f="cond">${opcoes([['novo', 'Novo'], ['usado', 'Usado'], ['presente', 'Presente']], !jaTinha && x && x.f === 'Estante Virtual' ? 'usado' : 'novo')}</select></label>
+      <label class="cp"><span>${jaTinha ? 'Adquirido em' : 'Data da compra'} <small>opcional</small></span><input data-f="adq" type="date" value="${jaTinha ? '' : iso(DB.hoje)}" max="${iso(DB.hoje)}"></label>
+      <label class="cp"><span>Loja ou origem <small>opcional</small></span><input data-f="loja" type="text" list="dl-lojas" maxlength="40" value="${esc(!jaTinha && x ? x.f : '')}"><datalist id="dl-lojas">${LISTA_LOJAS().map(n => `<option value="${esc(n)}">`).join('')}</datalist></label>
+      <label class="cp"><span>Valor pago (R$) <small>opcional</small></span><input data-f="pago" type="text" inputmode="decimal" placeholder="0,00" value="${!jaTinha && x ? valorCampo(x.p) : ''}"></label>
+      <label class="cp"><span>Condição <small>opcional</small></span><select data-f="cond">${opcoes([['', 'Não informada'], ['novo', 'Novo'], ['usado', 'Usado'], ['presente', 'Presente']], jaTinha ? '' : x && x.f === 'Estante Virtual' ? 'usado' : 'novo')}</select></label>
+      <p class="form-n">Só o formato é necessário. Data, loja e valor são opcionais: preencha o que souber${jaTinha ? '' : ' (para não registrar a data, apague-a)'}.</p>
     </div>`, botoes: [{ n: 'Cancelar' }, { n: 'Adicionar ao acervo', cls: 'pri', acao(el) {
       const g = n => $(`[data-f="${n}"]`, el), pago = lerValor(g('pago').value), adq = deIso(g('adq').value);
       if (pago != null && isNaN(pago)) return erroCampo(g('pago'), 'Informe um valor válido, por exemplo 49,90.');
@@ -198,8 +202,10 @@ function dlgComprei(b, jaTinha) {
 }
 function dlgLido(b) {
   Dlg.abrir({ titulo: 'Concluir leitura', corpo: `<p class="dlg-sub"><b>${esc(b.t)}</b>${b.a ? ' · ' + esc(b.a) : ''}</p>
-    <div class="form"><label class="cp"><span>Concluído em</span><input data-f="em" type="date" value="${iso(DB.hoje)}" max="${iso(DB.hoje)}"></label>
-    <label class="cp"><span>Nota</span><select data-f="nota">${opcoes([[0, 'Sem nota'], [5, '★★★★★  excelente'], [4, '★★★★  muito bom'], [3, '★★★  bom'], [2, '★★  regular'], [1, '★  fraco']], b.nota || 0)}</select></label></div>`,
+    <div class="form"><label class="cp"><span>Concluído em <small>opcional</small></span><input data-f="em" type="date" value="${iso(b.lidoEm)}" max="${iso(DB.hoje)}"></label>
+    <label class="cp"><span>Nota <small>opcional</small></span><select data-f="nota">${opcoes([[0, 'Sem nota'], [5, '★★★★★  excelente'], [4, '★★★★  muito bom'], [3, '★★★  bom'], [2, '★★  regular'], [1, '★  fraco']], b.nota || 0)}</select></label>
+    <p class="form-n">Não lembra quando terminou? Deixe a data em branco: a leitura conta do mesmo jeito, só não entra nos gráficos por data. <button type="button" class="lk" data-hoje>Terminei hoje</button></p></div>`,
+    aoAbrir(el) { $('[data-hoje]', el).addEventListener('click', () => { const i = $('[data-f="em"]', el); i.value = iso(DB.hoje); i.focus(); }); },
     botoes: [{ n: 'Cancelar' }, { n: 'Marcar como lido', cls: 'pri', acao(el) {
       const em = deIso($('[data-f="em"]', el).value); if (em != null && em > DB.hoje) return erroCampo($('[data-f="em"]', el), 'A data não pode estar no futuro.');
       Object.assign(b, { leit: 'lido', lidoEm: em, prog: 100, nota: +$('[data-f="nota"]', el).value }); tocar(b); toast('Leitura concluída.');
@@ -231,7 +237,8 @@ function dlgLivro(b) {
   const v = x => esc(x ?? ''), outras = o.tags.filter(t => !TAGS_ESTRUTURA.has(t)).join(' ');
   Dlg.abrir({ titulo: novo ? 'Novo livro' : 'Editar livro', largo: true, corpo: `
     <div class="form" id="f-livro">
-      <label class="cp c2"><span>Título</span><input data-f="t" type="text" maxlength="200" value="${v(o.t)}"></label>
+      <p class="form-n ini">Só o <b>título</b> é obrigatório. Todo o resto é opcional: preencha o que souber, quando quiser.</p>
+      <label class="cp c2"><span>Título <small>obrigatório</small></span><input data-f="t" type="text" maxlength="200" value="${v(o.t)}" aria-required="true"></label>
       <label class="cp c2"><span>Autor</span><input data-f="a" type="text" maxlength="160" value="${v(o.a)}"></label>
       <label class="cp"><span>Lista</span><select data-f="col">${opcoes([['acervo', 'Acervo (já tenho)'], ['desejo', 'Próximas aquisições'], ['rec', 'Recomendações']], o.col)}</select></label>
       <label class="cp"><span>Eixo temático</span><select data-f="eixo">${opcoes(EIXOS.slice(1).map((e, i) => [i + 1, e.n]), o.eixo)}</select></label>
@@ -240,14 +247,14 @@ function dlgLivro(b) {
       <label class="cp c3"><span>Extensão</span><select data-f="e">${opcoes([[0, 'Não informada'], [1, 'Curta (até ~250 p.)'], [2, 'Média (~250–500 p.)'], [3, 'Longa (500+ p. ou série)']], o._e)}</select></label>
       <fieldset class="c2 grp" data-g="acervo"><legend>No acervo</legend>
         <label class="cp c3"><span>Formato</span><select data-f="fmt">${opcoes(opcoesFmt(o), fmtNoForm(o))}</select></label>
-        <label class="cp c3"><span>Adquirido em</span><input data-f="adq" type="date" value="${iso(o.adq)}" max="${iso(DB.hoje)}"></label>
+        <label class="cp c3"><span>Adquirido em <small>opcional</small></span><input data-f="adq" type="date" value="${iso(o.adq)}" max="${iso(DB.hoje)}"></label>
         <label class="cp c3"><span>Valor pago (R$)</span><input data-f="pago" type="text" inputmode="decimal" placeholder="0,00" value="${valorCampo(o.pago)}"></label>
         <label class="cp c3"><span>Loja ou origem</span><input data-f="loja" type="text" list="dl-lojas" maxlength="40" value="${v(o.loja)}"><datalist id="dl-lojas">${LISTA_LOJAS().map(n => `<option value="${esc(n)}">`).join('')}</datalist></label>
         <label class="cp c3"><span>Condição</span><select data-f="cond">${opcoes([['', 'Não informada'], ['novo', 'Novo'], ['usado', 'Usado'], ['presente', 'Presente']], o.cond)}</select></label>
         <label class="cp c3"><span>Páginas</span><input data-f="pg" type="number" min="0" max="9999" inputmode="numeric" value="${o.pg || ''}"></label>
         <label class="cp c3"><span>Leitura</span><select data-f="leit">${opcoes([['', 'Não informada'], ['fila', 'Na fila'], ['lendo', 'Lendo'], ['lido', 'Lido'], ['aband', 'Abandonado']], o.leit)}</select></label>
         <label class="cp c3"><span>Progresso (%)</span><input data-f="prog" type="number" min="0" max="100" inputmode="numeric" value="${o.prog || ''}"></label>
-        <label class="cp c3"><span>Concluído em</span><input data-f="lidoEm" type="date" value="${iso(o.lidoEm)}" max="${iso(DB.hoje)}"></label>
+        <label class="cp c3"><span>Concluído em <small>opcional</small></span><input data-f="lidoEm" type="date" value="${iso(o.lidoEm)}" max="${iso(DB.hoje)}"></label>
         <label class="cp c3"><span>Nota</span><select data-f="nota">${opcoes([[0, 'Sem nota'], [5, '★★★★★'], [4, '★★★★'], [3, '★★★'], [2, '★★'], [1, '★']], o.nota || 0)}</select></label>
       </fieldset>
       <fieldset class="c2 grp" data-g="desejo"><legend>Na lista de compra</legend>
@@ -268,6 +275,7 @@ function dlgLivro(b) {
       if (!t) return erroCampo(g('t'), 'Informe o título do livro.');
       const col = val('col'), dinheiro = {};
       for (const n of col === 'acervo' ? ['pago'] : col === 'desejo' ? ['alvo', 'capa'] : ['alvoR']) { dinheiro[n] = lerValor(val(n)); if (dinheiro[n] != null && isNaN(dinheiro[n])) return erroCampo(g(n), 'Informe um valor válido, por exemplo 49,90.'); }
+      if (col === 'acervo') for (const n of val('leit') === 'lido' ? ['adq', 'lidoEm'] : ['adq']) { const dia = deIso(val(n)); if (dia != null && dia > DB.hoje) return erroCampo(g(n), 'A data não pode estar no futuro.'); }
       const x = b || novoLivro({ id: 'u' + Date.now().toString(36) + Math.floor(Math.random() * 1e3), sec: -1 });
       const conhecidas = new Map(); for (const y of DB.livros) for (const tg of y.tags) conhecidas.set(tg.toLowerCase(), tg);
       const extras = val('tags').split(/[\s,;]+/).map(s => s.replace(/^#/, '')).filter(Boolean).map(s => conhecidas.get(s.toLowerCase()) || norm(s).replace(/[^a-z0-9-]/g, '')).filter(s => s && !TAGS_ESTRUTURA.has(s));
@@ -334,8 +342,8 @@ function desenharGaveta() {
   const b = porId(Gaveta.id); if (!b) { fecharGaveta(); return; }
   const c = ctxAtual(), I = c.I, T = DB.hoje, x = c.px(b), fato = (r, v) => (v == null || v === '' ? '' : `<div><dt>${r}</dt><dd>${v}</dd></div>`);
   $('#gv-k').innerHTML = `<span class="pill col-${b.col}">${COLECOES[b.col].n}</span>${b.demo ? '<span class="pill ex" title="Datas, valores e preços deste item são simulados">dados de exemplo</span>' : ''}`;
-  $('#gv-topo').innerHTML = `<h2>${esc(b.t)}</h2><p class="gv-a2">${esc(b.a || 'Autor não informado')}</p>
-    <div class="gv-ch"><button type="button" class="tag lig" data-eixo="${b.eixo}" title="Filtrar por este eixo">${EIXOS[b.eixo] ? esc(EIXOS[b.eixo].n) : 'Sem eixo'}</button><span class="tag">${TIPOS[b._tipo].n}</span>${b._d ? `<span class="tag">${pontos(b._d)}${NIVEIS[b._d].n}</span>` : ''}${b._e ? `<span class="tag" title="${EXTENSOES[b._e].d}">${EXTENSOES[b._e].n} · ${EXTENSOES[b._e].d}</span>` : ''}${b._top ? `<span class="tag dest">${icone('estrela', 12)}Prioridade</span>` : ''}${b.tags.includes('sem-pt') ? '<span class="tag av">Sem edição em PT</span>' : ''}${b.tags.includes('verificar') ? '<span class="tag av">A verificar</span>' : ''}</div>`;
+  $('#gv-topo').innerHTML = `${urlCapa(b) ? capaHtml(b, 'g') : ''}<div class="gv-tx"><h2>${esc(b.t)}</h2><p class="gv-a2">${esc(b.a || 'Autor não informado')}</p>
+    <div class="gv-ch"><button type="button" class="tag lig" data-eixo="${b.eixo}" title="Filtrar por este eixo">${EIXOS[b.eixo] ? esc(EIXOS[b.eixo].n) : 'Sem eixo'}</button><span class="tag">${TIPOS[b._tipo].n}</span>${b._d ? `<span class="tag">${pontos(b._d)}${NIVEIS[b._d].n}</span>` : ''}${b._e ? `<span class="tag" title="${EXTENSOES[b._e].d}">${EXTENSOES[b._e].n} · ${EXTENSOES[b._e].d}</span>` : ''}${b._top ? `<span class="tag dest">${icone('estrela', 12)}Prioridade</span>` : ''}${b.tags.includes('sem-pt') ? '<span class="tag av">Sem edição em PT</span>' : ''}${b.tags.includes('verificar') ? '<span class="tag av">A verificar</span>' : ''}</div></div>`;
   let f = '';
   if (b.col === 'acervo') {
     f += fato('Formato', fmtHtml(b) + (b.plat ? ` <span class="mudo">· ${esc(b.plat)}</span>` : ''));

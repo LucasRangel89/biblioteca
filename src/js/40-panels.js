@@ -175,7 +175,10 @@ function pEixos(modo, w) {
     };
   } };
 }
-const linhaLivro = (b, meio, fim) => `<button type="button" class="li" data-id="${b.id}"><span class="li-m"><b>${esc(b.t)}</b><span>${esc(b.a || 'Autor não informado')}</span></span>${meio || ''}${fim || ''}</button>`;
+/* capa de um livro: a imagem, quando há; por baixo dela, um "livro" desenhado com a inicial do título (é o que se vê
+   enquanto a imagem carrega, quando ela falha e nos livros sem capa). A inicial vai num atributo: não entra no texto. */
+const capaHtml = (b, cls) => { const u = urlCapa(b), l = (b.t.match(/[\p{L}\p{N}]/u) || ['?'])[0].toUpperCase(); return `<span class="capa${cls ? ' ' + cls : ''}" data-l="${esc(l)}" aria-hidden="true">${u ? `<img src="${esc(u)}" alt="" loading="lazy" decoding="async">` : ''}</span>`; };
+const linhaLivro = (b, meio, fim) => `<button type="button" class="li" data-id="${b.id}">${capaHtml(b)}<span class="li-m"><b>${esc(b.t)}</b><span>${esc(b.a || 'Autor não informado')}</span></span>${meio || ''}${fim || ''}</button>`;
 function pRanking(w) {
   return { id: 'ranking', w: w || 'p-5', tit: 'Melhores oportunidades', montar(k) {
     k.tools.innerHTML = `<button type="button" class="btn sm fantasma" data-ir="desejos">Ver lista${icone('dir', 14)}</button>`;
@@ -183,7 +186,7 @@ function pRanking(w) {
     return c => {
       const it = c.des.map(b => ({ b, x: c.px(b) })).filter(o => o.x.hoje && o.b.alvo).sort((a, z) => a.x.hoje.p / a.b.alvo - z.x.hoje.p / z.b.alvo).slice(0, 7);
       k.sub.textContent = 'Itens da lista de compra mais perto (ou abaixo) do preço-alvo';
-      setHtml(k.corpo, it.length ? it.map(({ b, x }) => `<button type="button" class="li" data-id="${b.id}"><span class="li-m"><b>${esc(b.t)}</b><span>${esc(x.hoje.f)} · alvo ${fBRL0(b.alvo)}</span></span>` +
+      setHtml(k.corpo, it.length ? it.map(({ b, x }) => `<button type="button" class="li" data-id="${b.id}">${capaHtml(b)}<span class="li-m"><b>${esc(b.t)}</b><span>${esc(x.hoje.f)} · alvo ${fBRL0(b.alvo)}</span></span>` +
         `<span class="li-sp">${x.res ? spark(amostra(x.res.serie, x.res.de, x.res.ate, 20), { w: 60, h: 24, cor: SITUACOES[x.sit].cor, area: false }) : ''}</span>` +
         `<span class="li-pb"><b class="num">${fBRL(x.hoje.p)}</b>${badgeSit(x.sit)}</span></button>`).join('')
         : vazioHtml(c.des.length ? 'Defina um preço-alvo e registre cotações para ver as oportunidades.' : 'Nenhum item na lista de próximas aquisições neste recorte.'));
@@ -365,6 +368,7 @@ function pLojasBaratas() {
 }
 
 /* ───────── preços ───────── */
+const cotavel = b => b.col === 'desejo' || (b.col === 'rec' && b.track);      // pode receber cotação: está na lista de compra ou é uma recomendação monitorada
 function livroSel(c) {
   let b = c.rast.find(x => x.id === S.sel);
   if (!b) b = c.rast.find(x => c.px(x).sit === 'agora') || c.rast[0] || null;
@@ -384,7 +388,7 @@ function pPrecoLoja() {
       const grupo = (n, arr) => (arr.length ? `<optgroup label="${n}">${ord(arr).map(x => `<option value="${x.id}">${esc(x.t)}</option>`).join('')}</optgroup>` : '');
       setHtml(sel, grupo('Próximas aquisições', c.rast.filter(x => x.col === 'desejo')) + grupo('Recomendações monitoradas', c.rast.filter(x => x.col !== 'desejo')));
       sel.value = b ? b.id : ''; sel.disabled = !b; sel.parentNode.hidden = !b;
-      if (!b) { k.sub.textContent = 'Histórico de cotações de um livro, loja a loja'; setHtml(res, ''); g.atualizar({ x: [], series: [], rot: () => '', vazio: 'Nenhum item com cotações neste recorte. Abra um livro e use “Registrar cotação” para começar a acompanhar.' }); return; }
+      if (!b) { k.sub.textContent = 'Histórico de cotações de um livro, loja a loja'; setHtml(res, ''); g.atualizar({ x: [], series: [], rot: () => '', vazio: c.seg.some(cotavel) ? 'Nenhum item com cotações neste recorte. Use “Registrar cotação”, nesta página, para começar a acompanhar.' : DB.livros.some(cotavel) ? 'Nenhum item com cotações com os filtros atuais.' : 'Nenhum item com cotações ainda. Abra uma recomendação e use “Monitorar preço” para começar a acompanhar.' }); return; }
       const fontes = Object.keys(b.px).filter(f => b.px[f].length), prim = Math.min(...fontes.map(f => b.px[f][0][0])), ini = Math.max(c.I.de, prim), fim = c.I.ate;
       let x = [];
       if (fim >= ini) { const dias = new Set([ini, fim]); for (const f of fontes) for (const p of b.px[f]) if (p[0] > ini && p[0] < fim) dias.add(p[0]); x = [...dias].sort((a, z) => a - z); }
@@ -437,8 +441,13 @@ function pCotacao() {
     // a lista traz também quem ainda não tem nenhuma cotação (é aqui que a primeira entra)
     let novo = '';
     const f = formCotacao(k.corpo, { comLivro: true, aoEscolher(b) { novo = b.id; }, aoSalvar(b) { S.sel = b.id; novo = ''; } });
+    const sem = document.createElement('div'); sem.className = 'cot-sem'; sem.hidden = true; k.corpo.appendChild(sem);
     return c => {
-      const lista = c.seg.filter(b => b.col === 'desejo' || (b.col === 'rec' && b.track));
+      const lista = c.seg.filter(cotavel);
+      // sem nenhum livro para cotar, um formulário que não pode ser usado só confunde: no lugar dele, como começar
+      f.el.hidden = !lista.length; sem.hidden = !!lista.length;
+      if (!lista.length) setHtml(sem, vazioHtml(DB.livros.some(cotavel) ? 'Nenhum item da lista de compra com os filtros atuais.'
+        : 'Nenhum livro para cotar ainda. Abra uma recomendação e use “Quero comprar” ou “Monitorar preço”: ela passa a aparecer aqui.'));
       f.atualizar(lista, lista.find(b => b.id === novo && !rastreado(b)) || livroSel(c) || lista[0] || null);
     };
   } };

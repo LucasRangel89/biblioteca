@@ -118,6 +118,7 @@ function novoLivro(o) {
     arq: '',        // identificadores dos arquivos da biblioteca virtual (reconhecem o livro se o título mudar no catálogo)
     _dg: null,      // dados da biblioteca virtual; vêm sempre do catálogo embutido e não são salvos
     _ant: null,     // [[título, autor], …] que a linha do catálogo já teve (catalogo/renomeados.tsv); também vêm do catálogo e não são salvos
+    _img: 0,        // imagem da capa: número na Open Library ou endereço https (catalogo/capas.tsv); vem do catálogo e não é salva
   }, o));
 }
 /* Registro vindo de fora (armazenamento do navegador ou arquivo de backup): devolve um livro íntegro, ou null.
@@ -168,7 +169,12 @@ const chaveCat = r => norm(r[0]) + '|' + norm(r[1]);
 const chaveLivro = b => norm(b.t) + '|' + norm(b.a);
 const tagsCat = r => r[2].split(' ').filter(Boolean);
 const doCatalogo = (r, id) => estadoBase(novoLivro({ id, t: r[0], a: r[1], tags: tagsCat(r), sec: r[3], eixo: r[4], obs: r[5] || '', o: chaveCat(r), arq: r[6] ? r[6][4] : '', _dg: r[6] || null, _ant: r[7] || null }));
-function livrosDoCatalogo() { return CATALOGO.map((r, i) => doCatalogo(r, 'c' + i)); }
+function livrosDoCatalogo() { return CATALOGO.map((r, i) => { const b = doCatalogo(r, 'c' + i); b._img = CAPAS[i] || 0; return b; }); }
+/* imagem da capa: endereço da imagem do livro, ou '' (sem capa achada, livro criado no painel, ou capas desligadas) */
+let MOSTRAR_CAPAS = true;
+const enderecoCapa = c => (!c ? '' : typeof c === 'number' ? (c > 0 ? `https://covers.openlibrary.org/b/id/${Math.round(c)}-M.jpg?default=false` : '') : typeof c === 'string' && /^https:\/\//i.test(c) ? c : '');
+const temCapa = b => !!enderecoCapa(b._img);                                 // há capa no catálogo (mostrada ou não)
+const urlCapa = b => (MOSTRAR_CAPAS ? enderecoCapa(b._img) : '');           // o que vai para a tela: nada, com as capas desligadas
 
 /* os marcadores de posse acompanham a lista e o formato do livro (e o que o catálogo diz da biblioteca virtual) */
 const defTag = (b, t, on) => { const i = b.tags.indexOf(t); if (on && i < 0) b.tags.push(t); if (!on && i >= 0) b.tags.splice(i, 1); };
@@ -188,8 +194,8 @@ function marcarPosse(b) {
    · linhas novas entram; linhas que saíram do catálogo sem nunca terem sido editadas saem. */
 const ASSINATURA = CATALOGO.length + '.' + hashStr(JSON.stringify(CATALOGO)).toString(36);
 function anexarDigital(livros) {
-  const linhas = new Map(CATALOGO.map(r => [chaveCat(r), r]));
-  for (const b of livros) { const r = b.o ? linhas.get(b.o) : null; b._dg = (r && r[6]) || null; b._ant = (r && r[7]) || null; if (b._dg) b.arq = b._dg[4]; derivar(b); }
+  const linhas = new Map(CATALOGO.map((r, i) => [chaveCat(r), i]));
+  for (const b of livros) { const i = b.o ? linhas.get(b.o) : undefined, r = i == null ? null : CATALOGO[i]; b._dg = (r && r[6]) || null; b._ant = (r && r[7]) || null; b._img = (r && CAPAS[i]) || 0; if (b._dg) b.arq = b._dg[4]; derivar(b); }
 }
 function conciliarCatalogo(livros) {
   // ant: os nomes que a linha já teve (título ou autor corrigido no catálogo — catalogo/renomeados.tsv)
@@ -495,8 +501,14 @@ const Loja = {
 const ZERO_PADRAO = new Set(['prog', 'nota', 'pg', 'prio', 'demo', 'u']);
 const limpo = b => { const o = {}; for (const k in b) { const v = b[k]; if (k[0] === '_' || v === null || v === '' || v === false || (v === 0 && ZERO_PADRAO.has(k))) continue; o[k] = v; } return o; };
 
-const DB = { livros: [], exemplos: true, hoje: 0, criadoEm: 0, novidade: null };
-function serializar(cfg) { return { app: 'biblioteca-lucas', v: 1, cat: ASSINATURA, salvoEm: new Date().toISOString(), exemplos: DB.exemplos, criadoEm: DB.criadoEm, cfg: cfg || {}, livros: DB.livros.map(limpo) }; }
+/* Dados de exemplo (datas, valores, leituras e preços simulados): o painel abre SEM eles — mostra só o que o catálogo
+   afirma e o que foi registrado no painel. Eles só entram quando pedidos: em "Seus dados" ou abrindo o endereço com
+   ?exemplo no fim (é assim que os testes abrem o painel). Quem tinha exemplos guardados por um painel antigo, em que
+   eles vinham de fábrica, fica só com o que é seu na primeira abertura (DB.saiuExemplo → aviso). */
+const DB = { livros: [], exemplos: false, hoje: 0, criadoEm: 0, novidade: null, saiuExemplo: 0 };
+const PEDE_EXEMPLO = (() => { try { return /[?&]exemplo(=|&|$)/.test(location.search); } catch (e) { return false; } })();
+// `demo` acompanha `exemplos` no que é gravado: diz que os exemplos foram pedidos (os painéis antigos gravavam só `exemplos`)
+function serializar(cfg) { return { app: 'biblioteca-lucas', v: 1, cat: ASSINATURA, salvoEm: new Date().toISOString(), exemplos: DB.exemplos, demo: DB.exemplos ? 1 : undefined, criadoEm: DB.criadoEm, cfg: cfg || {}, livros: DB.livros.map(limpo) }; }
 function carregarDB() {
   DB.hoje = hojeDia();
   Loja.testar();
@@ -504,10 +516,12 @@ function carregarDB() {
   const livros = salvo && typeof salvo === 'object' && salvo.app === 'biblioteca-lucas' ? lerLivros(salvo.livros) : [];
   if (livros.length) {
     DB.livros = livros; DB.exemplos = !!salvo.exemplos; DB.criadoEm = typeof salvo.criadoEm === 'number' && isFinite(salvo.criadoEm) ? salvo.criadoEm : DB.hoje;
+    if (DB.exemplos && !salvo.demo && !PEDE_EXEMPLO) { DB.saiuExemplo = 1 + DB.livros.filter(b => b.u).length; removerExemplos(); }   // exemplos de fábrica de um painel antigo: saem
     ajustarAoCatalogo(salvo.cat);
     return salvo.cfg && typeof salvo.cfg === 'object' ? salvo.cfg : {};
   }
-  DB.livros = gerarExemplos(livrosDoCatalogo(), DB.hoje); DB.exemplos = true; DB.criadoEm = DB.hoje;
+  DB.livros = livrosDoCatalogo(); DB.exemplos = false; DB.criadoEm = DB.hoje;
+  if (PEDE_EXEMPLO) { gerarExemplos(DB.livros, DB.hoje); DB.exemplos = true; }
   return {};
 }
 function removerExemplos() {

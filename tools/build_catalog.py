@@ -16,9 +16,11 @@ sys.path.insert(0, str(pathlib.Path(__file__).parent))
 from parse_catalog import parse, SRC
 from eixos import eixo_estante
 import importar_digital as digital
+import capas
 
 RAIZ = pathlib.Path(__file__).resolve().parent.parent
 DEST = RAIZ / 'src' / 'catalog.json'
+DEST_CAPAS = RAIZ / 'src' / 'capas.json'
 RENOMEADOS = RAIZ / 'catalogo' / 'renomeados.tsv'
 AUTOR_FIX = {
     'Liev Tolstói (na prateleira consta Dostoiévski; autor correto: Tolstói)': ('Liev Tolstói', 'Na prateleira consta Dostoiévski; o autor correto é Tolstói.'),
@@ -143,5 +145,11 @@ if __name__ == '__main__':
     with open(DEST, 'w', encoding='utf-8', newline='\n') as f:
         f.write(json.dumps(data, ensure_ascii=False, separators=(',', ':')))
     print(len(data), 'livros ->', DEST, DEST.stat().st_size, 'bytes')
+    # capas: uma posição por linha do catálogo, na mesma ordem (catalogo/capas.tsv → src/capas.json)
+    lista = capas.para_o_painel(parse(SRC.read_text(encoding='utf-8')))
+    assert len(lista) == len(data)
+    with open(DEST_CAPAS, 'w', encoding='utf-8', newline='\n') as f:
+        f.write(json.dumps(lista, ensure_ascii=False, separators=(',', ':')))
+    print(sum(1 for c in lista if c), 'capas ->', DEST_CAPAS, DEST_CAPAS.stat().st_size, 'bytes')
     for a in avisos:
         print('AVISO:', a)

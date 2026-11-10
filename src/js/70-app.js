@@ -2,7 +2,7 @@
 const REG = {};
 let CTX = null, pendente = 0;
 const ctxAtual = () => CTX || (CTX = contexto());
-const cfgAtual = () => ({ tema: S.tema, ocultar: S.ocultar, avisoVisto: S.avisoVisto, visao: S.visao, ui: S.ui, tam: Object.fromEntries(Object.entries(S.tab).map(([k, v]) => [k, v.tam])) });
+const cfgAtual = () => ({ tema: S.tema, ocultar: S.ocultar, avisoVisto: S.avisoVisto, saiu: S.saiu || undefined, capas: S.capas, visao: S.visao, ui: S.ui, tam: Object.fromEntries(Object.entries(S.tab).map(([k, v]) => [k, v.tam])) });
 const salvar = debounce(() => { const ok = Loja.gravar(serializar(cfgAtual())); pintarStatus(ok); }, 350);
 
 function montarVisao(v) {
@@ -105,6 +105,16 @@ function montarFiltros() {
   if (window.matchMedia) { const mq = matchMedia('(max-width: 820px)'), f = () => { if (!mq.matches) folha(false); }; if (mq.addEventListener) mq.addEventListener('change', f); else if (mq.addListener) mq.addListener(f); }
   document.addEventListener('pointerdown', e => { if (!e.target.closest('.pop-w')) fecharPops(); if (F.classList.contains('folha') && !e.target.closest('#f-painel, #f-abrir, #f-cal')) folha(false); });
 }
+/* mostra, na tabela da visão geral, os livros que o usuário criou ou editou (aba "Editados por você") */
+function verEditados() {
+  limparFiltros(true); $('#f-custom').hidden = true;
+  S.tab.geral = Object.assign(S.tab.geral || {}, { aba: 'meus', q: '', pag: 0 });
+  irPara('geral');
+  const t = $('#p-tab-geral'); if (!t) return;
+  const q = $('input[type=search]', t), aba = $('.abas [aria-selected="true"]', t); if (q) q.value = '';
+  t.scrollIntoView({ block: 'start' });
+  if (aba) aba.scrollIntoView({ block: 'nearest', inline: 'end' });      // no celular as abas rolam de lado: a escolhida tem de aparecer
+}
 const fecharPops = () => $$('.pop-w.aberto').forEach(w => { w.classList.remove('aberto'); $('.pop-b', w).setAttribute('aria-expanded', 'false'); });
 /* folha de filtros (telas estreitas): comporta-se como um diálogo — recebe o foco ao abrir, prende o Tab (ver 60-drawer) e devolve o foco ao fechar */
 function folha(abrir, semFoco) {
@@ -154,9 +164,21 @@ function pintarStatus(ok) {
 }
 function pintarCasca(c) {
   $('#b-exemplo').hidden = !DB.exemplos;
-  const av = $('#aviso'), mostrar = DB.exemplos && !S.avisoVisto;
+  const av = $('#aviso'), mostrar = !S.avisoVisto;
+  av.classList.toggle('inicio', !DB.exemplos);
+  // sem exemplos: um recado, uma vez, dizendo de onde vêm os números e como registrar o resto.
+  // S.saiu > 0: os exemplos de um painel antigo acabaram de sair (S.saiu - 1 = quantos livros editados ficaram como estavam)
+  if (mostrar && !DB.exemplos) {
+    const como = 'Leituras, datas e valores aparecem conforme você registra: abra um livro e use <b>Já li</b>, <b>Começar a ler</b> ou <b>Editar</b>. Nada disso é obrigatório — nem as datas.';
+    const meus = S.saiu > 1 ? S.saiu - 1 : 0;
+    setHtml(av, `<span class="av-i">${icone('info', 18)}</span><div>` + (S.saiu
+      ? `<b>Os dados de exemplo saíram.</b><p>As leituras, datas e valores inventados que o painel mostrava foram retirados: agora só aparece o que é seu. ${como}</p>` +
+        (meus ? `<p>${meus === 1 ? 'O livro que você criou ou editou' : 'Os ' + fInt(meus) + ' livros que você criou ou editou'} enquanto os exemplos estavam ligados <b>${meus === 1 ? 'ficou como estava' : 'ficaram como estavam'}</b>: ${meus === 1 ? 'pode' : 'podem'} trazer datas ou valores de exemplo misturados ao que você anotou. Se eram só testes, use <b>Recomeçar do catálogo original</b>, em <b>Seus dados</b>.</p>` : '')
+      : `<b>Aqui só aparece o que é seu.</b><p>Os ${fInt(DB.livros.filter(b => b.sec >= 0).length)} títulos, a estante física e a biblioteca virtual vieram do seu catálogo. ${como}</p>`) +
+      `</div><div class="av-a">${meus ? `<button type="button" class="btn sm" data-av="meus">Ver ${meus === 1 ? 'esse livro' : 'esses livros'}</button>` : ''}<button type="button" class="btn sm pri" data-av="ok">Entendi</button></div>`);
+  }
   av.hidden = !mostrar;
-  if (mostrar) setHtml(av, `<span class="av-i">${icone('info', 18)}</span><div><b>Seu catálogo é real; o movimento é de exemplo.</b><p>Os ${fInt(DB.livros.filter(b => b.sec >= 0).length)} títulos, autores, marcadores, eixos, a estante física e a biblioteca virtual vieram do seu catálogo. Datas e valores pagos, leituras, a lista de próximas aquisições e os históricos de preço são <b>simulados</b> para dar vida aos gráficos, e os preços não vêm das lojas: entram por cotações que você registra.</p></div><div class="av-a"><button type="button" class="btn sm" data-av="dados">Gerenciar dados</button><button type="button" class="btn sm pri" data-av="ok">Entendi</button></div>`);
+  if (mostrar && DB.exemplos) setHtml(av, `<span class="av-i">${icone('info', 18)}</span><div><b>Seu catálogo é real; o movimento é de exemplo.</b><p>Os ${fInt(DB.livros.filter(b => b.sec >= 0).length)} títulos, autores, marcadores, eixos, a estante física e a biblioteca virtual vieram do seu catálogo. Datas e valores pagos, leituras, a lista de próximas aquisições e os históricos de preço são <b>simulados</b> para dar vida aos gráficos, e os preços não vêm das lojas: entram por cotações que você registra.</p></div><div class="av-a"><button type="button" class="btn sm" data-av="dados">Gerenciar dados</button><button type="button" class="btn sm pri" data-av="ok">Entendi</button></div>`);
   $('#rodape-n').textContent = `${plural(DB.livros.length, 'livro', 'livros')} · ${c.I.tudo ? 'todo o histórico' : c.I.rot}${nFiltros() ? ' · ' + plural(nFiltros(), 'filtro ativo', 'filtros ativos') : ''}`;
 }
 function aplicarTema() {
@@ -177,7 +199,11 @@ function montarCasca() {
     const ir = e.target.closest('[data-ir]'); if (ir) { irPara(ir.dataset.ir); return; }
     const li = e.target.closest('.li[data-id]'); if (li) { abrirLivro(li.dataset.id); return; }
     const sl = e.target.closest('[data-sel]'); if (sl) { selecionarPreco(sl.dataset.sel); return; }
-    const av = e.target.closest('[data-av]'); if (av) { if (av.dataset.av === 'ok') { S.avisoVisto = true; salvar(); pintarCasca(ctxAtual()); } else dlgDados(); }
+    const av = e.target.closest('[data-av]'); if (av) {
+      if (av.dataset.av === 'ok') { S.avisoVisto = true; S.saiu = 0; salvar(); pintarCasca(ctxAtual()); }
+      else if (av.dataset.av === 'meus') verEditados();
+      else dlgDados();
+    }
   });
   $('#b-tema').addEventListener('click', () => { S.tema = document.documentElement.dataset.tema === 'escuro' ? 'claro' : 'escuro'; aplicarTema(); salvar(); });
   $('#b-olho').addEventListener('click', () => { S.ocultar = !S.ocultar; aplicarOlho(); salvar(); render(); if (Gaveta.id) desenharGaveta(); });
@@ -229,6 +255,12 @@ function iniciar() {
   // enquanto nada foi editado, os exemplos acompanham a data de hoje (assim os gráficos nunca "envelhecem")
   if (DB.exemplos && DB.criadoEm !== DB.hoje && !DB.livros.some(b => b.u || temCotacaoPropria(b))) { DB.livros = gerarExemplos(livrosDoCatalogo(), DB.hoje); DB.criadoEm = DB.hoje; }
   S.tema = cfg.tema === 'claro' || cfg.tema === 'escuro' ? cfg.tema : ''; S.ocultar = !!cfg.ocultar; S.avisoVisto = !!cfg.avisoVisto;
+  S.capas = cfg.capas !== false; MOSTRAR_CAPAS = S.capas;
+  // os exemplos de um painel antigo acabaram de sair: o recado inicial volta, agora contando isso, e fica até o "Entendi"
+  S.saiu = DB.saiuExemplo || (cfg.saiu > 0 && !DB.exemplos ? Math.round(+cfg.saiu) || 0 : 0);
+  if (DB.saiuExemplo) S.avisoVisto = false;
+  // imagem de capa que não carregou (sem rede, capa retirada do ar): some, e fica o desenho com a inicial do título
+  document.addEventListener('error', e => { const im = e.target; if (im && im.tagName === 'IMG' && im.parentElement && im.parentElement.classList.contains('capa')) { const c = im.parentElement; if (c.classList.contains('g')) c.remove(); else im.remove(); } }, true);
   if (cfg.visao && VISOES[cfg.visao]) S.visao = cfg.visao;
   if (cfg.ui && typeof cfg.ui === 'object') Object.assign(S.ui, cfg.ui);
   if (cfg.tam) for (const k in cfg.tam) if (TABELAS[k] && [10, 25, 50, 100].includes(cfg.tam[k])) S.tab[k] = { tam: cfg.tam[k] };
@@ -238,6 +270,8 @@ function iniciar() {
   document.documentElement.classList.add('pronto');
   // o painel chegou com outro catálogo: os dados salvos já foram conciliados (ver conciliarCatalogo); grava e avisa
   if (DB.novidade) { salvar(); if (textoNovidade()) toast(textoNovidade().trim() + ' O que você editou no painel foi mantido.'); }
+  // os dados de exemplo de um painel antigo saíram (ver carregarDB): grava e avisa
+  if (DB.saiuExemplo) { salvar(); toast('Os dados de exemplo saíram: agora o painel mostra só o que é seu.'); }
   try { if (sessionStorage.getItem('bl-falha')) { sessionStorage.removeItem('bl-falha'); toast('Os dados salvos não puderam ser abertos e o painel recomeçou do catálogo. A cópia do que havia está em “Seus dados”.', 'aviso');
     // a recarga da rede de segurança abre no topo (ver abaixo); depois disso a rolagem volta a ser lembrada pelo navegador
     const volta = () => setTimeout(() => { try { history.scrollRestoration = 'auto'; } catch (e) { /* nada */ } }, 600);
