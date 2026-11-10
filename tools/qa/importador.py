@@ -1,5 +1,7 @@
 """O importador da biblioteca virtual (tools/importar_digital.py), numa cópia temporária dos dados:
-repetir não muda nada; arquivo novo, arquivo ausente, marcador posto à mão, correção no inventário e --conferir.
+repetir não muda nada; arquivo novo, arquivo ausente, marcador posto à mão, correção no inventário e --conferir;
+quadrinhos: subpasta de série, edição nova de série conhecida, série nova, adaptação com o título de um livro,
+subpasta que é outra pasta com listagem própria.
 E a conversão do catálogo para o painel (tools/build_catalog.py): src/catalog.json em dia; nomes antigos das linhas
 corrigidas (catalogo/renomeados.tsv). Não precisa de navegador."""
 import contextlib, io, json, pathlib, shutil, sys, tempfile
@@ -94,12 +96,83 @@ confere(b['sec'] != 17 and 'tenho-digital' in b['tags'] and len(livros()) == n, 
 (tmp / 'listagens' / 'poesia.txte').write_bytes(bruto.decode('cp850').encode('utf-8'))
 confere('Nada mudou.' in roda(), 'listagem em UTF-8 é lida do mesmo jeito')
 
-# 8 ▸ o que vai para o painel: src/catalog.json em dia, e o nome antigo das linhas corrigidas no catálogo
+# 8 ▸ quadrinhos: nas pastas de HQ cada subpasta é uma série; no catálogo, uma série é uma linha só
+inv = imp.ler_inventario(imp.INVENTARIO)
+hq = [r for r in inv if r['tipo'] == 'hq']
+series = [r for r in hq if r['formato'] == imp.FORMATO_PASTA]
+confere(len(series) > 50 and not any(imp.tem_obs(r, 'ausente') for r in hq), f'as subpastas de séries estão no inventário e nenhuma consta como ausente ({len(series)})')
+confere(all(r['genero'] == 'HQ' for r in hq) and all(imp.pasta_de_hq(r['pasta']) for r in series), 'toda linha de quadrinho tem gênero HQ; subpasta de série, só nas pastas de quadrinhos')
+# a subpasta "novas", de novashqs, não é uma série: é outra pasta, e a listagem dela chama-se novasHQSS
+bruto_novas = (tmp / 'listagens' / 'novashqs.txte').read_bytes()
+resumo = ler('RESUMO.md')
+fora = next((l for l in resumo.splitlines() if l.startswith(('- Subpasta sem listagem', '- Subpastas sem listagem'))), '')
+confere(b'\r\nnovas\r\n' in bruto_novas and not any(r['pasta'] == 'novashqs' and r['arquivo'] == 'novas' for r in inv)
+        and any(r['pasta'] == 'novasHQSS' for r in inv) and linha('novas') is None
+        and '`novas`, de `novashqs`, tem listagem própria, `novasHQSS`' in resumo and 'novas' not in fora and '`HQs/Mangás`' in fora,
+        'subpasta com listagem própria ("novas" = novasHQSS) não vira série nem consta como "sem listagem"; o resumo diz onde ela está')
+confere(imp.subpastas_listadas({'novashqs', 'novasHQSS'}) == {('novashqs', 'novas'): 'novasHQSS'} and imp.subpastas_listadas({'novashqs', 'HQs'}) == {},
+        'a regra só vale enquanto a listagem da subpasta existir')
+sem_linha = [o['t'] for (kt, ka), o in obras.items() if o['genero'] == 'HQ' and not any(imp.chave(x['t']) == kt and 'HQ' in x['tags'] for x in L)]
+confere(not sem_linha, 'cada quadrinho do inventário está numa linha #HQ do catálogo' + (f': {sem_linha[:5]}' if sem_linha else ''))
+nomes = {'Coda #03 [Ndrangheta & Yugifan].cbr': 'Coda', 'Earthdivers 004 (2023) (QI).cbz': 'Earthdivers', 'As.Eras.Perdidas.01(Ndrangheta&Yugifan).cbr': 'As Eras Perdidas',
+         'Rapa Nui v2 (QI).cbz': 'Rapa Nui', 'Elfos - Livro II [Ndrangheta & DecKArte].cbr': 'Elfos', 'Batman 89 #06 (2022) (SQ&ZF).cbr': 'Batman 89',
+         '100 Balas (13 de 15)': '100 Balas', 'Heróis Renascem[HQ Torrent]': 'Heróis Renascem', '18 Dias (2015)-20241229T204405Z-001.zip': '18 Dias',
+         'Asgard.01de02.Pe.de.Ferro(Yugifan).cbr': 'Asgard', 'Charada - Ano Um #01 (Shinobi-2022).cbr': 'Charada: Ano Um', 'Vortex 2.0.cbr': 'Vortex 2.0',
+         'Graphic Marvel 14 - Os Escravistas.rar.cbr': 'Graphic Marvel 14: Os Escravistas', '2001 Odisseia no espaço': '2001 Odisseia no Espaço'}
+errados = {n: imp.deduzir_hq(n)[0] for n, t in nomes.items() if imp.chave(imp.deduzir_hq(n)[0]) != imp.chave(t)}
+confere(not errados and imp.deduzir_hq('Celestia (Manuele Fior) (Z-Library).pdf') == ('Celestia', 'Manuele Fior'),
+        'o nome da série sai do nome do arquivo ou da subpasta, sem ano, grupo e número da edição' + (f': {errados}' if errados else ''))
+
+def acrescenta(listagem, *linhas_novas):
+    with open(tmp / 'listagens' / f'{listagem}.txte', 'ab') as f:
+        f.write(''.join(l + '\r\n' for l in linhas_novas).encode('cp850'))
+do_inv = lambda arquivo: next((r for r in imp.ler_inventario(imp.INVENTARIO) if r['arquivo'] == arquivo), None)
+coda = next(r for r in hq if r['titulo'] == 'Coda')
+n = len(livros())
+acrescenta('novashqs', 'Coda #99 [Outro Grupo].cbr')
+saida = roda()
+r = do_inv('Coda #99 [Outro Grupo].cbr')
+confere(bool(r) and (r['tipo'], r['titulo'], r['autor'], r['eixo'], r['obs']) == ('hq', 'Coda', coda['autor'], coda['eixo'], '') and len(livros()) == n
+        and 'mais uma edição' in saida, 'edição nova de uma série conhecida entra na série, sem linha nova no catálogo e sem nada a revisar')
+acrescenta('HQs', 'Monstress', 'Monstress #01 (2015) (Grupo).cbz', 'Batman - Ano Um.cbr', 'capa.jpg')
+acrescenta('poesia', 'Uma Subpasta de Poesia')
+roda()
+r, r2, r3 = do_inv('Monstress'), do_inv('Monstress #01 (2015) (Grupo).cbz'), do_inv('Batman - Ano Um.cbr')
+confere(bool(r and r2) and (r['tipo'], r['formato'], r['titulo'], r['genero'], r['obs']) == ('hq', 'pasta', 'Monstress', 'HQ', 'novo') and (r2['formato'], r2['titulo'], r2['obs']) == ('cbz', 'Monstress', 'novo'),
+        'série nova (a subpasta e um arquivo solto) entra como quadrinho, marcada "novo"')
+b = [x for x in livros() if x['t'] == 'Monstress']
+confere(len(b) == 1 and b[0]['sec'] == 17 and b[0]['tags'] == ['HQ', 'verificar', 'tenho-digital'], 'e vira uma linha só no catálogo, #HQ, com #verificar')
+confere(bool(r3) and r3['obs'] == 'novo' and imp.chave(r3['titulo']) == 'batman ano um', 'um nome parecido não basta: “Batman - Ano Um” não entra na série “Batman”')
+confere(do_inv('capa.jpg') is None and do_inv('Uma Subpasta de Poesia') is None and '`HQs/capa.jpg`' in ler('RESUMO.md'),
+        'arquivo de outro tipo e subpasta de pasta de livros não entram; o resumo cita o arquivo ignorado')
+# adaptação em quadrinhos com o título de um livro que está no catálogo como recomendação: o livro não passa a "tenho em digital"
+alvo = next(x for x in livros() if x['sec'] not in (0, 17) and 'tenho-digital' not in x['tags'] and 'HQ' not in x['tags'] and x['t'].replace(' ', '').isalpha()
+            and sum(imp.chave(y['t']) == imp.chave(x['t']) for y in L) == 1)
+acrescenta('HQs', alvo['t'])
+roda()
+mesmos = [x for x in livros() if imp.chave(x['t']) == imp.chave(alvo['t'])]
+confere(len(mesmos) == 2 and [x for x in mesmos if x['sec'] != 17][0]['tags'] == alvo['tags'] and 'HQ' in [x for x in mesmos if x['sec'] == 17][0]['tags'],
+        f'quadrinho com o título de um livro do catálogo (“{alvo["t"]}”) ganha linha própria; o livro não é marcado como digital')
+bruto = (tmp / 'listagens' / 'HQs.txte').read_bytes()
+confere(b'\r\nAkira\r\n' in bruto and linha('Akira') is not None, 'a série “Akira” está numa subpasta da listagem e no catálogo')
+(tmp / 'listagens' / 'HQs.txte').write_bytes(bruto.replace(b'\r\nAkira\r\n', b'\r\n'))
+roda()
+confere(do_inv('Akira')['obs'] == 'ausente' and linha('Akira') is None and 'Nada mudou.' in roda(), 'subpasta que some da listagem fica "ausente" e a série sai do catálogo')
+(tmp / 'listagens' / 'novasHQSS.txte').rename(tmp / 'novasHQSS.guardada')
+roda()
+r = next((x for x in imp.ler_inventario(imp.INVENTARIO) if x['pasta'] == 'novashqs' and x['arquivo'] == 'novas'), None)
+confere(bool(r) and (r['formato'], r['tipo'], r['obs']) == ('pasta', 'hq', 'novo') and 'novashqs/novas' in ler('RESUMO.md'),
+        'sem a listagem da subpasta, "novas" volta ao inventário, marcada "novo": não some sem aviso')
+
+# 9 ▸ o que vai para o painel: src/catalog.json em dia, e o nome antigo das linhas corrigidas no catálogo
 confere(json_em_dia and not avisos_json, 'src/catalog.json está em dia com o catálogo e o inventário, sem avisos' + (': ' + ' | '.join(avisos_json) if avisos_json else ''))
 dados = json.loads(bc.DEST.read_text(encoding='utf-8'))
-forma = all(len(r) in (6, 7, 8) and (len(r) < 7 or r[6] is None or len(r[6]) == 5) and (len(r) < 8 or (r[7] and all(len(n) == 2 for n in n8)))
+digital_ok = lambda d: d is None or (len(d) in (5, 6) and isinstance(d[1], int) and (len(d) == 5 or (d[5] and all(isinstance(x, str) for x in d[5]))) and (d[1] > 0 or len(d) == 6))
+forma = all(len(r) in (6, 7, 8) and (len(r) < 7 or digital_ok(r[6])) and (len(r) < 8 or (r[7] and all(len(n) == 2 for n in n8)))
             for r in dados for n8 in [r[7] if len(r) > 7 else []])
-confere(forma and not any(len(r) == 7 and r[6] is None for r in dados), 'cada linha do JSON tem 6 campos, mais os dados digitais e os nomes antigos quando existem')
+confere(forma and not any(len(r) == 7 and r[6] is None for r in dados), 'cada linha do JSON tem 6 campos, mais os dados digitais (com as subpastas das séries) e os nomes antigos quando existem')
+so_pasta = [r for r in dados if len(r) > 6 and r[6] and r[6][1] == 0]
+confere(len(so_pasta) > 50 and all(r[6][0] == '' and 'HQ' in r[2].split() for r in so_pasta), f'série que só existe como subpasta vai ao painel sem formato de arquivo ({len(so_pasta)})')
 autor = lambda a: bc.AUTOR_FIX[a][0] if a in bc.AUTOR_FIX else a
 reais = [[b['t'], autor(b['a'])] for b in parse(antes['catalogo.md'])]
 n = sum(1 for l in bc.RENOMEADOS.read_text(encoding='utf-8-sig').splitlines()[1:] if l.strip())

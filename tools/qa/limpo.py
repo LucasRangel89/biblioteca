@@ -1,6 +1,6 @@
 """Item sem preço-alvo ("Sem alvo") e o painel sem os dados de exemplo: indicadores, legendas e estados vazios.
 
-Os números esperados são um retrato do catálogo atual (1.865 livros no acervo: 97 na estante + 1.768 só digitais;
+Os números esperados são um retrato do catálogo atual (2.125 livros no acervo: 97 na estante + 2.028 só digitais;
 435 recomendações, 2 delas já lidas). Se o catálogo mudar, rode, confira as linhas FALHA e atualize os literais.
 """
 from caminhos import PAINEL_URL
@@ -41,8 +41,8 @@ with sync_playwright() as p:
     print('SEM OS DADOS DE EXEMPLO')
     pg.click('#b-dados'); pg.wait_for_timeout(400); pg.click('#dlg [data-x=limpar]'); pg.wait_for_timeout(400); pg.click('#dlg footer .pri'); pg.wait_for_timeout(900); pg.keyboard.press('Escape'); pg.wait_for_timeout(300)
     esperado = {
-        'geral': {'acervo': ('1.865', 'sem datas de aquisição'), 'investido': ('R$ 0', ''), 'leituras': ('2', ''), 'cesta': ('R$ 48', 'histórico começa hoje'), 'oport': ('0', 'histórico começa hoje'), 'recs': ('433', '')},
-        'biblioteca': {'acervo': ('1.865', 'sem datas de aquisição'), 'investido': ('R$ 0', ''), 'leituras': ('2', ''), 'fila': ('1.865', '')},
+        'geral': {'acervo': ('2.125', 'sem datas de aquisição'), 'investido': ('R$ 0', ''), 'leituras': ('2', ''), 'cesta': ('R$ 48', 'histórico começa hoje'), 'oport': ('0', 'histórico começa hoje'), 'recs': ('433', '')},
+        'biblioteca': {'acervo': ('2.125', 'sem datas de aquisição'), 'investido': ('R$ 0', ''), 'leituras': ('2', ''), 'fila': ('2.125', '')},
         'recs': {'recs': ('433', ''), 'top': ('32', '7,4% da fila'), 'leves': ('50', '11,5% da fila'), 'pend': ('61', '')},
         'desejos': {'itens': ('1', '1 incluído em 12 meses'), 'cesta': ('R$ 48', 'histórico começa hoje'), 'oport': ('0', 'histórico começa hoje'), 'minimo': ('R$ 48', None)},
         'precos': {'monit': ('1', 'em 1 loja'), 'oport': ('0', 'histórico começa hoje'), 'queda': ('—', ''), 'cot': ('1', None)},

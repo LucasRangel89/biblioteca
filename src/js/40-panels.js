@@ -108,7 +108,7 @@ function pComposicao() {
     segmento(k.tools, [['fmt', 'Formato'], ['tipo', 'Tipo'], ['leit', 'Leitura']], 'compor');
     const g = GraficoRosca(k.corpo, { rotulo: 'Composição do acervo', aoClicar(key) {
       if (S.ui.compor === 'fmt') { const alvo = key === 'fisico' || key === 'ambos' ? key : 'virtual'; S.acervo = S.acervo === alvo ? 'tudo' : alvo; }
-      else if (S.ui.compor === 'tipo') { const alvo = key === 'F' || key === 'NF' ? key : 'O'; S.tipo = S.tipo === alvo ? '' : alvo; }
+      else if (S.ui.compor === 'tipo') { const alvo = tipoFiltro(key); S.tipo = S.tipo === alvo ? '' : alvo; }
       else return;
       filtrosMudaram();
     } });
@@ -277,7 +277,7 @@ function pMatriz() {
 }
 function pTipoRecs() {
   return { id: 'tipo-recs', w: 'p-4 m-6', tit: 'Ficção × não ficção', montar(k) {
-    const g = GraficoRosca(k.corpo, { rotulo: 'Recomendações por tipo', aoClicar(key) { const alvo = key === 'F' || key === 'NF' ? key : 'O'; S.tipo = S.tipo === alvo ? '' : alvo; filtrosMudaram(); } });
+    const g = GraficoRosca(k.corpo, { rotulo: 'Recomendações por tipo', aoClicar(key) { const alvo = tipoFiltro(key); S.tipo = S.tipo === alvo ? '' : alvo; filtrosMudaram(); } });
     return c => {
       const cont = contarPor(c.recP.filter(b => b.leit !== 'lido'), b => b._tipo);     // a fila: o que ainda não foi lido
       k.sub.textContent = 'Recomendações por tipo' + (c.I.tudo ? '' : ' · incluídas ' + c.I.rot);
