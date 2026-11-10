@@ -127,7 +127,15 @@ kbd { font: 600 11px/1 var(--sans); padding: 3px 6px; border-radius: 5px; border
 /* ───────────── filtros ───────────── */
 .filtros { position: sticky; top: 0; z-index: 20; padding: 10px var(--pad); background: color-mix(in srgb, var(--bg) 86%, transparent); -webkit-backdrop-filter: blur(12px) saturate(1.2); backdrop-filter: blur(12px) saturate(1.2); border-bottom: 1px solid color-mix(in srgb, var(--line) 70%, transparent); }
 .f-linha { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
-.f-per { display: flex; align-items: center; gap: 8px; min-width: 0; }
+/* período: fica no fim de "Mais filtros" — filtra pela data de aquisição ou de leitura, e quase nenhum livro tem data */
+.f-per { margin-top: 6px; border-top: 1px solid var(--line); }
+.f-per .pop-r small { text-transform: none; letter-spacing: 0; font-weight: 500; }
+.f-per-l { display: flex; flex-wrap: wrap; align-items: center; gap: 6px; padding: 0 8px 4px; }
+.f-per-l .seg { flex-wrap: wrap; }
+.f-per-l .seg.mini button { height: 26px; padding: 0 9px; font-size: 12.5px; }
+.f-per-l .f-cal { height: 30px; }
+.f-custom { display: flex; flex-wrap: wrap; align-items: center; gap: 8px 12px; padding: 6px 8px 4px; }
+.f-custom[hidden] { display: none; }
 .f-painel { display: contents; }
 .f-corpo { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
 .f-ph, .f-pf, .f-abrir { display: none; }
@@ -642,8 +650,8 @@ td.c-spark svg { margin-left: auto; margin-right: auto; }
   html { scroll-padding-top: 64px; }
   .app { grid-template-columns: minmax(0, 1fr); padding-bottom: calc(62px + env(safe-area-inset-bottom)); }
   .lateral { display: none; }
-  .inferior { display: grid; grid-template-columns: repeat(5, 1fr); position: fixed; left: 0; right: 0; bottom: 0; z-index: 40; background: color-mix(in srgb, var(--surface) 94%, transparent); -webkit-backdrop-filter: blur(14px); backdrop-filter: blur(14px); border-top: 1px solid var(--line); padding: 5px 4px calc(5px + env(safe-area-inset-bottom)); }
-  .inferior button { display: flex; flex-direction: column; align-items: center; gap: 3px; padding: 6px 2px 5px; border-radius: 10px; color: var(--ink-3); font-size: 10.5px; font-weight: 600; min-width: 0; }
+  .inferior { display: grid; grid-template-columns: repeat(6, minmax(0, 1fr)); position: fixed; left: 0; right: 0; bottom: 0; z-index: 40; background: color-mix(in srgb, var(--surface) 94%, transparent); -webkit-backdrop-filter: blur(14px); backdrop-filter: blur(14px); border-top: 1px solid var(--line); padding: 5px 4px calc(5px + env(safe-area-inset-bottom)); }
+  .inferior button { display: flex; flex-direction: column; align-items: center; gap: 3px; padding: 6px 1px 5px; border-radius: 10px; color: var(--ink-3); font-size: 10px; font-weight: 600; letter-spacing: -.01em; min-width: 0; }   /* seis guias: 10px cabem em 360 px sem cortar nenhum nome */
   .inferior .nv-l { display: none; }
   .inferior .nv-c { display: block; max-width: 100%; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
   .inferior button[aria-current] { color: var(--accent-forte); background: var(--accent-soft); }
@@ -657,11 +665,13 @@ td.c-spark svg { margin-left: auto; margin-right: auto; }
   /* sem desfoque aqui: backdrop-filter prenderia a folha de filtros (position: fixed) dentro da barra */
   .filtros { padding: 8px var(--pad); background: var(--bg); -webkit-backdrop-filter: none; backdrop-filter: none; }
   .f-linha { flex-wrap: nowrap; }
-  .f-per { flex: 1; overflow-x: auto; scrollbar-width: none; margin: 0 -4px; padding: 0 22px 0 4px; -webkit-mask-image: linear-gradient(90deg, #000 calc(100% - 26px), transparent); mask-image: linear-gradient(90deg, #000 calc(100% - 26px), transparent); }
-  .f-per::-webkit-scrollbar { display: none; }
-  .f-cal span { display: none; }
-  .f-cal { width: 36px; padding: 0; flex: none; }
   .f-abrir { display: inline-flex; flex: none; }
+  .f-per { margin: 10px 8px 0; padding-top: 2px; }
+  .f-per .pop-r { padding-left: 0; }
+  .f-per-l, .f-custom { padding-left: 0; padding-right: 0; }
+  .f-g .f-per-l .seg { display: inline-flex; }
+  .f-g .f-per-l .seg.mini button { flex: none; height: 32px; padding: 0 10px; }
+  .f-per-l .f-cal { height: 36px; }
   .f-painel { display: none; position: fixed; left: 0; right: 0; bottom: 0; z-index: 80; max-height: 86dvh; flex-direction: column; background: var(--surface); border-radius: 18px 18px 0 0; border: 1px solid var(--line); box-shadow: var(--sombra-2); }
   .filtros.folha { z-index: 85; }
   .filtros.folha::before { content: ""; position: fixed; inset: 0; background: var(--veu); z-index: 79; }
@@ -674,8 +684,6 @@ td.c-spark svg { margin-left: auto; margin-right: auto; }
   .f-g { flex-direction: column; align-items: stretch; gap: 7px; }
   .f-g .seg { display: flex; }
   .f-g .seg button { flex: 1; height: 34px; padding: 0 6px; }   /* cinco opções no Tipo: com 11px de respiro, "Outros" saía da folha em telas de 320 px */
-  .f-custom { flex-direction: row; flex-wrap: wrap; align-items: center; }
-  .f-custom .f-r { width: 100%; }
   .f-custom label { flex: 1; }
   .f-custom input { flex: 1; width: 100%; }
   .pop-b { display: none; }
@@ -740,7 +748,7 @@ td.c-spark svg { margin-left: auto; margin-right: auto; }
 @media (max-width: 520px) { .card-tab .busca-t { flex: 1 1 100%; } }
 /* telefones estreitos (360px e menos): o título diminui; nos de 320px, o botão de ocultar valores cede o lugar a ele */
 @media (max-width: 380px) { .topo h1 { font-size: 16px; } }
-@media (max-width: 340px) { #b-olho { display: none; } .inferior { padding-left: 2px; padding-right: 2px; } .inferior button { font-size: 9.5px; letter-spacing: -.01em; padding-left: 0; padding-right: 0; } }
+@media (max-width: 340px) { #b-olho { display: none; } .inferior { padding-left: 2px; padding-right: 2px; } .inferior button { font-size: 9px; letter-spacing: -.02em; padding-left: 0; padding-right: 0; } }
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after { animation-duration: .001s !important; transition-duration: .001s !important; scroll-behavior: auto !important; }
 }
@@ -792,6 +800,7 @@ td.c-spark svg { margin-left: auto; margin-right: auto; }
       <section class="visao" id="v-geral" aria-label="Visão geral" hidden></section>
       <section class="visao" id="v-biblioteca" aria-label="Biblioteca" hidden></section>
       <section class="visao" id="v-recs" aria-label="Recomendações" hidden></section>
+      <section class="visao" id="v-financas" aria-label="Finanças" hidden></section>
       <section class="visao" id="v-desejos" aria-label="Próximas aquisições" hidden></section>
       <section class="visao" id="v-precos" aria-label="Preços" hidden></section>
     </main>
@@ -1986,9 +1995,11 @@ const icone = (n, t = 18) => `<svg class="ic" width="${t}" height="${t}" viewBox
 const ICONE_FMT = { fisico: 'livro', ebook: 'tablet', audio: 'fone' };
 
 const VISOES = {
-  geral: { n: 'Visão geral', c: 'Geral', d: 'Panorama da biblioteca, das listas e dos preços', ic: 'painel' },
-  biblioteca: { n: 'Biblioteca', c: 'Biblioteca', d: 'Estante física e biblioteca virtual, leituras e investimento', ic: 'estante' },
+  geral: { n: 'Visão geral', c: 'Geral', d: 'Panorama da biblioteca, das leituras e das recomendações', ic: 'painel' },
+  biblioteca: { n: 'Biblioteca', c: 'Biblioteca', d: 'Estante física e biblioteca virtual, e as suas leituras', ic: 'estante' },
   recs: { n: 'Recomendações', c: 'Recomend.', d: 'O catálogo de leituras sugeridas, por eixo, tema e fôlego', ic: 'bussola' },
+  // tudo o que é dinheiro mora daqui para baixo: nada de valores na Visão geral nem na Biblioteca
+  financas: { n: 'Finanças', c: 'Finanças', d: 'Quanto foi investido, onde, e o custo da lista de compra', ic: 'carteira' },
   desejos: { n: 'Próximas aquisições', c: 'Aquisições', d: 'Lista de compra com prioridade, preço-alvo e melhor oferta', ic: 'sacola' },
   precos: { n: 'Preços', c: 'Preços', d: 'Histórico de cotações por loja, alertas e variações', ic: 'etiqueta' },
 };
@@ -2008,9 +2019,9 @@ const S = {
   tipo: '', eixos: new Set(), dif: new Set(), ext: new Set(), tags: new Set(), top: false,
   tema: '', ocultar: false, avisoVisto: false, sel: '',
   tab: {},
-  ui: { compor: 'fmt', evo: 'qtd', aq: 'qtd', origem: 'qtd', temas: 1, prio: 'valor', sorteio: 0 },
+  ui: { compor: 'fmt', temas: 1, prio: 'valor', sorteio: 0 },
 };
-const nFiltros = () => (S.acervo !== 'tudo' && S.visao !== 'recs' ? 1 : 0) + (S.tipo ? 1 : 0) + S.eixos.size + S.dif.size + S.ext.size + S.tags.size + (S.top ? 1 : 0);
+const nFiltros = () => (S.acervo !== 'tudo' && S.visao !== 'recs' ? 1 : 0) + (S.tipo ? 1 : 0) + S.eixos.size + S.dif.size + S.ext.size + S.tags.size + (S.top ? 1 : 0) + (S.periodo !== 'tudo' ? 1 : 0);
 function limparFiltros(tambemPeriodo) {
   S.acervo = 'tudo'; S.tipo = ''; S.eixos.clear(); S.dif.clear(); S.ext.clear(); S.tags.clear(); S.top = false;
   if (tambemPeriodo) { S.periodo = 'tudo'; S.de = S.ate = null; }
@@ -2200,6 +2211,12 @@ const K = {
     const t = tend(cur, ant, 'neutro');   // sem valor nos dois períodos não há comparação (nem legenda de comparação)
     return { v: val, fmt: fBRL0, tend: t, cmp: t ? I.cmp : '', sub: pagos ? `${plural(pagos, 'compra', 'compras')} · média de ${fBRL(val / pagos)}` : 'nenhuma compra com valor registrado', spark: porBalde(baldes(I.de, I.ate, 20), c.ac, b => adqDe(b), b => pagoDe(b) || 0), zero: true };
   },
+  medio(c) {
+    const pagos = c.acP.filter(b => pagoDe(b) > 0), val = soma(pagos, b => pagoDe(b));
+    if (!pagos.length) return { txt: '—', sub: 'nenhuma compra com valor registrado' };
+    const maior = pagos.reduce((m, b) => (pagoDe(b) > pagoDe(m) ? b : m));
+    return { v: val / pagos.length, fmt: fBRL, cmp: `em ${plural(pagos.length, 'compra', 'compras')} com valor`, sub: `a mais cara: ${fBRL(pagoDe(maior))} · ${maior.t}`, dica: maior.t };
+  },
   leituras(c) {
     const I = c.I, n = c.lidosP.length;
     const cur = c.lidos.filter(b => dentro(b.lidoEm, I.cur)).length, ant = c.lidos.filter(b => dentro(b.lidoEm, I.ant)).length;
@@ -2231,6 +2248,10 @@ const K = {
     const datado = c.rec.some(b => b.add != null);
     return { v: fila.length, tend: datado ? tendAbs(novos, 'neutro') : null, cmp: datado ? `${novos === 1 ? 'incluída' : 'incluídas'} ${I.cmpC}` : '', sub: `${plural(fila.filter(b => b._top).length, 'prioridade marcada', 'prioridades marcadas')} com #top`, spark: acumulado(baldes(I.de, I.ate, 20), fila, b => b.add) };
   },
+  lendo(c) {
+    const lendo = c.ac.filter(b => b.leit === 'lendo'), media = lendo.length ? soma(lendo, b => b.prog || 0) / lendo.length : 0, perto = lendo.slice().sort((a, z) => (z.prog || 0) - (a.prog || 0))[0];
+    return { v: lendo.length, cmp: lendo.length ? `em média ${Math.round(media)}% lido` : '', sub: perto ? `mais adiantado: ${perto.t}` : 'abra um livro e use “Começar a ler”', dica: perto ? perto.t : '' };
+  },
   fila(c) {
     const I = c.I, fila = c.ac.filter(b => b.leit !== 'lido' && b.leit !== 'aband'), lendo = c.ac.filter(b => b.leit === 'lendo').length, lidos = c.ac.filter(b => b.leit === 'lido').length;
     const entrou = c.ac.filter(b => dentro(adqDe(b), I.cur)).length, saiu = c.ac.filter(b => b.leit === 'lido' && dentro(b.lidoEm, I.cur)).length;
@@ -2241,15 +2262,14 @@ const K = {
 
 /* ───────── painéis compartilhados ───────── */
 const rotEixoX = (d, span) => (span > 150 ? fMesAno(d) : fDiaMes(d));
-function pEvolucao() {
-  return { id: 'evolucao', w: 'p-8', tit: 'Evolução do acervo', montar(k) {
-    segmento(k.tools, [['qtd', 'Livros'], ['valor', 'Valor']], 'evo');
-    const g = GraficoLinha(k.corpo, { legenda: k.pe, rotulo: 'Evolução do acervo por formato' });
+function pEvolucao(val) {      // val: em reais (Finanças); sem val: em livros (Visão geral)
+  return { id: val ? 'evo-valor' : 'evolucao', w: 'p-8', tit: val ? 'Evolução do investimento' : 'Evolução do acervo', montar(k) {
+    const g = GraficoLinha(k.corpo, { legenda: k.pe, rotulo: val ? 'Valor investido acumulado, por formato' : 'Evolução do acervo por formato' });
     return c => {
-      const B = baldes(c.I.de, c.I.ate, 64), x = B.lista.map(b => b.f), val = S.ui.evo === 'valor', semData = c.ac.filter(b => adqDe(b) == null).length;
+      const B = baldes(c.I.de, c.I.ate, 64), x = B.lista.map(b => b.f), semData = c.ac.filter(b => adqDe(b) == null && (!val || pagoDe(b) > 0)).length;
       const series = Object.keys(FORMATOS).map(f => ({ k: f, n: FORMATOS[f].n, cor: FORMATOS[f].cor, area: true, v: acumulado(B, c.ac.filter(b => b.fmt === f), b => adqDe(b), val ? b => pagoDe(b) || 0 : null) })).filter(s => s.v[s.v.length - 1] > 0);
-      k.sub.textContent = `${val ? 'Valor investido acumulado' : 'Livros acumulados'} por formato · ${c.I.rot}${semData ? ` · ${plural(semData, 'livro sem data não entra', 'livros sem data não entram')}` : ''}`;
-      g.atualizar({ x, series, empilhar: true, inteiro: !val, fmtY: val ? fBRL : fInt, fmtEixo: val ? fBRLc : fInt, rot: i => (B.g === 'dia' || B.g === 'semana' ? fDiaMes(x[i]) : B.g === 'ano' ? String(partes(x[i]).y) : fMesAno(x[i])), tit: i => 'Até ' + fData(x[i]), vazio: 'Nenhum livro com data de aquisição neste recorte. Edite um livro para informar quando ele chegou.' });
+      k.sub.textContent = `${val ? 'Valor investido acumulado' : 'Livros acumulados'} por formato · ${c.I.rot}${semData ? ` · ${plural(semData, val ? 'compra sem data não entra' : 'livro sem data não entra', val ? 'compras sem data não entram' : 'livros sem data não entram')}` : ''}`;
+      g.atualizar({ x, series, empilhar: true, inteiro: !val, fmtY: val ? fBRL : fInt, fmtEixo: val ? fBRLc : fInt, rot: i => (B.g === 'dia' || B.g === 'semana' ? fDiaMes(x[i]) : B.g === 'ano' ? String(partes(x[i]).y) : fMesAno(x[i])), tit: i => 'Até ' + fData(x[i]), vazio: val ? 'Nenhuma compra com data e valor neste recorte. Edite um livro para informar quando ele chegou e quanto custou.' : 'Nenhum livro com data de aquisição neste recorte. A data é opcional: edite um livro para informar quando ele chegou.' });
     };
   } };
 }
@@ -2269,15 +2289,14 @@ function pComposicao() {
     };
   } };
 }
-function pAquisicoes() {
-  return { id: 'aquisicoes', w: 'p-6 m-6', tit: 'Aquisições por período', montar(k) {
-    segmento(k.tools, [['qtd', 'Livros'], ['valor', 'Valor']], 'aq');
-    const g = GraficoBarras(k.corpo, { legenda: k.pe, rotulo: 'Aquisições por período e formato' });
+function pAquisicoes(val, w) {  // val: em reais (Finanças); sem val: em livros (Visão geral)
+  return { id: val ? 'gastos' : 'aquisicoes', w: w || 'p-6 m-6', tit: val ? 'Gastos por período' : 'Aquisições por período', montar(k) {
+    const g = GraficoBarras(k.corpo, { legenda: k.pe, rotulo: val ? 'Valor pago por período e formato' : 'Aquisições por período e formato' });
     return c => {
-      const B = baldes(c.I.de, c.I.ate, 24), val = S.ui.aq === 'valor', L = B.lista;
+      const B = baldes(c.I.de, c.I.ate, 24), L = B.lista;
       k.sub.textContent = `${val ? 'Valor pago' : 'Livros adquiridos'} por ${L.length > 1 ? NOME_GRAN[B.g] + ' e ' : ''}formato · ${c.I.rot}`;
       g.atualizar({ rot: L.map(b => b.rot), tit: L.map(b => b.tit), parcial: L.length && L[L.length - 1].parcial ? L.length - 1 : -1, inteiro: !val, fmtY: val ? fBRL : fInt, fmtEixo: val ? fBRLc : fInt,
-        series: Object.keys(FORMATOS).map(f => ({ k: f, n: FORMATOS[f].n, cor: FORMATOS[f].cor, v: porBalde(B, c.ac.filter(b => b.fmt === f), b => adqDe(b), val ? b => pagoDe(b) || 0 : null) })), vazio: 'Nenhuma aquisição com data neste recorte.' });
+        series: Object.keys(FORMATOS).map(f => ({ k: f, n: FORMATOS[f].n, cor: FORMATOS[f].cor, v: porBalde(B, c.ac.filter(b => b.fmt === f), b => adqDe(b), val ? b => pagoDe(b) || 0 : null) })), vazio: val ? 'Nenhuma compra com data e valor neste recorte.' : 'Nenhuma aquisição com data neste recorte.' });
     };
   } };
 }
@@ -2318,8 +2337,8 @@ function pEixos(modo, w) {
   } };
 }
 const linhaLivro = (b, meio, fim) => `<button type="button" class="li" data-id="${b.id}"><span class="li-m"><b>${esc(b.t)}</b><span>${esc(b.a || 'Autor não informado')}</span></span>${meio || ''}${fim || ''}</button>`;
-function pRanking() {
-  return { id: 'ranking', w: 'p-5', tit: 'Melhores oportunidades', montar(k) {
+function pRanking(w) {
+  return { id: 'ranking', w: w || 'p-5', tit: 'Melhores oportunidades', montar(k) {
     k.tools.innerHTML = `<button type="button" class="btn sm fantasma" data-ir="desejos">Ver lista${icone('dir', 14)}</button>`;
     k.corpo.classList.add('lista');
     return c => {
@@ -2369,31 +2388,30 @@ function pLeituras() {
     };
   } };
 }
-function pOrigens() {
-  return { id: 'origens', w: 'p-6 m-6', tit: 'Onde comprei', montar(k) {
-    segmento(k.tools, [['qtd', 'Livros'], ['valor', 'Valor']], 'origem');
+function pOrigens(val) {        // val: em reais (Finanças); sem val: em livros (Biblioteca)
+  return { id: val ? 'gasto-loja' : 'origens', w: 'p-6 m-6', tit: val ? 'Gasto por loja ou origem' : 'Onde comprei', montar(k) {
     const g = BarrasH(k.corpo, {});
     return c => {
-      const val = S.ui.origem === 'valor', m = new Map();
+      const m = new Map();
       for (const b of c.acP) { if (!lojaDe(b)) continue; const o = m.get(b.loja) || { n: 0, v: 0, f: {} }; o.n++; o.v += pagoDe(b) || 0; o.f[b.fmt] = (o.f[b.fmt] || 0) + (val ? pagoDe(b) || 0 : 1); m.set(b.loja, o); }
-      const linhas = [...m].sort((a, z) => (val ? z[1].v - a[1].v : z[1].n - a[1].n)).slice(0, 10).map(([loja, o]) => ({ k: loja, n: loja, segs: Object.keys(FORMATOS).map(f => ({ n: FORMATOS[f].n, cor: FORMATOS[f].cor, v: o.f[f] || 0 })), rodape: `<span>${plural(o.n, 'livro', 'livros')} · ${fBRL(o.v)}${o.n ? ' · média ' + fBRL(o.v / o.n) : ''}</span>` }));
+      const linhas = [...m].sort((a, z) => (val ? z[1].v - a[1].v : z[1].n - a[1].n)).slice(0, 10).map(([loja, o]) => ({ k: loja, n: loja, segs: Object.keys(FORMATOS).map(f => ({ n: FORMATOS[f].n, cor: FORMATOS[f].cor, v: o.f[f] || 0 })), rodape: val ? `<span>${plural(o.n, 'livro', 'livros')} · ${fBRL(o.v)}${o.n ? ' · média ' + fBRL(o.v / o.n) : ''}</span>` : `<span>${plural(o.n, 'livro', 'livros')}</span>` }));
       k.sub.textContent = `${val ? 'Valor pago' : 'Livros'} por loja ou origem · ${c.I.rot}`;
       legendaFixa(k.pe, Object.keys(FORMATOS).filter(f => linhas.some(l => l.segs.some(s => s.n === FORMATOS[f].n && s.v > 0))).map(f => [FORMATOS[f].n, FORMATOS[f].cor]));
       g.atualizar({ linhas, fmt: val ? fBRL0 : fInt, vazio: 'Nenhuma origem registrada neste recorte. Informe a loja ao editar um livro.' });
     };
   } };
 }
-function pLendo() {
-  return { id: 'lendo', w: 'p-5 m-6', tit: 'Na cabeceira', montar(k) {
+function pLendo(w, id) {
+  return { id: id || 'lendo', w: w || 'p-5 m-6', tit: 'Na cabeceira', montar(k) {
     k.corpo.classList.add('lista');
     return c => {
       const lendo = c.ac.filter(b => b.leit === 'lendo').sort((a, z) => (z.prog || 0) - (a.prog || 0)).slice(0, 4);
-      const ult = c.lidosP.filter(b => b.lidoEm != null).sort((a, z) => z.lidoEm - a.lidoEm).slice(0, 5);
+      const ult = c.lidosP.slice().sort((a, z) => (z.lidoEm == null ? -1 : z.lidoEm) - (a.lidoEm == null ? -1 : a.lidoEm) || a._busca.localeCompare(z._busca)).slice(0, 5);   // com data primeiro, da mais recente para trás; depois as sem data
       k.sub.textContent = 'Em leitura agora e últimas leituras concluídas' + (c.I.tudo ? '' : ' ' + c.I.rot);
       let h = '';
       if (lendo.length) h += '<h4 class="li-t">Lendo agora</h4>' + lendo.map(b => linhaLivro(b, '', `<span class="li-prog" title="${b.prog || 0}% lido"><span class="barra"><i style="width:${clamp(b.prog || 0, 0, 100)}%"></i></span><b class="num">${b.prog || 0}%</b></span><span class="fmt so-ic" title="${FORMATOS[b.fmt] ? FORMATOS[b.fmt].n : ''}">${icone(ICONE_FMT[b.fmt] || 'livro', 15)}</span>`)).join('');
-      if (ult.length) h += '<h4 class="li-t">Concluídas</h4>' + ult.map(b => linhaLivro(b, '', `<span class="li-v"><b>${b.nota ? estrelas(b.nota) : '<span class="mudo">sem nota</span>'}</b><span>${fData(b.lidoEm)}</span></span>`)).join('');
-      setHtml(k.corpo, h || vazioHtml('Nada em leitura nem leituras concluídas neste recorte. Abra um livro do acervo e use “Começar a ler”.'));
+      if (ult.length) h += '<h4 class="li-t">Concluídas</h4>' + ult.map(b => linhaLivro(b, '', `<span class="li-v"><b>${b.nota ? estrelas(b.nota) : '<span class="mudo">sem nota</span>'}</b><span>${b.lidoEm != null ? fData(b.lidoEm) : 'sem data'}</span></span>`)).join('');
+      setHtml(k.corpo, h || vazioHtml('Nada em leitura nem leituras concluídas neste recorte. Abra um livro e use “Começar a ler” ou “Já li”.'));
     };
   } };
 }
@@ -2447,8 +2465,8 @@ function pTemas() {
     };
   } };
 }
-function pSugestoes() {
-  return { id: 'sugestoes', w: 'p-4 m-6', tit: 'Sugestões da vez', montar(k) {
+function pSugestoes(w, id) {
+  return { id: id || 'sugestoes', w: w || 'p-4 m-6', tit: 'Sugestões da vez', montar(k) {
     k.tools.innerHTML = `<button type="button" class="btn sm" data-sortear>${icone('sortear', 14)}Sortear</button>`;
     k.tools.addEventListener('click', e => { if (e.target.closest('[data-sortear]')) { S.ui.sorteio = (S.ui.sorteio || 0) + 1; render(); } });
     k.corpo.classList.add('lista');
@@ -2595,20 +2613,27 @@ function selecionarPreco(id) {
 const VIS = {
   geral: {
     kpis: [
-      { k: 'acervo', n: 'Acervo', ic: 'estante', cor: 'var(--c2)' }, { k: 'investido', n: 'Investido', ic: 'carteira', cor: 'var(--c1)' },
-      { k: 'leituras', n: 'Leituras concluídas', ic: 'livro', cor: 'var(--c6)' }, { k: 'cesta', n: 'Cesta de aquisições', ic: 'sacola', cor: 'var(--c1)' },
-      { k: 'oport', n: 'Abaixo do preço-alvo', ic: 'alvo', cor: 'var(--good)' }, { k: 'recs', n: 'Recomendações na fila', ic: 'bussola', cor: 'var(--c4)' },
+      { k: 'acervo', n: 'Acervo', ic: 'estante', cor: 'var(--c2)' }, { k: 'leituras', n: 'Leituras concluídas', ic: 'livro', cor: 'var(--c6)' },
+      { k: 'fila', n: 'Por ler', ic: 'pilha', cor: 'var(--c4)' }, { k: 'recs', n: 'Recomendações na fila', ic: 'bussola', cor: 'var(--c4)' },
     ],
-    valores: c => ({ acervo: K.acervo(c), investido: K.investido(c), leituras: K.leituras(c), cesta: K.cesta(c), oport: K.oport(c), recs: K.recs(c) }),
-    paineis: () => [pEvolucao(), pComposicao(), pAquisicoes(), pCesta('p-6'), pEixos('geral', 'p-7'), pRanking()],
+    valores: c => ({ acervo: K.acervo(c), leituras: K.leituras(c), fila: K.fila(c), recs: K.recs(c) }),
+    paineis: () => [pComposicao(), pEixos('geral', 'p-8'), pLendo('p-6 m-6', 'lendo-geral'), pSugestoes('p-6 m-6', 'sugestoes-geral'), pEvolucao(), pAquisicoes(false, 'p-4 m-6')],
   },
   biblioteca: {
     kpis: [
-      { k: 'acervo', n: 'Livros no acervo', ic: 'estante', cor: 'var(--c2)' }, { k: 'investido', n: 'Investido', ic: 'carteira', cor: 'var(--c1)' },
-      { k: 'leituras', n: 'Leituras concluídas', ic: 'livro', cor: 'var(--c6)' }, { k: 'fila', n: 'Por ler', ic: 'pilha', cor: 'var(--c4)' },
+      { k: 'acervo', n: 'Livros no acervo', ic: 'estante', cor: 'var(--c2)' }, { k: 'leituras', n: 'Leituras concluídas', ic: 'livro', cor: 'var(--c6)' },
+      { k: 'fila', n: 'Por ler', ic: 'pilha', cor: 'var(--c4)' }, { k: 'lendo', n: 'Lendo agora', ic: 'livro', cor: 'var(--c3)' },
     ],
-    valores: c => ({ acervo: K.acervo(c), investido: K.investido(c), leituras: K.leituras(c), fila: K.fila(c) }),
+    valores: c => ({ acervo: K.acervo(c), leituras: K.leituras(c), fila: K.fila(c), lendo: K.lendo(c) }),
     paineis: () => [pAdqLidos(), pStatus(), pLeituras(), pOrigens(), pEixos('acervo', 'p-7'), pLendo()],
+  },
+  financas: {
+    kpis: [
+      { k: 'investido', n: 'Investido', ic: 'carteira', cor: 'var(--c1)' }, { k: 'medio', n: 'Preço médio pago', ic: 'etiqueta', cor: 'var(--c2)' },
+      { k: 'cesta', n: 'Cesta de aquisições', ic: 'sacola', cor: 'var(--c1)' }, { k: 'oport', n: 'Abaixo do preço-alvo', ic: 'alvo', cor: 'var(--good)' },
+    ],
+    valores: c => ({ investido: K.investido(c), medio: K.medio(c), cesta: K.cesta(c), oport: K.oport(c) }),
+    paineis: () => [pEvolucao(true), pAquisicoes(true, 'p-4 m-6'), pOrigens(true), pRanking('p-6 m-6'), pCesta('p-12')],
   },
   recs: {
     kpis: [
@@ -2696,6 +2721,7 @@ const COLS = {
   adq: { n: 'Aquisição', num: true, dica: 'Data em que o livro entrou no acervo', ord: b => adqDe(b), csv: b => iso(adqDe(b)), html: b => (adqDe(b) == null ? mudo : fData(adqDe(b))) },
   add: { n: 'Inclusão', num: true, dica: 'Data em que o livro entrou na lista', ord: b => b.add, csv: b => iso(b.add), html: b => (b.add == null ? mudo : fData(b.add)) },
   origem: { n: 'Origem', ord: b => lojaDe(b) || '', csv: b => lojaDe(b) || '', html: b => (lojaDe(b) ? esc(b.loja) + (b.cond === 'usado' ? '<span class="sub">usado</span>' : '') : mudo) },
+  cond: { n: 'Condição', ord: b => b.cond || '', csv: b => ({ novo: 'Novo', usado: 'Usado', presente: 'Presente' })[b.cond] || '', html: b => ({ novo: 'Novo', usado: 'Usado', presente: 'Presente' })[b.cond] || mudo },
   pago: { n: 'Pago', num: true, ord: b => pagoDe(b), csv: b => numCsv(pagoDe(b)), html: b => (pagoDe(b) == null ? mudo : pagoDe(b) === 0 ? `<span class="mudo">${b.cond === 'presente' ? 'presente' : 'gratuito'}</span>` : fBRL(b.pago)) },
   leit: { n: 'Leitura', ord: b => ORD_LEIT[b.leit], csv: b => (b.leit ? LEITURAS[b.leit].n : ''),
     html: b => (!b.leit ? mudo : `<span class="pill leit-${b.leit}">${LEITURAS[b.leit].n}${b.leit === 'lendo' || b.leit === 'aband' ? ` · ${b.prog || 0}%` : ''}</span>${b.leit === 'lido' && b.lidoEm != null ? `<span class="sub">${fData(b.lidoEm)}</span>` : ''}`) },
@@ -2733,13 +2759,17 @@ const COLS = {
 /* red: colunas de que a tabela abre mão quando aperta (2 sai primeiro, 4 por último); continuam na gaveta e no CSV.
    mob: como cada coluna aparece quando as linhas viram cartões (b = selo no canto, x = oculta, s = largura em sextos). */
 const TABELAS = {
-  geral: { tit: 'Todos os livros', cols: ['titulo', 'autor', 'lista', 'eixo', 'tipo', 'fmt', 'folego', 'extCsv', 'data', 'valor'], ord: 'data', dir: -1, linhas: c => c.acP.concat(c.des, c.recP), mob: { b: 'lista', x: ['tipo', 'folego'], s: { eixo: 4 } }, red: { fmt: 3, tipo: 4 },
+  geral: { tit: 'Todos os livros', cols: ['titulo', 'autor', 'lista', 'eixo', 'tipo', 'fmt', 'folego', 'extCsv', 'leit', 'data'], ord: 'data', dir: -1, linhas: c => c.acP.concat(c.des, c.recP), mob: { b: 'lista', x: ['tipo', 'folego'], s: { eixo: 4 } }, red: { fmt: 3, tipo: 4 },
     abas: [['todos', 'Todos'], ['acervo', 'Acervo', b => b.col === 'acervo'], ['desejo', 'Próximas aquisições', b => b.col === 'desejo'], ['rec', 'Recomendações', b => b.col === 'rec']] },
-  biblioteca: { tit: 'Livros do acervo', cols: ['titulo', 'autor', 'fmt', 'eixo', 'adq', 'origem', 'pago', 'leit', 'nota', 'pg'], ord: 'adq', dir: -1, linhas: c => c.acP, mob: { b: 'leit', x: ['eixo', 'pg'] }, red: { pg: 2, nota: 3, origem: 4 },
+  biblioteca: { tit: 'Livros do acervo', cols: ['titulo', 'autor', 'fmt', 'eixo', 'adq', 'origem', 'leit', 'nota', 'pg'], ord: 'adq', dir: -1, linhas: c => c.acP, mob: { b: 'leit', x: ['eixo', 'pg'] }, red: { pg: 2, nota: 3, origem: 4 },
     abas: [['todos', 'Todos'], ['lendo', 'Lendo', b => b.leit === 'lendo'], ['fila', 'Na fila', b => b.leit === 'fila' || b.leit === ''], ['lido', 'Lidos', b => b.leit === 'lido'], ['aband', 'Abandonados', b => b.leit === 'aband']] },
   recs: { tit: 'Lista de recomendações', cols: ['titulo', 'autor', 'eixo', 'tipo', 'dif', 'ext', 'tags', 'pend', 'add'], ord: 'eixo', dir: 1, linhas: c => c.recP, mob: { x: ['tipo', 'add'], s: { eixo: 4, tags: 4 } }, red: { add: 3, tipo: 4 },
     // as abas temáticas contam só a fila (o que ainda não foi lido), como os indicadores do topo; as lidas têm aba própria
     abas: [['todos', 'Todas'], ['top', 'Prioridades', b => b._top && b.leit !== 'lido'], ['leves', 'Leves e curtas', b => b._d === 1 && b._e === 1 && b.leit !== 'lido'], ['sempt', 'Sem edição em PT', b => b.tags.includes('sem-pt') && b.leit !== 'lido'], ['verif', 'A verificar', b => b.tags.includes('verificar') && b.leit !== 'lido'], ['monit', 'Monitoradas', b => rastreado(b)], ['lidos', 'Já lidas', b => b.leit === 'lido']] },
+  // Finanças: só os livros do acervo com alguma informação de compra (valor ou origem); valores não aparecem nas outras tabelas
+  financas: { tit: 'Compras registradas', cols: ['titulo', 'autor', 'fmt', 'adq', 'origem', 'cond', 'pago'], ord: 'pago', dir: -1, linhas: c => c.acP.filter(b => pagoDe(b) != null || !!lojaDe(b)), mob: { x: ['fmt'] }, red: { fmt: 3, cond: 4 },
+    vazio: 'Nenhuma compra registrada ainda. Para registrar, abra um livro do acervo e use “Editar”: valor pago, loja e data são opcionais — preencha só o que souber.',
+    abas: [['todos', 'Todas'], ['pagas', 'Com valor', b => pagoDe(b) > 0], ['gratis', 'Presentes e gratuitos', b => pagoDe(b) === 0], ['semvalor', 'Sem valor', b => pagoDe(b) == null]] },
   desejos: { tit: 'Lista de próximas aquisições', cols: ['titulo', 'autor', 'prio', 'fmt', 'melhor', 'loja', 'alvo', 'difAlvo', 'min', 'spark', 'sit'], ord: 'difAlvo', dir: 1, linhas: c => c.des, mob: { b: 'sit', x: ['fmt'], s: { min: 4 } }, red: { fmt: 2, spark: 3, min: 4 },
     abas: [['todos', 'Todos'], ['agora', 'Comprar agora', (b, c) => c.px(b).sit === 'agora'], ['quase', 'Quase lá', (b, c) => c.px(b).sit === 'quase'], ['aguardar', 'Aguardar', (b, c) => !['agora', 'quase'].includes(c.px(b).sit)]] },
   precos: { tit: 'Itens acompanhados', cols: ['titulo', 'autor', 'lista', 'melhor', 'loja', 'alvo', 'varP', 'faixa', 'minCsv', 'maxCsv', 'sit', 'ult'], ord: 'varP', dir: 1, linhas: c => c.rast, mob: { b: 'sit', x: ['lista', 'ult'], s: { faixa: 6 } }, red: { lista: 2, ult: 4 },
@@ -2782,7 +2812,7 @@ function Tabela(visao) {
     const fatia = filtradas.slice(st.pag * st.tam, (st.pag + 1) * st.tam);
     setHtml(tbody, fatia.map(b => `<tr data-id="${b.id}" tabindex="0"${mob.b ? ' class="tem-b"' : ''}>${vis.map(x => { const h = x.html(b, ctx); return `<td class="${x.num ? 'num ' : ''}${x.cls || ''}${x.mcls}${h === mudo ? ' vz' : ''}" data-rot="${esc(x.n)}">${h}</td>`; }).join('')}</tr>`).join(''));
     vazio.hidden = total > 0; $('table', k.corpo).style.display = total ? '' : 'none';
-    if (!total) vazio.innerHTML = vazioHtml(base.length ? 'Nenhuma linha combina com a busca ou a aba escolhida.' : ctx.I.tudo ? 'Nenhum livro com os filtros atuais.' : 'Nada neste período com os filtros atuais. Itens sem data só aparecem em “Tudo”.');
+    if (!total) vazio.innerHTML = vazioHtml(base.length ? 'Nenhuma linha combina com a busca ou a aba escolhida.' : cfg.vazio && !nFiltros() ? cfg.vazio : ctx.I.tudo ? 'Nenhum livro com os filtros atuais.' : 'Nada neste período com os filtros atuais. Itens sem data só aparecem em “Tudo”.');
     $$('th', k.corpo).forEach(th => { const on = th.dataset.c === col.id; th.setAttribute('aria-sort', on ? (st.dir > 0 ? 'ascending' : 'descending') : 'none'); th.classList.toggle('ord', on); th.classList.toggle('desc', on && st.dir < 0); });
     ordSel.value = col.id; $('[data-dir]', k.tools).classList.toggle('desc', st.dir < 0);
     $('.tb-info', k.pe).textContent = total ? `${fInt(st.pag * st.tam + 1)}–${fInt(Math.min(total, (st.pag + 1) * st.tam))} de ${plural(total, 'livro', 'livros')}${total !== base.length ? ` (de ${fInt(base.length)} no recorte)` : ''}` : 'Nenhum livro';
@@ -3038,7 +3068,7 @@ function acao(b, a) {
 
 /* ───────── formulário de livro (novo / editar) ───────── */
 function dlgLivro(b) {
-  const novo = !b, o = b || novoLivro({ col: { biblioteca: 'acervo', desejos: 'desejo' }[S.visao] || 'rec', fmt: S.visao === 'recs' || S.visao === 'geral' ? '' : 'fisico', eixo: S.eixos.size === 1 ? [...S.eixos][0] : 5 });
+  const novo = !b, o = b || novoLivro({ col: { biblioteca: 'acervo', financas: 'acervo', desejos: 'desejo' }[S.visao] || 'rec', fmt: S.visao === 'recs' || S.visao === 'geral' ? '' : 'fisico', eixo: S.eixos.size === 1 ? [...S.eixos][0] : 5 });
   const v = x => esc(x ?? ''), outras = o.tags.filter(t => !TAGS_ESTRUTURA.has(t)).join(' ');
   Dlg.abrir({ titulo: novo ? 'Novo livro' : 'Editar livro', largo: true, corpo: `
     <div class="form" id="f-livro">
@@ -3252,12 +3282,10 @@ function montarFiltros() {
   const chips = (grupo, ops) => `<div class="chips" data-grupo="${grupo}">${ops.map(([v, n, d]) => `<button type="button" class="chip" data-v="${v}"${d ? ` title="${d}"` : ''}>${n}</button>`).join('')}</div>`;
   $('#filtros').innerHTML = `
     <div class="f-linha">
-      <div class="f-per">${seg('f-periodo', 'Período', PERIODOS)}<button type="button" class="btn f-cal" id="f-cal" aria-expanded="false" title="Período personalizado">${icone('calendario', 15)}<span id="f-cal-r">Personalizar</span></button></div>
       <button type="button" class="btn f-abrir" id="f-abrir">${icone('filtro', 15)}Filtros<span class="cont" id="f-n" hidden></span></button>
       <div class="f-painel" id="f-painel">
         <div class="f-ph"><b>Filtros</b><button type="button" class="ib" data-fechar-folha aria-label="Fechar filtros">${icone('fechar')}</button></div>
         <div class="f-corpo">
-          <div class="f-g f-custom" id="f-custom" hidden><span class="f-r">Período</span><label><span>de</span><input type="date" id="f-de" aria-label="Data inicial"></label><label><span>até</span><input type="date" id="f-ate" aria-label="Data final"></label></div>
           <div class="f-g" data-g="acervo"><span class="f-r">Acervo</span>${seg('f-acervo', 'Acervo', [['tudo', 'Tudo'], ['fisico', 'Física'], ['virtual', 'Virtual'], ['ambos', 'Nas duas']])}</div>
           <div class="f-g"><span class="f-r">Tipo</span>${seg('f-tipo', 'Tipo', [['', 'Todos'], ['F', 'Ficção'], ['NF', 'Não ficção'], ['HQ', 'HQ'], ['O', 'Outros']])}</div>
           <div class="f-g pop-w" id="pw-eixo"><button type="button" class="btn pop-b" aria-expanded="false" aria-controls="pop-eixo">Eixo<span class="cont" hidden></span>${icone('baixo', 14)}</button>
@@ -3268,7 +3296,10 @@ function montarFiltros() {
               <span class="pop-r">Dificuldade</span>${chips('dif', [1, 2, 3].map(d => [d, NIVEIS[d].n]))}
               <span class="pop-r">Extensão</span>${chips('ext', [1, 2, 3].map(e => [e, EXTENSOES[e].n, EXTENSOES[e].d]))}
               <label class="busca-t pop-q">${icone('busca', 14)}<input type="search" id="f-tagq" placeholder="Procurar marcador" aria-label="Procurar marcador"></label>
-              <div id="f-tags">${GRUPOS_TAG.map(([n, lista]) => `<div class="tg-g"><span class="pop-r">${n}</span>${chips('tags', lista.map(t => [t, maiuscula(rotTag(t)), '#' + t]))}</div>`).join('')}</div></div></div></div>
+              <div id="f-tags">${GRUPOS_TAG.map(([n, lista]) => `<div class="tg-g"><span class="pop-r">${n}</span>${chips('tags', lista.map(t => [t, maiuscula(rotTag(t)), '#' + t]))}</div>`).join('')}</div>
+              <div class="f-per" id="f-per"><span class="pop-r">Período <small>pela data de aquisição ou de leitura</small></span>
+                <div class="f-per-l">${seg('f-periodo', 'Período', PERIODOS).replace('class="seg"', 'class="seg mini"')}<button type="button" class="btn sm f-cal" id="f-cal" aria-expanded="false" title="Período personalizado">${icone('calendario', 14)}<span id="f-cal-r">Personalizar</span></button></div>
+                <div class="f-custom" id="f-custom" hidden><label><span>de</span><input type="date" id="f-de" aria-label="Data inicial"></label><label><span>até</span><input type="date" id="f-ate" aria-label="Data final"></label></div></div></div></div></div>
         </div>
         <div class="f-pf"><button type="button" class="btn" data-limpar="tudo">Limpar tudo</button><button type="button" class="btn pri" data-fechar-folha id="f-ver">Ver resultados</button></div>
       </div>
@@ -3278,7 +3309,7 @@ function montarFiltros() {
   $('#f-periodo').addEventListener('click', e => { const b = e.target.closest('button'); if (!b) return; S.periodo = b.dataset.v; $('#f-custom').hidden = true; filtrosMudaram(); });
   $('#f-cal').addEventListener('click', () => {
     const cx = $('#f-custom'), abrir = cx.hidden;
-    if (abrir) { if (S.de == null || S.ate == null) { const I = intervalo(); S.de = S.periodo === 'tudo' ? DB.hoje - 179 : I.de; S.ate = I.ate; } S.periodo = 'custom'; if (matchMedia('(max-width: 820px)').matches) folha(true, true); }
+    if (abrir) { if (S.de == null || S.ate == null) { const I = intervalo(); S.de = S.periodo === 'tudo' ? DB.hoje - 179 : I.de; S.ate = I.ate; } S.periodo = 'custom'; }
     else if (S.periodo === 'custom') S.periodo = 'tudo';
     cx.hidden = !abrir; filtrosMudaram(); if (abrir) $('#f-de').focus();
   });
@@ -3291,11 +3322,21 @@ function montarFiltros() {
   $('#f-tagq').addEventListener('input', e => { const q = norm(e.target.value.trim()); $$('#f-tags .chip').forEach(c => { c.hidden = !!q && !norm(c.textContent + ' ' + c.dataset.v).includes(q); }); $$('#f-tags .tg-g').forEach(g => { g.hidden = !$$('.chip', g).some(c => !c.hidden); }); });
   F.addEventListener('click', e => {
     const l = e.target.closest('[data-limpar]');
-    if (l) { const x = l.dataset.limpar; if (x === 'eixos') S.eixos.clear(); else if (x === 'mais') { S.dif.clear(); S.ext.clear(); S.tags.clear(); S.top = false; } else { limparFiltros(true); $('#f-custom').hidden = true; } filtrosMudaram(); return; }
+    if (l) { const x = l.dataset.limpar; if (x === 'eixos') S.eixos.clear(); else if (x === 'mais') { S.dif.clear(); S.ext.clear(); S.tags.clear(); S.top = false; S.periodo = 'tudo'; S.de = S.ate = null; $('#f-custom').hidden = true; } else { limparFiltros(true); $('#f-custom').hidden = true; } filtrosMudaram(); return; }
     const r = e.target.closest('[data-rm]');
-    if (r) { const [g, v] = r.dataset.rm.split(':'); if (g === 'acervo') S.acervo = 'tudo'; else if (g === 'tipo') S.tipo = ''; else if (g === 'top') S.top = false; else if (g === 'periodo') { S.periodo = 'tudo'; $('#f-custom').hidden = true; } else if (g === 'tags') S.tags.delete(v); else S[g].delete(+v); filtrosMudaram(); return; }
+    if (r) { const [g, v] = r.dataset.rm.split(':'); if (g === 'acervo') S.acervo = 'tudo'; else if (g === 'tipo') S.tipo = ''; else if (g === 'top') S.top = false; else if (g === 'periodo') { S.periodo = 'tudo'; S.de = S.ate = null; $('#f-custom').hidden = true; } else if (g === 'tags') S.tags.delete(v); else S[g].delete(+v); filtrosMudaram(); return; }
     const pb = e.target.closest('.pop-b');
-    if (pb) { const w = pb.parentElement, abrir = !w.classList.contains('aberto'); fecharPops(); if (abrir) { w.classList.add('aberto'); pb.setAttribute('aria-expanded', 'true'); } return; }
+    if (pb) {
+      const w = pb.parentElement, abrir = !w.classList.contains('aberto'); fecharPops();
+      if (abrir) {
+        w.classList.add('aberto'); pb.setAttribute('aria-expanded', 'true');
+        // o quadro não pode sair da janela pela direita: recua o quanto for preciso (sem passar da borda esquerda da barra)
+        const pop = $('.pop', w); pop.style.left = '';
+        const r = pop.getBoundingClientRect(), sobra = r.right - (document.documentElement.clientWidth - 12);
+        if (sobra > 0) pop.style.left = -Math.min(sobra, Math.max(0, r.left - F.getBoundingClientRect().left - 12)) + 'px';
+      }
+      return;
+    }
     if (e.target.closest('[data-fechar-folha]')) folha(false);
   });
   $('#f-abrir').addEventListener('click', () => folha(true));
@@ -3325,12 +3366,11 @@ function sincronizarFiltros() {
   $$('#pop-eixo .opt').forEach(o => { const inp = $('input', o), e = +inp.value; inp.checked = S.eixos.has(e); $('em', o).textContent = fInt(porEixo.get(e) || 0); });
   $('#f-top').checked = S.top;
   $$('#pop-mais .chip').forEach(c => { const g = c.parentElement.dataset.grupo; c.setAttribute('aria-pressed', String(S[g].has(g === 'tags' ? c.dataset.v : +c.dataset.v))); });
-  const nMais = S.dif.size + S.ext.size + S.tags.size + (S.top ? 1 : 0), cont = (sel, n) => { const el = $(sel); el.hidden = !n; el.textContent = n; };
-  cont('#pw-eixo .cont', S.eixos.size); cont('#pw-mais .cont', nMais); cont('#f-n', nFiltros() + (custom ? 1 : 0));
+  const nMais = S.dif.size + S.ext.size + S.tags.size + (S.top ? 1 : 0) + (S.periodo !== 'tudo' ? 1 : 0), cont = (sel, n) => { const el = $(sel); el.hidden = !n; el.textContent = n; };
+  cont('#pw-eixo .cont', S.eixos.size); cont('#pw-mais .cont', nMais); cont('#f-n', nFiltros());
   $('#pw-eixo').classList.toggle('ativo', S.eixos.size > 0); $('#pw-mais').classList.toggle('ativo', nMais > 0);
   // chips dos filtros ativos
   const ch = [], add = (rm, txt) => ch.push(`<button type="button" class="ativo" data-rm="${esc(rm)}" title="Remover filtro">${esc(txt)}${icone('fechar', 12)}</button>`);
-  if (custom) add('periodo:', `${fData(I.de)} – ${fData(I.ate)}`);
   if (S.acervo !== 'tudo' && S.visao !== 'recs') add('acervo:', ROTULO_ACERVO[S.acervo]);
   if (S.tipo) add('tipo:', { F: 'Ficção', NF: 'Não ficção', HQ: 'HQ', O: 'Poesia e outros' }[S.tipo]);
   for (const e of [...S.eixos].sort((a, z) => a - z)) add('eixos:' + e, EIXOS[e].n);
@@ -3338,6 +3378,7 @@ function sincronizarFiltros() {
   for (const d of S.dif) add('dif:' + d, 'Dificuldade ' + NIVEIS[d].n.toLowerCase());
   for (const e of S.ext) add('ext:' + e, 'Extensão ' + EXTENSOES[e].n.toLowerCase());
   for (const t of S.tags) add('tags:' + t, '#' + rotTag(t));
+  if (S.periodo !== 'tudo') add('periodo:', custom ? `${fData(I.de)} – ${fData(I.ate)}` : 'Período: ' + (PERIODOS.find(([v]) => v === S.periodo) || ['', ''])[1].toLowerCase());
   const el = $('#f-ativos'); el.hidden = !ch.length;
   setHtml(el, ch.length ? `<span class="fa-r">Filtros ativos</span>${ch.join('')}${ch.length > 1 ? '<button type="button" class="lk" data-limpar="tudo">limpar tudo</button>' : ''}` : '');
 }

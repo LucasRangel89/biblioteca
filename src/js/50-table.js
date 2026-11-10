@@ -30,6 +30,7 @@ const COLS = {
   adq: { n: 'Aquisição', num: true, dica: 'Data em que o livro entrou no acervo', ord: b => adqDe(b), csv: b => iso(adqDe(b)), html: b => (adqDe(b) == null ? mudo : fData(adqDe(b))) },
   add: { n: 'Inclusão', num: true, dica: 'Data em que o livro entrou na lista', ord: b => b.add, csv: b => iso(b.add), html: b => (b.add == null ? mudo : fData(b.add)) },
   origem: { n: 'Origem', ord: b => lojaDe(b) || '', csv: b => lojaDe(b) || '', html: b => (lojaDe(b) ? esc(b.loja) + (b.cond === 'usado' ? '<span class="sub">usado</span>' : '') : mudo) },
+  cond: { n: 'Condição', ord: b => b.cond || '', csv: b => ({ novo: 'Novo', usado: 'Usado', presente: 'Presente' })[b.cond] || '', html: b => ({ novo: 'Novo', usado: 'Usado', presente: 'Presente' })[b.cond] || mudo },
   pago: { n: 'Pago', num: true, ord: b => pagoDe(b), csv: b => numCsv(pagoDe(b)), html: b => (pagoDe(b) == null ? mudo : pagoDe(b) === 0 ? `<span class="mudo">${b.cond === 'presente' ? 'presente' : 'gratuito'}</span>` : fBRL(b.pago)) },
   leit: { n: 'Leitura', ord: b => ORD_LEIT[b.leit], csv: b => (b.leit ? LEITURAS[b.leit].n : ''),
     html: b => (!b.leit ? mudo : `<span class="pill leit-${b.leit}">${LEITURAS[b.leit].n}${b.leit === 'lendo' || b.leit === 'aband' ? ` · ${b.prog || 0}%` : ''}</span>${b.leit === 'lido' && b.lidoEm != null ? `<span class="sub">${fData(b.lidoEm)}</span>` : ''}`) },
@@ -67,13 +68,17 @@ const COLS = {
 /* red: colunas de que a tabela abre mão quando aperta (2 sai primeiro, 4 por último); continuam na gaveta e no CSV.
    mob: como cada coluna aparece quando as linhas viram cartões (b = selo no canto, x = oculta, s = largura em sextos). */
 const TABELAS = {
-  geral: { tit: 'Todos os livros', cols: ['titulo', 'autor', 'lista', 'eixo', 'tipo', 'fmt', 'folego', 'extCsv', 'data', 'valor'], ord: 'data', dir: -1, linhas: c => c.acP.concat(c.des, c.recP), mob: { b: 'lista', x: ['tipo', 'folego'], s: { eixo: 4 } }, red: { fmt: 3, tipo: 4 },
+  geral: { tit: 'Todos os livros', cols: ['titulo', 'autor', 'lista', 'eixo', 'tipo', 'fmt', 'folego', 'extCsv', 'leit', 'data'], ord: 'data', dir: -1, linhas: c => c.acP.concat(c.des, c.recP), mob: { b: 'lista', x: ['tipo', 'folego'], s: { eixo: 4 } }, red: { fmt: 3, tipo: 4 },
     abas: [['todos', 'Todos'], ['acervo', 'Acervo', b => b.col === 'acervo'], ['desejo', 'Próximas aquisições', b => b.col === 'desejo'], ['rec', 'Recomendações', b => b.col === 'rec']] },
-  biblioteca: { tit: 'Livros do acervo', cols: ['titulo', 'autor', 'fmt', 'eixo', 'adq', 'origem', 'pago', 'leit', 'nota', 'pg'], ord: 'adq', dir: -1, linhas: c => c.acP, mob: { b: 'leit', x: ['eixo', 'pg'] }, red: { pg: 2, nota: 3, origem: 4 },
+  biblioteca: { tit: 'Livros do acervo', cols: ['titulo', 'autor', 'fmt', 'eixo', 'adq', 'origem', 'leit', 'nota', 'pg'], ord: 'adq', dir: -1, linhas: c => c.acP, mob: { b: 'leit', x: ['eixo', 'pg'] }, red: { pg: 2, nota: 3, origem: 4 },
     abas: [['todos', 'Todos'], ['lendo', 'Lendo', b => b.leit === 'lendo'], ['fila', 'Na fila', b => b.leit === 'fila' || b.leit === ''], ['lido', 'Lidos', b => b.leit === 'lido'], ['aband', 'Abandonados', b => b.leit === 'aband']] },
   recs: { tit: 'Lista de recomendações', cols: ['titulo', 'autor', 'eixo', 'tipo', 'dif', 'ext', 'tags', 'pend', 'add'], ord: 'eixo', dir: 1, linhas: c => c.recP, mob: { x: ['tipo', 'add'], s: { eixo: 4, tags: 4 } }, red: { add: 3, tipo: 4 },
     // as abas temáticas contam só a fila (o que ainda não foi lido), como os indicadores do topo; as lidas têm aba própria
     abas: [['todos', 'Todas'], ['top', 'Prioridades', b => b._top && b.leit !== 'lido'], ['leves', 'Leves e curtas', b => b._d === 1 && b._e === 1 && b.leit !== 'lido'], ['sempt', 'Sem edição em PT', b => b.tags.includes('sem-pt') && b.leit !== 'lido'], ['verif', 'A verificar', b => b.tags.includes('verificar') && b.leit !== 'lido'], ['monit', 'Monitoradas', b => rastreado(b)], ['lidos', 'Já lidas', b => b.leit === 'lido']] },
+  // Finanças: só os livros do acervo com alguma informação de compra (valor ou origem); valores não aparecem nas outras tabelas
+  financas: { tit: 'Compras registradas', cols: ['titulo', 'autor', 'fmt', 'adq', 'origem', 'cond', 'pago'], ord: 'pago', dir: -1, linhas: c => c.acP.filter(b => pagoDe(b) != null || !!lojaDe(b)), mob: { x: ['fmt'] }, red: { fmt: 3, cond: 4 },
+    vazio: 'Nenhuma compra registrada ainda. Para registrar, abra um livro do acervo e use “Editar”: valor pago, loja e data são opcionais — preencha só o que souber.',
+    abas: [['todos', 'Todas'], ['pagas', 'Com valor', b => pagoDe(b) > 0], ['gratis', 'Presentes e gratuitos', b => pagoDe(b) === 0], ['semvalor', 'Sem valor', b => pagoDe(b) == null]] },
   desejos: { tit: 'Lista de próximas aquisições', cols: ['titulo', 'autor', 'prio', 'fmt', 'melhor', 'loja', 'alvo', 'difAlvo', 'min', 'spark', 'sit'], ord: 'difAlvo', dir: 1, linhas: c => c.des, mob: { b: 'sit', x: ['fmt'], s: { min: 4 } }, red: { fmt: 2, spark: 3, min: 4 },
     abas: [['todos', 'Todos'], ['agora', 'Comprar agora', (b, c) => c.px(b).sit === 'agora'], ['quase', 'Quase lá', (b, c) => c.px(b).sit === 'quase'], ['aguardar', 'Aguardar', (b, c) => !['agora', 'quase'].includes(c.px(b).sit)]] },
   precos: { tit: 'Itens acompanhados', cols: ['titulo', 'autor', 'lista', 'melhor', 'loja', 'alvo', 'varP', 'faixa', 'minCsv', 'maxCsv', 'sit', 'ult'], ord: 'varP', dir: 1, linhas: c => c.rast, mob: { b: 'sit', x: ['lista', 'ult'], s: { faixa: 6 } }, red: { lista: 2, ult: 4 },
@@ -116,7 +121,7 @@ function Tabela(visao) {
     const fatia = filtradas.slice(st.pag * st.tam, (st.pag + 1) * st.tam);
     setHtml(tbody, fatia.map(b => `<tr data-id="${b.id}" tabindex="0"${mob.b ? ' class="tem-b"' : ''}>${vis.map(x => { const h = x.html(b, ctx); return `<td class="${x.num ? 'num ' : ''}${x.cls || ''}${x.mcls}${h === mudo ? ' vz' : ''}" data-rot="${esc(x.n)}">${h}</td>`; }).join('')}</tr>`).join(''));
     vazio.hidden = total > 0; $('table', k.corpo).style.display = total ? '' : 'none';
-    if (!total) vazio.innerHTML = vazioHtml(base.length ? 'Nenhuma linha combina com a busca ou a aba escolhida.' : ctx.I.tudo ? 'Nenhum livro com os filtros atuais.' : 'Nada neste período com os filtros atuais. Itens sem data só aparecem em “Tudo”.');
+    if (!total) vazio.innerHTML = vazioHtml(base.length ? 'Nenhuma linha combina com a busca ou a aba escolhida.' : cfg.vazio && !nFiltros() ? cfg.vazio : ctx.I.tudo ? 'Nenhum livro com os filtros atuais.' : 'Nada neste período com os filtros atuais. Itens sem data só aparecem em “Tudo”.');
     $$('th', k.corpo).forEach(th => { const on = th.dataset.c === col.id; th.setAttribute('aria-sort', on ? (st.dir > 0 ? 'ascending' : 'descending') : 'none'); th.classList.toggle('ord', on); th.classList.toggle('desc', on && st.dir < 0); });
     ordSel.value = col.id; $('[data-dir]', k.tools).classList.toggle('desc', st.dir < 0);
     $('.tb-info', k.pe).textContent = total ? `${fInt(st.pag * st.tam + 1)}–${fInt(Math.min(total, (st.pag + 1) * st.tam))} de ${plural(total, 'livro', 'livros')}${total !== base.length ? ` (de ${fInt(base.length)} no recorte)` : ''}` : 'Nenhum livro';

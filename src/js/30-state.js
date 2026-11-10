@@ -49,9 +49,11 @@ const icone = (n, t = 18) => `<svg class="ic" width="${t}" height="${t}" viewBox
 const ICONE_FMT = { fisico: 'livro', ebook: 'tablet', audio: 'fone' };
 
 const VISOES = {
-  geral: { n: 'Visão geral', c: 'Geral', d: 'Panorama da biblioteca, das listas e dos preços', ic: 'painel' },
-  biblioteca: { n: 'Biblioteca', c: 'Biblioteca', d: 'Estante física e biblioteca virtual, leituras e investimento', ic: 'estante' },
+  geral: { n: 'Visão geral', c: 'Geral', d: 'Panorama da biblioteca, das leituras e das recomendações', ic: 'painel' },
+  biblioteca: { n: 'Biblioteca', c: 'Biblioteca', d: 'Estante física e biblioteca virtual, e as suas leituras', ic: 'estante' },
   recs: { n: 'Recomendações', c: 'Recomend.', d: 'O catálogo de leituras sugeridas, por eixo, tema e fôlego', ic: 'bussola' },
+  // tudo o que é dinheiro mora daqui para baixo: nada de valores na Visão geral nem na Biblioteca
+  financas: { n: 'Finanças', c: 'Finanças', d: 'Quanto foi investido, onde, e o custo da lista de compra', ic: 'carteira' },
   desejos: { n: 'Próximas aquisições', c: 'Aquisições', d: 'Lista de compra com prioridade, preço-alvo e melhor oferta', ic: 'sacola' },
   precos: { n: 'Preços', c: 'Preços', d: 'Histórico de cotações por loja, alertas e variações', ic: 'etiqueta' },
 };
@@ -71,9 +73,9 @@ const S = {
   tipo: '', eixos: new Set(), dif: new Set(), ext: new Set(), tags: new Set(), top: false,
   tema: '', ocultar: false, avisoVisto: false, sel: '',
   tab: {},
-  ui: { compor: 'fmt', evo: 'qtd', aq: 'qtd', origem: 'qtd', temas: 1, prio: 'valor', sorteio: 0 },
+  ui: { compor: 'fmt', temas: 1, prio: 'valor', sorteio: 0 },
 };
-const nFiltros = () => (S.acervo !== 'tudo' && S.visao !== 'recs' ? 1 : 0) + (S.tipo ? 1 : 0) + S.eixos.size + S.dif.size + S.ext.size + S.tags.size + (S.top ? 1 : 0);
+const nFiltros = () => (S.acervo !== 'tudo' && S.visao !== 'recs' ? 1 : 0) + (S.tipo ? 1 : 0) + S.eixos.size + S.dif.size + S.ext.size + S.tags.size + (S.top ? 1 : 0) + (S.periodo !== 'tudo' ? 1 : 0);
 function limparFiltros(tambemPeriodo) {
   S.acervo = 'tudo'; S.tipo = ''; S.eixos.clear(); S.dif.clear(); S.ext.clear(); S.tags.clear(); S.top = false;
   if (tambemPeriodo) { S.periodo = 'tudo'; S.de = S.ate = null; }

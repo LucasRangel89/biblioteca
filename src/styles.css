@@ -113,7 +113,15 @@ kbd { font: 600 11px/1 var(--sans); padding: 3px 6px; border-radius: 5px; border
 /* ───────────── filtros ───────────── */
 .filtros { position: sticky; top: 0; z-index: 20; padding: 10px var(--pad); background: color-mix(in srgb, var(--bg) 86%, transparent); -webkit-backdrop-filter: blur(12px) saturate(1.2); backdrop-filter: blur(12px) saturate(1.2); border-bottom: 1px solid color-mix(in srgb, var(--line) 70%, transparent); }
 .f-linha { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
-.f-per { display: flex; align-items: center; gap: 8px; min-width: 0; }
+/* período: fica no fim de "Mais filtros" — filtra pela data de aquisição ou de leitura, e quase nenhum livro tem data */
+.f-per { margin-top: 6px; border-top: 1px solid var(--line); }
+.f-per .pop-r small { text-transform: none; letter-spacing: 0; font-weight: 500; }
+.f-per-l { display: flex; flex-wrap: wrap; align-items: center; gap: 6px; padding: 0 8px 4px; }
+.f-per-l .seg { flex-wrap: wrap; }
+.f-per-l .seg.mini button { height: 26px; padding: 0 9px; font-size: 12.5px; }
+.f-per-l .f-cal { height: 30px; }
+.f-custom { display: flex; flex-wrap: wrap; align-items: center; gap: 8px 12px; padding: 6px 8px 4px; }
+.f-custom[hidden] { display: none; }
 .f-painel { display: contents; }
 .f-corpo { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
 .f-ph, .f-pf, .f-abrir { display: none; }
@@ -628,8 +636,8 @@ td.c-spark svg { margin-left: auto; margin-right: auto; }
   html { scroll-padding-top: 64px; }
   .app { grid-template-columns: minmax(0, 1fr); padding-bottom: calc(62px + env(safe-area-inset-bottom)); }
   .lateral { display: none; }
-  .inferior { display: grid; grid-template-columns: repeat(5, 1fr); position: fixed; left: 0; right: 0; bottom: 0; z-index: 40; background: color-mix(in srgb, var(--surface) 94%, transparent); -webkit-backdrop-filter: blur(14px); backdrop-filter: blur(14px); border-top: 1px solid var(--line); padding: 5px 4px calc(5px + env(safe-area-inset-bottom)); }
-  .inferior button { display: flex; flex-direction: column; align-items: center; gap: 3px; padding: 6px 2px 5px; border-radius: 10px; color: var(--ink-3); font-size: 10.5px; font-weight: 600; min-width: 0; }
+  .inferior { display: grid; grid-template-columns: repeat(6, minmax(0, 1fr)); position: fixed; left: 0; right: 0; bottom: 0; z-index: 40; background: color-mix(in srgb, var(--surface) 94%, transparent); -webkit-backdrop-filter: blur(14px); backdrop-filter: blur(14px); border-top: 1px solid var(--line); padding: 5px 4px calc(5px + env(safe-area-inset-bottom)); }
+  .inferior button { display: flex; flex-direction: column; align-items: center; gap: 3px; padding: 6px 1px 5px; border-radius: 10px; color: var(--ink-3); font-size: 10px; font-weight: 600; letter-spacing: -.01em; min-width: 0; }   /* seis guias: 10px cabem em 360 px sem cortar nenhum nome */
   .inferior .nv-l { display: none; }
   .inferior .nv-c { display: block; max-width: 100%; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
   .inferior button[aria-current] { color: var(--accent-forte); background: var(--accent-soft); }
@@ -643,11 +651,13 @@ td.c-spark svg { margin-left: auto; margin-right: auto; }
   /* sem desfoque aqui: backdrop-filter prenderia a folha de filtros (position: fixed) dentro da barra */
   .filtros { padding: 8px var(--pad); background: var(--bg); -webkit-backdrop-filter: none; backdrop-filter: none; }
   .f-linha { flex-wrap: nowrap; }
-  .f-per { flex: 1; overflow-x: auto; scrollbar-width: none; margin: 0 -4px; padding: 0 22px 0 4px; -webkit-mask-image: linear-gradient(90deg, #000 calc(100% - 26px), transparent); mask-image: linear-gradient(90deg, #000 calc(100% - 26px), transparent); }
-  .f-per::-webkit-scrollbar { display: none; }
-  .f-cal span { display: none; }
-  .f-cal { width: 36px; padding: 0; flex: none; }
   .f-abrir { display: inline-flex; flex: none; }
+  .f-per { margin: 10px 8px 0; padding-top: 2px; }
+  .f-per .pop-r { padding-left: 0; }
+  .f-per-l, .f-custom { padding-left: 0; padding-right: 0; }
+  .f-g .f-per-l .seg { display: inline-flex; }
+  .f-g .f-per-l .seg.mini button { flex: none; height: 32px; padding: 0 10px; }
+  .f-per-l .f-cal { height: 36px; }
   .f-painel { display: none; position: fixed; left: 0; right: 0; bottom: 0; z-index: 80; max-height: 86dvh; flex-direction: column; background: var(--surface); border-radius: 18px 18px 0 0; border: 1px solid var(--line); box-shadow: var(--sombra-2); }
   .filtros.folha { z-index: 85; }
   .filtros.folha::before { content: ""; position: fixed; inset: 0; background: var(--veu); z-index: 79; }
@@ -660,8 +670,6 @@ td.c-spark svg { margin-left: auto; margin-right: auto; }
   .f-g { flex-direction: column; align-items: stretch; gap: 7px; }
   .f-g .seg { display: flex; }
   .f-g .seg button { flex: 1; height: 34px; padding: 0 6px; }   /* cinco opções no Tipo: com 11px de respiro, "Outros" saía da folha em telas de 320 px */
-  .f-custom { flex-direction: row; flex-wrap: wrap; align-items: center; }
-  .f-custom .f-r { width: 100%; }
   .f-custom label { flex: 1; }
   .f-custom input { flex: 1; width: 100%; }
   .pop-b { display: none; }
@@ -726,7 +734,7 @@ td.c-spark svg { margin-left: auto; margin-right: auto; }
 @media (max-width: 520px) { .card-tab .busca-t { flex: 1 1 100%; } }
 /* telefones estreitos (360px e menos): o título diminui; nos de 320px, o botão de ocultar valores cede o lugar a ele */
 @media (max-width: 380px) { .topo h1 { font-size: 16px; } }
-@media (max-width: 340px) { #b-olho { display: none; } .inferior { padding-left: 2px; padding-right: 2px; } .inferior button { font-size: 9.5px; letter-spacing: -.01em; padding-left: 0; padding-right: 0; } }
+@media (max-width: 340px) { #b-olho { display: none; } .inferior { padding-left: 2px; padding-right: 2px; } .inferior button { font-size: 9px; letter-spacing: -.02em; padding-left: 0; padding-right: 0; } }
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after { animation-duration: .001s !important; transition-duration: .001s !important; scroll-behavior: auto !important; }
 }

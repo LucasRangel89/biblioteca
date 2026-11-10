@@ -227,7 +227,7 @@ function acao(b, a) {
 
 /* ───────── formulário de livro (novo / editar) ───────── */
 function dlgLivro(b) {
-  const novo = !b, o = b || novoLivro({ col: { biblioteca: 'acervo', desejos: 'desejo' }[S.visao] || 'rec', fmt: S.visao === 'recs' || S.visao === 'geral' ? '' : 'fisico', eixo: S.eixos.size === 1 ? [...S.eixos][0] : 5 });
+  const novo = !b, o = b || novoLivro({ col: { biblioteca: 'acervo', financas: 'acervo', desejos: 'desejo' }[S.visao] || 'rec', fmt: S.visao === 'recs' || S.visao === 'geral' ? '' : 'fisico', eixo: S.eixos.size === 1 ? [...S.eixos][0] : 5 });
   const v = x => esc(x ?? ''), outras = o.tags.filter(t => !TAGS_ESTRUTURA.has(t)).join(' ');
   Dlg.abrir({ titulo: novo ? 'Novo livro' : 'Editar livro', largo: true, corpo: `
     <div class="form" id="f-livro">
