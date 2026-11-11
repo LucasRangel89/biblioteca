@@ -44,6 +44,10 @@ const IC = {
   pilha: '<path d="m12 2 10 5-10 5L2 7z"/><path d="m2 12 10 5 10-5"/><path d="m2 17 10 5 10-5"/>',
   alvo: '<circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2"/>',
   desfazer: '<path d="M3 7v6h6"/><path d="M21 17a9 9 0 0 0-9-9 9 9 0 0 0-6 2.3L3 13"/>',
+  clipe: '<path d="m21.44 11.05-9.19 9.19a6 6 0 0 1-8.49-8.49l8.57-8.57A4 4 0 1 1 18 8.84l-8.59 8.57a2 2 0 0 1-2.83-2.83l8.49-8.48"/>',
+  imagem: '<rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="9" cy="9" r="2"/><path d="m21 15-3.1-3.1a2 2 0 0 0-2.8 0L6 21"/>',
+  nota: '<path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>',
+  rota: '<circle cx="6" cy="19" r="3"/><path d="M9 19h8.5a3.5 3.5 0 0 0 0-7h-11a3.5 3.5 0 0 1 0-7H15"/><circle cx="18" cy="5" r="3"/>',
 };
 const icone = (n, t = 18) => `<svg class="ic" width="${t}" height="${t}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${IC[n] || ''}</svg>`;
 const ICONE_FMT = { fisico: 'livro', ebook: 'tablet', audio: 'fone' };
@@ -73,7 +77,7 @@ const S = {
   tipo: '', eixos: new Set(), dif: new Set(), ext: new Set(), tags: new Set(), top: false,
   tema: '', ocultar: false, avisoVisto: false, saiu: 0, capas: true, sel: '',
   tab: {},
-  ui: { compor: 'fmt', temas: 1, prio: 'valor', sorteio: 0 },
+  ui: { compor: 'fmt', temas: 1, prio: 'valor', sorteio: 0, trilhas: 'ordem' },
 };
 const nFiltros = () => (S.acervo !== 'tudo' && S.visao !== 'recs' ? 1 : 0) + (S.tipo ? 1 : 0) + S.eixos.size + S.dif.size + S.ext.size + S.tags.size + (S.top ? 1 : 0) + (S.periodo !== 'tudo' ? 1 : 0);
 function limparFiltros(tambemPeriodo) {
@@ -167,7 +171,64 @@ function contexto() {
     return r;
   };
   c.cestaEm = d => soma(c.des, b => (b.px ? precoBase(b, d) || 0 : 0));
+  // trilhas e ordem de compra olham a biblioteca inteira (os filtros não mudam o que falta de uma trilha); só são calculadas se alguém pedir
+  let TR, OC;
+  Object.defineProperty(c, 'trilhas', { get: () => TR || (TR = estadoTrilhas()) });
+  Object.defineProperty(c, 'compra', { get: () => OC || (OC = ordemDeCompra(c.trilhas)) });
   return c;
+}
+
+/* ───────── trilhas de leitura ─────────
+   Para cada trilha: os livros (na ordem da lista; quem ganhou o marcador no painel entra no fim), quantos estão no acervo,
+   quantos foram lidos e quais ainda faltam — isto é, nem estão no acervo nem foram lidos (um livro lido emprestado não falta). */
+function estadoTrilhas() {
+  const porTag = new Map(TRILHAS.map(t => [t.tag, []]));
+  for (const b of DB.livros) for (const tg of b.tags) { const l = porTag.get(tg); if (l) l.push(b); }
+  return TRILHAS.map(t => {
+    const pos = new Map(t.linhas.map((k, i) => [k, i])), ord = b => (pos.has(b.o) ? pos.get(b.o) : 1e6);
+    const livros = porTag.get(t.tag).sort((a, z) => ord(a) - ord(z) || a.t.localeCompare(z.t, 'pt-BR'));
+    return { t, livros, n: livros.length, tenho: livros.filter(b => b.col === 'acervo').length, lidos: livros.filter(b => b.leit === 'lido').length, faltam: livros.filter(b => b.col !== 'acervo' && b.leit !== 'lido') };
+  });
+}
+
+/* ───────── ordem de compra das recomendações ─────────
+   Uma sugestão de por onde começar — não uma regra. Cada recomendação que ainda não está no acervo, nem na lista de compra,
+   nem foi lida recebe pontos pelo que o catálogo e o painel sabem dela; quem tem mais pontos vem antes. Os motivos aparecem
+   ao lado do livro, para a ordem poder ser conferida (e contestada). Nada aqui olha preço: o painel não consulta as lojas.
+     · prioridade sua (#top) ............................................. 40
+     · está numa trilha de leitura ....................................... 8 a 30, conforme o quanto da trilha já está feito
+       (em casa ou lido); +15 se é o único livro que falta, +8 se faltam dois; +4 por trilha a mais
+     · porta de entrada de uma área (#papel-porta-de-entrada) ............ 12
+     · leitura-relâmpago (#papel-leitura-relampago) ...................... 6
+     · leitura leve (d1) 6, média (d2) 3 · curta (e1) 6, média (e2) 3
+     · sem edição em português (#sem-pt) ................................. −15
+     · dados a conferir (#verificar) ..................................... −10                                            */
+function ordemDeCompra(trilhas) {
+  const daTrilha = new Map(trilhas.map(x => [x.t.tag, x])), lista = [];
+  for (const b of DB.livros) {
+    if (b.col !== 'rec' || b.leit === 'lido') continue;
+    let pts = 0; const motivos = [], curtos = [];
+    const soma1 = (n, longo, curto) => { pts += n; if (longo) { motivos.push(longo); curtos.push(curto || longo); } };
+    if (b._top) soma1(40, 'prioridade sua (#top)', 'prioridade sua');
+    const ts = b.tags.map(t => daTrilha.get(t)).filter(Boolean).map(x => ({ x, falta: x.faltam.length, feito: x.n ? (x.n - x.faltam.length) / x.n : 0 })).sort((a, z) => z.feito - a.feito || a.falta - z.falta);
+    if (ts.length) {
+      const { x, falta, feito } = ts[0];
+      soma1(8 + Math.round(22 * feito) + (falta === 1 ? 15 : falta === 2 ? 8 : 0) + 4 * (ts.length - 1),
+        (falta === 1 ? `é o que falta para fechar a trilha “${x.t.curto}”` : `trilha “${x.t.curto}”: faltam ${falta} de ${x.n}`) + (ts.length > 1 ? ` (e mais ${ts.length - 1 === 1 ? 'uma trilha' : (ts.length - 1) + ' trilhas'})` : ''),
+        falta === 1 ? 'fecha uma trilha' : ts.length > 1 ? `${ts.length} trilhas` : 'trilha');
+    }
+    if (b.tags.includes('papel-porta-de-entrada')) soma1(12, 'porta de entrada da área');
+    if (b.tags.includes('papel-leitura-relampago')) soma1(6, 'leitura-relâmpago');
+    pts += (b._d === 1 ? 6 : b._d === 2 ? 3 : 0) + (b._e === 1 ? 6 : b._e === 2 ? 3 : 0);
+    if (b._d === 1 && b._e === 1) { if (!b.tags.includes('papel-leitura-relampago')) soma1(0, 'leve e curta'); }
+    else if (b._d === 1) soma1(0, 'leitura leve', 'leve'); else if (b._e === 1) soma1(0, 'curta');
+    if (b.tags.includes('sem-pt')) soma1(-15, 'sem edição em português', 'sem edição PT');
+    if (b.tags.includes('verificar')) soma1(-10, 'dados a conferir');
+    lista.push({ b, pts, motivos, curtos });
+  }
+  lista.sort((a, z) => z.pts - a.pts || (a.b._d || 9) - (z.b._d || 9) || (a.b._e || 9) - (z.b._e || 9) || a.b._busca.localeCompare(z.b._busca));
+  const de = new Map(); lista.forEach((o, i) => { o.pos = i + 1; de.set(o.b.id, o); });
+  return { lista, de, total: lista.length };
 }
 
 /* agregações por período */

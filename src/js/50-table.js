@@ -9,13 +9,15 @@ function tituloTop(b) {
   const i = b.t.lastIndexOf(' '), est = `<i class="top" title="Prioridade (#top)">${icone('estrela', 12)}</i>`;
   return `${i > 0 ? esc(b.t.slice(0, i)) + ' ' : ''}<span class="nq">${esc(b.t.slice(i + 1))}${est}</span>`;
 }
-const tagsTema = b => b.tags.filter(t => !TAGS_ESTRUTURA.has(t) && t !== 'verificar' && t !== 'sem-pt');
+// temas de um livro: ficam de fora os marcadores de estrutura, as pendências, as camadas curatoriais (têm lugar próprio na ficha) e as marcas do usuário
+const tagsTema = b => b.tags.filter(t => !TAGS_ESTRUTURA.has(t) && t !== 'verificar' && t !== 'sem-pt' && t !== TAG_ANALISE && !ehCamada(t));
+const notaHtml = b => (temAnotacao(b) ? `<i class="tem-nota" title="${b.tags.includes(TAG_ANALISE) ? 'Possui análise' : 'Tem anotações suas'}">${icone(b.tags.includes(TAG_ANALISE) ? 'clipe' : 'nota', 12)}</i>` : '');
 const ultCotacao = b => { let u = null; if (b.px) for (const f in b.px) { const p = b.px[f]; if (p.length && (u == null || p[p.length - 1][0] > u)) u = p[p.length - 1][0]; } return u; };
 const ORD_LEIT = { lendo: 0, fila: 1, lido: 2, aband: 3, '': 4 }, ORD_SIT = { agora: 0, quase: 1, aguardar: 2, semalvo: 3, sem: 4 }, ORD_COL = { acervo: 0, desejo: 1, rec: 2 };
 
 const COLS = {
   titulo: { n: 'Título', cls: 'c-tit', ord: b => norm(b.t), csv: b => b.t,
-    html: b => `<span class="tt-c">${capaHtml(b)}<span class="tt" title="${esc(b.t)}"><b>${tituloTop(b)}</b><span>${esc(b.a || 'Autor não informado')}</span></span></span>` },
+    html: b => `<span class="tt-c">${capaHtml(b)}<span class="tt" title="${esc(b.t)}"><b>${tituloTop(b)}</b><span>${esc(b.a || 'Autor não informado')}${notaHtml(b)}</span></span></span>` },
   autor: { n: 'Autor', oculto: true, csv: b => b.a },
   lista: { n: 'Lista', ord: b => ORD_COL[b.col], csv: b => COLECOES[b.col].n, html: b => `<span class="pill col-${b.col}">${COLECOES[b.col].n}</span>` },
   eixo: { n: 'Eixo', cls: 'c-eixo', ord: b => b.eixo, csv: b => (EIXOS[b.eixo] ? EIXOS[b.eixo].n : ''), html: b => (EIXOS[b.eixo] ? esc(EIXOS[b.eixo].n) : mudo) },
@@ -43,6 +45,14 @@ const COLS = {
       return t.length > 2 ? `${v.slice(0, -1).map(chip).join('')}<span class="nq">${chip(v[v.length - 1])}<span class="tag mais" title="${esc(t.slice(2).map(rotTag).join(', '))}">+${t.length - 2}</span></span>` : v.map(chip).join('');
     } },
   pend: { n: 'Pendência', oculto: true, csv: b => ['sem-pt', 'verificar'].filter(t => b.tags.includes(t)).map(rotTag).join(', ') },
+  camadas: { n: 'Camadas e trilhas', oculto: true, csv: b => b.tags.filter(ehCamada).map(rotTag).join(', ') },
+  analise: { n: 'Possui análise', oculto: true, csv: b => (b.tags.includes(TAG_ANALISE) ? 'sim' : '') },
+  coment: { n: 'Comentários', oculto: true, csv: b => b.com || '' },
+  // ordem de compra sugerida (ver ordemDeCompra): posição entre as recomendações que ainda não tenho, com o motivo resumido
+  compra: { n: 'Ordem de compra', cls: 'c-oc', dica: 'Ordem de compra sugerida entre as recomendações que ainda não tenho', ord: (b, c) => { const o = c.compra.de.get(b.id); return o ? o.pos : null; },
+    csv: (b, c) => { const o = c.compra.de.get(b.id); return o ? o.pos : ''; },
+    html: (b, c) => { const o = c.compra.de.get(b.id); return o ? `<b class="num">${o.pos}º</b><span class="sub" title="${esc(o.motivos.join(' · '))}">${esc(o.curtos.slice(0, 2).join(' · ') || '—')}</span>` : mudo; } },
+  motivos: { n: 'Motivos da ordem', oculto: true, csv: (b, c) => { const o = c.compra.de.get(b.id); return o ? o.motivos.join(' · ') : ''; } },
   prio: { n: 'Prioridade', ord: b => b.prio || 9, csv: b => PRIORIDADES[b.prio || 0].n, html: b => `<span class="prio p${b.prio || 0}"><i></i>${PRIORIDADES[b.prio || 0].n}</span>` },
   melhor: { n: 'Melhor preço', num: true, ord: (b, c) => (c.px(b).hoje ? c.px(b).hoje.p : null), csv: (b, c) => numCsv(c.px(b).hoje ? c.px(b).hoje.p : null),
     html: (b, c) => { const h = c.px(b).hoje; return h ? `<b class="num">${fBRL(h.p)}</b><span class="sub">${esc(h.f)}</span>` : mudo; } },
@@ -68,11 +78,11 @@ const COLS = {
 /* red: colunas de que a tabela abre mão quando aperta (2 sai primeiro, 4 por último); continuam na gaveta e no CSV.
    mob: como cada coluna aparece quando as linhas viram cartões (b = selo no canto, x = oculta, s = largura em sextos). */
 const TABELAS = {
-  geral: { tit: 'Todos os livros', cols: ['titulo', 'autor', 'lista', 'eixo', 'tipo', 'fmt', 'folego', 'extCsv', 'leit', 'data'], ord: 'data', dir: -1, linhas: c => c.acP.concat(c.des, c.recP), mob: { b: 'lista', x: ['tipo', 'folego'], s: { eixo: 4 } }, red: { fmt: 3, tipo: 4 },
-    abas: [['todos', 'Todos'], ['acervo', 'Acervo', b => b.col === 'acervo'], ['desejo', 'Próximas aquisições', b => b.col === 'desejo'], ['rec', 'Recomendações', b => b.col === 'rec'], ['meus', 'Editados por você', b => !!b.u]] },
-  biblioteca: { tit: 'Livros do acervo', cols: ['titulo', 'autor', 'fmt', 'eixo', 'adq', 'origem', 'leit', 'nota', 'pg'], ord: 'adq', dir: -1, linhas: c => c.acP, mob: { b: 'leit', x: ['eixo', 'pg'] }, red: { pg: 2, nota: 3, origem: 4 },
-    abas: [['todos', 'Todos'], ['lendo', 'Lendo', b => b.leit === 'lendo'], ['fila', 'Na fila', b => b.leit === 'fila' || b.leit === ''], ['lido', 'Lidos', b => b.leit === 'lido'], ['aband', 'Abandonados', b => b.leit === 'aband']] },
-  recs: { tit: 'Lista de recomendações', cols: ['titulo', 'autor', 'eixo', 'tipo', 'dif', 'ext', 'tags', 'pend', 'add'], ord: 'eixo', dir: 1, linhas: c => c.recP, mob: { x: ['tipo', 'add'], s: { eixo: 4, tags: 4 } }, red: { add: 3, tipo: 4 },
+  geral: { tit: 'Todos os livros', cols: ['titulo', 'autor', 'lista', 'eixo', 'tipo', 'fmt', 'folego', 'extCsv', 'leit', 'data', 'camadas', 'analise', 'coment'], ord: 'data', dir: -1, linhas: c => c.acP.concat(c.des, c.recP), mob: { b: 'lista', x: ['tipo', 'folego'], s: { eixo: 4 } }, red: { fmt: 3, tipo: 4 },
+    abas: [['todos', 'Todos'], ['acervo', 'Acervo', b => b.col === 'acervo'], ['desejo', 'Próximas aquisições', b => b.col === 'desejo'], ['rec', 'Recomendações', b => b.col === 'rec'], ['notas', 'Com anotações', b => temAnotacao(b)], ['meus', 'Editados por você', b => !!b.u]] },
+  biblioteca: { tit: 'Livros do acervo', cols: ['titulo', 'autor', 'fmt', 'eixo', 'adq', 'origem', 'leit', 'nota', 'pg', 'analise', 'coment'], ord: 'adq', dir: -1, linhas: c => c.acP, mob: { b: 'leit', x: ['eixo', 'pg'] }, red: { pg: 2, nota: 3, origem: 4 },
+    abas: [['todos', 'Todos'], ['lendo', 'Lendo', b => b.leit === 'lendo'], ['fila', 'Na fila', b => b.leit === 'fila' || b.leit === ''], ['lido', 'Lidos', b => b.leit === 'lido'], ['aband', 'Abandonados', b => b.leit === 'aband'], ['notas', 'Com anotações', b => temAnotacao(b)]] },
+  recs: { tit: 'Lista de recomendações', cols: ['titulo', 'autor', 'compra', 'motivos', 'eixo', 'tipo', 'dif', 'ext', 'tags', 'pend', 'camadas', 'analise', 'coment', 'add'], ord: 'eixo', dir: 1, linhas: c => c.recP, mob: { x: ['tipo', 'add'], s: { eixo: 4, tags: 4 } }, red: { add: 2, tipo: 3, ext: 4 },
     // as abas temáticas contam só a fila (o que ainda não foi lido), como os indicadores do topo; as lidas têm aba própria
     abas: [['todos', 'Todas'], ['top', 'Prioridades', b => b._top && b.leit !== 'lido'], ['leves', 'Leves e curtas', b => b._d === 1 && b._e === 1 && b.leit !== 'lido'], ['sempt', 'Sem edição em PT', b => b.tags.includes('sem-pt') && b.leit !== 'lido'], ['verif', 'A verificar', b => b.tags.includes('verificar') && b.leit !== 'lido'], ['monit', 'Monitoradas', b => rastreado(b)], ['lidos', 'Já lidas', b => b.leit === 'lido']] },
   // Finanças: só os livros do acervo com alguma informação de compra (valor ou origem); valores não aparecem nas outras tabelas
@@ -80,7 +90,7 @@ const TABELAS = {
     vazio: 'Nenhuma compra registrada ainda. Para registrar, abra um livro do acervo e use “Editar”: valor pago, loja e data são opcionais — preencha só o que souber.',
     abas: [['todos', 'Todas'], ['pagas', 'Com valor', b => pagoDe(b) > 0], ['gratis', 'Presentes e gratuitos', b => pagoDe(b) === 0], ['semvalor', 'Sem valor', b => pagoDe(b) == null]] },
   desejos: { tit: 'Lista de próximas aquisições', cols: ['titulo', 'autor', 'prio', 'fmt', 'melhor', 'loja', 'alvo', 'difAlvo', 'min', 'spark', 'sit'], ord: 'difAlvo', dir: 1, linhas: c => c.des, mob: { b: 'sit', x: ['fmt'], s: { min: 4 } }, red: { fmt: 2, spark: 3, min: 4 },
-    vazio: 'A lista está vazia. Para pôr um livro aqui, abra uma recomendação e use “Quero comprar”.',
+    vazio: 'A lista está vazia. Para pôr um livro aqui, use o botão da sacola em “O que comprar primeiro”, logo acima, ou abra uma recomendação e use “Quero comprar”.',
     abas: [['todos', 'Todos'], ['agora', 'Comprar agora', (b, c) => c.px(b).sit === 'agora'], ['quase', 'Quase lá', (b, c) => c.px(b).sit === 'quase'], ['aguardar', 'Aguardar', (b, c) => !['agora', 'quase'].includes(c.px(b).sit)]] },
   precos: { tit: 'Itens acompanhados', cols: ['titulo', 'autor', 'lista', 'melhor', 'loja', 'alvo', 'varP', 'faixa', 'minCsv', 'maxCsv', 'sit', 'ult'], ord: 'varP', dir: 1, linhas: c => c.rast, mob: { b: 'sit', x: ['lista', 'ult'], s: { faixa: 6 } }, red: { lista: 2, ult: 4 },
     vazio: 'Nenhum preço acompanhado ainda. Os preços entram pelas cotações que você registra: abra uma recomendação e use “Monitorar preço”.',

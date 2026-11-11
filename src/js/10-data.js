@@ -31,19 +31,61 @@ const ROTULO_TAG = {
   'thriller-medico': 'thriller médico', 'romance-historico': 'romance histórico', roma: 'Roma', 'pre-historia': 'pré-história',
   'regional-gaucho': 'regional gaúcho',
   fisica: 'física', tcc: 'TCC', 'psicologia-analitica': 'psicologia analítica', 'psicologia-humanista': 'psicologia humanista', 'psicologia-social': 'psicologia social',
+  cronicas: 'crônicas', 'super-herois': 'super-heróis', manga: 'mangá', adaptacao: 'adaptação em quadrinhos', educacao: 'educação', matematica: 'matemática',
+  programacao: 'programação', dados: 'dados e planilhas', enigmas: 'enigmas e mistérios', analise: 'possui análise',
   'rel-imortais': 'afins a Os Imortais', 'rel-widows-bay': 'Lovecraft e Widow’s Bay', 'rel-cornwell': 'afins a O Arqueiro / O Físico',
   'rel-asimov-clarke': 'Asimov e Clarke', 'rel-yalom': 'Yalom', 'rel-fromm': 'Fromm · autoritarismo',
 };
 const rotTag = t => ROTULO_TAG[t] || t.replace(/-/g, ' ');
 const TAGS_ESTRUTURA = new Set(['F', 'NF', 'HQ', 'poesia', 'antologia', 'd1', 'd2', 'd3', 'e1', 'e2', 'e3', 'ja-tenho', 'tenho-fisico', 'tenho-digital', 'lido', 'top']);
 const GRUPOS_TAG = [
-  ['Gêneros', ['ficcao-cientifica', 'fantasia', 'distopia', 'utopia', 'historia-alternativa', 'horror', 'gotico', 'lovecraftiano', 'misterio', 'thriller', 'thriller-medico', 'romance-historico', 'medieval', 'antiguidade', 'roma', 'renascimento', 'pre-historia', 'neandertal', 'regional-gaucho', 'teatro', 'contos', 'poesia', 'HQ', 'antologia']],
-  ['Temas', ['filosofia', 'existencialismo', 'etica', 'politica', 'autoritarismo', 'economia', 'geopolitica', 'psicologia', 'psicanalise', 'psiquiatria', 'neurociencia', 'consciencia', 'ciencia', 'ia', 'historia', 'antropologia', 'sociologia', 'religiao', 'espiritualidade', 'espiritismo', 'umbanda', 'oriental', 'mistica', 'morte', 'memoria', 'identidade', 'raca', 'genero', 'colonialismo', 'ecologia', 'linguagem', 'guerra', 'testemunho', 'medicina', 'biografia', 'escrita', 'cinema', 'arte', 'parentalidade', 'humor', 'introducao', 'gestao', 'esporte', 'didatico', 'tecnologia', 'fisica', 'autoconhecimento', 'behaviorismo', 'tcc', 'psicometria', 'psicopatologia', 'psicologia-analitica', 'psicologia-humanista', 'psicologia-social']],
+  ['Gêneros', ['ficcao-cientifica', 'fantasia', 'distopia', 'utopia', 'historia-alternativa', 'horror', 'gotico', 'lovecraftiano', 'misterio', 'thriller', 'thriller-medico', 'romance-historico', 'medieval', 'antiguidade', 'roma', 'renascimento', 'pre-historia', 'neandertal', 'regional-gaucho', 'teatro', 'contos', 'cronicas', 'aventura', 'policial', 'faroeste', 'poesia', 'HQ', 'super-herois', 'manga', 'adaptacao', 'antologia']],
+  ['Temas', ['filosofia', 'existencialismo', 'etica', 'politica', 'autoritarismo', 'economia', 'geopolitica', 'psicologia', 'psicanalise', 'psiquiatria', 'neurociencia', 'consciencia', 'ciencia', 'ia', 'historia', 'antropologia', 'sociologia', 'religiao', 'espiritualidade', 'espiritismo', 'umbanda', 'oriental', 'mistica', 'morte', 'memoria', 'identidade', 'raca', 'genero', 'colonialismo', 'ecologia', 'linguagem', 'guerra', 'testemunho', 'medicina', 'biografia', 'escrita', 'cinema', 'arte', 'parentalidade', 'humor', 'introducao', 'gestao', 'esporte', 'didatico', 'tecnologia', 'fisica', 'autoconhecimento', 'behaviorismo', 'tcc', 'psicometria', 'psicopatologia', 'psicologia-analitica', 'psicologia-humanista', 'psicologia-social', 'mitologia', 'educacao', 'biologia', 'matematica', 'programacao', 'dados', 'design', 'enigmas']],
   ['Época e origem', ['classico', 'contemporaneo', 'BR', 'RS', 'portugal', 'latam', 'africa', 'asia', 'europa-leste']],
-  ['Trilhas', ['rel-imortais', 'rel-widows-bay', 'rel-cornwell', 'rel-asimov-clarke', 'rel-yalom', 'rel-fromm']],
-  ['Pendências', ['verificar', 'sem-pt']],
+  ['Afinidades', ['rel-imortais', 'rel-widows-bay', 'rel-cornwell', 'rel-asimov-clarke', 'rel-yalom', 'rel-fromm']],
 ];
-const TRILHAS = GRUPOS_TAG[3][1];
+/* Camadas curatoriais (seções 0 a 16 do catálogo): por que o livro importa e com o que ele conversa.
+   p = prefixo do marcador (#q-…), n = nome na ficha do livro, g = nome do grupo nos filtros, r = prefixo do rótulo,
+   v = { sufixo do marcador: [rótulo, o que reúne] }. */
+const CAMADAS = [
+  { p: 'q', n: 'Pergunta central', g: 'Perguntas centrais', r: 'pergunta', v: {
+    'o-que-e-humano': ['o que nos faz humanos?', 'Espécies, máquinas e limites da humanidade'], 'liberdade-e-obediencia': ['liberdade e obediência', 'Liberdade, medo e submissão à autoridade'],
+    'sentido-e-como-viver': ['sentido e como viver', 'O que é uma vida boa? Sentido, propósito e ofício de viver'], 'morte-e-finitude': ['morte e finitude', 'A consciência da morte e o que vem (ou não) depois'],
+    'identidade-e-eu': ['identidade e eu', 'Quem sou eu? Identidade, máscara, duplo e self'], 'poder-e-violencia': ['poder e violência', 'Como o poder se organiza, se legitima e se impõe'],
+    'realidade-e-percepcao': ['realidade e percepção', 'O que é real? Percepção, simulação e labirintos'], 'memoria-e-esquecimento': ['memória e esquecimento', 'Memória pessoal e coletiva: o que lembramos e o que é apagado'],
+    'fe-e-duvida': ['fé e dúvida', 'Fé, ceticismo, Deus e o sagrado'], 'alteridade-e-contato': ['alteridade e contato', 'O encontro com o radicalmente outro: espécies, culturas, línguas'],
+    'culpa-e-justica': ['culpa e justiça', 'Crime, responsabilidade, castigo e justiça'], 'natureza-e-civilizacao': ['natureza e civilização', 'De onde viemos e para onde vamos'] } },
+  { p: 'clima', n: 'Clima da leitura', g: 'Clima da leitura', r: 'clima', v: {
+    claustrofobico: ['claustrofóbico', 'Opressivo, fechado, sem saída'], melancolico: ['melancólico', 'Perda, passagem do tempo, ternura triste'], onirico: ['onírico', 'Realidade que escorrega: sonho, fantasma, delírio'],
+    aventura: ['de aventura', 'Ação, viagem, batalha e fôlego de saga'], cerebral: ['cerebral', 'Jogo de ideias, estrutura e quebra-cabeça intelectual'], 'cru-e-chocante': ['cru e chocante', 'Realismo duro, violência ou testemunho que não alivia'],
+    subversivo: ['subversivo', 'Desmonta o senso comum, o cânone ou o poder'], emocionante: ['emocionante', 'Mexe com o coração'], comico: ['cômico', 'Humor, ironia e leveza inteligente'], contemplativo: ['contemplativo', 'Leitura lenta, para meditar e voltar'] } },
+  { p: 'papel', n: 'Papel na biblioteca', g: 'Papel na biblioteca', r: 'papel', v: {
+    'porta-de-entrada': ['porta de entrada', 'Melhor primeiro livro para entrar numa área'], 'leitura-relampago': ['leitura-relâmpago', 'Curto e potente: dá para ler em uma ou duas sentadas'], desafio: ['desafio', 'Leitura de fôlego: exige tempo, atenção ou bagagem'],
+    contraponto: ['contraponto', 'Para ler com lupa ou ao lado de uma visão oposta'], ponte: ['ponte entre áreas', 'Cruza áreas diferentes e abre caminhos para outras leituras'], 'fonte-primaria': ['fonte primária', 'Texto fundacional, lido na origem'] } },
+  { p: 'ponte', n: 'Ponte entre áreas', g: 'Pontes entre áreas', r: 'ponte', v: {
+    'ciencia-e-fe': ['ciência e fé', 'Onde a ciência encontra (ou questiona) o sagrado'], 'psicanalise-e-politica': ['psicanálise e política', 'Psiquismo, massas e poder'], 'literatura-e-neurociencia': ['literatura e neurociência', 'O cérebro visto pela ficção e pela clínica'],
+    'ficcao-e-filosofia': ['ficção e filosofia', 'Romances de ideias: filosofia em forma de enredo'], 'historia-e-ficcao': ['história e ficção', 'A história que a ficção reconstrói por dentro'], 'ecologia-e-colonialismo': ['ecologia e colonialismo', 'A exploração da terra e a dos povos andam juntas'],
+    'corpo-e-poder': ['corpo e poder', 'Corpo, gênero e controle'], 'ia-e-humanidade': ['IA e humanidade', 'Máquinas, mentes artificiais e o que sobra de humano'] } },
+  { p: 'cenario', n: 'Cenário', g: 'Cenários', r: 'cenário', v: {
+    russia: ['Rússia', 'Rússia e mundo soviético'], 'nova-inglaterra': ['Nova Inglaterra', 'Costa, ilhas e vilas da Nova Inglaterra'], 'sertao-e-nordeste': ['sertão e Nordeste', 'Sertão e Nordeste do Brasil'],
+    'espaco-profundo': ['espaço profundo', 'Espaço, naves e outros mundos'], 'ilha-e-isolamento': ['ilha e isolamento', 'Ilhas, expedições e lugares sem retorno'], 'guerra-mundial': ['guerras mundiais', 'As guerras mundiais e seus testemunhos'],
+    'oriente-feudal': ['Oriente feudal', 'Japão, Ásia, mundo islâmico e rotas medievais'], 'futuro-proximo': ['futuro próximo', 'Futuros próximos e colapsos plausíveis'], 'cidade-pequena': ['cidade pequena', 'Cidade pequena, segredo grande'] } },
+];
+const DICA_TAG = {};                                // o que o marcador reúne (aparece ao passar o mouse)
+const ROTULO_CURTO = {};                            // rótulo sem o nome da camada, para quando o grupo já diz qual é ("Clima da leitura › cerebral")
+const rotCurto = t => ROTULO_CURTO[t] || rotTag(t);
+for (const c of CAMADAS) {
+  for (const k in c.v) { const t = c.p + '-' + k; ROTULO_TAG[t] = c.r + ': ' + c.v[k][0]; ROTULO_CURTO[t] = c.v[k][0]; DICA_TAG[t] = c.v[k][1]; }
+  GRUPOS_TAG.push([c.g, Object.keys(c.v).map(k => c.p + '-' + k)]);
+}
+const camadaDe = t => CAMADAS.find(c => t.startsWith(c.p + '-') && c.v[t.slice(c.p.length + 1)]) || null;
+const ehCamada = t => !!camadaDe(t) || t.startsWith('trilha-');
+/* Trilhas de leitura (catalogo/trilhas.md): roteiros com os livros em ordem. Quem diz que um livro está na trilha é o
+   marcador dele (#trilha-…); a lista da trilha diz a ordem. linhas = chaves das linhas do catálogo (ver chaveCat). */
+const TRILHAS = TRILHAS_DADOS.map(([tag, nome, desc, linhas], i) => ({ n: i + 1, tag, nome, curto: nome.split(':')[0].trim(), desc, linhas: linhas.map(j => norm(CATALOGO[j][0]) + '|' + norm(CATALOGO[j][1])) }));
+for (const t of TRILHAS) { ROTULO_TAG[t.tag] = 'trilha: ' + t.curto; ROTULO_CURTO[t.tag] = t.curto; DICA_TAG[t.tag] = t.nome; }
+GRUPOS_TAG.push(['Trilhas de leitura', TRILHAS.map(t => t.tag)], ['Pendências', ['verificar', 'sem-pt']], ['Suas marcas', ['analise']]);
+const TAG_ANALISE = 'analise';                      // "possui análise": posto no painel, na ficha do livro
 
 const FORMATOS = {
   fisico: { n: 'Físico', cor: 'var(--c1)' },
@@ -97,7 +139,7 @@ function derivar(b) {
   b._top = T.includes('top');
   const g = b._dg;                               // biblioteca virtual: [formatos, nº de arquivos, pastas, títulos das edições, ids dos arquivos, subpastas da série?]
   // a busca também acha o livro pelo nome que ele tinha antes de ser corrigido no catálogo
-  b._busca = norm(b.t + ' ' + b.a + ' ' + T.map(rotTag).join(' ') + ' ' + T.join(' ') + ' ' + (EIXOS[b.eixo] ? EIXOS[b.eixo].n : '') + (g ? ' ' + g[0] + ' ' + (g[2] || []).join(' ') + ' ' + (g[3] || []).join(' ') + ' ' + (g[5] || []).join(' ') : '') + (b._ant ? ' ' + b._ant.map(n => n.join(' ')).join(' ') : ''));
+  b._busca = norm(b.t + ' ' + b.a + ' ' + T.map(rotTag).join(' ') + ' ' + T.join(' ') + ' ' + (EIXOS[b.eixo] ? EIXOS[b.eixo].n : '') + (g ? ' ' + g[0] + ' ' + (g[2] || []).join(' ') + ' ' + (g[3] || []).join(' ') + ' ' + (g[5] || []).join(' ') : '') + (b._ant ? ' ' + b._ant.map(n => n.join(' ')).join(' ') : '') + (b.com ? ' ' + b.com : '') + (b.anx ? ' ' + b.anx.map(a => a[1]).join(' ') : ''));
   return b;
 }
 const virtual = b => b.fmt === 'ebook' || b.fmt === 'audio';
@@ -114,6 +156,10 @@ function novoLivro(o) {
     col: 'rec', fmt: '', plat: '', adq: null, pago: null, loja: '', cond: '',
     add: null, leit: '', lidoEm: null, prog: 0, nota: 0, pg: 0,
     prio: 0, alvo: null, capa: null, track: false, px: null, demo: 0, u: 0,
+    com: '',        // comentários do usuário sobre o livro (ficha do livro)
+    cp: '',         // capa enviada pelo usuário: chave da imagem guardada no navegador (ver Anexos); '' = usa a do catálogo
+    anx: null,      // arquivos anexados (resenha, relatório…): [[chave, nome, tamanho em bytes, dia, tipo], …]; o conteúdo fica em Anexos
+    cl: '',         // classificação que o catálogo dava ao livro quando ele foi editado ou conciliado pela última vez (ver mesclarClasse)
     o: '',          // linha do catálogo de onde o livro veio (ver chaveCat); '' = criado no painel
     arq: '',        // identificadores dos arquivos da biblioteca virtual (reconhecem o livro se o título mudar no catálogo)
     _dg: null,      // dados da biblioteca virtual; vêm sempre do catálogo embutido e não são salvos
@@ -121,6 +167,9 @@ function novoLivro(o) {
     _img: 0,        // imagem da capa: número na Open Library ou endereço https (catalogo/capas.tsv); vem do catálogo e não é salva
   }, o));
 }
+const MAX_COMENTARIO = 5000, MAX_ANEXOS = 8;
+const chaveAnexo = v => (typeof v === 'string' && /^[a-z0-9]{6,24}$/.test(v) ? v : '');
+const temAnotacao = b => !!(b.com || (b.anx && b.anx.length) || b.tags.includes(TAG_ANALISE));
 /* Registro vindo de fora (armazenamento do navegador ou arquivo de backup): devolve um livro íntegro, ou null.
    Nada aqui confia no formato: um arquivo editado à mão não pode travar o painel. */
 function lerLivro(o, usados) {
@@ -142,8 +191,10 @@ function lerLivro(o, usados) {
     }
   }
   const col = de(o.col, ['acervo', 'desejo', 'rec'], 'rec');
+  const anx = (Array.isArray(o.anx) ? o.anx : []).map(a => (Array.isArray(a) && chaveAnexo(a[0]) ? [a[0], txt(a[1], 120).trim() || 'arquivo', Math.round(num(a[2], 0, 1e9) ?? 0), dia(a[3]), txt(a[4], 80)] : null)).filter(Boolean).slice(0, MAX_ANEXOS);
   return novoLivro({
     id, t: o.t.trim().slice(0, 200), a: txt(o.a, 160), obs: txt(o.obs, 2000),
+    com: txt(o.com, MAX_COMENTARIO), cp: chaveAnexo(o.cp), anx: anx.length ? anx : null, cl: txt(o.cl, 1500),
     tags: Array.isArray(o.tags) ? [...new Set(o.tags.filter(t => typeof t === 'string' && t && t.length <= 60))].slice(0, 60) : [],
     sec: num(o.sec, -1, 99) ?? -1, eixo: Math.round(num(o.eixo, 1, EIXOS.length - 1) ?? 5),
     col, fmt: de(o.fmt, Object.keys(FORMATOS), col === 'acervo' ? 'fisico' : ''), plat: txt(o.plat, 40), loja: txt(o.loja, 60), cond: txt(o.cond, 20),
@@ -174,7 +225,9 @@ function livrosDoCatalogo() { return CATALOGO.map((r, i) => { const b = doCatalo
 let MOSTRAR_CAPAS = true;
 const enderecoCapa = c => (!c ? '' : typeof c === 'number' ? (c > 0 ? `https://covers.openlibrary.org/b/id/${Math.round(c)}-M.jpg?default=false` : '') : typeof c === 'string' && /^https:\/\//i.test(c) ? c : '');
 const temCapa = b => !!enderecoCapa(b._img);                                 // há capa no catálogo (mostrada ou não)
-const urlCapa = b => (MOSTRAR_CAPAS ? enderecoCapa(b._img) : '');           // o que vai para a tela: nada, com as capas desligadas
+const capaPropria = b => (b.cp && Anexos.capas.get(b.cp)) || '';            // imagem que o usuário enviou (fica no navegador; ver Anexos)
+// o que vai para a tela: a capa enviada pelo usuário, sempre; senão a do catálogo — ou nada, com as capas desligadas
+const urlCapa = b => capaPropria(b) || (MOSTRAR_CAPAS ? enderecoCapa(b._img) : '');
 
 /* os marcadores de posse acompanham a lista e o formato do livro (e o que o catálogo diz da biblioteca virtual) */
 const defTag = (b, t, on) => { const i = b.tags.indexOf(t); if (on && i < 0) b.tags.push(t); if (!on && i >= 0) b.tags.splice(i, 1); };
@@ -185,17 +238,53 @@ function marcarPosse(b) {
   defTag(b, 'ja-tenho', false);
 }
 
+/* ───────── classificação: o que o catálogo diz × o que foi mexido no painel ─────────
+   A classificação de um livro é o eixo mais os marcadores, fora os de posse e de leitura (que seguem a lista, o formato e a
+   leitura do livro). Num livro editado no painel, `cl` guarda a classificação que o catálogo dava quando o livro foi editado
+   pela primeira vez ou conciliado pela última: é a base para saber, depois, o que mudou no catálogo e o que mudou no painel. */
+const TAGS_SITUACAO = ['tenho-fisico', 'tenho-digital', 'ja-tenho', 'lido'];
+const GRUPOS_UNICOS = [['F', 'NF', 'HQ', 'poesia', 'antologia'], ['d1', 'd2', 'd3'], ['e1', 'e2', 'e3']];   // tipo, dificuldade e extensão: uma resposta por grupo
+const classeCat = r => r[4] + '|' + tagsCat(r).filter(t => !TAGS_SITUACAO.includes(t)).join(' ');
+const lerClasse = s => { const i = (s || '').indexOf('|'); return i < 1 ? null : { eixo: +s.slice(0, i), tags: s.slice(i + 1).split(' ').filter(Boolean) }; };
+/* Dados gravados por um painel de antes de 10/11/2026 não trazem `cl`. Para as linhas em que a vistoria daquele dia trocou
+   ou tirou alguma coisa, a classificação antiga vem embutida (CLASSE_ANTES, de catalogo/antes-da-vistoria.tsv). */
+let BASE_ANTIGA = null;
+const classeAntiga = k => { if (!BASE_ANTIGA) BASE_ANTIGA = new Map(CLASSE_ANTES.map(([i, e, t]) => [chaveCat(CATALOGO[i]), e + '|' + t])); return BASE_ANTIGA.get(k) || ''; };
+let LINHAS_CAT = null;
+const linhaCat = b => { if (!b.o) return null; if (!LINHAS_CAT) LINHAS_CAT = new Map(CATALOGO.map(r => [chaveCat(r), r])); return LINHAS_CAT.get(b.o) || null; };
+/* O livro passa a ser "do usuário" (editado no painel): guarda a classificação que o catálogo dá a ele agora. */
+function marcarMeu(b) { if (!b.u) { const r = linhaCat(b); b.cl = r ? classeCat(r) : ''; } b.u = 1; b.demo = 0; }
+/* Livro editado no painel × linha nova do catálogo (r). O que o usuário não mexeu acompanha o catálogo; o que ele pôs, tirou
+   ou trocou fica como ele deixou. Sem base (dados gravados por um painel antigo, que não a guardava) nada é desfeito:
+   o catálogo só acrescenta — o que falta ao livro entra, o que ele já tem fica. */
+function mesclarClasse(b, r, base) {
+  const fora = t => !TAGS_SITUACAO.includes(t), unico = new Set(GRUPOS_UNICOS.flat()), antes = base ? base.tags : [];
+  const cat = tagsCat(r).filter(fora), minhas = b.tags.filter(fora), iguais = (x, y) => x.length === y.length && x.every(t => y.includes(t));
+  let novas = [];
+  for (const g of GRUPOS_UNICOS) { const meu = minhas.filter(t => g.includes(t)), era = antes.filter(t => g.includes(t)); novas = novas.concat(iguais(meu, era) ? cat.filter(t => g.includes(t)) : meu); }
+  const postas = minhas.filter(t => !unico.has(t) && !antes.includes(t)), tiradas = antes.filter(t => !unico.has(t) && !minhas.includes(t));
+  novas = novas.concat(cat.filter(t => !unico.has(t) && !tiradas.includes(t)), postas);
+  if (base && b.eixo === base.eixo) b.eixo = r[4];
+  b.tags = [...new Set(novas)].concat(b.tags.filter(t => !fora(t)));
+}
+
 /* ───────── catálogo novo × dados salvos ─────────
    Os livros ficam guardados no navegador. Quando o painel chega com outro catálogo (livros novos, a biblioteca virtual,
    títulos corrigidos), os dados salvos são conciliados com ele:
    · o que nunca foi editado no painel passa a seguir o catálogo novo;
-   · o que foi editado fica como está — o catálogo só acrescenta posse (#tenho-fisico, #tenho-digital), corrige título e
-     autor que não tenham sido mudados no painel e retira o #verificar que já foi resolvido;
-   · linhas novas entram; linhas que saíram do catálogo sem nunca terem sido editadas saem. */
+   · o que foi editado fica como está — o catálogo acrescenta posse (#tenho-fisico, #tenho-digital), corrige título e
+     autor que não tenham sido mudados no painel, retira o #verificar que já foi resolvido e atualiza a classificação
+     (eixo, tipo, dificuldade, extensão e temas) naquilo que o usuário não mexeu (ver mesclarClasse);
+   · linhas novas entram; linhas que saíram do catálogo sem nunca terem sido editadas saem;
+   · se duas linhas antigas viraram uma só, ela fica com a que o usuário editou. */
 const ASSINATURA = CATALOGO.length + '.' + hashStr(JSON.stringify(CATALOGO)).toString(36);
 function anexarDigital(livros) {
   const linhas = new Map(CATALOGO.map((r, i) => [chaveCat(r), i]));
-  for (const b of livros) { const i = b.o ? linhas.get(b.o) : undefined, r = i == null ? null : CATALOGO[i]; b._dg = (r && r[6]) || null; b._ant = (r && r[7]) || null; b._img = (r && CAPAS[i]) || 0; if (b._dg) b.arq = b._dg[4]; derivar(b); }
+  for (const b of livros) {
+    const i = b.o ? linhas.get(b.o) : undefined, r = i == null ? null : CATALOGO[i]; b._dg = (r && r[6]) || null; b._ant = (r && r[7]) || null; b._img = (r && CAPAS[i]) || 0; if (b._dg) b.arq = b._dg[4];
+    if (b.u && !b.cl && r) b.cl = classeCat(r);       // dados de um painel antigo: daqui em diante a base é o catálogo de agora
+    derivar(b);
+  }
 }
 function conciliarCatalogo(livros) {
   // ant: os nomes que a linha já teve (título ou autor corrigido no catálogo — catalogo/renomeados.tsv)
@@ -213,6 +302,15 @@ function conciliarCatalogo(livros) {
   passo(b => [chaveLivro(b)], x => [x.k].concat(x.ant));                                  // 2 ▸ mesmo título e autor (dados antigos; livro criado no painel)
   passo(b => (b.arq ? b.arq.split(' ') : []), x => (x.r[6] && x.r[6][4] ? x.r[6][4].split(' ') : []));   // 3 ▸ mesmo arquivo: título corrigido no inventário
   passo(b => [b.u && !b.o ? b.id : ''], x => ['c' + x.i], (b, x) => b.sec === x.r[3]);    // 4 ▸ dados antigos: livro do catálogo renomeado no painel
+  // 5 ▸ duas entradas antigas viraram uma linha só (edições juntadas, recomendação que era o mesmo livro de um arquivo): a linha
+  //     fica com a entrada em que o usuário mexeu, e a outra — que só repetia o catálogo — sai. Sem isto, o que ele anotou ficaria
+  //     num livro solto, fora do catálogo, ao lado da linha nova.
+  for (const b of [...soltos]) {
+    if (!b.u) continue;
+    const minhas = new Set([b.o, chaveLivro(b)].concat(b.arq ? b.arq.split(' ') : []).filter(Boolean));
+    const x = linhas.find(y => y.b && !y.b.u && ([y.k].concat(y.ant).some(k => minhas.has(k)) || (y.r[6] && y.r[6][4] ? y.r[6][4].split(' ') : []).some(k => minhas.has(k))));
+    if (x) { soltos.add(x.b); x.b = b; soltos.delete(b); }
+  }
   const usados = new Set(livros.map(b => b.id)), novos = [];
   for (const x of linhas) {
     const r = x.r, b = x.b, tags = tagsCat(r);
@@ -221,13 +319,14 @@ function conciliarCatalogo(livros) {
     else {
       if (chaveLivro(b) === (b.o || x.k) || x.ant.includes(chaveLivro(b))) { b.t = r[0]; b.a = r[1]; }   // título e autor não foram mexidos no painel: valem os do catálogo
       b.sec = r[3];
+      mesclarClasse(b, r, lerClasse(b.cl) || (b.o ? lerClasse(classeAntiga(x.k)) : null));   // b.o: o livro já vinha do catálogo (não foi criado no painel)
       if (!tags.includes('verificar')) defTag(b, 'verificar', false);
       const fis = tags.includes('tenho-fisico'), dig = tags.includes('tenho-digital'), tinhaEbook = b.col === 'acervo' && b.fmt === 'ebook';
       if (dig || (fis && tinhaEbook)) defTag(b, 'tenho-digital', true);
       if (fis && !(b.col === 'acervo' && b.fmt === 'fisico')) Object.assign(b, { col: 'acervo', fmt: 'fisico', plat: '', prio: 0, track: false, leit: b.leit || 'fila' });
       else if (dig && b.col === 'rec') Object.assign(b, { col: 'acervo', fmt: 'ebook', plat: PLAT_DIGITAL });
     }
-    b.o = x.k; b.arq = r[6] ? r[6][4] : '';
+    b.o = x.k; b.arq = r[6] ? r[6][4] : ''; b.cl = b.u ? classeCat(r) : '';
   }
   const ficam = livros.filter(b => !soltos.has(b) || b.u || b.sec < 0);
   return { livros: ficam.concat(novos), novos: novos.length, saidos: livros.length - ficam.length };

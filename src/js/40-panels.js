@@ -296,16 +296,95 @@ function pTipoRecs() {
   } };
 }
 function pTemas() {
-  return { id: 'temas', w: 'p-4 m-6', tit: 'Temas e trilhas', montar(k) {
-    segmento(k.tools, [[0, 'Gêneros'], [1, 'Temas'], [2, 'Origem'], [3, 'Trilhas']], 'temas');
+  // grupos de marcadores que fazem sentido contar nas recomendações (ficam de fora as pendências e as marcas do usuário)
+  const grupos = GRUPOS_TAG.map((g, i) => [i, g[0]]).filter(([, n]) => n !== 'Pendências' && n !== 'Suas marcas');
+  return { id: 'temas', w: 'p-4 m-6', tit: 'Temas e camadas', montar(k) {
+    k.tools.innerHTML = `<label class="sel-w"><span class="so-leitor">Grupo de marcadores</span><select aria-label="Grupo de marcadores">${grupos.map(([i, n]) => `<option value="${i}">${esc(n)}</option>`).join('')}</select></label>`;
+    const sel = $('select', k.tools);
+    sel.addEventListener('change', () => { S.ui.temas = +sel.value; salvar(); render(); });
     const g = BarrasH(k.corpo, { aoClicar(t) { alternar(S.tags, t); filtrosMudaram(); } });
     return c => {
-      const lista = GRUPOS_TAG[S.ui.temas] ? GRUPOS_TAG[S.ui.temas][1] : GRUPOS_TAG[1][1], cont = new Map();
+      const i = grupos.some(x => x[0] === S.ui.temas) ? S.ui.temas : 1, lista = GRUPOS_TAG[i][1], cont = new Map();
+      sel.value = String(i);
       for (const b of c.recP) if (b.leit !== 'lido') for (const t of b.tags) if (lista.includes(t)) cont.set(t, (cont.get(t) || 0) + 1);
       k.sub.textContent = 'Marcadores mais frequentes nas recomendações · clique para filtrar';
-      g.atualizar({ linhas: [...cont].sort((a, z) => z[1] - a[1]).slice(0, 9).map(([t, n]) => ({ k: t, n: maiuscula(rotTag(t)), dica: '#' + t, ativo: S.tags.has(t), segs: [{ n: 'recomendações', cor: 'var(--c2)', v: n }] })), vazio: 'Nenhum marcador deste grupo no recorte atual.' });
+      g.atualizar({ linhas: [...cont].sort((a, z) => z[1] - a[1]).slice(0, 9).map(([t, n]) => ({ k: t, n: maiuscula(rotCurto(t)), dica: DICA_TAG[t] || '#' + t, ativo: S.tags.has(t), segs: [{ n: 'recomendações', cor: 'var(--c2)', v: n }] })), vazio: 'Nenhum marcador deste grupo no recorte atual.' });
     };
   } };
+}
+
+/* ───────── trilhas de leitura ───────── */
+// "tenho 7 de 8 · li 1 · falta 1" — falta o que não está no acervo nem foi lido; sem nada faltando (e sem ter todos), diz que não há o que comprar
+const frasesTrilha = x => [x.tenho === x.n ? 'tenho todos os ' + x.n : `tenho ${x.tenho} de ${x.n}`, x.lidos ? `li ${x.lidos}` : '', x.faltam.length ? (x.faltam.length === 1 ? 'falta 1' : 'faltam ' + x.faltam.length) : x.tenho < x.n ? 'nenhum por comprar' : ''].filter(Boolean).join(' · ');
+// barra da trilha: lidos (cheio), em casa mas não lidos (claro) e o que falta (vazio)
+const barraTrilha = x => { const lidos = x.livros.filter(b => b.leit === 'lido').length, casa = x.livros.filter(b => b.col === 'acervo' && b.leit !== 'lido').length; return `<span class="tr-b" aria-hidden="true"><i class="l" style="width:${x.n ? (lidos / x.n * 100).toFixed(1) : 0}%"></i><i class="c" style="width:${x.n ? (casa / x.n * 100).toFixed(1) : 0}%"></i></span>`; };
+function pTrilhas(w, id) {
+  return { id: id || 'trilhas', w: w || 'p-5 m-6', tit: 'Trilhas de leitura', montar(k) {
+    segmento(k.tools, [['ordem', 'Na ordem'], ['perto', 'Falta pouco']], 'trilhas');
+    k.corpo.classList.add('lista', 'rolavel', 'enche');
+    k.corpo.addEventListener('click', e => { const b = e.target.closest('[data-trilha]'); if (!b) return; const t = TRILHAS.find(x => x.tag === b.dataset.trilha); if (t) dlgTrilha(t); });
+    legendaFixa(k.pe, [['lidos', 'var(--good)'], ['no acervo, por ler', 'var(--c2)'], ['faltam', 'var(--line-2)']]);
+    return c => {
+      const xs = c.trilhas.slice(), perto = S.ui.trilhas === 'perto';
+      // "falta pouco": primeiro as que ainda pedem compra, da que falta menos para a que falta mais; as completas vão para o fim
+      if (perto) xs.sort((a, z) => (a.faltam.length ? 0 : 1) - (z.faltam.length ? 0 : 1) || a.faltam.length - z.faltam.length || z.n - a.n || a.t.n - z.t.n);
+      const completas = xs.filter(x => !x.faltam.length).length;
+      k.sub.textContent = `${plural(xs.length, 'roteiro', 'roteiros')} com os livros em ordem · ${completas ? plural(completas, 'já completo', 'já completos') + ' · ' : ''}clique para abrir`;
+      setHtml(k.corpo, xs.length ? xs.map(x => `<button type="button" class="li tr" data-trilha="${x.t.tag}" title="${esc(x.t.nome)}"><span class="tr-n">${x.t.n}</span><span class="li-m"><b>${esc(x.t.curto)}</b><span>${frasesTrilha(x)}</span></span>${barraTrilha(x)}</button>`).join('') : vazioHtml('Este catálogo não traz trilhas de leitura.'));
+    };
+  } };
+}
+const estadoNaTrilha = b => (b.leit === 'lido' ? ['leit-lido', b.col === 'acervo' ? 'Lido' : 'Lido · não tenho'] : b.col === 'acervo' ? (b.leit === 'lendo' ? ['leit-lendo', 'Lendo'] : ['col-acervo', 'Tenho']) : b.col === 'desejo' ? ['col-desejo', 'Na lista de compra'] : ['', 'Falta']);
+function dlgTrilha(t) {
+  const corpo = () => {
+    const x = ctxAtual().trilhas.find(y => y.t === t), paraLista = x.faltam.filter(b => b.col === 'rec');
+    return { x, paraLista, html: `<p class="dlg-sub">${esc(t.desc)}</p>
+      <p class="tr-res">${barraTrilha(x)}<span><b>${maiuscula(frasesTrilha(x))}</b></span><button type="button" class="lk" data-tr-tabela>ver na tabela</button></p>
+      <ol class="tr-l">${x.livros.map((b, i) => { const [cls, rot] = estadoNaTrilha(b); return `<li><button type="button" class="li" data-livro="${b.id}"><span class="tr-n">${i + 1}</span>${capaHtml(b)}<span class="li-m"><b>${esc(b.t)}</b><span>${esc(b.a || 'Autor não informado')}</span></span><span class="pill ${cls}">${rot}</span></button></li>`; }).join('')}</ol>
+      <p class="nota">A ordem é a sugerida no catálogo (catalogo/trilhas.md). Clique num livro para abrir a ficha.</p>` };
+  };
+  const r = corpo();
+  Dlg.abrir({ titulo: `Trilha ${t.n} · ${t.nome}`, largo: true, corpo: r.html,
+    botoes: (r.paraLista.length ? [{ n: r.paraLista.length === 1 ? 'Quero comprar o que falta' : `Quero comprar os ${r.paraLista.length} que faltam`, acao() {
+        const livros = corpo().paraLista; for (const b of livros) { paraListaDeCompra(b); marcarMeu(b); marcarPosse(b); derivar(b); }
+        salvar(); render(); if (Gaveta.id) desenharGaveta();
+        toast(`${plural(livros.length, 'livro foi', 'livros foram')} para as próximas aquisições.`);
+      } }] : []).concat([{ n: 'Fechar', cls: 'pri' }]),
+    aoAbrir(el) {
+      el.addEventListener('click', e => {
+        const li = e.target.closest('[data-livro]'); if (li) { const id = li.dataset.livro; Dlg.fechar(); abrirLivro(id); return; }
+        // "ver na tabela": fecha tudo e mostra, na visão geral, só os livros da trilha
+        if (e.target.closest('[data-tr-tabela]')) { Dlg.fechar(); fecharGaveta(); limparFiltros(false); S.tags.add(t.tag); irPara('geral'); toast(`Filtrando pela trilha “${t.curto}”.`); }
+      });
+    } });
+}
+
+/* ───────── o que comprar primeiro ───────── */
+function pCompra(w, id, quantos) {
+  const N = quantos || 8;
+  return { id: id || 'compra', w: w || 'p-7', tit: 'O que comprar primeiro', montar(k) {
+    k.corpo.classList.add('lista', 'oc');
+    k.corpo.addEventListener('click', e => { const bt = e.target.closest('[data-desejar]'); if (!bt) return; const b = porId(bt.dataset.desejar); if (b) acao(b, 'desejar'); });
+    k.pe.className = 'card-f oc-pe';
+    k.pe.innerHTML = '<span class="oc-n"></span><button type="button" class="lk" data-oc-tudo>ver a lista inteira nesta ordem</button>';
+    k.pe.addEventListener('click', e => { if (e.target.closest('[data-oc-tudo]')) verOrdemDeCompra(); });
+    return c => {
+      const noRecorte = new Set(c.rec), ordem = c.compra, vis = ordem.lista.filter(o => noRecorte.has(o.b)), it = vis.slice(0, N);
+      k.sub.textContent = 'Recomendações que ainda não tenho, na ordem sugerida · o motivo vem ao lado';
+      setHtml(k.corpo, it.length ? it.map(o => `<div class="oc-l"><button type="button" class="li" data-id="${o.b.id}"><span class="tr-n">${o.pos}º</span>${capaHtml(o.b)}<span class="li-m"><b>${esc(o.b.t)}</b><span>${esc(o.b.a || 'Autor não informado')}</span><span class="oc-m" title="${esc(o.motivos.join(' · '))}">${esc(o.motivos.join(' · ') || 'sem destaque no catálogo')}</span></span></button><button type="button" class="ib oc-b" data-desejar="${o.b.id}" aria-label="Quero comprar: ${esc(o.b.t)}" title="Quero comprar (vai para as próximas aquisições)">${icone('sacola', 16)}</button></div>`).join('')
+        : vazioHtml(ordem.total ? 'Nenhuma recomendação por comprar neste recorte.' : 'Não há recomendações por comprar: tudo o que o catálogo recomenda já está no acervo, na lista de compra ou foi lido.'));
+      $('.oc-n', k.pe).textContent = vis.length ? `${vis.length === ordem.total ? '' : fInt(vis.length) + ' no recorte · '}${plural(ordem.total, 'recomendação por comprar', 'recomendações por comprar')} · a ordem não olha preços` : '';
+      $('[data-oc-tudo]', k.pe).hidden = vis.length <= N;
+    };
+  } };
+}
+/* abre a tabela das recomendações ordenada pela ordem de compra */
+function verOrdemDeCompra() {
+  S.tab.recs = Object.assign(S.tab.recs || {}, { aba: 'todos', q: '', ord: 'compra', dir: 1, pag: 0 });
+  irPara('recs');
+  const t = $('#p-tab-recs'); if (!t) return;
+  const q = $('input[type=search]', t); if (q) q.value = '';
+  t.scrollIntoView({ block: 'start' }); focar($('th[data-c="compra"] button', t) || t, 3);
 }
 function pSugestoes(w, id) {
   return { id: id || 'sugestoes', w: w || 'p-4 m-6', tit: 'Sugestões da vez', montar(k) {
@@ -498,7 +577,7 @@ const VIS = {
         pend: { v: semPt + verif, cmp: '', sub: `${fInt(semPt)} sem edição em PT · ${fInt(verif)} a verificar` },
       };
     },
-    paineis: () => [pEixos('recs', 'p-7'), pMatriz(), pTipoRecs(), pTemas(), pSugestoes()],
+    paineis: () => [pEixos('recs', 'p-7'), pMatriz(), pCompra(), pTrilhas(), pTipoRecs(), pTemas(), pSugestoes()],
   },
   desejos: {
     kpis: [
@@ -514,7 +593,7 @@ const VIS = {
         minimo: comRes.length ? { v: min, fmt: fBRL0, cmp: `menor preço de cada item ${I.tudo ? 'no histórico' : I.rot}`, sub: hoje - min > 0.5 ? `${fBRL0(hoje - min)} abaixo do custo de hoje` : 'igual ao custo de hoje' } : { txt: '—', sub: 'sem cotações no período' },
       };
     },
-    paineis: () => [pCesta('p-8', 'cesta-lista'), pPrioridade(), pDistancia(), pLojasBaratas()],
+    paineis: () => [pCesta('p-8', 'cesta-lista'), pPrioridade(), pDistancia(), pLojasBaratas(), pCompra('p-12', 'compra-lista', 6)],
   },
   precos: {
     kpis: [
