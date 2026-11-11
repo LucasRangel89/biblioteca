@@ -622,8 +622,8 @@ não se perder entre uma conversa e outra. Para retomar, basta dizer "vamos para
 | --- | --- | --- |
 | 1 | Ocultar categorias | **Feita** (11/11/2026) |
 | 2 | Imprimir e copiar listas | **Feita** (11/11/2026) |
-| 3 | Sinopse na ficha de cada livro | Combinada; falta fazer, um lote por rodada |
-| 4 | Temas visuais | Combinada em linhas gerais; faltam três decisões suas (abaixo, com a minha sugestão) |
+| 3 | Sinopse na ficha de cada livro | Combinada, com o estilo aprovado por você (11/11/2026); falta fazer, um lote por rodada |
+| 4 | Temas visuais | Combinada, com as três decisões tomadas (11/11/2026); falta fazer, poucos temas por rodada |
 | 5 | Estímulo à leitura (gamificação) | Direção combinada com as suas respostas; falta você aprovar o desenho |
 
 ### Parte 1 — Ocultar categorias
@@ -721,6 +721,17 @@ seguida, o navegador pode recusar por alguns segundos; o painel avisa quando iss
   feito e o que falta, e evita pesquisar o mesmo livro duas vezes.
 - **No painel:** a sinopse aparece no alto da ficha. Livro sem sinopse não mostra nada no lugar.
 
+**O estilo, aprovado por você em 11/11/2026** ("tamanho e tom estão bons"). Estas duas amostras são o modelo para
+todas as outras:
+
+> **A Metamorfose** — Gregor Samsa, caixeiro-viajante que sustenta a família, acorda certa manhã transformado num
+> inseto monstruoso. Trancado no quarto, acompanha a mudança dos pais e da irmã, que passam do susto ao incômodo.
+> Uma novela curta sobre trabalho, culpa e o lugar de quem deixa de ser útil.
+
+> **O Físico** — Na Inglaterra do século XI, o órfão Rob Cole aprende o ofício com um barbeiro-cirurgião ambulante
+> e descobre que pressente a morte dos doentes. Decidido a ser médico de verdade, atravessa a Europa disfarçado de
+> judeu para estudar na Pérsia com Avicena.
+
 **Roteiro das buscas** — um lote por rodada, de uns 150 livros cada:
 
 | Lote | Livros | Quantos | Situação |
@@ -742,9 +753,9 @@ da biblioteca.
 - de obras: **Lovecraft**, **Sherlock Holmes**, **Moby Dick**, **Duna**, **Tolkien**;
 - de épocas e artes: **clássico greco-romano** (filósofos e clássicos) e **cyberpunk** (ficção científica).
 
-**Sugestões para completar a lista, se você quiser:** Viena de 1900, o consultório de Freud (psicologia e
-psicanálise, o seu maior eixo, com 440 livros); modernismo brasileiro (Brasil e lusofonia); manuscrito medieval, com
-iluminuras (romances históricos).
+**Entram depois desses sete** (sugestões minhas, que você aceitou): Viena de 1900, o consultório de Freud
+(psicologia e psicanálise, o seu maior eixo, com 440 livros); modernismo brasileiro (Brasil e lusofonia); manuscrito
+medieval, com iluminuras (romances históricos).
 
 **Como será feito:**
 
@@ -753,19 +764,18 @@ iluminuras (romances históricos).
 - **Todo tema passa pelo mesmo teste de contraste** dos dois que existem hoje (claro e escuro): texto legível em
   todos os pares de cor. Tema que não passar não entra.
 - Lovecraft, Sherlock Holmes e Moby Dick são de domínio público e podem dar nome ao tema. **Duna e Tolkien ainda são
-  obras protegidas:** o tema é inspirado nelas, mas leva um nome evocativo, a escolher com você.
+  obras protegidas:** o tema é inspirado nelas, mas leva um nome evocativo (os dois nomes estão logo abaixo).
 - A escolha do tema fica guardada no navegador, como já acontece com o claro e o escuro.
 - Começa com poucos temas bem acabados; os outros entram aos poucos.
 
-**A decidir com você antes de fazer** — três perguntas, cada uma com a minha sugestão (basta um "pode ser"):
+**Decidido com você em 11/11/2026:**
 
-1. **Quais sugestões entram.** *Sugestão:* as três, mas depois dos sete temas combinados; a primeira seria Viena de
-   1900, que veste o seu maior eixo.
-2. **O nome dos temas de Duna e de Tolkien.** *Sugestão:* "Deserto" (ou "Especiaria") para o de Duna; "Terras
-   antigas" (ou "Mapa do viajante") para o de Tolkien.
-3. **Claro e escuro em todo tema?** *Sugestão:* não. Cada tema nasce com um clima só, o dele: Lovecraft e
-   cyberpunk, escuros; Sherlock, Moby Dick, greco-romano e os outros, claros. O claro e o escuro de hoje continuam
-   existindo, como o tema padrão. Assim cada tema sai bem acabado, em vez de catorze meio prontos.
+1. **As três sugestões entram** — Viena de 1900, modernismo brasileiro e manuscrito medieval —, depois dos sete
+   temas combinados. A primeira delas é Viena de 1900, que veste o seu maior eixo.
+2. **Os nomes:** "Deserto" para o tema inspirado em Duna; "Terras antigas" para o inspirado em Tolkien.
+3. **Cada tema nasce com um clima só, o dele:** Lovecraft e cyberpunk, escuros; Sherlock Holmes, Moby Dick,
+   greco-romano e os outros, claros. O claro e o escuro de hoje continuam existindo, como o tema padrão. Assim cada
+   tema sai bem acabado, em vez de catorze meio prontos.
 
 ### Parte 5 — Estímulo à leitura (gamificação)
 
