@@ -443,7 +443,7 @@ enviada, arquivos anexados, backup com anexos) · `60-drawer` (gaveta do livro, 
 python tools/qa/tudo.py importador busca_capas   # os dois que não precisam de navegador
 pip install playwright pillow
 python -m playwright install chromium   # no Linux, se faltarem bibliotecas: python -m playwright install-deps chromium
-python tools/qa/tudo.py                 # tudo, ~20 min; termina com "TUDO CERTO"
+python tools/qa/tudo.py                 # tudo, ~25 min; termina com "TUDO CERTO"
 python tools/qa/tudo.py posse func6     # só alguns
 ```
 

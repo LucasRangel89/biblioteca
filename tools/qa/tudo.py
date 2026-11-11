@@ -1,6 +1,6 @@
 """Roda toda a verificação do painel e diz, no fim, se passou.
 
-Uso:  python tools/qa/tudo.py                          (todos os testes, ~20 min)
+Uso:  python tools/qa/tudo.py                          (todos os testes, ~25 min)
       python tools/qa/tudo.py foco a11y                (só os citados)
       python tools/qa/tudo.py importador busca_capas   (os dois que não precisam de navegador)
 Requisitos (uma vez): pip install playwright pillow  &&  python -m playwright install chromium
