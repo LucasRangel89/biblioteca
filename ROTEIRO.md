@@ -360,6 +360,8 @@ listagens de uma vez; o material antigo guardado em `referencias/` é revisto.
   parte dos quadrinhos, e os livros sem autor certo, que nem são procurados. Para esses, a saída é enviar a capa
   pelo painel, na ficha do livro.
 - **A capa da Apple é a do livro digital à venda hoje.** Pode não ser a da edição que está na sua estante.
+- **"Já li" para o livro que você não tem** — emprestado, de biblioteca, perdido. Está na ficha de qualquer
+  recomendação e de qualquer item da lista de compra (detalhes na etapa 3).
 - **O que muda para a privacidade:** o painel passa a pedir imagens a dois sites em vez de um. Continua valendo o
   resto: nada do que você anota vai junto, o pedido não diz de que página veio, e a chave "Mostrar as capas", em
   "Seus dados", desliga tudo.
