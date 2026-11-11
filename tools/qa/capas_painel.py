@@ -121,7 +121,7 @@ with sync_playwright() as p:
     print('CAPAS DESLIGADAS')
     pg.click('#b-dados'); pg.wait_for_timeout(400)
     texto = pg.inner_text('#dlg').replace('\u00a0', ' ')
-    ok('"Seus dados" explica de onde vêm as capas e quantos livros têm', 'Open Library' in texto and '5 dos 2.560 livros têm capa encontrada' in texto, re.findall(r'\d+ dos [\d.]+ livros[^.]*', texto))
+    ok('"Seus dados" explica de onde vêm as capas e quantos livros têm', 'Open Library' in texto and '5 dos 2.554 livros têm capa encontrada' in texto, re.findall(r'\d+ dos [\d.]+ livros[^.]*', texto))
     ok('a chave "mostrar as capas" começa ligada', pg.is_checked('#dlg input[data-x=capas]'))
     pg.click('#dlg input[data-x=capas]'); pg.wait_for_timeout(500)
     ok('desligar avisa que nada mais será buscado', pg.evaluate(TOAST) == 'Capas desligadas: o painel não busca mais nenhuma imagem.', pg.evaluate(TOAST))

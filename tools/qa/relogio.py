@@ -6,6 +6,11 @@ for sempre o mesmo dia (09/11/2026, 10h de Brasília).
 Capas — as imagens vêm da Open Library (covers.openlibrary.org). Nos testes ninguém vai à internet: cada pedido de
 capa é respondido aqui mesmo, com uma imagem pequena de cor fixa (a cor sai do número da capa). Para ensaiar uma
 capa que não existe, passe os números em `faltam`: esses recebem 404.
+
+Fonte — as medidas de largura no celular (os nomes da barra de baixo, os botões do filtro Tipo) dependem da letra com
+que o navegador de teste desenha. Foram calibradas com Open Sans; com uma letra bem mais larga (DejaVu Sans, a única
+instalada em muita máquina Linux) esses testes acusam estouro sem que o painel tenha mudado. `fonte_usada` diz qual
+foi usada, e os testes de largura a mostram quando falham.
 """
 import datetime, re, struct, zlib
 HOJE = datetime.datetime(2026, 11, 9, 13, 0, tzinfo=datetime.timezone.utc)
@@ -40,3 +45,15 @@ def fixa(pg, quando=None):
     pg.clock.set_fixed_time(quando or HOJE)
     capas_de_mentira(pg)
     return pg
+
+
+def fonte_usada(pg, seletor='body'):
+    """O nome da fonte com que o navegador desenhou o elemento (só no Chromium; em outro navegador, '?')."""
+    try:
+        s = pg.context.new_cdp_session(pg); s.send('DOM.enable'); s.send('CSS.enable')
+        raiz = s.send('DOM.getDocument')['root']['nodeId']
+        no = s.send('DOM.querySelector', {'nodeId': raiz, 'selector': seletor})['nodeId']
+        fontes = s.send('CSS.getPlatformFontsForNode', {'nodeId': no})['fonts']; s.detach()
+        return ', '.join(sorted({f['familyName'] for f in fontes})) or '?'
+    except Exception as e:
+        return f'? ({type(e).__name__})'

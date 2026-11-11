@@ -1,10 +1,12 @@
 """O importador da biblioteca virtual (tools/importar_digital.py), numa cópia temporária dos dados:
 repetir não muda nada; arquivo novo, arquivo ausente, marcador posto à mão, correção no inventário e --conferir;
+a classificação (temas, dificuldade, extensão) que vem da coluna `marcadores` do inventário;
 quadrinhos: subpasta de série, edição nova de série conhecida, série nova, adaptação com o título de um livro,
 subpasta que é outra pasta com listagem própria.
 E a conversão do catálogo para o painel (tools/build_catalog.py): src/catalog.json em dia; nomes antigos das linhas
-corrigidas (catalogo/renomeados.tsv). Não precisa de navegador."""
-import contextlib, io, json, pathlib, shutil, sys, tempfile
+corrigidas (catalogo/renomeados.tsv); trilhas de leitura (catalogo/trilhas.md); classificação de antes da vistoria
+(catalogo/antes-da-vistoria.tsv); e o HTML pronto com tudo isso dentro. Não precisa de navegador."""
+import contextlib, csv, io, json, pathlib, re, shutil, sys, tempfile
 
 QA = pathlib.Path(__file__).resolve().parent
 sys.path.insert(0, str(QA.parent))
@@ -49,6 +51,12 @@ obras = imp.obras_do_inventario(imp.ler_inventario(imp.INVENTARIO))
 ligadas, soltas = imp.casar(obras, L)
 confere(not soltas and len(ligadas) == len(obras), f'cada livro do inventário tem a sua linha no catálogo ({len(obras)})')
 confere(sum('tenho-digital' in b['tags'] for b in L) == len(obras), 'e cada #tenho-digital tem arquivo no inventário')
+sem_medida = [b['t'] for b in L if not {'d1', 'd2', 'd3'} & set(b['tags']) or not {'e1', 'e2', 'e3'} & set(b['tags'])]
+confere(not sem_medida and 'Sem dificuldade nem extensão' not in antes['RESUMO.md'], 'todo livro do catálogo tem dificuldade e extensão' + (f': faltam em {sem_medida[:5]}' if sem_medida else ''))
+pend = [r for r in imp.ler_inventario(imp.INVENTARIO) if imp.tem_obs(r, 'verificar') and not imp.tem_obs(r, 'ausente')]
+trecho = antes['RESUMO.md'].split('\n## A verificar\n')[-1].split('\n## ')[0]
+confere(len(pend) > 0 and trecho.count('\n- ') == len(pend) and all(f'{"subpasta" if r["formato"] == imp.FORMATO_PASTA else "arquivo"} `{r["pasta"]}\\{r["arquivo"]}`' in trecho for r in pend),
+        f'o resumo diz a pasta e o nome exato do arquivo (ou da subpasta) de cada item a verificar ({len(pend)})')
 
 # 2 ▸ --conferir não grava
 with open(tmp / 'listagens' / 'poesia.txte', 'ab') as f: f.write('Poemas Novos - Fulano de Tal.epub\r\n'.encode('cp850'))
@@ -72,6 +80,36 @@ for r in inv:
 (tmp / 'inventario.tsv').write_text(imp.texto_inventario(inv), encoding='utf-8', newline='\n')
 roda()
 confere(linha('Poemas Novos')['tags'] == ['poesia', 'lido', 'top', 'tenho-digital'], 'marcadores postos à mão ficam; #verificar sai quando o inventário é revisado')
+
+# 4b ▸ a classificação (temas, dificuldade, extensão) vem da coluna `marcadores` do inventário; na linha, à mão, só #lido e #top
+confere('\n## Sem dificuldade nem extensão\n' in ler('RESUMO.md') and '- Poemas Novos — Fulano de Tal · pasta `poesia`' in ler('RESUMO.md'), 'obra ainda sem classificação no inventário aparece no resumo, em "Sem dificuldade nem extensão"')
+inv = imp.ler_inventario(imp.INVENTARIO)
+for r in inv:
+    if r['arquivo'] == 'Poemas Novos - Fulano de Tal.epub': r['marcadores'] = 'BR #d1 e1 verificar tenho-fisico lido'      # o que não é classificação é ignorado
+(tmp / 'inventario.tsv').write_text(imp.texto_inventario(inv), encoding='utf-8', newline='\n')
+md = ler('catalogo.md').replace('| Poemas Novos | Fulano de Tal | #poesia #lido #top #tenho-digital |', '| Poemas Novos | Fulano de Tal | #poesia #tema-posto-a-mao #top #tenho-digital |')
+(tmp / 'catalogo.md').write_text(md, encoding='utf-8', newline='\n')
+roda()
+confere(linha('Poemas Novos')['tags'] == ['poesia', 'BR', 'd1', 'e1', 'top', 'tenho-digital'], 'a linha leva o tipo, a classificação do inventário, o #top posto à mão e a posse; tema posto à mão na seção 17 não fica')
+confere('Sem dificuldade nem extensão' not in ler('RESUMO.md') and 'Nada mudou.' in roda(), 'classificada, a obra sai da lista do resumo; repetir não muda nada')
+obra = lambda **k: dict({'t': 'Um Título', 'a': 'Alguém', 'verificar': False, 'marcadores': []}, **k)
+confere(imp.tags_da_obra(obra(genero='NF', pastas=['fisica e astronomia'])) == ['NF', 'ciencia', 'fisica', 'tenho-digital']
+        and imp.tags_da_obra(obra(genero='F', pastas=['fisica e astronomia'])) == ['F', 'tenho-digital']
+        and imp.tags_da_obra(obra(genero='NF', pastas=['fisica e astronomia'], marcadores=['cosmologia', 'd2', 'e2'], verificar=True), ('lido', 'outro')) == ['NF', 'cosmologia', 'd2', 'e2', 'lido', 'verificar', 'tenho-digital'],
+        'sem classificação valem os marcadores padrão da pasta (menos para o livro guardado na pasta de outro gênero); com classificação, só ela')
+arquivo = lambda nome, marcadores: dict(pasta='Filosofia', arquivo=nome, formato=nome.rsplit('.', 1)[1], tipo='livro', titulo='Obra em Dois Formatos', autor='Autora', catalogo='', eixo='9', genero='NF', marcadores=marcadores, obs='')
+duas = imp.obras_do_inventario([arquivo('a.epub', 'filosofia d2 e1'), arquivo('a.pdf', '#filosofia etica d2')])
+confere([o['marcadores'] for o in duas.values()] == [['filosofia', 'd2', 'e1', 'etica']], 'dois arquivos da mesma obra: a classificação junta o que as duas linhas dizem, sem repetir')
+tabela = list(csv.reader(io.StringIO(ler('inventario.tsv'), newline=''), delimiter='\t')); c = tabela[0].index('marcadores')
+texto = io.StringIO(newline=''); csv.writer(texto, delimiter='\t', lineterminator='\n').writerows([l[:c] + l[c + 1:] for l in tabela])
+(tmp / 'inventario-antigo.tsv').write_text(texto.getvalue(), encoding='utf-8', newline='\n')
+antigo = imp.ler_inventario(tmp / 'inventario-antigo.tsv')
+confere(len(antigo) == len(inv) and all(r['marcadores'] == '' for r in antigo) and imp.texto_inventario(antigo).split('\n')[0].split('\t') == imp.COLUNAS,
+        'inventário sem a coluna `marcadores` (como era antes da vistoria) ainda é lido; ao gravar, a coluna aparece, vazia')
+(tmp / 'inventario-ruim.tsv').write_text('pasta\tarquivo\tformato\tmarcadores\nx\ty.pdf\tpdf\td1\n', encoding='utf-8', newline='\n')
+try: imp.ler_inventario(tmp / 'inventario-ruim.tsv'); parou = ''
+except SystemExit as e: parou = str(e)
+confere('faltam as colunas tipo, titulo, autor, catalogo, eixo, genero, obs' in parou, 'sem uma coluna obrigatória o importador para e diz quais faltam')
 
 # 5 ▸ arquivo que some da listagem: "ausente" no inventário, fora do catálogo; se voltar, volta
 bruto = (tmp / 'listagens' / 'poesia.txte').read_bytes()
@@ -191,6 +229,63 @@ confere(r == {} and len(av) == 1 and 'não achei' in av[0], 'nome novo que não 
 r, av = renomeados('Outro\t\tLivro Novo\tAutora')
 confere(r == {} and len(av) == 1 and 'ainda é uma linha' in av[0], 'nome antigo que ainda é de outro livro: ignorado, com aviso')
 confere(renomeados('impar\tjose\tÍmpar\tJosé') == ({}, []), 'só acento ou maiúscula: para o painel é o mesmo nome, nada a fazer')
+
+# 10 ▸ as trilhas de leitura (catalogo/trilhas.md): a lista de cada trilha e o marcador #trilha-… nas linhas dos livros
+L0 = parse(antes['catalogo.md']); av = []; tr = bc.ler_trilhas(L0, av)
+confere(len(tr) == 20 and not av and tr == json.loads(bc.DEST_TRILHAS.read_text(encoding='utf-8')), 'as 20 trilhas são lidas sem avisos, e src/trilhas.json está em dia' + (': ' + ' | '.join(av[:3]) if av else ''))
+confere(all(sorted(t[3]) == [i for i, b in enumerate(L0) if t[0] in b['tags']] and len(set(t[3])) == len(t[3]) >= 3 for t in tr), 'a lista de cada trilha são exatamente as linhas do catálogo que levam o marcador dela')
+confere(all(t[1] and 30 < len(t[2]) < 400 and '|' not in t[2] and '#' not in t[2] for t in tr) and len({t[0] for t in tr}) == len({t[1] for t in tr}) == 20, 'cada trilha tem nome, marcador próprio e uma descrição curta, sem tabela nem marcador colados')
+
+def trilhas(texto, linhas):
+    (tmp / 'trilhas.md').write_text(texto, encoding='utf-8', newline='\n'); av = []
+    return bc.ler_trilhas(linhas, av, tmp / 'trilhas.md'), av
+LT = [{'t': 'Livro Um', 'a': 'Ana', 'tags': ['F', 'trilha-teste']}, {'t': 'Livro Dois', 'a': 'Bia', 'tags': ['F', 'trilha-teste']}, {'t': 'Livro Três', 'a': 'Caio', 'tags': ['F']}, {'t': 'Livro Um', 'a': 'Outro', 'tags': ['F']}]
+confere(trilhas('# Trilhas\n\nTexto de abertura.\n\n## 1. Trilha de Teste\n\n`#trilha-teste`\n\nUma descrição\nem duas linhas.\n\n1. Livro Dois | Bia\n2. Livro Um | Ana\n', LT)
+        == ([['trilha-teste', 'Trilha de Teste', 'Uma descrição em duas linhas.', [1, 0]]], []), 'trilha: marcador, nome, descrição e os livros na ordem da lista (com dois títulos iguais, vale o autor)')
+r, av = trilhas('## 1. Trilha de Teste\n\n`#trilha-teste`\n\nDescrição.\n\n1. Livro Um | Ana\n2. Livro Três | Caio\n3. Não Existe | Ninguém\n', LT)
+confere(r[0][3] == [0, 2] and len(av) == 3 and any('“Não Existe” (Trilha de Teste) não é uma linha do catálogo' in a for a in av)
+        and any('“Livro Três” está na lista da trilha, mas a linha não tem o marcador #trilha-teste' in a for a in av)
+        and any('“Livro Dois” tem o marcador, mas não está na lista da trilha #trilha-teste' in a for a in av), 'lista e marcadores que não batem: um aviso para cada diferença')
+r, av = trilhas('## 1. Sem Marcador\n\nDescrição.\n\n1. Livro Três | Caio\n', LT)
+confere(r == [] and len(av) == 2 and 'a trilha “Sem Marcador” está sem marcador' in av[0] and 'o marcador #trilha-teste não corresponde a nenhuma trilha' in av[1], 'trilha sem marcador não entra, com aviso; marcador de uma trilha que não está no arquivo, também')
+confere(bc.ler_trilhas(LT[2:], [], tmp / 'nao-existe.md') == [], 'sem o arquivo das trilhas, o painel fica sem trilhas (e sem erro)')
+# um livro da seção 17 numa trilha: o marcador vem do inventário, como o resto da classificação dele
+inv = imp.ler_inventario(imp.INVENTARIO)
+for r in inv:
+    if r['arquivo'] == 'Poemas Novos - Fulano de Tal.epub': r['marcadores'] = 'BR d1 e1 trilha-teste'
+(tmp / 'inventario.tsv').write_text(imp.texto_inventario(inv), encoding='utf-8', newline='\n')
+roda(); LV = livros()
+r, av = trilhas('## 1. Trilha de Teste\n\n`#trilha-teste`\n\nDescrição.\n\n1. Poemas Novos | Fulano de Tal\n', LV)
+confere(len(r) == 1 and [(LV[i]['t'], LV[i]['sec']) for i in r[0][3]] == [('Poemas Novos', 17)] and 'trilha-teste' in linha('Poemas Novos')['tags'] and not any('trilha-teste' in a or 'Poemas Novos' in a for a in av),
+        'livro da biblioteca virtual numa trilha: o marcador posto na coluna `marcadores` do inventário chega à linha, e a trilha o encontra')
+
+# 11 ▸ a classificação de antes da vistoria (catalogo/antes-da-vistoria.tsv): a base de quem já tinha livros editados no painel
+av = []; ca = bc.classe_anterior(dados, av)
+n = sum(1 for r in csv.DictReader(io.StringIO(bc.ANTES.read_text(encoding='utf-8-sig'), newline=''), delimiter='\t') if (r.get('titulo') or '').strip())
+confere(n > 200 and len(ca) == n and not av and ca == json.loads(bc.DEST_ANTES.read_text(encoding='utf-8')), f'cada linha do arquivo ({n}) é achada no catálogo de hoje, sem avisos, e src/antes.json está em dia' + (': ' + ' | '.join(av[:3]) if av else ''))
+situacao = {'tenho-fisico', 'tenho-digital', 'ja-tenho', 'lido'}
+confere([x[0] for x in ca] == sorted({x[0] for x in ca}) and all(1 <= e <= 16 and '#' not in m and not situacao & set(m.split()) for _, e, m in ca), 'uma entrada por linha, com eixo de 1 a 16 e só marcadores de classificação (sem posse nem leitura)')
+confere(all(e != dados[i][4] or not set(m.split()) <= set(dados[i][2].split()) for i, e, m in ca), 'só estão ali as linhas em que a vistoria trocou ou tirou alguma coisa (onde ela só acrescentou, o painel não precisa de base)')
+
+def antes_tsv(*linhas_tsv):
+    (tmp / 'antes.tsv').write_text('titulo\tautor\teixo\tmarcadores\n' + ''.join(l + '\n' for l in linhas_tsv), encoding='utf-8', newline='\n'); av = []
+    return bc.classe_anterior([['Livro Novo', 'Autora', 'F d1', 1, 2, ''], ['Outro', '', 'NF', 17, 9, '', None, [['Outro Velho', '']]]], av, tmp / 'antes.tsv'), av
+confere(antes_tsv('Livro Novo\tAutora\t3\t#NF #d2  historia') == ([[0, 3, 'NF d2 historia']], []), 'linha achada pelo título e autor: posição, eixo e marcadores de antes')
+confere(antes_tsv('Outro Velho\t\t12\tNF') == ([[1, 12, 'NF']], []), 'linha que mudou de nome depois da vistoria é achada pelo nome antigo')
+r, av = antes_tsv('Sumiu\tAlguém\t3\tF')
+confere(r == [] and len(av) == 1 and '“Sumiu” (Alguém) não é mais uma linha do catálogo' in av[0], 'livro que saiu do catálogo: ignorado, com aviso')
+r, av = antes_tsv('Livro Novo\tAutora\t0\tF', 'Outro\t\tdezessete\tNF')
+confere(r == [] and len(av) == 2 and all('esperado: 1 a 16' in a for a in av), 'eixo que não vai de 1 a 16: ignorado, com aviso')
+confere(antes_tsv('Livro Novo\tAutora\t3\tF', 'Livro Novo\tAutora\t5\tNF') == ([[0, 3, 'F']], []), 'linha repetida: vale a primeira')
+confere(bc.classe_anterior(dados, [], tmp / 'nao-existe.tsv') == [], 'sem o arquivo, nenhuma base antiga (e sem erro)')
+
+# 12 ▸ o painel pronto leva o que está em src/: quem muda o catálogo e não refaz o HTML é avisado aqui
+html = (QA.parent.parent / 'Biblioteca_Lucas_Dashboard.html').read_text(encoding='utf-8')
+def embutido(nome):
+    m = re.search(r'^const %s = (.*);$' % nome, html, re.M)
+    return json.loads(m.group(1)) if m else None
+confere(embutido('CATALOGO') == dados and embutido('TRILHAS_DADOS') == tr and embutido('CLASSE_ANTES') == ca,
+        'Biblioteca_Lucas_Dashboard.html leva o catálogo, as trilhas e a classificação de antes que estão em src/ (se falhar: python tools/atualizar.py)')
 
 shutil.rmtree(tmp, ignore_errors=True)
 print('ERROS:', len(erros))
