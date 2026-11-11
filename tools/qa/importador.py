@@ -287,6 +287,17 @@ def embutido(nome):
 confere(embutido('CATALOGO') == dados and embutido('TRILHAS_DADOS') == tr and embutido('CLASSE_ANTES') == ca,
         'Biblioteca_Lucas_Dashboard.html leva o catálogo, as trilhas e a classificação de antes que estão em src/ (se falhar: python tools/atualizar.py)')
 
+# 13 ▸ a medição dos filtros (tools/analisar_marcadores.py): de onde saem os números de catalogo/ANALISE-DOS-FILTROS.md
+import analisar_marcadores as am
+LA = am.carregar(); GA = am.grupos_do_painel(LA); medida = am.medir()
+confere(len(LA) == len(dados) and f'CATÁLOGO: {len(LA)} linhas' in medida and all(k in medida for k in ('COBERTURA', 'ESPECÍFICO × GERAL', 'EIXOS', 'DIFICULDADE E EXTENSÃO', 'PASTA DO DONO')),
+        'analisar_marcadores.py mede o catálogo inteiro: alcance dos filtros, eixos, dificuldade e extensão, pastas × eixos')
+confere(len(GA['Gêneros']) > 20 and len(GA['Temas']) > 40 and len(GA['Trilhas de leitura']) == len(tr) and all(1 <= b['eixo'] <= 16 and b['d'] and b['e'] and b['tipo'] for b in LA),
+        'os grupos medidos são os do painel, e toda linha do catálogo tem tipo, eixo, dificuldade e extensão')
+usados = {t for b in LA for t in b['tags']}
+sem_uso = [t for g in ('Gêneros', 'Temas', 'Época e origem', 'Afinidades') for t in GA[g] if t not in usados]
+confere(not sem_uso, 'todo marcador que o painel oferece nos filtros está em uso em algum livro' + (': ' + ', '.join(sem_uso[:5]) if sem_uso else ''))
+
 shutil.rmtree(tmp, ignore_errors=True)
 print('ERROS:', len(erros))
 for e in erros: print('  ', e)

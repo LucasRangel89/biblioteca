@@ -6,6 +6,10 @@ No painel, cada trilha mostra o que você já tem e o que já leu.
 Cada item é `Título | Autor`, **como estão no Catálogo Mestre**: é por eles que o painel encontra o livro. O marcador da trilha
 (`#trilha-…`) também vai na linha do livro, no catálogo; `python tools/build_catalog.py` avisa se os dois lugares discordarem.
 
+As trilhas 1 a 20 vieram da "versão 3" do catálogo e ficam como chegaram. As trilhas 21 a 36 foram montadas em 11/11/2026
+a partir do que está no acervo: nelas há livros da biblioteca virtual, que levam o marcador da trilha na coluna
+`marcadores` do inventário (`biblioteca-virtual/inventario.tsv`), e não na linha do catálogo, que é gerada.
+
 ## 1. Antes da Palavra: neandertais, origens e o que nos fez humanos
 
 `#trilha-origens`

@@ -381,7 +381,8 @@ outros aparecem com um desenho com a inicial do título.
   Library (falta a Apple); `nao-achei-2`, procurada nas duas; `sem-autor`, não procurada.
 - **Corrigir uma capa errada:** em `catalogo/capas.tsv`, troque o número da linha (ou ponha o endereço `https://…` de
   uma imagem) e escreva `manual` na coluna `origem` — a busca nunca mexe nessas linhas. Para um livro ficar sem
-  capa, apague o número e deixe `manual`. Depois, `python tools/atualizar.py`.
+  capa, apague o número e deixe `manual`. Depois, `python tools/atualizar.py`. Para a busca procurar de novo a capa de
+  um livro só, apague a linha dele em `catalogo/capas.tsv`: na execução seguinte ele conta como livro novo.
 - **Ou envie a capa pelo painel:** na ficha do livro, "Suas anotações" → "Enviar capa…". Essa imagem fica guardada no
   seu navegador (e no backup), vale só para você e aparece mesmo com as capas desligadas — não é pedida à internet.
 

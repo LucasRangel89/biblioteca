@@ -495,8 +495,9 @@ fizer sentido, ou se faltar uma, diga: "tire a trilha tal", "troque o livro tal"
 
 Todas têm edição brasileira, e nenhuma estava no seu acervo. Pesquisei na internet, em 11/11/2026, os prêmios e
 lançamentos de 2025 e 2026 (Jabuti, Nobel, Booker, os melhores do ano da revista *Quatro Cinco Um*) e os livros novos
-de autores que você já lê. Treze das 60 saíram dessa pesquisa ou tiveram a edição conferida nela; as outras 47 são
-edições brasileiras conhecidas, em catálogo há anos. Dezoito delas já entram em alguma das trilhas novas.
+de autores que você já lê. Em 31 das 60, conferi na internet o título, a editora e o ano da edição brasileira. As
+outras 29 são livros de grandes editoras, em catálogo há anos; a editora que aparece na tabela é a que eu conheço, e
+não foi conferida uma a uma. Dezoito das 60 já entram em alguma das trilhas novas.
 
 | Área | Livros (editora no Brasil) |
 | --- | --- |
