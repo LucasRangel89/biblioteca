@@ -77,14 +77,15 @@ do autor e do tipo de obra — nenhum arquivo foi aberto.
 | `catalogo/ANALISE-DOS-FILTROS.md` | Análise e meta-análise dos filtros e da categorização, de 11/11/2026: o que cada filtro alcança, quanto confiar em cada dado, o que foi corrigido e o que fica proposto (as propostas 1 a 3 já foram feitas; as notas **[depois]** dizem o que mudou). Os números saem de `tools/analisar_marcadores.py` |
 | `catalogo/VISTORIA.md` | Relatório da vistoria dos marcadores de 10/11/2026: o que foi conferido, o que mudou e as dúvidas que ficaram. É um retrato daquela data; não é refeito pelas ferramentas |
 | `catalogo/antes-da-vistoria.tsv` | A classificação que 289 linhas tinham antes da vistoria. O painel precisa dela para atualizar os livros de quem já tinha anotações (ver "Quando a classificação muda no catálogo"). **Não apague nem refaça** |
+| `catalogo/sinopses.tsv` | As sinopses da ficha e o registro das buscas: uma linha por livro pesquisado, com título, autor, sinopse, fonte e data. Linha sem sinopse é pendência, com o motivo na coluna `fonte` (ver "Sinopses") |
 | `biblioteca-virtual/listagens/*.txte` | A lista de arquivos de cada pasta da biblioteca virtual (uma listagem por pasta) |
 | `biblioteca-virtual/inventario.tsv` | Uma linha por arquivo (e por subpasta de série de quadrinhos), com título, autor, eixo, gênero e marcadores **revisados** — é aqui que se corrige um livro digital |
 | `biblioteca-virtual/RESUMO.md` | Relatório da última importação: o que entrou, o que falta conferir e o que ficou de fora (gerado) |
 | `biblioteca-virtual/Biblioteca virtual.md` | A listagem original, como foi enviada (só para consulta; os acentos estão corrompidos) |
-| `src/` | Fontes do painel: `index.html`, `styles.css`, `js/00-util.js` … `70-app.js`; `catalog.json`, `capas.json`, `trilhas.json` e `antes.json` (gerados) |
+| `src/` | Fontes do painel: `index.html`, `styles.css`, `js/00-util.js` … `70-app.js`; `catalog.json`, `capas.json`, `trilhas.json`, `antes.json` e `sinopses.json` (gerados) |
 | `tools/atualizar.py` | Faz tudo de uma vez: importa a biblioteca virtual, converte o catálogo e monta o painel |
 | `tools/importar_digital.py` | Listagens + inventário → Catálogo Mestre (seção 17 e `#tenho-digital`) e `RESUMO.md` |
-| `tools/build_catalog.py` | Catálogo Mestre + inventário → `src/catalog.json`; `catalogo/capas.tsv` → `src/capas.json`; `catalogo/trilhas.md` → `src/trilhas.json`; `catalogo/antes-da-vistoria.tsv` → `src/antes.json` (usa `parse_catalog.py`, `eixos.py` e `capas.py`). O que não bate sai como `AVISO:` |
+| `tools/build_catalog.py` | Catálogo Mestre + inventário → `src/catalog.json`; `catalogo/capas.tsv` → `src/capas.json`; `catalogo/trilhas.md` → `src/trilhas.json`; `catalogo/antes-da-vistoria.tsv` → `src/antes.json`; `catalogo/sinopses.tsv` → `src/sinopses.json` (usa `parse_catalog.py`, `eixos.py` e `capas.py`). O que não bate sai como `AVISO:` |
 | `tools/build.py` | `src/` → `Biblioteca_Lucas_Dashboard.html`; confere que não sobrou referência externa |
 | `tools/capas.py` | Busca das capas na Open Library e, para o que ela não tem, na Apple Books → `catalogo/capas.tsv`. É o único script que precisa de internet; no GitHub, quem o roda é o serviço "Buscar capas" |
 | `tools/analisar_marcadores.py` | Mede os filtros e a categorização (alcance de cada grupo, marcadores raros e amplos, pastas × eixos…). Só mostra; não grava nada |
@@ -209,6 +210,24 @@ pelo nome antigo, e a gaveta dele mostra o **título anterior**. Se o nome novo 
 As linhas do arquivo não devem ser apagadas depois: alguém pode abrir o painel novo com dados guardados há muito
 tempo. Livros da biblioteca virtual não precisam disto — são reconhecidos pelo arquivo.
 
+### Sinopses
+
+A ficha de um livro mostra a sinopse que estiver em `catalogo/sinopses.tsv`. O arquivo tem cinco colunas separadas
+por tabulação — `titulo`, `autor`, `sinopse`, `fonte`, `data` — e uma linha por livro **pesquisado**:
+
+- **título e autor** iguais aos do catálogo (o nome antigo de um livro renomeado também é aceito);
+- **sinopse**: duas ou três frases, de 140 a 400 caracteres, sem contar o final, escritas para o painel — nunca
+  copiadas de editora ou livraria. Aspas, só as curvas (“ ”): as retas confundem planilhas;
+- **fonte**: `conhecimento geral`, para obra bem conhecida, ou o endereço consultado (mais de um, separados por ` ; `);
+- **data** da pesquisa, `AAAA-MM-DD`.
+
+Livro pesquisado em que não deu para confirmar do que se trata fica **sem sinopse**, com o motivo na coluna `fonte`,
+começando por `pendente:`. Assim o arquivo diz o que já foi feito, o que falta e o que não precisa ser buscado de
+novo. Depois de mexer, `python tools/atualizar.py`: o que não bate — livro que não está no catálogo, linha repetida,
+sinopse longa demais ou de uma frase só, falta de fonte — sai como `AVISO: sinopses.tsv: …`.
+
+O trabalho é feito em lotes; a tabela dos lotes e a lista de pendências estão no `ROTEIRO.md` (etapa 10, parte 3).
+
 ### Chegou um livro na estante
 
 Acrescente a linha na seção 0 do catálogo com `#tenho-fisico` (ou acrescente `#tenho-fisico` a uma recomendação) e
@@ -268,6 +287,10 @@ Seis guias: **Visão geral**, **Biblioteca**, **Recomendações**, **Finanças**
   mensagem; se o navegador não deixar, o painel tenta o comando antigo e, por fim, mostra o texto para copiar à mão.
   Na ficha de uma **trilha**, "imprimir" e "copiar" levam os livros na ordem do roteiro, com a situação de cada um
   (tenho, falta, lido). Quem leva a lista para fora é você: o painel não envia nada.
+- **Sinopse na ficha.** Ao abrir um livro, a ficha traz, logo abaixo do título, duas ou três frases sobre ele — do
+  que trata, sem contar o final. Só aparece nos livros já pesquisados (`catalogo/sinopses.tsv`; ver "Sinopses"); nos
+  outros, a ficha fica como sempre foi, sem espaço vazio. A sinopse vem do catálogo: não é gravada com os seus dados
+  nem vai para o backup, e muda sozinha quando o arquivo é corrigido.
 - **Dinheiro tem lugar próprio.** Visão geral, Biblioteca e Recomendações não mostram valores. **Finanças** reúne o
   que foi investido, o preço médio pago, os gastos por período e por loja e a tabela das compras registradas;
   Próximas aquisições e Preços continuam com a lista de compra e as cotações.
@@ -504,6 +527,7 @@ avisa no fim, em vez de dar o teste por completo. `git fetch --unshallow` traz o
 | `trilhas` | Camadas e trilhas: os grupos de marcadores nos filtros; "Por que ler" na ficha; o painel das trilhas e a ficha de uma trilha (o que tenho, o que li, o que falta); "O que comprar primeiro" e a coluna "Ordem de compra" (a ordem, os motivos, o botão para a lista de compra; a ordem se refaz quando um livro é comprado); "Temas e camadas"; celular |
 | `filtros` | Os filtros por marcador, com o que se espera contado direto de `src/catalog.json`: os treze grupos, cada marcador num só, e as dez portas da psicologia; o número de cada botão contra o catálogo, na Visão geral, na Biblioteca e nas Recomendações; o botão apagado (cor e contorno, não transparência) que continua clicável; a soma dentro do grupo e o cruzamento entre grupos, com "ou" e "e" nos filtros ativos; a chave "qualquer um / todos", guardada e mantida ao recarregar; o quadro "Temas e camadas" (as barras não somem; a barra ligada sem livros fica, com zero); a busca de marcador pelo nome completo e pela explicação; **o número do botão contra a lista**, em seis guias com os dados de exemplo — 119 botões clicados, também com um período escolhido; preferências guardadas pelo painel anterior ou estragadas; a chave na folha de filtros do celular; contraste AA do que é novo, nos dois temas |
 | `ocultar` | "Ocultar", com o que se espera contado direto de `src/catalog.json` e `src/trilhas.json`: o número de cada opção (3 situações, 4 tipos, 16 eixos e o marcador achado pela busca); o livro oculto fora das tabelas, das abas, dos números dos filtros, da fila, da ordem de compra e das trilhas; o aviso sob a barra, o rodapé, a busca do topo e a ficha; a lista vazia que explica; guardado e resistente à recarga, nas seis guias; "já li" some das listas e continua nos números e gráficos de leitura; regras juntas escondem a união; "mostrar todos", "Limpar tudo" (não mexe) e "Recomeçar" (desfaz); a barra numa linha só em 1366 px e o quadro dentro da janela; o celular; o que veio guardado errado; contraste AA nos dois temas |
+| `sinopses` | A sinopse na ficha. Sem navegador: `catalogo/sinopses.tsv` inteiro (cabeçalho, cinco campos, cada linha achada no catálogo, sem repetição); cada sinopse como combinado (duas ou três frases, 140 a 400 caracteres, fonte e data; as duas amostras aprovadas, idênticas); pendência sem sinopse, com o motivo e listada no `ROTEIRO.md`; o lote 1 completo (estante e `#top`); o leitor do arquivo avisando de cada erro; `src/sinopses.json` e o painel em dia. Na ficha: a seção no alto, com o texto idêntico ao do arquivo; nada no lugar em livro sem sinopse; a sinopse continua depois de mexer no livro e recarregar, e não é gravada com os dados; contraste nos dois temas e largura no celular |
 | `listas` | "Imprimir" e "Copiar", nas tabelas e nas trilhas: os três botões nas seis tabelas; a folha com as mesmas linhas da tabela (todas as páginas), na mesma ordem, e o cabeçalho com lista, aba, quantidade, ordem, filtros, busca e data; no papel (mídia de impressão emulada) só a folha aparece, preta no branco nos dois temas, com o cabeçalho da tabela repetido e sem linha cortada; **PDF de verdade** gerado pelo navegador: o número de páginas confere com o que o painel estimou, também com a página travada por uma caixa aberta; a página volta ao normal depois (com e sem o aviso do navegador); lista longa pergunta antes; lista vazia só avisa; quadradinho marcado nos lidos e estrela nas prioridades, desenhados; valores só com o olho aberto; ocultos fora, com a nota; a área de transferência recebe o texto esperado, e os dois caminhos de reserva; a folha e o texto de uma trilha; o celular; a pré-visualização isolada (sem imprimir e sem erro) |
 | `vistoria` | O catálogo revisto no painel (todo livro com tipo, eixo, dificuldade e extensão; os marcadores novos nos filtros) e **o que acontece com quem já tinha livros editados**: com o painel anterior, tirado do Git, edita oito livros e abre o painel novo — o que não foi mexido acompanha a vistoria, o que foi mexido fica; duas edições que viraram uma linha; a recomendação que mudou de título. Depois, o catálogo muda de novo em quatro livros (só no catálogo, só no painel, nos dois, em nada) |
 | `capas_painel` | As capas no painel, com uma lista de capas conhecida: tabela, listas e ficha; capa da Open Library, capa da Apple Books e capa posta à mão; imagem que falta (nas duas fontes); o que o navegador pede, e quando; a chave "Mostrar as capas"; a capa do catálogo não é guardada nem aceita de um backup; endereços inválidos; celular |

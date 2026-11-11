@@ -320,7 +320,7 @@ function montarGaveta() {
   const el = $('#gaveta');
   el.innerHTML = `<div class="gv-fundo" data-fechar></div><aside class="gv-p" role="dialog" aria-modal="true" aria-label="Detalhes do livro" tabindex="-1">
     <header class="gv-h"><div class="gv-k" id="gv-k"></div><button type="button" class="ib" data-fechar aria-label="Fechar detalhes">${icone('fechar')}</button></header>
-    <div class="gv-c"><div id="gv-topo"></div><div id="gv-estado"></div>
+    <div class="gv-c"><div id="gv-topo"></div><section id="gv-sin" aria-labelledby="gv-sin-t" hidden></section><div id="gv-estado"></div>
       <section id="gv-notas" aria-labelledby="nt-t"></section>
       <section id="gv-px" hidden><div class="gv-st"><h4>Preços</h4><span id="gv-pxs"></span></div><div id="gv-graf"></div><div class="legs" id="gv-leg"></div><div id="gv-fontes"></div></section>
       <div id="gv-resto"></div></div>
@@ -357,6 +357,8 @@ function desenharGaveta() {
   $('#gv-k').innerHTML = `<span class="pill col-${b.col}">${COLECOES[b.col].n}</span>${b.demo ? '<span class="pill ex" title="Datas, valores e preços deste item são simulados">dados de exemplo</span>' : ''}`;
   $('#gv-topo').innerHTML = `${urlCapa(b) ? capaHtml(b, 'g') : ''}<div class="gv-tx"><h2>${esc(b.t)}</h2><p class="gv-a2">${esc(b.a || 'Autor não informado')}</p>
     <div class="gv-ch"><button type="button" class="tag lig" data-eixo="${b.eixo}" title="Filtrar por este eixo">${EIXOS[b.eixo] ? esc(EIXOS[b.eixo].n) : 'Sem eixo'}</button><span class="tag">${TIPOS[b._tipo].n}</span>${b._d ? `<span class="tag">${pontos(b._d)}${NIVEIS[b._d].n}</span>` : ''}${b._e ? `<span class="tag" title="${EXTENSOES[b._e].d}">${EXTENSOES[b._e].n} · ${EXTENSOES[b._e].d}</span>` : ''}${b._top ? `<span class="tag dest">${icone('estrela', 12)}Prioridade</span>` : ''}${b.tags.includes('sem-pt') ? '<span class="tag av">Sem edição em PT</span>' : ''}${b.tags.includes('verificar') ? '<span class="tag av">A verificar</span>' : ''}</div>${oculto(b) ? `<p class="gv-fora">${icone('olhoOff', 14)}<span>Fora das listas: você pediu para ocultar <b>${esc(motivosFora(b).join(' · '))}</b>.</span></p>` : ''}</div>`;
+  // a sinopse, quando o livro já tem (catalogo/sinopses.tsv); sem ela, nada aparece no lugar
+  const sin = $('#gv-sin'); sin.hidden = !b._sin; sin.innerHTML = b._sin ? `<div class="gv-st"><h4 id="gv-sin-t">Sinopse</h4></div><p class="gv-sin-tx">${esc(b._sin)}</p>` : '';
   let f = '';
   if (b.col === 'acervo') {
     f += fato('Formato', fmtHtml(b) + (b.plat ? ` <span class="mudo">· ${esc(b.plat)}</span>` : ''));

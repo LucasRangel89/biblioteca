@@ -639,6 +639,8 @@ td.c-spark svg { margin-left: auto; margin-right: auto; }
 .lnk { color: var(--accent-forte); text-decoration: underline; text-underline-offset: 2px; font-size: inherit; border-radius: 3px; }
 .lnk:hover { color: var(--accent); }
 .gv-obs { color: var(--ink-2); line-height: 1.5; }
+#gv-sin { margin-top: 16px; }
+.gv-sin-tx { margin: 0; font: 15px/1.6 var(--serif); color: var(--ink); text-wrap: pretty; hyphens: auto; }      /* a sinopse: texto de leitura, na letra dos títulos */
 .fatos > .f-oc { grid-column: 1 / -1; }
 /* suas anotações: comentários, "possui análise", arquivos anexados e a capa enviada */
 #gv-notas textarea { display: block; width: 100%; min-height: 76px; }

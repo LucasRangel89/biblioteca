@@ -182,6 +182,7 @@ function novoLivro(o) {
     arq: '',        // identificadores dos arquivos da biblioteca virtual (reconhecem o livro se o título mudar no catálogo)
     _dg: null,      // dados da biblioteca virtual; vêm sempre do catálogo embutido e não são salvos
     _ant: null,     // [[título, autor], …] que a linha do catálogo já teve (catalogo/renomeados.tsv); também vêm do catálogo e não são salvos
+    _sin: '',       // sinopse do catálogo (catalogo/sinopses.tsv); não é salva
     _img: 0,        // imagem da capa: número na Open Library ou endereço https — o da Apple Books, ou um posto à mão (catalogo/capas.tsv); vem do catálogo e não é salva
   }, o));
 }
@@ -238,7 +239,10 @@ const chaveCat = r => norm(r[0]) + '|' + norm(r[1]);
 const chaveLivro = b => norm(b.t) + '|' + norm(b.a);
 const tagsCat = r => r[2].split(' ').filter(Boolean);
 const doCatalogo = (r, id) => estadoBase(novoLivro({ id, t: r[0], a: r[1], tags: tagsCat(r), sec: r[3], eixo: r[4], obs: r[5] || '', o: chaveCat(r), arq: r[6] ? r[6][4] : '', _dg: r[6] || null, _ant: r[7] || null }));
-function livrosDoCatalogo() { return CATALOGO.map((r, i) => { const b = doCatalogo(r, 'c' + i); b._img = CAPAS[i] || 0; return b; }); }
+/* sinopse: duas ou três frases sobre o livro, escritas para o painel (catalogo/sinopses.tsv). Só os livros já pesquisados têm;
+   vem sempre do catálogo embutido, pela linha do livro, e não é salva com os dados do usuário. */
+const SINOPSE_DA_LINHA = new Map(SINOPSES);
+function livrosDoCatalogo() { return CATALOGO.map((r, i) => { const b = doCatalogo(r, 'c' + i); b._img = CAPAS[i] || 0; b._sin = SINOPSE_DA_LINHA.get(i) || ''; return b; }); }
 /* imagem da capa: endereço da imagem do livro, ou '' (sem capa achada, livro criado no painel, ou capas desligadas) */
 let MOSTRAR_CAPAS = true;
 const enderecoCapa = c => (!c ? '' : typeof c === 'number' ? (c > 0 ? `https://covers.openlibrary.org/b/id/${Math.round(c)}-M.jpg?default=false` : '') : typeof c === 'string' && /^https:\/\//i.test(c) ? c : '');
@@ -299,7 +303,7 @@ const ASSINATURA = CATALOGO.length + '.' + hashStr(JSON.stringify(CATALOGO)).toS
 function anexarDigital(livros) {
   const linhas = new Map(CATALOGO.map((r, i) => [chaveCat(r), i]));
   for (const b of livros) {
-    const i = b.o ? linhas.get(b.o) : undefined, r = i == null ? null : CATALOGO[i]; b._dg = (r && r[6]) || null; b._ant = (r && r[7]) || null; b._img = (r && CAPAS[i]) || 0; if (b._dg) b.arq = b._dg[4];
+    const i = b.o ? linhas.get(b.o) : undefined, r = i == null ? null : CATALOGO[i]; b._dg = (r && r[6]) || null; b._ant = (r && r[7]) || null; b._img = (r && CAPAS[i]) || 0; b._sin = (r && SINOPSE_DA_LINHA.get(i)) || ''; if (b._dg) b.arq = b._dg[4];
     if (b.u && !b.cl && r) b.cl = classeCat(r);       // dados de um painel antigo: daqui em diante a base é o catálogo de agora
     derivar(b);
   }
