@@ -251,8 +251,9 @@ Seis guias: **Visão geral**, **Biblioteca**, **Recomendações**, **Finanças**
   todos". A lista que fica vazia porque o que caberia nela está oculto diz isso. "Limpar tudo" é dos filtros e não
   mexe no que está oculto; "Recomeçar do catálogo original" desfaz.
   **A exceção:** quem saiu só por "já li" continua contando nos números de leitura — leituras concluídas, "Por
-  ler", "Adquiridos × lidos", as roscas por situação de leitura e o andamento das trilhas. O livro some das listas,
-  mas não deixa de ter sido lido; o quadro que faz essa conta avisa: "conta os lidos ocultos".
+  ler", "Adquiridos × lidos", as roscas por situação de leitura — e continua aparecendo nas trilhas de que faz
+  parte, com a etiqueta "Lido". O livro some das listas, mas não deixa de ter sido lido; o quadro que faz essa conta
+  avisa: "conta os lidos ocultos".
 - **Levar uma lista: Imprimir, Copiar e CSV.** Toda tabela tem os três botões, e os três levam **as linhas
   filtradas, todas** — não só a página que está à vista —, na ordem em que estão.
   **Imprimir** monta uma folha limpa e abre a caixa de impressão do navegador, que também salva em PDF: um

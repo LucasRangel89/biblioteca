@@ -2361,7 +2361,8 @@ function selTags() {
    estão fora (pintarFora, em 70-app). Regras: situação (já li · sem edição em PT · a verificar), tipo, eixo e marcador;
    basta uma para o livro sair.
    Exceção única: quem saiu só por "já li" continua contando no que é número de leitura — leituras concluídas e suas páginas,
-   adquiridos × lidos, o andamento das trilhas. O livro some das listas, mas não deixa de ter sido lido (ver c.L, em contexto). */
+   adquiridos × lidos — e continua aparecendo nas trilhas de que faz parte, com a etiqueta "Lido". O livro some das listas, mas
+   não deixa de ter sido lido (ver c.L, em contexto, e estadoTrilhas). */
 const SIT_FORA = [['lido', 'Já li', b => b.leit === 'lido'], ['sem-pt', 'Sem edição em PT', b => b.tags.includes('sem-pt')], ['verificar', 'A verificar', b => b.tags.includes('verificar')]];
 const ROTULO_TIPO = { F: 'Ficção', NF: 'Não ficção', HQ: 'HQ', O: 'Poesia e outros' };
 const minuscula = s => (s === s.toUpperCase() ? s : s.charAt(0).toLowerCase() + s.slice(1));      // no meio da frase: "Sem edição em PT" → "sem edição em PT"; "HQ" fica
@@ -2537,14 +2538,15 @@ function contagens(c) {
    Para cada trilha: os livros (na ordem da lista; quem ganhou o marcador no painel entra no fim), quantos estão no acervo,
    quantos foram lidos e quais ainda faltam — isto é, nem estão no acervo nem foram lidos (um livro lido emprestado não falta). */
 function estadoTrilhas() {
-  // Livro oculto (ver "ocultar") não entra na trilha. O que só saiu das listas por "já li" continua contando no andamento:
-  // fica em livros e fora de vis (o que a trilha mostra). esc = quantos livros da trilha não aparecem, por um motivo ou por outro.
+  // Livro oculto (ver "ocultar") não entra na trilha — menos o que só saiu das listas por "já li": esse continua na trilha, com
+  // a etiqueta "Lido", e contando no andamento (pedido do dono da biblioteca, 11/11/2026). vis = o que a trilha mostra (hoje, o
+  // mesmo que livros). esc = quantos livros da trilha não aparecem, por causa das outras regras.
   const porTag = new Map(TRILHAS.map(t => [t.tag, []])), foraDe = new Map();
   for (const b of DB.livros) { const f = oculto(b, true); for (const tg of b.tags) { const l = porTag.get(tg); if (!l) continue; if (f) foraDe.set(tg, (foraDe.get(tg) || 0) + 1); else l.push(b); } }
   return TRILHAS.map(t => {
     const pos = new Map(t.linhas.map((k, i) => [k, i])), ord = b => (pos.has(b.o) ? pos.get(b.o) : 1e6);
-    const livros = porTag.get(t.tag).sort((a, z) => ord(a) - ord(z) || a.t.localeCompare(z.t, 'pt-BR')), vis = FORA.lido ? livros.filter(b => b.leit !== 'lido') : livros;
-    return { t, livros, vis, esc: (foraDe.get(t.tag) || 0) + livros.length - vis.length, n: livros.length, tenho: livros.filter(b => b.col === 'acervo').length, lidos: livros.filter(b => b.leit === 'lido').length, faltam: livros.filter(b => b.col !== 'acervo' && b.leit !== 'lido') };
+    const livros = porTag.get(t.tag).sort((a, z) => ord(a) - ord(z) || a.t.localeCompare(z.t, 'pt-BR'));
+    return { t, livros, vis: livros, esc: foraDe.get(t.tag) || 0, n: livros.length, tenho: livros.filter(b => b.col === 'acervo').length, lidos: livros.filter(b => b.leit === 'lido').length, faltam: livros.filter(b => b.col !== 'acervo' && b.leit !== 'lido') };
   });
 }
 
@@ -4321,7 +4323,7 @@ function montarFiltros() {
             <div class="pop largo" id="pop-fora"><div class="pop-h"><b>Ocultar</b><button type="button" class="lk" data-fora-limpar hidden>mostrar tudo</button></div>
               <p class="pop-n fo-n">O que você marcar aqui <b>sai de todas as telas</b> — listas, gráficos e contagens — até ser desmarcado. A escolha fica guardada neste navegador. O número ao lado é quantos livros cada opção esconde.</p>
               <span class="pop-r">Situação</span><div class="pop-l">${SIT_FORA.map(([v, n]) => opF('sit', v, n)).join('')}</div>
-              <p class="pop-n fo-n">O que você já leu sai das listas, mas continua contando nas leituras concluídas e no andamento das trilhas.</p>
+              <p class="pop-n fo-n">O que você já leu sai das listas, mas continua contando nas leituras concluídas e aparecendo nas trilhas de que faz parte.</p>
               <span class="pop-r">Tipo</span><div class="pop-l">${Object.entries(ROTULO_TIPO).map(([v, n]) => opF('tipo', v, n)).join('')}</div>
               <span class="pop-r">Eixo</span><div class="pop-l">${EIXOS.slice(1).map((e, i) => opF('eixo', i + 1, e.n)).join('')}</div>
               <span class="pop-r">Marcador</span>

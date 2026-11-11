@@ -77,7 +77,7 @@ function montarFiltros() {
             <div class="pop largo" id="pop-fora"><div class="pop-h"><b>Ocultar</b><button type="button" class="lk" data-fora-limpar hidden>mostrar tudo</button></div>
               <p class="pop-n fo-n">O que você marcar aqui <b>sai de todas as telas</b> — listas, gráficos e contagens — até ser desmarcado. A escolha fica guardada neste navegador. O número ao lado é quantos livros cada opção esconde.</p>
               <span class="pop-r">Situação</span><div class="pop-l">${SIT_FORA.map(([v, n]) => opF('sit', v, n)).join('')}</div>
-              <p class="pop-n fo-n">O que você já leu sai das listas, mas continua contando nas leituras concluídas e no andamento das trilhas.</p>
+              <p class="pop-n fo-n">O que você já leu sai das listas, mas continua contando nas leituras concluídas e aparecendo nas trilhas de que faz parte.</p>
               <span class="pop-r">Tipo</span><div class="pop-l">${Object.entries(ROTULO_TIPO).map(([v, n]) => opF('tipo', v, n)).join('')}</div>
               <span class="pop-r">Eixo</span><div class="pop-l">${EIXOS.slice(1).map((e, i) => opF('eixo', i + 1, e.n)).join('')}</div>
               <span class="pop-r">Marcador</span>

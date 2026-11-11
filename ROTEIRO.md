@@ -657,11 +657,11 @@ Ao lado de cada opção vai o número de livros que ela esconde.
   dizer só "nenhum livro".
 - **"Recomeçar do catálogo original"** desfaz também o que estava oculto.
 
-**A decisão que ficou comigo, e que você pode mudar.** Ocultar "já li" tira os livros lidos das listas, mas eles
-**continuam contando nos números de leitura**: leituras concluídas, "Por ler", "Adquiridos × lidos", os dois gráficos
-por situação de leitura e o andamento das trilhas. O livro some da vista, mas não deixa de ter sido lido — e a guia
-de estímulo à leitura (parte 5) vai depender dessa conta. O quadro que conta um livro oculto avisa: "conta os lidos
-ocultos". Se preferir que sumam também dos números, é só dizer.
+**"Já li", como você decidiu (11/11/2026).** Ocultar "já li" tira os livros lidos das listas, mas eles **continuam
+contando como leituras concluídas** — nos indicadores, em "Por ler", em "Adquiridos × lidos" e nos dois gráficos por
+situação de leitura — e **continuam aparecendo nas trilhas** de que fazem parte, no lugar deles e com a etiqueta
+"Lido". O livro some das listas, mas não deixa de ter sido lido. O quadro que conta um livro oculto avisa: "conta os
+lidos ocultos".
 
 **Nota para quem for programar:** nas preferências guardadas, o controle novo chama-se `fora`. O nome `ocultar` já
 era do botão do olho ("ocultar valores em reais") e continua sendo.

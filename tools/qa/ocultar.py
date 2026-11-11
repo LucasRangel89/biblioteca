@@ -9,7 +9,7 @@
      vazia por causa disso diz que o livro está oculto; a busca rápida ainda o acha, e a ficha diz por que ele está fora;
   D. a escolha fica guardada: resiste à recarga e vale em todas as telas; e o número de cada botão de filtro continua
      sendo o tamanho da lista;
-  E. "Já li" — os lidos saem das listas, mas continuam contando nas leituras concluídas e no andamento da trilha; com os
+  E. "Já li" — os lidos saem das listas, mas continuam contando nas leituras concluídas e aparecendo na trilha; com os
      dados de exemplo, os indicadores e os gráficos de leitura não mudam, e cada gráfico avisa que conta os ocultos;
   F. tipo, eixo e marcador — cada um esconde o que diz; o marcador é achado pela busca do quadro;
   G. regras juntas escondem a união (um livro que cai em duas conta uma vez);
@@ -188,10 +188,12 @@ with sync_playwright() as p:
     ok('nas recomendações, a aba "Já lidas" zera', aba('lidos') == 0, aba('lidos'))
     tr = next(t for t in TRILHAS if any(i in li for i in t[3])); lidos = [CAT[i][0] for i in tr[3] if i in li]
     frase = pg.evaluate(TRILHA_PAINEL, tr[0])
-    ok(f'a trilha "{tr[1].split(":")[0]}" continua com {len(tr[3])} livros e o lido contado; só avisa que há um oculto', frase and f' de {len(tr[3])}' in frase and f'li {len(lidos)}' in frase and frase.endswith(f'{len(lidos)} oculto'), frase)
+    ok(f'a trilha "{tr[1].split(":")[0]}" continua com {len(tr[3])} livros e o lido contado, sem falar em ocultos', frase and f' de {len(tr[3])}' in frase and f'li {len(lidos)}' in frase and 'oculto' not in frase, frase)
     pg.click(f'#p-trilhas [data-trilha="{tr[0]}"]'); pg.wait_for_timeout(500)
     cx = pg.evaluate(TRILHA_CAIXA)
-    ok('aberta, ela não lista o livro lido, mas a frase do andamento o conta', cx and len(cx['livros']) == len(tr[3]) - len(lidos) and not set(lidos) & set(cx['livros']) and f'li {len(lidos)}' in cx['frase'], cx and (len(cx['livros']), cx['frase']))
+    etiquetas = pg.evaluate("() => [...document.querySelectorAll('#dlg.on .tr-l li')].map(li => [li.querySelector('.li-m b').textContent, li.querySelector('.pill').textContent])")
+    ok('aberta, ela continua listando o livro lido, no lugar dele e com a etiqueta "Lido"', cx and cx['livros'] == [CAT[i][0] for i in tr[3]] and all(e.startswith('Lido') for t, e in etiquetas if t in lidos) and len(lidos) > 0
+       and f'li {len(lidos)}' in cx['frase'] and cx['nota'] == '', cx and (len(cx['livros']), cx['frase'], cx['nota'], [e for e in etiquetas if e[0] in lidos]))
     pg.click('#dlg header [data-fechar]'); pg.wait_for_timeout(300)
     pg.context.close()
 
