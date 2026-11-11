@@ -394,7 +394,7 @@ button.hb:hover { background: var(--surface-3); }
 .tr-b i.l { background: var(--good); }
 .tr-b i.c { background: var(--c2); }
 .tr-res { display: flex; align-items: center; flex-wrap: wrap; gap: 6px 12px; margin: 0 0 10px; color: var(--ink-2); font-size: 13px; }
-.tr-res .lk { margin-left: auto; }
+.tr-a { display: inline-flex; flex-wrap: wrap; gap: 0 16px; margin-left: auto; }
 /* links que ficam sozinhos, fora de um parágrafo: altura mínima para o dedo */
 .card-f .lk, .tr-res .lk, .nt-ab .lnk { display: inline-flex; align-items: center; min-height: 24px; }
 .tr-res b { color: var(--ink); font-weight: 600; }
@@ -525,6 +525,7 @@ input[type="range"] { accent-color: var(--accent); width: 100%; height: 28px; pa
 /* ───────────── tabela ───────────── */
 .card-tab .card-t { flex-wrap: wrap; justify-content: flex-end; }
 .card-tab .busca-t { width: 250px; }
+.tb-levar { display: inline-flex; gap: 6px; flex: none; }      /* imprimir, copiar e CSV: andam juntos */
 .ord-m { display: none; align-items: center; gap: 6px; font-size: 12.5px; color: var(--ink-3); }
 .ord-m select { height: 32px; font-size: 13px; }
 .ord-m .ib { width: 32px; height: 32px; }
@@ -833,6 +834,10 @@ td.c-spark svg { margin-left: auto; margin-right: auto; }
   .tb th:last-child, .tb td:last-child { padding-right: 14px; }
   .card-tab .card-t { width: 100%; justify-content: flex-start; }
   .card-tab .busca-t { flex: 1; width: auto; min-width: 150px; }
+  .tb-levar { margin-left: auto; }
+  .tb-levar [data-imprimir] span, .tb-levar [data-copiar] span { display: none; }
+  .tb-levar .btn.sm { height: 32px; min-width: 36px; }
+  .ord-m { min-width: 0; } .ord-m select { min-width: 0; max-width: 100%; }
   .ord-m { display: inline-flex; }
   .ord-m span { display: none; }
   .tam span { display: none; }
@@ -877,9 +882,34 @@ td.c-spark svg { margin-left: auto; margin-right: auto; }
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after { animation-duration: .001s !important; transition-duration: .001s !important; scroll-behavior: auto !important; }
 }
+/* A folha de uma lista ou de uma trilha (ver 52-listas.js): só existe no papel. Preto no branco, em qualquer tema. */
+.impressao { display: none; }
 @media print {
   .lateral, .inferior, .filtros, .topo-a, .aviso, .gaveta, .dlg, .toasts { display: none !important; }
   .app { display: block; } body { background: #fff; } .card, .kpi { box-shadow: none; break-inside: avoid; }
+  @page { margin: 14mm 13mm 15mm; }
+  html.imprimindo, html.imprimindo body { background: #fff !important; color: #000 !important; }
+  html.imprimindo body > *:not(.impressao) { display: none !important; }
+  html.imprimindo .impressao { display: block; color: #000; font: 10pt/1.35 var(--sans); }
+  .impressao .imp-m { margin: 0; font-size: 7.5pt; letter-spacing: .09em; text-transform: uppercase; color: #444; }
+  .impressao h1 { margin: 1.2mm 0 1.6mm; font: 600 17pt/1.2 var(--serif); color: #000; }
+  .impressao .imp-d { margin: 0 0 1.6mm; max-width: 165mm; font-size: 10pt; color: #222; }
+  .impressao .imp-i { margin: 0; font-size: 9pt; color: #333; }
+  .impressao .imp-l { width: 100%; margin-top: 4.5mm; border-collapse: collapse; table-layout: auto; font-size: 10pt; }
+  .impressao thead { display: table-header-group; }
+  .impressao tr { break-inside: avoid; page-break-inside: avoid; }
+  .impressao th { padding: 0 2mm 1.2mm 0; border-bottom: .35mm solid #000; text-align: left; vertical-align: bottom; font-size: 7.5pt; font-weight: 600; letter-spacing: .06em; text-transform: uppercase; color: #333; }
+  .impressao td { padding: 1.45mm 2mm 1.45mm 0; border-bottom: .2mm solid #b8b8b8; vertical-align: top; color: #000; overflow-wrap: anywhere; }
+  .impressao .q { width: 6.5mm; padding-right: 0; }
+  .impressao td.n, .impressao th.n { width: 8mm; text-align: right; padding-right: 3mm; color: #333; font-variant-numeric: tabular-nums; }
+  .impressao td.t { font-weight: 600; }
+  .impressao td.a { width: 27%; color: #111; }
+  .impressao td.x { width: 17%; font-size: 9pt; color: #222; }
+  .impressao td:last-child, .impressao th:last-child { padding-right: 0; }
+  .imp-q { display: inline-block; position: relative; width: 3.5mm; height: 3.5mm; margin-top: .25mm; border: .3mm solid #000; border-radius: .5mm; vertical-align: top; }
+  .imp-q.ok::after { content: ""; position: absolute; left: 1.05mm; top: .2mm; width: 1mm; height: 2.1mm; border: solid #000; border-width: 0 .45mm .45mm 0; transform: rotate(45deg); }   /* o visto é desenhado: não depende da fonte */
+  .impressao .imp-n { margin: 3mm 0 0; font-size: 8.5pt; color: #333; }
+  .impressao .imp-n + .imp-n { margin-top: 1mm; }
 }
 </style>
 </head>
@@ -943,6 +973,7 @@ td.c-spark svg { margin-left: auto; margin-right: auto; }
 <div class="gaveta" id="gaveta" aria-hidden="true"></div>
 <div class="dlg" id="dlg" aria-hidden="true"></div>
 <div class="toasts" id="toasts" aria-live="polite"></div>
+<div class="impressao" id="impressao" aria-hidden="true"></div>
 <input type="file" id="arq" accept=".json,application/json" hidden>
 <noscript><p style="padding:24px;font-family:sans-serif">Este painel precisa de JavaScript para funcionar.</p></noscript>
 <script>
@@ -2220,6 +2251,8 @@ const IC = {
   fechar: '<path d="M18 6 6 18M6 6l12 12"/>',
   filtro: '<path d="M21 4h-7M10 4H3M21 12h-9M8 12H3M21 20h-5M12 20H3M14 2v4M8 10v4M16 18v4"/>',
   baixar: '<path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><path d="m7 10 5 5 5-5"/><path d="M12 15V3"/>',
+  imprimir: '<path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"/><path d="M6 9V3h12v6"/><rect x="6" y="14" width="12" height="8" rx="1"/>',
+  copiar: '<rect x="8" y="8" width="14" height="14" rx="2"/><path d="M4 16a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2"/>',
   enviar: '<path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><path d="m17 8-5-5-5 5"/><path d="M12 3v12"/>',
   estrela: '<path d="M12 2.5l2.9 6 6.6.9-4.8 4.6 1.2 6.5L12 17.4l-5.9 3.1 1.2-6.5L2.5 9.4l6.6-.9z"/>',
   livro: '<path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/>',
@@ -2346,6 +2379,8 @@ function oculto(b, semLido) {
   if (FORA.tag.size) for (const t of b.tags) if (FORA.tag.has(t)) return true;
   return false;
 }
+// as regras ligadas, em palavras e na ordem do quadro (para o aviso sob a barra de filtros e para a folha impressa)
+const regrasFora = () => { const f = S.ui.fora; return SIT_FORA.filter(x => f.sit.includes(x[0])).map(x => minuscula(x[1])).concat(f.tipo.map(t => minuscula(ROTULO_TIPO[t])), f.eixo.slice().sort((a, z) => a - z).map(e => EIXOS[e].n), f.tag.map(t => '#' + rotTag(t))); };
 // as regras que tiram este livro das listas, em palavras (para a ficha)
 function motivosFora(b) {
   if (!FORA.n) return [];
@@ -2941,7 +2976,7 @@ function dlgTrilha(t) {
   const corpo = () => {
     const x = ctxAtual().trilhas.find(y => y.t === t), paraLista = x.faltam.filter(b => b.col === 'rec');
     return { x, paraLista, html: `<p class="dlg-sub">${esc(t.desc)}</p>
-      <p class="tr-res">${barraTrilha(x)}<span><b>${maiuscula(frasesTrilha(x))}</b></span><button type="button" class="lk" data-tr-tabela>ver na tabela</button></p>
+      <p class="tr-res">${barraTrilha(x)}<span><b>${maiuscula(frasesTrilha(x))}</b></span><span class="tr-a"><button type="button" class="lk" data-tr-tabela>ver na tabela</button><button type="button" class="lk" data-tr-imprimir title="Imprimir esta trilha — a caixa de impressão também salva em PDF">imprimir</button><button type="button" class="lk" data-tr-copiar title="Copiar esta trilha como texto, para colar numa mensagem ou num bloco de notas">copiar</button></span></p>
       <ol class="tr-l">${x.vis.map((b, i) => { const [cls, rot] = estadoNaTrilha(b); return `<li><button type="button" class="li" data-livro="${b.id}"><span class="tr-n">${i + 1}</span>${capaHtml(b)}<span class="li-m"><b>${esc(b.t)}</b><span>${esc(b.a || 'Autor não informado')}</span></span><span class="pill ${cls}">${rot}</span></button></li>`; }).join('')}</ol>
       ${x.esc ? `<p class="nota tr-fora">${icone('olhoOff', 14)}<span>${plural(x.esc, 'livro desta trilha não aparece', 'livros desta trilha não aparecem')} aqui: você pediu para ocultar. Para vê-${x.esc === 1 ? 'lo' : 'los'}, use “Ocultar”, na barra de filtros.</span></p>` : ''}
       <p class="nota">A ordem é a sugerida no catálogo (catalogo/trilhas.md). Clique num livro para abrir a ficha.</p>` };
@@ -2956,6 +2991,8 @@ function dlgTrilha(t) {
     aoAbrir(el) {
       el.addEventListener('click', e => {
         const li = e.target.closest('[data-livro]'); if (li) { const id = li.dataset.livro; Dlg.fechar(); abrirLivro(id); return; }
+        if (e.target.closest('[data-tr-imprimir]')) { imprimirFolha(folhaDaTrilha(t, corpo().x)); return; }
+        if (e.target.closest('[data-tr-copiar]')) { copiarFolha(folhaDaTrilha(t, corpo().x)); return; }
         // "ver na tabela": fecha tudo e mostra, na visão geral, só os livros da trilha
         if (e.target.closest('[data-tr-tabela]')) { Dlg.fechar(); fecharGaveta(); limparFiltros(false); S.tags.add(t.tag); irPara('geral'); toast(`Filtrando pela trilha “${t.curto}”.`); }
       });
@@ -3318,6 +3355,18 @@ const TABELAS = {
     abas: [['todos', 'Todos'], ['desejo', 'Lista de compra', b => b.col === 'desejo'], ['monit', 'Só monitorados', b => b.col !== 'desejo'], ['queda', 'Em queda', (b, c) => c.px(b).res && c.px(b).res.var < -0.005], ['alta', 'Em alta', (b, c) => c.px(b).res && c.px(b).res.var > 0.005]] },
 };
 
+/* A folha impressa de cada tabela (ver 52-listas): além do quadradinho, do título e do autor, até duas colunas — [nome, texto, é dinheiro].
+   As de dinheiro ficam de fora quando os valores estão ocultos (o botão do olho). */
+const eixoTxt = b => (EIXOS[b.eixo] ? EIXOS[b.eixo].n : '');
+const melhorTxt = (b, c) => { const h = c.px(b).hoje; return h ? `${fBRL(h.p)} · ${h.f}` : ''; };
+const FOLHAS = {
+  geral: [['Lista', b => COLECOES[b.col].n], ['Eixo', eixoTxt]],
+  biblioteca: [['Formato', b => rotuloFmt(b)], ['Eixo', eixoTxt]],
+  recs: [['Eixo', eixoTxt], ['Extensão', b => (b._e ? EXTENSOES[b._e].n : '')]],
+  financas: [['Aquisição', b => (adqDe(b) == null ? '' : fData(adqDe(b)))], ['Pago', b => (pagoDe(b) == null ? '' : pagoDe(b) === 0 ? (b.cond === 'presente' ? 'presente' : 'gratuito') : fBRL(b.pago)), true]],
+  desejos: [['Melhor preço', melhorTxt, true], ['Alvo', b => (b.alvo ? fBRL(b.alvo) : ''), true]],
+  precos: [['Melhor preço', melhorTxt, true], ['Situação', (b, c) => SITUACOES[c.px(b).sit].n]],
+};
 function Tabela(visao) {
   const cfg = TABELAS[visao], k = cartao({ id: 'tab-' + visao, w: 'p-12 card-tab', tit: cfg.tit });
   const estreita = !!window.matchMedia && matchMedia('(max-width: 700px)').matches, mob = cfg.mob || {};
@@ -3326,13 +3375,29 @@ function Tabela(visao) {
   for (const x of vis) x.mcls = (x.id === mob.b ? ' m-b' : (mob.x || []).includes(x.id) ? ' m-x' : mob.s && mob.s[x.id] ? ' m-' + mob.s[x.id] : '') + (cfg.red && cfg.red[x.id] ? ' r-' + cfg.red[x.id] : '');
   k.tools.innerHTML = `<label class="busca-t">${icone('busca', 15)}<input type="search" placeholder="Filtrar por título, autor ou tema" aria-label="Filtrar a tabela" value="${esc(st.q)}"></label>
     <label class="ord-m"><span>Ordenar</span><select aria-label="Ordenar por">${vis.filter(x => x.ord).map(x => `<option value="${x.id}">${esc(x.n)}</option>`).join('')}</select><button type="button" class="ib" data-dir aria-label="Inverter a ordem">${icone('cima', 15)}</button></label>
-    <button type="button" class="btn sm" data-csv title="Exportar as linhas filtradas em CSV">${icone('baixar', 15)}<span>CSV</span></button>`;
+    <span class="tb-levar" role="group" aria-label="Levar esta lista"><button type="button" class="btn sm" data-imprimir aria-label="Imprimir a lista" title="Imprimir a lista filtrada — a caixa de impressão também salva em PDF">${icone('imprimir', 15)}<span>Imprimir</span></button><button type="button" class="btn sm" data-copiar aria-label="Copiar a lista como texto" title="Copiar a lista filtrada como texto, para colar numa mensagem ou num bloco de notas">${icone('copiar', 15)}<span>Copiar</span></button><button type="button" class="btn sm" data-csv title="Exportar as linhas filtradas em CSV">${icone('baixar', 15)}<span>CSV</span></button></span>`;
   k.corpo.innerHTML = `<div class="abas" role="tablist" aria-label="Recortes rápidos"></div>
     <div class="tb-w"><table class="tb"><thead><tr>${vis.map(x => `<th scope="col" class="${x.num ? 'num ' : ''}${x.cls || ''}${cfg.red && cfg.red[x.id] ? ' r-' + cfg.red[x.id] : ''}" data-c="${x.id}"${x.dica ? ` title="${esc(x.dica)}"` : ''}>${x.ord ? `<button type="button">${esc(x.n)}<span class="so">${icone('cima', 12)}</span></button>` : esc(x.n)}</th>`).join('')}</tr></thead><tbody></tbody></table><div class="ch-vazio" hidden></div></div>`;
   k.pe.className = 'card-f tb-pe';
   k.pe.innerHTML = `<span class="tb-info"></span><div class="pag"><label class="tam"><span>por página</span><select aria-label="Linhas por página">${[10, 25, 50, 100].map(n => `<option${n === st.tam ? ' selected' : ''}>${n}</option>`).join('')}</select></label><button type="button" class="ib" data-p="-1" aria-label="Página anterior">${icone('esq', 16)}</button><span class="pag-n"></span><button type="button" class="ib" data-p="1" aria-label="Próxima página">${icone('dir', 16)}</button></div>`;
   const abasEl = $('.abas', k.corpo), tbody = $('tbody', k.corpo), vazio = $('.ch-vazio', k.corpo), busca = $('input[type=search]', k.tools), ordSel = $('.ord-m select', k.tools);
   let ctx = null, base = [], filtradas = [];
+  // os livros que caberiam nesta lista (com a busca e a aba de agora) e não aparecem porque estão ocultos
+  const ocultosDaqui = () => {
+    if (!FORA.n || !ctx) return 0;
+    const q = norm(st.q.trim()), termos = q ? q.split(/\s+/) : [], aba = cfg.abas.find(a => a[0] === st.aba) || cfg.abas[0];
+    return cfg.linhas(ctx.comOcultos).filter(b => oculto(b) && termos.every(t => b._busca.includes(t)) && (!aba[2] || aba[2](b, ctx))).length;
+  };
+  // a lista da tela pronta para sair do painel: as linhas filtradas, todas (não só a página), na ordem em que estão
+  function folha() {
+    const aba = cfg.abas.find(a => a[0] === st.aba) || cfg.abas[0], col = cols.find(x => x.id === st.ord && x.ord) || cols[0], q = st.q.trim(), n = filtradas.length;
+    const extras = (FOLHAS[visao] || []).filter(x => !(x[2] && S.ocultar)), filtros = filtrosEmTexto().concat(q ? [`busca “${q}”`] : []), oc = ocultosDaqui();
+    return { titulo: cfg.tit + (aba[2] ? ' — ' + aba[1] : ''), cols: [['Título', 't'], ['Autor', 'a']].concat(extras.map(x => [x[0], 'x'])),
+      meta: [`${plural(n, 'livro', 'livros')}, em ordem de ${col.n.toLowerCase()}${st.dir < 0 ? ' (decrescente)' : ''}`].concat(filtros.length ? ['Filtros: ' + filtros.join(' · ')] : []),
+      itens: filtradas.map(b => ({ ok: b.leit === 'lido', cel: [b.t + (b._top ? ' ★' : ''), b.a || ''].concat(extras.map(x => x[1](b, ctx))), txt: b.t + (b.a ? ' — ' + b.a : '') })),
+      legenda: [[filtradas.some(b => b._top) ? '★ prioridade' : '', filtradas.some(b => b.leit === 'lido') ? 'quadradinho marcado: já li' : ''].filter(Boolean).join(' · ')].filter(Boolean).map(maiuscula),
+      notas: oc ? [`${oc === 1 ? 'Não entra 1 livro que está oculto' : `Não entram ${fInt(oc)} livros que estão ocultos`} (${regrasFora().join(' · ')}).`] : [] };
+  }
 
   function desenhar() {
     if (!ctx) return;
@@ -3356,7 +3421,7 @@ function Tabela(visao) {
     vazio.hidden = total > 0; $('table', k.corpo).style.display = total ? '' : 'none';
     if (!total) {
       // se o que caberia aqui está oculto ("Ocultar", na barra de filtros), é isso que a lista vazia tem de dizer
-      const oc = FORA.n ? cfg.linhas(ctx.comOcultos).filter(b => oculto(b) && termos.every(t => b._busca.includes(t)) && (!aba[2] || aba[2](b, ctx))).length : 0;
+      const oc = ocultosDaqui();
       vazio.innerHTML = vazioHtml(oc ? (oc === 1 ? 'O único livro que caberia aqui está oculto. Para vê-lo' : `Os ${fInt(oc)} livros que caberiam aqui estão ocultos. Para vê-los`) + ', use “Ocultar”, na barra de filtros.'
         : base.length ? 'Nenhuma linha combina com a busca ou a aba escolhida.' : cfg.vazio && !nFiltros() ? cfg.vazio : ctx.I.tudo ? 'Nenhum livro com os filtros atuais.' : 'Nada neste período com os filtros atuais. Itens sem data só aparecem em “Tudo”.');
       vazio.dataset.ocultos = oc;
@@ -3378,6 +3443,8 @@ function Tabela(visao) {
   $('.tam select', k.pe).addEventListener('change', e => { st.tam = +e.target.value; st.pag = 0; salvar(); desenhar(); });
   tbody.addEventListener('click', e => { const tr = e.target.closest('tr[data-id]'); if (tr) abrirLivro(tr.dataset.id); });
   tbody.addEventListener('keydown', e => { if (e.key !== 'Enter' && e.key !== ' ') return; const tr = e.target.closest('tr[data-id]'); if (tr) { e.preventDefault(); abrirLivro(tr.dataset.id); } });
+  $('[data-imprimir]', k.tools).addEventListener('click', () => imprimirFolha(folha()));
+  $('[data-copiar]', k.tools).addEventListener('click', () => copiarFolha(folha()));
   $('[data-csv]', k.tools).addEventListener('click', () => {
     if (!filtradas.length) { toast('Não há linhas para exportar.', 'aviso'); return; }
     const cs = cols.filter(x => x.csv), cel = v => { const s = String(v ?? ''); return /[";\n]/.test(s) ? '"' + s.replace(/"/g, '""') + '"' : s; };
@@ -3385,6 +3452,87 @@ function Tabela(visao) {
     baixarArquivo(`biblioteca-${visao}-${iso(DB.hoje)}.csv`, txt, 'text/csv;charset=utf-8');
   });
   return { el: k.el, atualizar(c) { ctx = c; base = cfg.linhas(c); desenhar(); } };
+}
+
+/* ───────────────────────── listas para levar: imprimir e copiar como texto ─────────────────────────
+   Uma "folha" é uma lista do painel pronta para sair dele — a tabela que está na tela (com os filtros, a aba, a busca e a
+   ordem dela) ou uma trilha de leitura:
+     { titulo, desc, meta: [linhas do cabeçalho], cols: [[nome, classe]], numerar,
+       itens: [{ ok, cel: [texto de cada coluna], txt: a linha na versão em texto }], legenda: [só no papel], notas: [linhas] }
+   "Imprimir" monta a folha em #impressao — um bloco que só existe no papel — e abre a caixa de impressão do navegador, que
+   também salva em PDF. "Copiar" põe a mesma lista, em texto simples e numerada, na área de transferência.
+   Nada sai do navegador: quem leva a lista para fora é o usuário. */
+const FOLHA_LONGA = 400;        // acima disso, o painel pergunta antes de imprimir
+const LINHAS_POR_PAGINA = 36;   // quantas linhas de lista cabem numa página A4, mais ou menos (medido no teste listas.py)
+const marcaDaFolha = () => 'Biblioteca do Lucas · ' + fData(DB.hoje);
+
+function folhaHtml(f) {
+  const cols = (f.numerar ? [['Nº', 'n']] : []).concat(f.cols);
+  const linha = (it, i) => `<tr><td class="q"><span class="imp-q${it.ok ? ' ok' : ''}"></span></td>${f.numerar ? `<td class="n">${i + 1}</td>` : ''}${it.cel.map((c, j) => `<td class="${f.cols[j][1]}">${esc(c)}</td>`).join('')}</tr>`;
+  return `<p class="imp-m">${esc(marcaDaFolha())}</p><h1>${esc(f.titulo)}</h1>${f.desc ? `<p class="imp-d">${esc(f.desc)}</p>` : ''}${f.meta.map(l => `<p class="imp-i">${esc(l)}</p>`).join('')}
+    <table class="imp-l"><thead><tr><th class="q"></th>${cols.map(c => `<th class="${c[1]}">${esc(c[0])}</th>`).join('')}</tr></thead><tbody>${f.itens.map(linha).join('')}</tbody></table>
+    ${(f.legenda || []).concat(f.notas || []).map(l => `<p class="imp-n">${esc(l)}</p>`).join('')}`;
+}
+const folhaTexto = f => [f.titulo, marcaDaFolha()].concat(f.desc ? [f.desc] : [], f.meta).join('\n') + '\n\n' + f.itens.map((it, i) => `${i + 1}. ${it.txt}`).join('\n') + ((f.notas || []).length ? '\n\n' + f.notas.join('\n') : '') + '\n';
+
+// a lista num campo de texto, para copiar à mão: quando o navegador não deixa copiar nem imprimir sozinho
+function folhaNaMao(f, titulo, recado) {
+  Dlg.abrir({ titulo, largo: true, corpo: `<p class="nota">${recado}</p><textarea class="copia" readonly rows="14" data-foco aria-label="A lista, em texto">${esc(folhaTexto(f))}</textarea>`,
+    botoes: [{ n: 'Fechar' }, { n: 'Selecionar tudo', cls: 'pri', acao: el => { $('textarea', el).select(); try { if (document.execCommand('copy')) toast('Lista copiada.'); } catch (e) { /* fica selecionada: Ctrl+C copia */ } return false; } }] });
+}
+
+/* Imprimir. A folha fica montada até o navegador avisar que a impressão terminou; aí some, e a página volta a ser a de sempre.
+   Enquanto ela existe, o título da página é o da lista — é o nome que o navegador sugere para o PDF. */
+let desfazerFolha = null;
+function imprimirFolha(f) {
+  const n = f.itens.length;
+  if (!n) { toast('Não há linhas para imprimir.', 'aviso'); return; }
+  // pré-visualização dentro de outra página, sem armazenamento: ali o navegador ignora o pedido de impressão, sem avisar
+  if (!Loja.ok && window.top !== window.self) { folhaNaMao(f, 'Imprimir a lista', 'Esta pré-visualização não deixa imprimir. Abra o painel direto no navegador — ou copie a lista abaixo e cole num editor de texto.'); return; }
+  const ir = () => {
+    if (desfazerFolha) desfazerFolha();
+    const el = $('#impressao'), raiz = document.documentElement, titulo = document.title;
+    el.innerHTML = folhaHtml(f); raiz.classList.add('imprimindo'); document.title = `${f.titulo} — Biblioteca do Lucas`;
+    const fim = desfazerFolha = () => {
+      if (desfazerFolha !== fim) return;
+      desfazerFolha = null; raiz.classList.remove('imprimindo'); el.innerHTML = ''; document.title = titulo;
+      window.removeEventListener('afterprint', fim); document.removeEventListener('pointerdown', fim, true); document.removeEventListener('keydown', fim, true);
+    };
+    window.addEventListener('afterprint', fim);
+    // há navegador de celular que não avisa o fim da impressão: o primeiro toque ou tecla depois dela desfaz a folha
+    setTimeout(() => { if (desfazerFolha === fim) { document.addEventListener('pointerdown', fim, true); document.addEventListener('keydown', fim, true); } }, 800);
+    try { window.print(); } catch (e) { fim(); toast('Este navegador não abriu a caixa de impressão.', 'aviso'); }
+  };
+  if (n > FOLHA_LONGA) confirmar('Imprimir uma lista longa', `Esta lista tem <b>${fInt(n)} livros</b>: no papel, umas <b>${fInt(Math.ceil(n / LINHAS_POR_PAGINA))} páginas</b>. Para uma folha menor, filtre a lista antes de imprimir.`, 'Imprimir assim mesmo', () => { setTimeout(ir, 60); });
+  else ir();
+}
+
+/* Copiar como texto. Primeiro pela área de transferência do navegador; se ele não deixar (página aberta de um arquivo num
+   navegador antigo, pré-visualização), pelo comando antigo; se nem assim, mostra o texto para copiar à mão. */
+function copiarFolha(f) {
+  const n = f.itens.length;
+  if (!n) { toast('Não há linhas para copiar.', 'aviso'); return; }
+  const txt = folhaTexto(f), pronto = () => toast(`Lista copiada: ${plural(n, 'livro', 'livros')}. Agora é só colar onde quiser.`);
+  const antigo = () => {
+    const foco = document.activeElement, ta = document.createElement('textarea');
+    ta.value = txt; ta.setAttribute('readonly', ''); ta.setAttribute('aria-hidden', 'true'); ta.tabIndex = -1; ta.style.cssText = 'position:fixed;top:0;left:0;width:1px;height:1px;opacity:0';
+    document.body.appendChild(ta); ta.select();
+    let ok = false; try { ok = document.execCommand('copy'); } catch (e) { ok = false; }
+    ta.remove(); if (foco && foco.focus) try { foco.focus({ preventScroll: true }); } catch (e) { /* nada */ }
+    return ok;
+  };
+  const resto = () => { if (antigo()) pronto(); else folhaNaMao(f, 'Copiar a lista', 'O navegador não deixou copiar sozinho. Use “Selecionar tudo” e copie (Ctrl+C).'); };
+  let p = null;
+  try { p = navigator.clipboard && navigator.clipboard.writeText ? navigator.clipboard.writeText(txt) : null; } catch (e) { p = null; }
+  if (p && p.then) p.then(pronto, resto); else resto();
+}
+
+/* a folha de uma trilha de leitura: os livros na ordem do roteiro, com o que tenho, o que li e o que falta */
+function folhaDaTrilha(t, x) {
+  return { titulo: `Trilha ${t.n} · ${t.nome}`, desc: t.desc, meta: [maiuscula(frasesTrilha(x))], numerar: true, cols: [['Título', 't'], ['Autor', 'a'], ['Situação', 'x']],
+    itens: x.vis.map(b => { const rot = estadoNaTrilha(b)[1]; return { ok: b.leit === 'lido', cel: [b.t, b.a || '', rot], txt: `${b.t}${b.a ? ' — ' + b.a : ''} (${rot.toLowerCase()})` }; }),
+    legenda: x.vis.some(b => b.leit === 'lido') ? ['Quadradinho marcado: já li.'] : [],
+    notas: ['A ordem é a sugerida no catálogo da biblioteca.'].concat(x.esc ? [`${x.esc === 1 ? 'Não entra 1 livro desta trilha, que está oculto' : `Não entram ${x.esc} livros desta trilha, que estão ocultos`} (${regrasFora().join(' · ')}).`] : []) };
 }
 
 /* ───────────────────────── anotações do usuário: comentários, capa enviada e arquivos anexados ─────────────────────────
@@ -4269,6 +4417,8 @@ function sincronizarFiltros() {
   const el = $('#f-ativos'); el.hidden = !nAtivos;
   setHtml(el, nAtivos ? `<span class="fa-r">Filtros ativos</span>${ch.join('')}${nAtivos > 1 ? '<button type="button" class="lk" data-limpar="tudo">limpar tudo</button>' : ''}` : '');
 }
+// os filtros ligados, em palavras — lidos de "Filtros ativos", para o papel dizer exatamente o que a tela diz
+const filtrosEmTexto = () => { const el = $('#f-ativos'); return !el || el.hidden ? [] : [...el.children].filter(e => !e.matches('.fa-r, .lk')).map(e => (e.matches('.fa-g') ? [...e.children].map(x => x.textContent.trim()).join(' ') : e.textContent.trim())); };
 /* Números dos filtros (ver contagens, em 30-state): quantos livros a lista desta tela mostra com cada opção ligada.
    A opção que não mostraria nenhum fica apagada — pela cor, não por opacidade, para continuar legível — e segue clicável. */
 function pintarContagens(c) {
@@ -4302,8 +4452,7 @@ function pintarFora() {
   $('#pw-fora').classList.toggle('ativo', FORA.n > 0); $('#pop-fora [data-fora-limpar]').hidden = !FORA.n;
   const av = $('#f-fora'); av.hidden = !FORA.n;
   if (!FORA.n) return;
-  const regras = SIT_FORA.filter(x => f.sit.includes(x[0])).map(x => minuscula(x[1])).concat(f.tipo.map(t => minuscula(ROTULO_TIPO[t])), f.eixo.slice().sort((a, z) => a - z).map(e => EIXOS[e].n), f.tag.map(t => '#' + rotTag(t)));
-  setHtml(av, `<span class="ff-t">${icone('olhoOff', 15)}<b>${n ? plural(n, 'livro oculto', 'livros ocultos') : 'Nenhum livro oculto por enquanto'}</b><span class="ff-r">${esc(regras.join(' · '))}</span></span><span class="ff-a"><button type="button" class="lk" data-fora-abrir>mudar</button><button type="button" class="lk" data-fora-limpar>mostrar todos</button></span>`);
+  setHtml(av, `<span class="ff-t">${icone('olhoOff', 15)}<b>${n ? plural(n, 'livro oculto', 'livros ocultos') : 'Nenhum livro oculto por enquanto'}</b><span class="ff-r">${esc(regrasFora().join(' · '))}</span></span><span class="ff-a"><button type="button" class="lk" data-fora-abrir>mudar</button><button type="button" class="lk" data-fora-limpar>mostrar todos</button></span>`);
 }
 /* abre as opções de "Ocultar": o quadro, na tela larga; a folha de filtros, rolada até elas, na estreita */
 function abrirFora() {

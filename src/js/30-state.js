@@ -14,6 +14,8 @@ const IC = {
   fechar: '<path d="M18 6 6 18M6 6l12 12"/>',
   filtro: '<path d="M21 4h-7M10 4H3M21 12h-9M8 12H3M21 20h-5M12 20H3M14 2v4M8 10v4M16 18v4"/>',
   baixar: '<path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><path d="m7 10 5 5 5-5"/><path d="M12 15V3"/>',
+  imprimir: '<path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"/><path d="M6 9V3h12v6"/><rect x="6" y="14" width="12" height="8" rx="1"/>',
+  copiar: '<rect x="8" y="8" width="14" height="14" rx="2"/><path d="M4 16a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2"/>',
   enviar: '<path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><path d="m17 8-5-5-5 5"/><path d="M12 3v12"/>',
   estrela: '<path d="M12 2.5l2.9 6 6.6.9-4.8 4.6 1.2 6.5L12 17.4l-5.9 3.1 1.2-6.5L2.5 9.4l6.6-.9z"/>',
   livro: '<path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/>',
@@ -140,6 +142,8 @@ function oculto(b, semLido) {
   if (FORA.tag.size) for (const t of b.tags) if (FORA.tag.has(t)) return true;
   return false;
 }
+// as regras ligadas, em palavras e na ordem do quadro (para o aviso sob a barra de filtros e para a folha impressa)
+const regrasFora = () => { const f = S.ui.fora; return SIT_FORA.filter(x => f.sit.includes(x[0])).map(x => minuscula(x[1])).concat(f.tipo.map(t => minuscula(ROTULO_TIPO[t])), f.eixo.slice().sort((a, z) => a - z).map(e => EIXOS[e].n), f.tag.map(t => '#' + rotTag(t))); };
 // as regras que tiram este livro das listas, em palavras (para a ficha)
 function motivosFora(b) {
   if (!FORA.n) return [];

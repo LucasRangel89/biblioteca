@@ -208,6 +208,8 @@ function sincronizarFiltros() {
   const el = $('#f-ativos'); el.hidden = !nAtivos;
   setHtml(el, nAtivos ? `<span class="fa-r">Filtros ativos</span>${ch.join('')}${nAtivos > 1 ? '<button type="button" class="lk" data-limpar="tudo">limpar tudo</button>' : ''}` : '');
 }
+// os filtros ligados, em palavras — lidos de "Filtros ativos", para o papel dizer exatamente o que a tela diz
+const filtrosEmTexto = () => { const el = $('#f-ativos'); return !el || el.hidden ? [] : [...el.children].filter(e => !e.matches('.fa-r, .lk')).map(e => (e.matches('.fa-g') ? [...e.children].map(x => x.textContent.trim()).join(' ') : e.textContent.trim())); };
 /* Números dos filtros (ver contagens, em 30-state): quantos livros a lista desta tela mostra com cada opção ligada.
    A opção que não mostraria nenhum fica apagada — pela cor, não por opacidade, para continuar legível — e segue clicável. */
 function pintarContagens(c) {
@@ -241,8 +243,7 @@ function pintarFora() {
   $('#pw-fora').classList.toggle('ativo', FORA.n > 0); $('#pop-fora [data-fora-limpar]').hidden = !FORA.n;
   const av = $('#f-fora'); av.hidden = !FORA.n;
   if (!FORA.n) return;
-  const regras = SIT_FORA.filter(x => f.sit.includes(x[0])).map(x => minuscula(x[1])).concat(f.tipo.map(t => minuscula(ROTULO_TIPO[t])), f.eixo.slice().sort((a, z) => a - z).map(e => EIXOS[e].n), f.tag.map(t => '#' + rotTag(t)));
-  setHtml(av, `<span class="ff-t">${icone('olhoOff', 15)}<b>${n ? plural(n, 'livro oculto', 'livros ocultos') : 'Nenhum livro oculto por enquanto'}</b><span class="ff-r">${esc(regras.join(' · '))}</span></span><span class="ff-a"><button type="button" class="lk" data-fora-abrir>mudar</button><button type="button" class="lk" data-fora-limpar>mostrar todos</button></span>`);
+  setHtml(av, `<span class="ff-t">${icone('olhoOff', 15)}<b>${n ? plural(n, 'livro oculto', 'livros ocultos') : 'Nenhum livro oculto por enquanto'}</b><span class="ff-r">${esc(regrasFora().join(' · '))}</span></span><span class="ff-a"><button type="button" class="lk" data-fora-abrir>mudar</button><button type="button" class="lk" data-fora-limpar>mostrar todos</button></span>`);
 }
 /* abre as opções de "Ocultar": o quadro, na tela larga; a folha de filtros, rolada até elas, na estreita */
 function abrirFora() {

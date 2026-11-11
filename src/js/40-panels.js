@@ -352,7 +352,7 @@ function dlgTrilha(t) {
   const corpo = () => {
     const x = ctxAtual().trilhas.find(y => y.t === t), paraLista = x.faltam.filter(b => b.col === 'rec');
     return { x, paraLista, html: `<p class="dlg-sub">${esc(t.desc)}</p>
-      <p class="tr-res">${barraTrilha(x)}<span><b>${maiuscula(frasesTrilha(x))}</b></span><button type="button" class="lk" data-tr-tabela>ver na tabela</button></p>
+      <p class="tr-res">${barraTrilha(x)}<span><b>${maiuscula(frasesTrilha(x))}</b></span><span class="tr-a"><button type="button" class="lk" data-tr-tabela>ver na tabela</button><button type="button" class="lk" data-tr-imprimir title="Imprimir esta trilha — a caixa de impressão também salva em PDF">imprimir</button><button type="button" class="lk" data-tr-copiar title="Copiar esta trilha como texto, para colar numa mensagem ou num bloco de notas">copiar</button></span></p>
       <ol class="tr-l">${x.vis.map((b, i) => { const [cls, rot] = estadoNaTrilha(b); return `<li><button type="button" class="li" data-livro="${b.id}"><span class="tr-n">${i + 1}</span>${capaHtml(b)}<span class="li-m"><b>${esc(b.t)}</b><span>${esc(b.a || 'Autor não informado')}</span></span><span class="pill ${cls}">${rot}</span></button></li>`; }).join('')}</ol>
       ${x.esc ? `<p class="nota tr-fora">${icone('olhoOff', 14)}<span>${plural(x.esc, 'livro desta trilha não aparece', 'livros desta trilha não aparecem')} aqui: você pediu para ocultar. Para vê-${x.esc === 1 ? 'lo' : 'los'}, use “Ocultar”, na barra de filtros.</span></p>` : ''}
       <p class="nota">A ordem é a sugerida no catálogo (catalogo/trilhas.md). Clique num livro para abrir a ficha.</p>` };
@@ -367,6 +367,8 @@ function dlgTrilha(t) {
     aoAbrir(el) {
       el.addEventListener('click', e => {
         const li = e.target.closest('[data-livro]'); if (li) { const id = li.dataset.livro; Dlg.fechar(); abrirLivro(id); return; }
+        if (e.target.closest('[data-tr-imprimir]')) { imprimirFolha(folhaDaTrilha(t, corpo().x)); return; }
+        if (e.target.closest('[data-tr-copiar]')) { copiarFolha(folhaDaTrilha(t, corpo().x)); return; }
         // "ver na tabela": fecha tudo e mostra, na visão geral, só os livros da trilha
         if (e.target.closest('[data-tr-tabela]')) { Dlg.fechar(); fecharGaveta(); limparFiltros(false); S.tags.add(t.tag); irPara('geral'); toast(`Filtrando pela trilha “${t.curto}”.`); }
       });
