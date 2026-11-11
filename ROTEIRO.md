@@ -694,7 +694,7 @@ que está à vista.
   folha explica.
 - **A folha é sempre preta no branco,** mesmo com o painel no tema escuro: não gasta tinta com fundo.
 - **Lista longa pergunta antes.** O painel mede a folha antes de imprimir. Passando de 8 páginas, ele diz quantas
-  são ("2.614 livros: umas 96 páginas") e pergunta se é isso mesmo. A conta foi conferida contra o PDF de verdade.
+  são ("2.614 livros: umas 93 páginas") e pergunta se é isso mesmo. A conta foi conferida contra o PDF de verdade.
 - **Dinheiro só com o olho aberto.** Se os valores estiverem ocultos na tela (o botão do olho, no alto), eles não
   vão para o papel.
 - **O que está oculto não entra** (parte 1), e a folha diz quantos ficaram de fora e por quê.
