@@ -232,9 +232,9 @@ confere(renomeados('impar\tjose\tÍmpar\tJosé') == ({}, []), 'só acento ou mai
 
 # 10 ▸ as trilhas de leitura (catalogo/trilhas.md): a lista de cada trilha e o marcador #trilha-… nas linhas dos livros
 L0 = parse(antes['catalogo.md']); av = []; tr = bc.ler_trilhas(L0, av)
-confere(len(tr) == 20 and not av and tr == json.loads(bc.DEST_TRILHAS.read_text(encoding='utf-8')), 'as 20 trilhas são lidas sem avisos, e src/trilhas.json está em dia' + (': ' + ' | '.join(av[:3]) if av else ''))
+confere(len(tr) == 36 and not av and tr == json.loads(bc.DEST_TRILHAS.read_text(encoding='utf-8')), 'as 36 trilhas são lidas sem avisos, e src/trilhas.json está em dia' + (': ' + ' | '.join(av[:3]) if av else ''))
 confere(all(sorted(t[3]) == [i for i, b in enumerate(L0) if t[0] in b['tags']] and len(set(t[3])) == len(t[3]) >= 3 for t in tr), 'a lista de cada trilha são exatamente as linhas do catálogo que levam o marcador dela')
-confere(all(t[1] and 30 < len(t[2]) < 400 and '|' not in t[2] and '#' not in t[2] for t in tr) and len({t[0] for t in tr}) == len({t[1] for t in tr}) == 20, 'cada trilha tem nome, marcador próprio e uma descrição curta, sem tabela nem marcador colados')
+confere(all(t[1] and 30 < len(t[2]) < 400 and '|' not in t[2] and '#' not in t[2] for t in tr) and len({t[0] for t in tr}) == len({t[1] for t in tr}) == 36, 'cada trilha tem nome, marcador próprio e uma descrição curta, sem tabela nem marcador colados')
 
 def trilhas(texto, linhas):
     (tmp / 'trilhas.md').write_text(texto, encoding='utf-8', newline='\n'); av = []

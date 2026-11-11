@@ -324,3 +324,255 @@ Dez livros curtos para alternar ficção e ensaio sem se comprometer com semanas
 8. Fahrenheit 451 | Ray Bradbury
 9. O Fascismo Eterno | Umberto Eco
 10. Em Busca de Sentido | Viktor Frankl
+
+## 21. Formação do Terapeuta: do primeiro semestre ao consultório
+
+`#trilha-formacao-do-terapeuta`
+
+Um percurso pela sua própria biblioteca de psicologia: a visão geral, os manuais que estão na estante, as abordagens e, por fim, o ofício contado por quem o exerce. Só os dois últimos faltam comprar.
+
+1. História da Psicologia sem as Partes Chatas | Joel Levy
+2. Psicologias: Uma Introdução ao Estudo de Psicologia | Ana Mercês Bahia Bock, Odair Furtado e Maria de Lourdes Trassi Teixeira
+3. História da Psicologia Moderna | Duane P. Schultz e Sydney E. Schultz
+4. Teorias da Personalidade | Hall, Lindzey e Campbell
+5. Manual de Psicopatologia | Elie Cheniaux
+6. Psicoterapias: Abordagens Atuais | Aristides Volpato Cordioli e Eugenio Horacio Grevet (orgs.)
+7. Cartas a um Jovem Terapeuta | Contardo Calligaris
+8. Os Desafios da Terapia | Irvin D. Yalom
+9. O Carrasco do Amor | Irvin D. Yalom
+10. Uma Hora de Conexão | Irvin D. Yalom e Benjamin Yalom
+
+## 22. Freud Explica, Lacan Complica: a psicanálise em degraus
+
+`#trilha-psicanalise-em-degraus`
+
+Primeiro quem explica, depois Freud na fonte, e só então Lacan — com os livros que já estão na sua pasta de psicanálise. Fecha com o relato de uma análise vista do divã.
+
+1. Só Freud Explica | Joel Levy
+2. O Prazer de Ler Freud | J.-D. Nasio
+3. Freud, Criador da Psicanálise | Marco Antonio Coutinho Jorge e Nadiá Paulo Ferreira
+4. O Mal-Estar na Civilização | Sigmund Freud
+5. Psicologia das Massas e Análise do Eu | Sigmund Freud
+6. A Interpretação dos Sonhos | Sigmund Freud
+7. Introdução Clínica à Psicanálise Lacaniana | Bruce Fink
+8. Cinco Lições sobre a Teoria de Jacques Lacan | J.-D. Nasio
+9. Introdução a Jacques Lacan | Vladimir Safatle
+10. Como Trabalha um Psicanalista | J.-D. Nasio
+11. Análise | Vera Iaconelli
+
+## 23. Jung para Começar: do retrato à obra
+
+`#trilha-jung-para-comecar`
+
+A psicologia analítica em três passos: quem foi Jung, as ideias centrais explicadas por bons guias e, por fim, ele mesmo. Dos oito livros, sete já são seus.
+
+1. Jung: Vida e Obra | Nise da Silveira
+2. Introdução à Psicologia Junguiana | Heráclito Pinheiro
+3. O Homem e seus Símbolos | Carl G. Jung
+4. He | Robert A. Johnson
+5. A Psicologia de C.G. Jung: Uma Introdução às Obras Completas | Jolande Jacobi
+6. Memórias, Sonhos, Reflexões | Carl G. Jung
+7. Psicologia do Inconsciente | Carl G. Jung
+8. Psicologia e Religião | Carl G. Jung
+
+## 24. Pai em Construção
+
+`#trilha-pai-em-construcao`
+
+Paternidade em três tempos: rir, entender, cuidar. Começa leve, com crônicas de pai; passa pela psicologia do desenvolvimento; termina na psicanálise e num romance sobre querer um filho.
+
+1. O Papai é Pop | Marcos Piangers
+2. Crônicas de Pai | Leo Aversa
+3. O Novo Papel do Pai | Paul Raeburn
+4. Como Falar para seu Filho Ouvir e como Ouvir para seu Filho Falar | Adele Faber e Elaine Mazlish
+5. O Cérebro da Criança | Daniel Siegel e Tina Bryson
+6. Inteligência Emocional e a Arte de Educar Nossos Filhos (A Arte de Criar Nossos Filhos) | John Gottman e Joan Declaire
+7. O Livro que Você Gostaria que seus Pais Tivessem Lido | Philippa Perry
+8. A Geração Ansiosa | Jonathan Haidt
+9. A Criança e o seu Mundo | D.W. Winnicott
+10. O Filho de Mil Homens | Valter Hugo Mãe
+
+## 25. Plantão Noturno: suspense de jaleco
+
+`#trilha-plantao-noturno`
+
+Os thrillers médicos que você já tem, dos pioneiros de Robin Cook à série de Tess Gerritsen — e, para fechar, o romance de hospital do autor de O Físico. Nada a comprar.
+
+1. Coma | Robin Cook
+2. Cérebro | Robin Cook
+3. Erro Médico | Robin Cook
+4. Colheita Macabra | Tess Gerritsen
+5. Gravidade | Tess Gerritsen
+6. O Cirurgião | Tess Gerritsen
+7. O Jardim de Ossos | Tess Gerritsen
+8. O Comitê da Morte | Noah Gordon
+
+## 26. Crime à Brasileira: de Rubem Fonseca a Raphael Montes
+
+`#trilha-crime-a-brasileira`
+
+O lado escuro do país em histórias policiais: o noir carioca de Rubem Fonseca primeiro, o suspense de Raphael Montes depois.
+
+1. Bufo & Spallanzani | Rubem Fonseca
+2. A Grande Arte | Rubem Fonseca
+3. Agosto | Rubem Fonseca
+4. O Cobrador | Rubem Fonseca
+5. Suicidas | Raphael Montes
+6. Dias Perfeitos | Raphael Montes
+7. Jantar Secreto | Raphael Montes
+8. Uma Família Feliz | Raphael Montes
+
+## 27. Labirintos de Borges
+
+`#trilha-labirintos-de-borges`
+
+Há dezesseis Borges nos seus arquivos; este é um mapa. Os contos primeiro, depois os bichos e os sonhos, por fim a poesia e os ensaios — e um romance de hoje que mora dentro de um labirinto borgiano.
+
+1. Ficções | Jorge Luis Borges
+2. O Aleph | Jorge Luis Borges
+3. O Informe de Brodie | Jorge Luis Borges
+4. História Universal da Infâmia | Jorge Luis Borges
+5. O Livro dos Seres Imaginários | Jorge Luis Borges
+6. Livro de Sonhos | Jorge Luis Borges
+7. O Fazedor | Jorge Luis Borges
+8. Outras Inquisições | Jorge Luis Borges
+9. Piranesi | Susanna Clarke
+
+## 28. Filosofia em Doses: de Platão a Camus em livros curtos
+
+`#trilha-filosofia-em-doses`
+
+Do panorama aos próprios filósofos, sempre em livros de poucas páginas: um guia, um volume da coleção de 90 minutos e, logo em seguida, o texto original. Tudo já é seu.
+
+1. O Mundo de Sofia | Jostein Gaarder
+2. Uma Breve História da Filosofia | Nigel Warburton
+3. Platão em 90 Minutos | Paul Strathern
+4. Apologia de Sócrates | Platão
+5. Meditações | Marco Aurélio
+6. Nietzsche em 90 Minutos | Paul Strathern
+7. Crepúsculo dos Ídolos | Friedrich Nietzsche
+8. Sartre em 90 Minutos | Paul Strathern
+9. O Mito de Sísifo | Albert Camus
+
+## 29. Do Quark ao Cosmos
+
+`#trilha-do-quark-ao-cosmos`
+
+A física e o universo contados por quem sabe explicar, do mais leve ao mais fundo. Quase tudo está nos seus arquivos; falta só o livrinho de Rovelli.
+
+1. Astrofísica para Apressados | Neil deGrasse Tyson
+2. Breves Respostas para Grandes Questões | Stephen Hawking
+3. Sete Breves Lições de Física | Carlo Rovelli
+4. Uma Breve História do Tempo | Stephen Hawking
+5. Pálido Ponto Azul | Carl Sagan
+6. A Dança do Universo | Marcelo Gleiser
+7. O Universo Elegante | Brian Greene
+8. Até o Fim do Tempo | Brian Greene
+
+## 30. Entender o Presente: cansaço, telas e polarização
+
+`#trilha-entender-o-presente`
+
+Ensaios curtos sobre a vida de agora — o esgotamento, as redes, a democracia em risco — e, no fim, duas respostas de Ailton Krenak.
+
+1. A Sociedade do Cansaço | Byung-Chul Han
+2. Psicopolítica | Byung-Chul Han
+3. Infocracia: Digitalização e a Crise da Democracia | Byung-Chul Han
+4. 44 Cartas do Mundo Líquido Moderno | Zygmunt Bauman
+5. Realismo Capitalista | Mark Fisher
+6. Os Engenheiros do Caos | Giuliano da Empoli
+7. Como as Democracias Morrem | Steven Levitsky e Daniel Ziblatt
+8. Sobre a Tirania | Timothy Snyder
+9. Ideias para Adiar o Fim do Mundo | Ailton Krenak
+10. A Vida Não é Útil | Ailton Krenak
+
+## 31. Máquinas que Pensam: inteligência artificial sem pânico
+
+`#trilha-maquinas-que-pensam`
+
+Da ficção de Asimov aos livros que explicam o que está em jogo agora: como a máquina aprende, o que pode dar errado e quem manda nela. Fecha com um romance narrado por uma inteligência artificial.
+
+1. Eu, Robô | Isaac Asimov
+2. Turing e o Computador em 90 Minutos | Paul Strathern
+3. 2041: Como a Inteligência Artificial Vai Mudar sua Vida nas Próximas Décadas | Kai-Fu Lee e Chen Qiufan
+4. O Algoritmo Mestre: Como a Busca pelo Algoritmo de Machine Learning Definitivo Recriará Nosso Mundo | Pedro Domingos
+5. Inteligência Artificial a Nosso Favor | Stuart Russell
+6. Vida 3.0 | Max Tegmark
+7. A Próxima Onda: Inteligência Artificial, Poder e o Maior Dilema do Século XXI | Mustafa Suleyman e Michael Bhaskar
+8. O Império da IA | Karen Hao
+9. Klara e o Sol | Kazuo Ishiguro
+
+## 32. Fantasia de Fôlego: sagas para morar num mundo
+
+`#trilha-fantasia-de-folego`
+
+Os primeiros volumes das sagas que você guardou, das mais acessíveis às mais ambiciosas. Se um mundo prender, a continuação já está na mesma pasta.
+
+1. O Feiticeiro de Terramar (Ciclo Terramar, vol. 1) | Ursula K. Le Guin
+2. O Aprendiz de Assassino | Robin Hobb
+3. Mago: Aprendiz | Raymond E. Feist
+4. O Império Final (Mistborn, vol. 1) | Brandon Sanderson
+5. O Cavaleiro dos Sete Reinos | George R.R. Martin
+6. O Nome do Vento | Patrick Rothfuss
+7. A Quinta Estação | N.K. Jemisin
+8. O Senhor dos Anéis | J.R.R. Tolkien
+
+## 33. Quadrinhos para Gente Grande
+
+`#trilha-quadrinhos-para-gente-grande`
+
+Os romances gráficos que mudaram o que um quadrinho pode ser — memória, política, sonho —, todos já na sua pasta de HQs. Do mais direto ao mais denso.
+
+1. Maus | Art Spiegelman
+2. Daytripper | Fábio Moon e Gabriel Bá
+3. A Chegada | Shaun Tan
+4. Watchmen | Alan Moore e Dave Gibbons
+5. V de Vingança | Alan Moore e David Lloyd
+6. Sandman | Neil Gaiman
+7. Palestina | Joe Sacco
+8. Tungstênio | Marcello Quintanilha
+9. Akira | Katsuhiro Otomo
+10. Do Inferno | Alan Moore e Eddie Campbell
+
+## 34. Cuidar até o Fim: a morte vista por quem cuida
+
+`#trilha-cuidar-ate-o-fim`
+
+O que médicos, pacientes e terapeutas aprenderam à beira da morte. Complementa “Frente a Frente com a Morte” pelo lado da clínica; termina com a sátira de Saramago, para respirar.
+
+1. A Morte é um Dia que Vale a Pena Viver | Ana Claudia Quintana Arantes
+2. O Último Sopro de Vida | Paul Kalanithi
+3. Mortais | Atul Gawande
+4. Sobre a Morte e o Morrer | Elisabeth Kübler-Ross
+5. De Frente para o Sol: Como Superar o Terror da Morte | Irvin D. Yalom
+6. Uma Questão de Vida e Morte | Irvin D. Yalom e Marilyn Yalom
+7. As Intermitências da Morte | José Saramago
+
+## 35. Porto Alegre, Hoje
+
+`#trilha-porto-alegre-hoje`
+
+A “Saga Gaúcha” vai do pampa à cidade antiga; esta trilha fica na cidade de agora: periferia, racismo, classe média à deriva — e Quintana para fechar.
+
+1. Os Supridores | José Falero
+2. O Avesso da Pele | Jeferson Tenório
+3. De Onde Eles Vêm | Jeferson Tenório
+4. Marrom e Amarelo | Paulo Scott
+5. Barba Ensopada de Sangue | Daniel Galera
+6. Os Dragões Não Conhecem o Paraíso | Caio Fernando Abreu
+7. Esconderijos do Tempo | Mario Quintana
+
+## 36. Terreiro e Encruzilhada: umbanda, orixás e pensamento afro-brasileiro
+
+`#trilha-terreiro-e-encruzilhada`
+
+Da apresentação para leigos à história, aos mitos e à filosofia que nasce no terreiro. Os mais densos ficam para o fim.
+
+1. Umbanda, Religião Brasileira: Um Guia para Leigos e Iniciantes | Flávia Pinto
+2. Umbandas: Uma História do Brasil | Luiz Antonio Simas
+3. Lendas Africanas dos Orixás | Pierre Verger
+4. Mitologia dos Orixás | Reginaldo Prandi
+5. Filosofias Africanas: Uma Introdução | Nei Lopes e Luiz Antonio Simas
+6. Fogo no Mato: A Ciência Encantada das Macumbas | Luiz Antonio Simas e Luiz Rufino
+7. Orixás | Pierre Verger
+8. Os Nagô e a Morte | Juana Elbein dos Santos
