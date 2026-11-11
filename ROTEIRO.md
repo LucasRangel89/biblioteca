@@ -15,10 +15,11 @@ Este arquivo é atualizado ao fim de cada rodada. Para saber em que pé as coisa
 | 1 | Conferir o que foi importado | **Quase pronta** — falta só o que depende de você (lista abaixo, com a pasta e o nome de cada arquivo) |
 | 2 | Decidir o que ficou de fora (quadrinhos, subpastas) | **Feita** (10/11/2026) — ficaram 12 perguntas para você (lista abaixo) |
 | 3 | Trocar os dados de exemplo pelos seus | **Em parte** (10/11/2026) — o painel já abre sem nada inventado; falta a sua lista de leituras |
-| 4 | Classificar os livros digitais: a vistoria dos marcadores | **Feita** (11/11/2026) — falta a sua conferência por amostragem e quatro dúvidas (lista abaixo) |
+| 4 | Classificar os livros digitais: a vistoria dos marcadores | **Feita** (11/11/2026) — falta a sua conferência por amostragem e duas dúvidas (lista abaixo) |
 | 5 | Rotina à prova de erro | A fazer |
-| 6 | Melhorias do painel | **Em parte** (11/11/2026) — endereço próprio, guia Finanças, capas, só o título obrigatório, suas anotações, ordem de compra |
+| 6 | Melhorias do painel | **Em parte** (11/11/2026) — endereço próprio, guia Finanças, capas (agora de duas fontes), só o título obrigatório, suas anotações, ordem de compra |
 | 7 | A versão 3 do catálogo: camadas e trilhas de leitura | **Feita** (11/11/2026) |
+| 8 | Análise dos filtros, trilhas personalizadas e novas recomendações | **Feita** (11/11/2026) — oito propostas esperam a sua decisão (lista abaixo) |
 
 A ordem pode mudar: as etapas que faltam não dependem umas das outras. Se alguma interessar mais, peça por ela.
 
@@ -56,8 +57,9 @@ O painel abre em <https://lucasrangel89.github.io/biblioteca/>, no computador ou
   ligados. Se você já usava o site, eles somem sozinhos na primeira abertura depois de 10/11/2026, e o painel avisa
   (os detalhes estão na etapa 3, abaixo).
 - **As capas vêm da internet.** O site inteiro é um arquivo só; a única coisa que ele busca fora são as imagens das
-  capas, num catálogo aberto de livros chamado Open Library. Sem internet, ou quando o livro não tem capa, aparece
-  um desenho com a inicial do título. Quem preferir desliga as capas em "Seus dados".
+  capas, em dois catálogos de livros: a Open Library, que é aberta, e a Apple Books, a loja de livros digitais da
+  Apple. Sem internet, ou quando o livro não tem capa, aparece um desenho com a inicial do título. Quem preferir
+  desliga as capas em "Seus dados".
 - **O arquivo continua valendo.** O `Biblioteca_Lucas_Dashboard.html` do repositório é o mesmo painel e abre sem
   internet. Quem preferir usá-lo baixa o arquivo novo a cada rodada e põe no lugar do antigo, na mesma pasta e com o
   mesmo nome, depois de exportar um backup.
@@ -217,7 +219,8 @@ Está: o que entrou e o que ficou de fora estão nas listas acima, e em `bibliot
 ## Etapa 3 — Trocar os dados de exemplo pelos seus
 
 **Feito** (10/11/2026): **o painel abre sem nenhum número inventado.** As leituras, as datas e os valores de exemplo
-saíram; ficou só o catálogo — que, de leituras, sabe de duas: *O Arqueiro* e *O Físico*. Sem compras registradas, a
+saíram; ficou só o catálogo — que, de leituras, sabe de três: *O Arqueiro*, *O Físico* e, desde 11/11/2026, *A
+Metamorfose* (você contou que leu; o exemplar foi emprestado e não voltou). Sem compras registradas, a
 guia Finanças fica zerada, e cada gráfico vazio diz o que falta para ele se preencher.
 
 - **Se você já usava o site:** na primeira abertura depois desta mudança os dados de exemplo somem sozinhos, uma
@@ -273,16 +276,24 @@ título obscuro, é um palpite informado.
 
 **De você:**
 
-1. **Conferir por amostragem.** Pegue uns 30 livros que você conhece, veja no painel a dificuldade e a extensão de
-   cada um e diga onde a régua errou ("o livro tal é longo, não médio").
-2. **Quatro dúvidas** que só se resolvem abrindo o arquivo e olhando o sumário:
+1. **Conferir por amostragem.** A etapa 8 propõe um jeito mais rápido: eu sorteio 40 livros e você responde, para
+   cada um, se o eixo, a dificuldade e a extensão estão certos. Enquanto isso não acontece, vale o de antes: pegue uns
+   30 livros que você conhece e diga onde a régua errou ("o livro tal é longo, não médio").
+2. **Duas dúvidas:**
 
-| A dúvida | O que abrir (pasta e nome exato) |
+| A dúvida | O que olhar |
 | --- | --- |
-| *O Chamado de Cthulhu* passou a "tenho em digital" por causa de uma coletânea. O conto está mesmo nela? | `Terror e horror\Biblioteca Lovecraft - Vol. 1 - O chamado de Cthulhu e outras histórias (H. P. Lovecraft [Lovecraft, H. P.]) (Z-Library).pdf` |
-| *Nas Montanhas da Loucura*, *A Sombra sobre Innsmouth*, *O Horror de Dunwich* e *Um Sussurro nas Trevas* continuam como recomendações, mas é provável que estejam dentro das coletâneas de Lovecraft que você tem. Quais estão? | `Terror e horror\H. P. Lovecraft - Vol. 2 - Miskatonic Edition (H. P. Lovecraft) (Z-Library).epub`, `Terror e horror\Os melhores contos de H.P. Lovecraft - H.P.pdf`, `Terror e horror\Antologia H. P. Lovecraft - H. P. Lovecraft.pdf`, o arquivo da linha de cima e, na estante, *Lovecraft: Medo Clássico* |
-| *A Metamorfose*, de Kafka, continua como recomendação. Está dentro da coletânea que você tem? | `autoconhecimento e desenvolvimento pessoal\Essencial - Franz Kafka.pdf` |
+| Em qual dos seus dois livros de Lovecraft em papel estão *O Chamado de Cthulhu*, *Nas Montanhas da Loucura* e *A Sombra sobre Innsmouth*? E *O Horror de Dunwich* e *Um Sussurro nas Trevas*, que continuam como recomendações, estão nele também? | Na estante, o sumário de *Contos (H.P. Lovecraft)* e o de *Lovecraft: Medo Clássico* |
 | Dois arquivos de Rafael B. Correa parecem ser o mesmo livro com títulos diferentes. São? | `autoconhecimento e desenvolvimento pessoal\persuasopnlehipnoseaplicadasseduo.pdf` e `autoconhecimento e desenvolvimento pessoal\Rafael B. Correa - Psicologia, PNL e Hipnose Aplicada a Sedução.pdf` |
+
+**Respondido em 11/11/2026:**
+
+- *O Chamado de Cthulhu*, *Nas Montanhas da Loucura* e *A Sombra sobre Innsmouth* estão dentro do seu livro de contos
+  de Lovecraft, em papel. Os três aparecem agora como "tenho em físico" (o primeiro, nos dois formatos), e a ficha de
+  cada um diz que não é um volume à parte. Por isso o painel conta 100 livros em papel, e a estante tem 97 volumes.
+  *A Cor que Caiu do Espaço*, que você também citou, não estava entre as recomendações: não há linha a mudar.
+- *A Metamorfose* consta como lida. Como o exemplar se perdeu, ela continua fora do acervo — e fora da ordem de
+  compra, que não sugere o que você já leu. Se quiser tê-la de novo, "Quero comprar", na ficha, a põe na lista.
 
 **Quando entrarem livros novos:** eles chegam sem dificuldade, extensão e temas, e são classificados na mesma rodada
 em que a biblioteca virtual for atualizada.
@@ -333,6 +344,20 @@ listagens de uma vez; o material antigo guardado em `referencias/` é revisto.
   "porta de entrada da área", "leve e curta"). Um botão ao lado põe o livro na lista de compra. A ordem se refaz
   sozinha quando você compra ou lê um livro. **É uma sugestão, e não olha preços.**
 
+**Feito** (11/11/2026, na etapa 8):
+
+- **Mais capas, de uma segunda fonte.** A Open Library, de onde vinham as capas, tem poucas edições brasileiras:
+  só 761 livros tinham capa. O que ela não achou passou a ser procurado também na **Apple Books**, a loja de livros
+  digitais da Apple, que vende as edições daqui. Agora **@@CAPAS@@ dos 2.614** livros têm capa (@@APPLE@@ vieram da
+  Apple). A regra não mudou: só entra a capa cujo título **e** autor conferem com os do catálogo.
+- **O que continua sem capa**, e por quê: edições antigas que não viraram livro digital, teses e apostilas, boa
+  parte dos quadrinhos, e os livros sem autor certo, que nem são procurados. Para esses, a saída é enviar a capa
+  pelo painel, na ficha do livro.
+- **A capa da Apple é a do livro digital à venda hoje.** Pode não ser a da edição que está na sua estante.
+- **O que muda para a privacidade:** o painel passa a pedir imagens a dois sites em vez de um. Continua valendo o
+  resto: nada do que você anota vai junto, o pedido não diz de que página veio, e a chave "Mostrar as capas", em
+  "Seus dados", desliga tudo.
+
 **Acompanhar preços: o que dá e o que não dá.** O painel **não consulta as lojas**, e não é por falta de fazer: ele é
 uma página que roda dentro do seu navegador, e os navegadores não deixam uma página ler o conteúdo de outra (a da
 Amazon, por exemplo). Hoje o caminho é: na ficha do livro, "Buscar nas lojas" abre a loja já na busca daquele livro;
@@ -346,7 +371,8 @@ testada, e várias dificultam a consulta automática. Se interessar, vira uma et
 Ideias em aberto; você escolhe quais valem a pena.
 
 - **Preços automáticos:** o serviço descrito acima, começando por uma loja, para ver se funciona.
-- **Mais capas:** procurar as que faltam em outra fonte. (Uma a uma, você já pode enviar a capa pelo painel.)
+- **As propostas da análise dos filtros** (etapa 8): número de livros ao lado de cada marcador, "ou" dentro de um
+  mesmo grupo, um grupo de filtros só para a psicologia.
 - **Juntar "Próximas aquisições" e "Preços" dentro de Finanças:** hoje são três guias que falam de dinheiro.
 - **"Tenho em digital, quero o físico":** hoje um livro ou está no acervo ou está na lista de compras, nunca nos dois.
 - **Anotações fora do navegador:** hoje leituras, notas, comentários e arquivos ficam guardados só no navegador em
@@ -393,6 +419,130 @@ pasta e o nome. Nada o lê; está guardado para consulta.
 **Pronta quando** as camadas e as trilhas estiverem no catálogo e no painel, e o arquivo enviado tiver saído da pasta
 principal. Estão.
 
+## Etapa 8 — Análise dos filtros, trilhas personalizadas e novas recomendações
+
+**Feita** (11/11/2026).
+
+**O que você pediu:** uma análise e uma meta-análise dos filtros e da categorização, novas trilhas de leitura
+personalizadas, novas recomendações — de preferência publicadas no Brasil — e uma nova busca de capas. (A busca de
+capas está na etapa 6; as suas duas respostas, sobre Lovecraft e *A Metamorfose*, na etapa 4.)
+
+### A análise
+
+O relatório inteiro está em `catalogo/ANALISE-DOS-FILTROS.md`. Em resumo:
+
+- **Os filtros alcançam os livros de forma desigual.** "Temas" alcança 71% do catálogo; "Gêneros", 35%; clima, papel
+  e pergunta central, menos de 10% — e nenhum dos livros que você só tem em arquivo.
+- **A psicologia está apertada:** 440 livros num eixo só, quando as suas pastas a dividem em doze.
+- **Marcar dois botões do mesmo grupo quase sempre dá zero**, e o painel não avisa antes do clique.
+- **Quanto confiar:** o eixo, o tipo e a posse são firmes. A dificuldade e a extensão dos livros digitais são o dado
+  mais frágil: ninguém abriu os arquivos, e você ainda não conferiu.
+
+**Já corrigido nesta rodada** (só acréscimos; nenhum marcador foi tirado):
+
+- 26 marcadores só valiam para a biblioteca virtual. "Contos" achava 123 livros digitais e nenhum da estante. Agora
+  valem para o catálogo inteiro (sobraram 10, próprios dos quadrinhos e da informática).
+- As afinidades ("Asimov e Clarke", "Yalom"…) passaram a mostrar também os livros digitais dos mesmos autores.
+- Thriller médico aparece em "Thriller"; Roma, em "Antiguidade"; livro sobre inteligência artificial, em "Tecnologia".
+
+**As oito propostas — a decisão é sua.** As três primeiras mexem só no painel:
+
+| Nº | Proposta | Trabalho |
+| ---: | --- | --- |
+| 1 | Mostrar o número de livros ao lado de cada marcador, e apagar o botão que daria zero | Pequeno |
+| 2 | Dentro de um mesmo grupo, somar ("ou"); entre grupos, cruzar ("e") | Médio |
+| 3 | Um grupo de filtros só para a psicologia, com as abordagens na ordem das suas pastas | Pequeno |
+| 4 | Separar "Temas" em três grupos: áreas, assuntos e forma (introdução, biografia, contos…) | Pequeno |
+| 5 | Acertar os nomes que enganam: "policial" e "mistério" são o mesmo; "espiritualidade" não inclui espiritismo nem umbanda | Pequeno |
+| 6 | Um marcador para a ficção literária (97 romances não têm gênero nem tema) | Pequeno |
+| 7 | Levar "clima" e "papel" aos cerca de 400 romances digitais | Grande |
+| 8 | Conferência por amostragem: eu sorteio 40 livros, você diz se eixo, dificuldade e extensão estão certos | Dez minutos seus |
+
+Para pedir: "pode fazer as propostas 1, 2 e 3", por exemplo.
+
+### As 16 trilhas novas
+
+As 20 trilhas que vieram do seu arquivo **não foram mexidas**. As novas foram montadas ao contrário delas: partem do
+que **já está no seu acervo** — sobretudo na biblioteca virtual, que não tinha nenhum livro em trilha — e só então
+acrescentam o que falta. Três delas dá para começar e terminar sem comprar nada.
+
+| Nº | Trilha | O que é | Você tem |
+| ---: | --- | --- | ---: |
+| 21 | Formação do Terapeuta | Da visão geral da psicologia ao ofício, com os seus manuais e Yalom no fim | 8 de 10 |
+| 22 | Freud Explica, Lacan Complica | A psicanálise em degraus: quem explica, Freud na fonte, Lacan | 10 de 11 |
+| 23 | Jung para Começar | Quem foi, as ideias, a obra | 7 de 8 |
+| 24 | Pai em Construção | Crônicas de pai, psicologia do desenvolvimento, psicanálise | 6 de 10 |
+| 25 | Plantão Noturno | Os thrillers médicos de Robin Cook e Tess Gerritsen | 8 de 8 |
+| 26 | Crime à Brasileira | Rubem Fonseca e Raphael Montes | 7 de 8 |
+| 27 | Labirintos de Borges | Um mapa para os dezesseis Borges que você guardou | 8 de 9 |
+| 28 | Filosofia em Doses | De Platão a Camus em livros curtos | 9 de 9 |
+| 29 | Do Quark ao Cosmos | Física e universo, do mais leve ao mais fundo | 7 de 8 |
+| 30 | Entender o Presente | Cansaço, telas e polarização, em ensaios curtos | 8 de 10 |
+| 31 | Máquinas que Pensam | Inteligência artificial, de Asimov ao que está em jogo agora | 7 de 9 |
+| 32 | Fantasia de Fôlego | Os primeiros volumes das sagas que você tem | 7 de 8 |
+| 33 | Quadrinhos para Gente Grande | *Maus*, *Watchmen*, *Sandman*, *Daytripper*… | 10 de 10 |
+| 34 | Cuidar até o Fim | A morte vista por médicos, pacientes e terapeutas | 3 de 7 |
+| 35 | Porto Alegre, Hoje | A cidade de agora, de José Falero a Quintana | 4 de 7 |
+| 36 | Terreiro e Encruzilhada | Umbanda, orixás e pensamento afro-brasileiro | 5 de 8 |
+
+No painel: guia **Recomendações** → quadro "Trilhas de leitura". Abrir uma trilha mostra os livros na ordem e um
+botão para pôr na lista de compra os que faltam. As listas estão em `catalogo/trilhas.md`.
+
+**São uma proposta minha, feita a partir do que há nas suas pastas** — não sei o que você já leu. Se uma trilha não
+fizer sentido, ou se faltar uma, diga: "tire a trilha tal", "troque o livro tal", "quero uma trilha de…".
+
+### As 60 recomendações novas
+
+Todas têm edição brasileira, e nenhuma estava no seu acervo. Pesquisei na internet, em 11/11/2026, os prêmios e
+lançamentos de 2025 e 2026 (Jabuti, Nobel, Booker, os melhores do ano da revista *Quatro Cinco Um*) e os livros novos
+de autores que você já lê. Treze das 60 saíram dessa pesquisa ou tiveram a edição conferida nela; as outras 47 são
+edições brasileiras conhecidas, em catálogo há anos. Dezoito delas já entram em alguma das trilhas novas.
+
+| Área | Livros (editora no Brasil) |
+| --- | --- |
+| Psicologia e psicanálise | *Uma Hora de Conexão*, Irvin D. Yalom e Benjamin Yalom (HarperCollins, 2026) · *O Carrasco do Amor*, Irvin D. Yalom (HarperCollins) · *Análise*, Vera Iaconelli (Zahar, 2025) · *Tornar-se Negro*, Neusa Santos Souza (Zahar) · *O Corpo Guarda as Marcas*, Bessel van der Kolk (Sextante) · *A Geração Ansiosa*, Jonathan Haidt (Companhia das Letras, 2024) · *Longe da Árvore*, Andrew Solomon (Companhia das Letras) |
+| Mente e neurociência | *Determinados*, Robert M. Sapolsky (Companhia das Letras, 2025) · *Um Antropólogo em Marte*, Oliver Sacks (Companhia das Letras) · *Como Mudar Sua Mente*, Michael Pollan (Intrínseca) |
+| Medicina e morte | *A Morte é um Dia que Vale a Pena Viver*, Ana Claudia Quintana Arantes (Sextante) · *Mortais*, Atul Gawande (Objetiva) · *O Último Sopro de Vida*, Paul Kalanithi (Sextante) |
+| Ficção científica e fantasia | *Devoradores de Estrelas*, Andy Weir (Suma) · *A Cidade e as Estrelas*, Arthur C. Clarke (Aleph, 2021) · *Os Próprios Deuses*, Isaac Asimov (Aleph) · *O Planeta dos Macacos*, Pierre Boulle (Aleph) · *A Longa Viagem a um Pequeno Planeta Hostil*, Becky Chambers (DarkSide) · *Estação Onze*, Emily St. John Mandel (Intrínseca) · *Piranesi*, Susanna Clarke (Morro Branco) · *Babel*, R.F. Kuang (Intrínseca, 2024) |
+| Horror | *Sempre Vivemos no Castelo*, Shirley Jackson (Suma) · *A Volta do Parafuso*, Henry James (Penguin-Companhia) · *O Cemitério*, Stephen King (Suma) · *Nossa Parte de Noite*, Mariana Enriquez (Intrínseca) · *Mandíbula*, Mónica Ojeda (Autêntica Contemporânea) · *Distância de Resgate*, Samanta Schweblin (Record) |
+| Pré-história e romances históricos | *Círculo dos Dias*, Ken Follett (Arqueiro, 2025) · *O Crepúsculo e a Aurora*, Ken Follett (Arqueiro) · *A Papisa Joana*, Donna Woolfolk Cross (Geração Editorial) · *Samarcanda*, Amin Maalouf (Tabla, 2022) |
+| Brasil, Portugal e América Latina | *Coração sem Medo*, Itamar Vieira Junior (Todavia, 2025) · *Meridiana*, Eliana Alves Cruz (Companhia das Letras, 2025) · *O Som do Rugido da Onça*, Micheliny Verunschk (Companhia das Letras) · *Os Supridores*, José Falero (Todavia) · *Marrom e Amarelo*, Paulo Scott (Alfaguara) · *Barba Ensopada de Sangue*, Daniel Galera (Companhia das Letras) · *A Guerra do Fim do Mundo*, Mario Vargas Llosa (Alfaguara) · *O Filho de Mil Homens*, Valter Hugo Mãe (Biblioteca Azul) · *As Intermitências da Morte*, José Saramago (Companhia das Letras) |
+| Clássicos e ficção de agora | *A Redoma de Vidro*, Sylvia Plath (Biblioteca Azul) · *Orbital*, Samantha Harvey (DBA, 2025) · *Sátántangó*, László Krasznahorkai (Companhia das Letras) · *Lincoln no Limbo*, George Saunders (Companhia das Letras) |
+| Ciência e tecnologia | *Sete Breves Lições de Física*, Carlo Rovelli (Objetiva) · *Um Mundo Imenso*, Ed Yong (Todavia, 2024) · *A Canção da Célula*, Siddhartha Mukherjee (Companhia das Letras) · *O Império da IA*, Karen Hao (Rocco, 2026) |
+| Política, sociedade e história | *Sobre a Tirania*, Timothy Snyder (Companhia das Letras) · *Biografia do Abismo*, Felipe Nunes e Thomas Traumann (HarperCollins) · *Sobre o Autoritarismo Brasileiro*, Lilia Schwarcz (Companhia das Letras) · *Poder e Progresso*, Daron Acemoglu e Simon Johnson (Objetiva, 2024) · *Escravidão* (trilogia), Laurentino Gomes (Globo Livros) · *O Pacto da Branquitude*, Cida Bento (Companhia das Letras) · *Na Ponta da Língua*, Caetano W. Galindo (Companhia das Letras, 2025) |
+| Espiritualidade | *Muitas Vidas, Muitos Mestres*, Brian Weiss (Sextante) · *Fogo no Mato*, Luiz Antonio Simas e Luiz Rufino (Mórula) |
+| Escrita e paternidade | *Escrever Ficção*, Luiz Antonio de Assis Brasil (Companhia das Letras) · *A Criança e o seu Mundo*, D.W. Winnicott (LTC) · *Manifesto Antimaternalista*, Vera Iaconelli (Zahar) |
+
+**Nove recomendações antigas já tinham edição brasileira**, e constavam como "sem edição em português". Foram
+conferidas uma a uma; sete passaram a ter o título daqui:
+
+| Como estava | Edição brasileira |
+| --- | --- |
+| *Songs of a Dead Dreamer and Grimscribe*, Thomas Ligotti | ***Canções de um Sonhador Morto & Escriba-Sinistro*** (Suma, 2023) |
+| *The Elementals*, Michael McDowell | ***Elementais*** (DarkSide, 2021) |
+| *Ghost Story*, Peter Straub | o mesmo título (DarkSide, 2019) |
+| *A Parábola do Semeador*, Octavia E. Butler | o mesmo título (Morro Branco, 2018) |
+| *The Sovereignty of Good*, Iris Murdoch | ***A Soberania do Bem*** (Unesp, 2013) |
+| *Contemporary Political Philosophy*, Will Kymlicka | ***Filosofia Política Contemporânea*** (Martins Fontes, 2006) |
+| *The Cultural Origins of Human Cognition*, Michael Tomasello | ***Origens Culturais da Aquisição do Conhecimento Humano*** (Martins Fontes, 2003) |
+| *The Mushroom at the End of the World*, Anna Lowenhaupt Tsing | ***O Cogumelo no Fim do Mundo*** (n-1 edições, 2022) |
+| *Staying with the Trouble*, Donna Haraway | ***Ficar com o Problema*** (n-1 edições, 2023) |
+
+Quem procurar no painel pelo título antigo ainda acha o livro. Ficaram 48 recomendações "sem edição em português";
+não foram conferidas uma a uma — se interessar, é uma rodada curta.
+
+**O que mudou na ordem de compra.** As recomendações novas não levam a sua marca de prioridade (`#top`): quem decide
+isso é você. Elas sobem na lista quando fecham uma trilha — *Análise*, por exemplo, é o único livro que falta em
+"Freud Explica, Lacan Complica".
+
+**De você:**
+
+1. Dizer quais das oito propostas valem a pena.
+2. Olhar as trilhas novas e as recomendações, e pedir o que quiser tirar, trocar ou acrescentar.
+3. A conferência por amostragem (proposta 8), quando tiver dez minutos.
+
+**Pronta quando** o relatório, as trilhas e as recomendações estiverem no catálogo e no painel. Estão.
+
 ---
 
 ## Combinados
@@ -409,6 +559,11 @@ principal. Estão.
 - **Estimativa é dita como estimativa.** A dificuldade e a extensão dos livros digitais foram estimadas sem abrir os
   arquivos; a ordem de compra é uma sugestão. Nenhuma das duas é apresentada como fato.
 - **O painel não consulta lojas.** Todo preço é uma cotação registrada por você.
+- **Recomendação nova entra com a edição brasileira.** Só leva "sem edição em português" o livro que de fato não tem.
+- **As 20 trilhas que vieram do seu arquivo não são mexidas sem você pedir.** As novas são propostas: tire, troque,
+  peça outras.
+- **Marcador se acrescenta; não se tira sem aviso.** Quando a classificação de um livro precisa mudar, e não só
+  ganhar um marcador, isso vira proposta antes de virar mudança.
 - **Quadrinhos: uma linha por série**, sejam quantas forem as edições guardadas.
 - **O que não é livro nem quadrinho fica só no inventário** (apostilas, revistas, artigos), fora do catálogo e do
   painel.

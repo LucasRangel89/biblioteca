@@ -189,7 +189,7 @@ quantos livros têm**, então só se descobre depois de clicar.
 | Parte do catálogo | Linhas | Quem classificou, e como | Você conferiu? |
 | --- | ---: | --- | --- |
 | Estante física | 97 | Títulos passados por você; classificação feita por inteligência artificial em 09/11/2026; 44 linhas (da estante e das recomendações) recalibradas na vistoria | Em parte: correções pontuais |
-| Recomendações | 607 | Listas montadas em conversa com inteligência artificial; as 60 desta rodada, com a edição brasileira conferida na internet | Não |
+| Recomendações | 607 | Listas montadas em conversa com inteligência artificial; as 60 desta rodada foram escolhidas entre livros com edição brasileira | Não |
 | Camadas e as 20 primeiras trilhas | 442 linhas | Vieram prontas do arquivo "versão 3", feito fora daqui | Não se sabe |
 | Biblioteca virtual | 1.910 | Título e autor deduzidos do nome do arquivo (e pesquisados quando o nome não bastava); eixo, tipo, dificuldade, extensão e temas estimados na vistoria de 10/11/2026, sem abrir nenhum arquivo | Não |
 | As 16 trilhas novas | 140 livros | Montadas nesta rodada a partir do que há no acervo | Não |
