@@ -21,7 +21,7 @@ Este arquivo é atualizado ao fim de cada rodada. Para saber em que pé as coisa
 | 7 | A versão 3 do catálogo: camadas e trilhas de leitura | **Feita** (11/11/2026) |
 | 8 | Análise dos filtros, trilhas personalizadas e novas recomendações | **Feita** (11/11/2026) — das oito propostas, três viraram a etapa 9; cinco esperam a sua decisão (lista abaixo) |
 | 9 | Filtros que dizem quantos livros têm e somam dentro do grupo; grupo da psicologia; conserto das caixas que não cabiam na tela | **Feita** (11/11/2026) |
-| 10 | As suas ideias para a próxima rodada: ocultar categorias, exportar e imprimir listas, sinopses, temas visuais; gamificação, em conversa | **A fazer** — combinada em 11/11/2026; o plano e o que falta decidir estão abaixo |
+| 10 | As suas ideias: ocultar categorias, imprimir e copiar listas, sinopses, temas visuais, estímulo à leitura | **Em parte** (11/11/2026) — ocultar e imprimir estão prontos; faltam as sinopses, os temas e a guia de leitura (o plano e o que falta decidir estão abaixo) |
 
 A ordem pode mudar: as etapas que faltam não dependem umas das outras. Se alguma interessar mais, peça por ela.
 
@@ -613,54 +613,97 @@ viraram a etapa 10, logo abaixo.
 
 ---
 
-## Etapa 10 — As suas ideias para a próxima rodada
+## Etapa 10 — As suas ideias: ocultar, imprimir, sinopses, temas e estímulo à leitura
 
-**A fazer.** Combinada em 11/11/2026. Nada do que está aqui entrou no painel: é o plano, guardado para não se perder
-entre uma conversa e outra. Para retomar, basta dizer "vamos para a etapa 10" — inteira, ou só uma das partes.
-
-A ordem é a sugerida, da parte mais simples para a mais trabalhosa. Pode mudar.
+**Em parte** (11/11/2026). As partes 1 e 2 estão no painel. As outras três continuam como plano, guardado aqui para
+não se perder entre uma conversa e outra. Para retomar, basta dizer "vamos para a parte 3" (ou 4, ou 5).
 
 | Parte | O que é | Em que pé está |
 | --- | --- | --- |
-| 1 | Ocultar categorias | Combinada; falta fazer |
-| 2 | Exportar e imprimir listas | Proposta feita, ainda sem a sua resposta; falta fazer |
-| 3 | Sinopse na ficha de cada livro | Combinada; falta fazer, um lote por rodada |
-| 4 | Temas visuais | Combinada em linhas gerais; falta fechar a lista de temas e fazer |
-| 5 | Gamificação da leitura | **Em conversa** — nada será feito antes de decidirmos juntos |
+| 1 | Ocultar categorias | **Feita** (11/11/2026) |
+| 2 | Imprimir e copiar listas | **Feita** (11/11/2026) |
+| 3 | Sinopse na ficha de cada livro | Combinada, com o estilo aprovado por você (11/11/2026); falta fazer, um lote por rodada |
+| 4 | Temas visuais | Combinada, com as três decisões tomadas (11/11/2026); falta fazer, poucos temas por rodada |
+| 5 | Estímulo à leitura (gamificação) | Direção combinada com as suas respostas; falta você aprovar o desenho |
 
 ### Parte 1 — Ocultar categorias
+
+**Feita** (11/11/2026).
 
 **O que você pediu:** um filtro que **esconda** os livros de uma categoria escolhida por você. O que você tinha em
 mente: os "sem edição em PT" (hoje, 48 livros) e os que você já leu.
 
-**Combinado:** um controle "Ocultar", junto dos filtros, em que você escolhe o que não quer ver:
+**O que entrou.** Na barra de filtros há um botão novo, **Ocultar** (o desenho de um olho riscado). No celular, ele
+fica dentro de "Filtros", com um atalho no alto da folha: "ocultar categorias". Ali você marca o que não quer ver:
 
-- pela situação: já li · sem edição em PT · a verificar;
-- pelo tipo (ficção, não ficção, HQ, outros), pelo eixo ou por um marcador qualquer.
+- pela situação: **já li**, **sem edição em PT**, **a verificar**;
+- pelo tipo (ficção, não ficção, HQ, poesia e outros);
+- pelo eixo (os 16);
+- por um marcador qualquer: digite o nome na busca do quadro ("lovecraft", "trilha", "rússia") e clique.
 
-O que for ocultado sai de todas as telas e de todas as contagens até você desligar. A escolha fica guardada entre
-uma visita e outra, e um aviso sempre à vista diz quantos livros estão escondidos, com um clique para trazê-los de
-volta — para os números não parecerem errados mais tarde.
+Ao lado de cada opção vai o número de livros que ela esconde.
 
-**A confirmar quando a rodada for apresentada:** ocultar "já li" tira os lidos das listas; a sugestão é que eles
-continuem contando nos números de leitura (o que você leu não deixa de ter sido lido).
+**Como se comporta:**
 
-**Nota para quem for programar:** nas preferências guardadas, o nome `ocultar` já é do botão do olho ("ocultar
-valores em reais"). O controle novo precisa de outro nome.
+- **É o contrário de um filtro.** O filtro mostra só o que você escolheu; o "Ocultar" tira o que você escolheu, de
+  **todas as telas**: tabelas, listas, gráficos, contagens e os números dos próprios filtros.
+- **Fica guardado.** Fechou o painel e abriu de novo, continua oculto. É uma preferência, como o tema claro ou
+  escuro; por isso "Limpar tudo", que é dos filtros, não mexe nela.
+- **Há sempre um aviso à vista**, logo abaixo dos filtros: "48 livros ocultos · sem edição em PT", com dois botões —
+  **mudar** e **mostrar todos**. É o que impede os números de parecerem errados mais tarde.
+- **O livro oculto não some do painel.** A busca do alto da tela ainda o acha (com o aviso "fora das listas"), e a
+  ficha dele diz por que está fora.
+- **Lista vazia explica.** Se uma lista ficar vazia porque o que caberia nela está oculto, ela diz isso em vez de
+  dizer só "nenhum livro".
+- **"Recomeçar do catálogo original"** desfaz também o que estava oculto.
 
-### Parte 2 — Exportar e imprimir listas
+**A decisão que ficou comigo, e que você pode mudar.** Ocultar "já li" tira os livros lidos das listas, mas eles
+**continuam contando nos números de leitura**: leituras concluídas, "Por ler", "Adquiridos × lidos", os dois gráficos
+por situação de leitura e o andamento das trilhas. O livro some da vista, mas não deixa de ter sido lido — e a guia
+de estímulo à leitura (parte 5) vai depender dessa conta. O quadro que conta um livro oculto avisa: "conta os lidos
+ocultos". Se preferir que sumam também dos números, é só dizer.
+
+**Nota para quem for programar:** nas preferências guardadas, o controle novo chama-se `fora`. O nome `ocultar` já
+era do botão do olho ("ocultar valores em reais") e continua sendo.
+
+### Parte 2 — Imprimir e copiar listas
+
+**Feita** (11/11/2026).
 
 **O que você pediu:** uma maneira de exportar ou imprimir listas de livros.
 
-**O que já existe:** toda tabela do painel tem o botão **CSV**, que baixa as linhas filtradas num arquivo de
-planilha.
+**O que já existia:** o botão **CSV** de cada tabela, que baixa as linhas filtradas num arquivo de planilha.
 
-**Proposta** (você ainda não comentou; se não disser nada, é por aqui que a rodada começa):
+**O que entrou.** Ao lado do CSV, em todas as tabelas, dois botões novos. Os dois levam **a lista que está na
+tela** — com os filtros, a aba, a busca e a ordem que você escolheu — e levam a lista **inteira**, não só a página
+que está à vista.
 
-- **Imprimir:** uma folha limpa com a lista que está na tela — título, autor e um quadradinho para riscar. A caixa
-  de impressão do navegador também salva em PDF.
-- **Copiar como texto:** a mesma lista, pronta para colar numa mensagem ou num bloco de notas.
-- Os dois também nas trilhas de leitura.
+- **Imprimir** monta uma folha limpa e abre a caixa de impressão do navegador. Nessa mesma caixa dá para escolher
+  "Salvar como PDF". A folha traz um quadradinho para riscar, o título, o autor e mais uma ou duas informações da
+  lista (o eixo e a extensão nas recomendações; o formato e o eixo no acervo; a data e o valor em Finanças; o
+  melhor preço e o alvo nas próximas aquisições). No alto vão o nome da lista, quantos livros são, a ordem, os
+  filtros e a data.
+- **Copiar** põe a mesma lista, numerada e em texto simples, na área de transferência. É só colar (Ctrl+V) numa
+  mensagem, num e-mail ou num bloco de notas.
+- **Nas trilhas de leitura:** a ficha de cada trilha ganhou "imprimir" e "copiar", ao lado de "ver na tabela". Saem
+  os livros na ordem do roteiro, com a situação de cada um (tenho, falta, lido).
+
+**Os cuidados:**
+
+- **O livro que você já leu sai com o quadradinho marcado;** a prioridade, com uma estrela. Uma legenda no pé da
+  folha explica.
+- **A folha é sempre preta no branco,** mesmo com o painel no tema escuro: não gasta tinta com fundo.
+- **Lista longa pergunta antes.** O painel mede a folha antes de imprimir. Passando de 8 páginas, ele diz quantas
+  são ("2.614 livros: umas 93 páginas") e pergunta se é isso mesmo. A conta foi conferida contra o PDF de verdade.
+- **Dinheiro só com o olho aberto.** Se os valores estiverem ocultos na tela (o botão do olho, no alto), eles não
+  vão para o papel.
+- **O que está oculto não entra** (parte 1), e a folha diz quantos ficaram de fora e por quê.
+- **Nada é enviado a lugar nenhum.** O painel só monta a folha ou o texto; quem leva para fora é você.
+
+**Uma limitação honesta:** as margens, o cabeçalho e o rodapé que o navegador põe na página impressa (data,
+endereço, número da página) são dele, não do painel. Dá para desligá-los na própria caixa de impressão, em "Mais
+definições" (ou "Mais configurações") → "Cabeçalhos e rodapés". E, se você cancelar uma impressão e pedir outra em
+seguida, o navegador pode recusar por alguns segundos; o painel avisa quando isso acontece.
 
 ### Parte 3 — Sinopse na ficha de cada livro
 
@@ -677,6 +720,17 @@ planilha.
   onde veio (conhecimento geral ou o endereço consultado) e a data. É o registro das buscas: mostra o que já foi
   feito e o que falta, e evita pesquisar o mesmo livro duas vezes.
 - **No painel:** a sinopse aparece no alto da ficha. Livro sem sinopse não mostra nada no lugar.
+
+**O estilo, aprovado por você em 11/11/2026** ("tamanho e tom estão bons"). Estas duas amostras são o modelo para
+todas as outras:
+
+> **A Metamorfose** — Gregor Samsa, caixeiro-viajante que sustenta a família, acorda certa manhã transformado num
+> inseto monstruoso. Trancado no quarto, acompanha a mudança dos pais e da irmã, que passam do susto ao incômodo.
+> Uma novela curta sobre trabalho, culpa e o lugar de quem deixa de ser útil.
+
+> **O Físico** — Na Inglaterra do século XI, o órfão Rob Cole aprende o ofício com um barbeiro-cirurgião ambulante
+> e descobre que pressente a morte dos doentes. Decidido a ser médico de verdade, atravessa a Europa disfarçado de
+> judeu para estudar na Pérsia com Avicena.
 
 **Roteiro das buscas** — um lote por rodada, de uns 150 livros cada:
 
@@ -699,9 +753,9 @@ da biblioteca.
 - de obras: **Lovecraft**, **Sherlock Holmes**, **Moby Dick**, **Duna**, **Tolkien**;
 - de épocas e artes: **clássico greco-romano** (filósofos e clássicos) e **cyberpunk** (ficção científica).
 
-**Sugestões para completar a lista, se você quiser:** Viena de 1900, o consultório de Freud (psicologia e
-psicanálise, o seu maior eixo, com 440 livros); modernismo brasileiro (Brasil e lusofonia); manuscrito medieval, com
-iluminuras (romances históricos).
+**Entram depois desses sete** (sugestões minhas, que você aceitou): Viena de 1900, o consultório de Freud
+(psicologia e psicanálise, o seu maior eixo, com 440 livros); modernismo brasileiro (Brasil e lusofonia); manuscrito
+medieval, com iluminuras (romances históricos).
 
 **Como será feito:**
 
@@ -710,17 +764,50 @@ iluminuras (romances históricos).
 - **Todo tema passa pelo mesmo teste de contraste** dos dois que existem hoje (claro e escuro): texto legível em
   todos os pares de cor. Tema que não passar não entra.
 - Lovecraft, Sherlock Holmes e Moby Dick são de domínio público e podem dar nome ao tema. **Duna e Tolkien ainda são
-  obras protegidas:** o tema é inspirado nelas, mas leva um nome evocativo, a escolher com você.
+  obras protegidas:** o tema é inspirado nelas, mas leva um nome evocativo (os dois nomes estão logo abaixo).
 - A escolha do tema fica guardada no navegador, como já acontece com o claro e o escuro.
 - Começa com poucos temas bem acabados; os outros entram aos poucos.
 
-**A decidir com você antes de fazer:** quais sugestões entram; o nome dos temas de Duna e de Tolkien; se todo tema
-tem versão clara e escura ou se alguns (Lovecraft, cyberpunk) nascem só escuros.
+**Decidido com você em 11/11/2026:**
 
-### Parte 5 — Gamificação da leitura (em conversa)
+1. **As três sugestões entram** — Viena de 1900, modernismo brasileiro e manuscrito medieval —, depois dos sete
+   temas combinados. A primeira delas é Viena de 1900, que veste o seu maior eixo.
+2. **Os nomes:** "Deserto" para o tema inspirado em Duna; "Terras antigas" para o inspirado em Tolkien.
+3. **Cada tema nasce com um clima só, o dele:** Lovecraft e cyberpunk, escuros; Sherlock Holmes, Moby Dick,
+   greco-romano e os outros, claros. O claro e o escuro de hoje continuam existindo, como o tema padrão. Assim cada
+   tema sai bem acabado, em vez de catorze meio prontos.
+
+### Parte 5 — Estímulo à leitura (gamificação)
 
 **A sua ideia:** usar elementos de jogo para estimular a leitura e, se for adiante, dar a isso uma seção própria do
-painel. **Você pediu para debatermos antes de aplicar; nada será feito antes disso.**
+painel. **Você pediu para debatermos antes de aplicar; nada será feito antes de você aprovar o desenho abaixo.**
+
+**As suas respostas (11/11/2026):**
+
+- "Contar por páginas é mais justo."
+- "Meta do ano é interessante."
+- "O tom pode ser de acordo com a temática personalizada?" — **Pode.** O tema visual em uso (parte 4) dá o
+  vocabulário: as palavras mudam, a conta não.
+- "Meu cotidiano apresenta muitos imprevistos; a ideia é motivar e cuidar para não desanimar e afastar o leitor."
+
+**O desenho que sai delas** — uma guia nova, que dá para desligar:
+
+1. **Meta do ano em páginas,** escolhida por você e alterável a qualquer momento, sem registro de que mudou.
+2. **Ritmo que não cobra.** O painel mostra as páginas lidas no ano e, em vez de dizer "atrasado", diz o que
+   bastaria **de hoje em diante** ("umas 12 páginas por dia até dezembro"). A conta recomeça todo dia a partir de
+   onde você está: uma semana parada não vira dívida. Nada de vermelho, nada de sequência de dias, nada que se
+   perca por falta de visita.
+3. **De onde vêm as páginas.** Do campo "páginas" do livro, quando você preencheu. Se não, de uma estimativa pela
+   extensão (curta, média, longa), sempre marcada como estimativa. O livro em andamento conta a parte já lida.
+4. **Marcos que só se ganham.** Terminar uma trilha, o primeiro livro "exigente" do ano, um "longo", um livro que
+   estava parado na estante. Nenhum marco é tirado depois.
+5. **As palavras seguem o tema.** No tema de Sherlock Holmes, um livro terminado pode ser um "caso encerrado"; no
+   de Moby Dick, as páginas podem ser "léguas". No tema padrão, o tom é o sóbrio de hoje.
+6. **A cartela do ano** (casas sorteadas das suas categorias) fica para depois, se você quiser.
+
+**Depende de uma coisa:** das suas leituras registradas (etapa 3). Sem elas, a guia abre explicando como começar.
+
+**O que eu tinha escrito antes das suas respostas** (fica como registro da conversa):
 
 **A minha opinião:** vale a pena, com dois cuidados.
 
@@ -747,12 +834,8 @@ visita diária só para marcar presença.
 
 **Depende de uma coisa:** das suas leituras registradas (etapa 3). Sem elas, a guia abre vazia.
 
-**Perguntas para a conversa:**
-
-1. O que mais anima você: meta do ano, conquistas, cartela — ou outra coisa (níveis, pontos)?
-2. Contar por livros ou por páginas? Páginas tratam melhor o livro de 900 páginas, mas pedem o número (ou uma
-   estimativa, dita como estimativa).
-3. Tom sóbrio, como o resto do painel, ou mais brincalhão — por exemplo, conquistas com a cara do tema visual em uso?
+**As três perguntas da conversa** (meta, conquistas ou cartela; livros ou páginas; tom sóbrio ou brincalhão) estão
+respondidas acima.
 
 **Pronta quando** cada parte estiver no painel, com teste e com a sua aprovação. A parte 3 se completa aos poucos.
 

@@ -97,6 +97,21 @@ const TABELAS = {
     abas: [['todos', 'Todos'], ['desejo', 'Lista de compra', b => b.col === 'desejo'], ['monit', 'Só monitorados', b => b.col !== 'desejo'], ['queda', 'Em queda', (b, c) => c.px(b).res && c.px(b).res.var < -0.005], ['alta', 'Em alta', (b, c) => c.px(b).res && c.px(b).res.var > 0.005]] },
 };
 
+/* A folha impressa de cada tabela (ver 52-listas): além do quadradinho, do título e do autor, até duas colunas — [nome, texto, é dinheiro].
+   As de dinheiro ficam de fora quando os valores estão ocultos (o botão do olho). */
+const eixoTxt = b => (EIXOS[b.eixo] ? EIXOS[b.eixo].n : '');
+const melhorTxt = (b, c) => { const h = c.px(b).hoje; return h ? `${fBRL(h.p)} · ${h.f}` : ''; };
+// como dizer "em ordem de…" quando o nome da coluna, feito para caber no cabeçalho da tabela, não serve numa frase
+const NOME_ORDEM = { data: 'data', adq: 'data de aquisição', add: 'data de inclusão', compra: 'compra sugerida', folego: 'dificuldade', leit: 'situação de leitura', pago: 'valor pago', pg: 'número de páginas', prio: 'prioridade', melhor: 'melhor preço',
+  alvo: 'preço-alvo', difAlvo: 'distância até o preço-alvo', min: 'menor preço no período', faixa: 'menor preço no período', varP: 'variação do preço', sit: 'situação do preço', ult: 'data da última cotação' };
+const FOLHAS = {
+  geral: [['Lista', b => COLECOES[b.col].n], ['Eixo', eixoTxt]],
+  biblioteca: [['Formato', b => rotuloFmt(b)], ['Eixo', eixoTxt]],
+  recs: [['Eixo', eixoTxt], ['Extensão', b => (b._e ? EXTENSOES[b._e].n : '')]],
+  financas: [['Aquisição', b => (adqDe(b) == null ? '' : fData(adqDe(b)))], ['Pago', b => (pagoDe(b) == null ? '' : pagoDe(b) === 0 ? (b.cond === 'presente' ? 'presente' : 'gratuito') : fBRL(b.pago)), true]],
+  desejos: [['Melhor preço', melhorTxt, true], ['Alvo', b => (b.alvo ? fBRL(b.alvo) : ''), true]],
+  precos: [['Melhor preço', melhorTxt, true], ['Situação', (b, c) => SITUACOES[c.px(b).sit].n]],
+};
 function Tabela(visao) {
   const cfg = TABELAS[visao], k = cartao({ id: 'tab-' + visao, w: 'p-12 card-tab', tit: cfg.tit });
   const estreita = !!window.matchMedia && matchMedia('(max-width: 700px)').matches, mob = cfg.mob || {};
@@ -105,13 +120,28 @@ function Tabela(visao) {
   for (const x of vis) x.mcls = (x.id === mob.b ? ' m-b' : (mob.x || []).includes(x.id) ? ' m-x' : mob.s && mob.s[x.id] ? ' m-' + mob.s[x.id] : '') + (cfg.red && cfg.red[x.id] ? ' r-' + cfg.red[x.id] : '');
   k.tools.innerHTML = `<label class="busca-t">${icone('busca', 15)}<input type="search" placeholder="Filtrar por título, autor ou tema" aria-label="Filtrar a tabela" value="${esc(st.q)}"></label>
     <label class="ord-m"><span>Ordenar</span><select aria-label="Ordenar por">${vis.filter(x => x.ord).map(x => `<option value="${x.id}">${esc(x.n)}</option>`).join('')}</select><button type="button" class="ib" data-dir aria-label="Inverter a ordem">${icone('cima', 15)}</button></label>
-    <button type="button" class="btn sm" data-csv title="Exportar as linhas filtradas em CSV">${icone('baixar', 15)}<span>CSV</span></button>`;
+    <span class="tb-levar" role="group" aria-label="Levar esta lista"><button type="button" class="btn sm" data-imprimir aria-label="Imprimir a lista" title="Imprimir a lista filtrada — a caixa de impressão também salva em PDF">${icone('imprimir', 15)}<span>Imprimir</span></button><button type="button" class="btn sm" data-copiar aria-label="Copiar a lista como texto" title="Copiar a lista filtrada como texto, para colar numa mensagem ou num bloco de notas">${icone('copiar', 15)}<span>Copiar</span></button><button type="button" class="btn sm" data-csv title="Exportar as linhas filtradas em CSV">${icone('baixar', 15)}<span>CSV</span></button></span>`;
   k.corpo.innerHTML = `<div class="abas" role="tablist" aria-label="Recortes rápidos"></div>
     <div class="tb-w"><table class="tb"><thead><tr>${vis.map(x => `<th scope="col" class="${x.num ? 'num ' : ''}${x.cls || ''}${cfg.red && cfg.red[x.id] ? ' r-' + cfg.red[x.id] : ''}" data-c="${x.id}"${x.dica ? ` title="${esc(x.dica)}"` : ''}>${x.ord ? `<button type="button">${esc(x.n)}<span class="so">${icone('cima', 12)}</span></button>` : esc(x.n)}</th>`).join('')}</tr></thead><tbody></tbody></table><div class="ch-vazio" hidden></div></div>`;
   k.pe.className = 'card-f tb-pe';
   k.pe.innerHTML = `<span class="tb-info"></span><div class="pag"><label class="tam"><span>por página</span><select aria-label="Linhas por página">${[10, 25, 50, 100].map(n => `<option${n === st.tam ? ' selected' : ''}>${n}</option>`).join('')}</select></label><button type="button" class="ib" data-p="-1" aria-label="Página anterior">${icone('esq', 16)}</button><span class="pag-n"></span><button type="button" class="ib" data-p="1" aria-label="Próxima página">${icone('dir', 16)}</button></div>`;
   const abasEl = $('.abas', k.corpo), tbody = $('tbody', k.corpo), vazio = $('.ch-vazio', k.corpo), busca = $('input[type=search]', k.tools), ordSel = $('.ord-m select', k.tools);
   let ctx = null, base = [], filtradas = [];
+  // os livros que caberiam nesta lista (com a busca e a aba de agora) e não aparecem porque estão ocultos
+  const ocultosDaqui = () => {
+    if (!FORA.n || !ctx) return 0;
+    const q = norm(st.q.trim()), termos = q ? q.split(/\s+/) : [], aba = cfg.abas.find(a => a[0] === st.aba) || cfg.abas[0];
+    return cfg.linhas(ctx.comOcultos).filter(b => oculto(b) && termos.every(t => b._busca.includes(t)) && (!aba[2] || aba[2](b, ctx))).length;
+  };
+  // a lista da tela pronta para sair do painel: as linhas filtradas, todas (não só a página), na ordem em que estão
+  function folha() {
+    const aba = cfg.abas.find(a => a[0] === st.aba) || cfg.abas[0], col = cols.find(x => x.id === st.ord && x.ord) || cols[0], q = st.q.trim(), n = filtradas.length;
+    const extras = (FOLHAS[visao] || []).filter(x => !(x[2] && S.ocultar)), filtros = filtrosEmTexto().concat(q ? [`busca “${q}”`] : []), oc = ocultosDaqui();
+    return { titulo: cfg.tit + (aba[2] ? ' — ' + aba[1] : ''), cols: [['Título', 't'], ['Autor', 'a']].concat(extras.map(x => [x[0], 'x'])),
+      meta: [`${plural(n, 'livro', 'livros')}, em ordem de ${NOME_ORDEM[col.id] || col.n.toLowerCase()}${st.dir < 0 ? ' (decrescente)' : ''}`].concat(filtros.length ? ['Filtros: ' + filtros.join(' · ')] : []),
+      itens: filtradas.map(b => ({ ok: b.leit === 'lido', top: !!b._top, cel: [b.t, b.a || ''].concat(extras.map(x => x[1](b, ctx))), txt: b.t + (b.a ? ' — ' + b.a : '') })),
+      notas: oc ? [`${oc === 1 ? 'Não entra 1 livro que está oculto' : `Não entram ${fInt(oc)} livros que estão ocultos`} (${regrasFora().join(' · ')}).`] : [] };
+  }
 
   function desenhar() {
     if (!ctx) return;
@@ -133,7 +163,13 @@ function Tabela(visao) {
     const fatia = filtradas.slice(st.pag * st.tam, (st.pag + 1) * st.tam);
     setHtml(tbody, fatia.map(b => `<tr data-id="${b.id}" tabindex="0"${mob.b ? ' class="tem-b"' : ''}>${vis.map(x => { const h = x.html(b, ctx); return `<td class="${x.num ? 'num ' : ''}${x.cls || ''}${x.mcls}${h === mudo ? ' vz' : ''}" data-rot="${esc(x.n)}">${h}</td>`; }).join('')}</tr>`).join(''));
     vazio.hidden = total > 0; $('table', k.corpo).style.display = total ? '' : 'none';
-    if (!total) vazio.innerHTML = vazioHtml(base.length ? 'Nenhuma linha combina com a busca ou a aba escolhida.' : cfg.vazio && !nFiltros() ? cfg.vazio : ctx.I.tudo ? 'Nenhum livro com os filtros atuais.' : 'Nada neste período com os filtros atuais. Itens sem data só aparecem em “Tudo”.');
+    if (!total) {
+      // se o que caberia aqui está oculto ("Ocultar", na barra de filtros), é isso que a lista vazia tem de dizer
+      const oc = ocultosDaqui();
+      vazio.innerHTML = vazioHtml(oc ? (oc === 1 ? 'O único livro que caberia aqui está oculto. Para vê-lo' : `Os ${fInt(oc)} livros que caberiam aqui estão ocultos. Para vê-los`) + ', use “Ocultar”, na barra de filtros.'
+        : base.length ? 'Nenhuma linha combina com a busca ou a aba escolhida.' : cfg.vazio && !nFiltros() ? cfg.vazio : ctx.I.tudo ? 'Nenhum livro com os filtros atuais.' : 'Nada neste período com os filtros atuais. Itens sem data só aparecem em “Tudo”.');
+      vazio.dataset.ocultos = oc;
+    }
     $$('th', k.corpo).forEach(th => { const on = th.dataset.c === col.id; th.setAttribute('aria-sort', on ? (st.dir > 0 ? 'ascending' : 'descending') : 'none'); th.classList.toggle('ord', on); th.classList.toggle('desc', on && st.dir < 0); });
     ordSel.value = col.id; $('[data-dir]', k.tools).classList.toggle('desc', st.dir < 0);
     $('.tb-info', k.pe).textContent = total ? `${fInt(st.pag * st.tam + 1)}–${fInt(Math.min(total, (st.pag + 1) * st.tam))} de ${plural(total, 'livro', 'livros')}${total !== base.length ? ` (de ${fInt(base.length)} no recorte)` : ''}` : 'Nenhum livro';
@@ -151,6 +187,8 @@ function Tabela(visao) {
   $('.tam select', k.pe).addEventListener('change', e => { st.tam = +e.target.value; st.pag = 0; salvar(); desenhar(); });
   tbody.addEventListener('click', e => { const tr = e.target.closest('tr[data-id]'); if (tr) abrirLivro(tr.dataset.id); });
   tbody.addEventListener('keydown', e => { if (e.key !== 'Enter' && e.key !== ' ') return; const tr = e.target.closest('tr[data-id]'); if (tr) { e.preventDefault(); abrirLivro(tr.dataset.id); } });
+  $('[data-imprimir]', k.tools).addEventListener('click', () => imprimirFolha(folha()));
+  $('[data-copiar]', k.tools).addEventListener('click', () => copiarFolha(folha()));
   $('[data-csv]', k.tools).addEventListener('click', () => {
     if (!filtradas.length) { toast('Não há linhas para exportar.', 'aviso'); return; }
     const cs = cols.filter(x => x.csv), cel = v => { const s = String(v ?? ''); return /[";\n]/.test(s) ? '"' + s.replace(/"/g, '""') + '"' : s; };

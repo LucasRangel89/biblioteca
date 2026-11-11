@@ -33,6 +33,9 @@ with sync_playwright() as p:
     for w, h, tema in cenarios:
         ctx = b.new_context(viewport={'width': w, 'height': h}, color_scheme=tema, locale='pt-BR', timezone_id='America/Sao_Paulo', accept_downloads=True)
         pg = ctx.new_page(); fixa(pg)
+        # "Imprimir" é clicado como tudo o mais, mas sem chamar a impressão de verdade: o navegador recusa pedidos muito seguidos
+        # (e reclama no console). O que a folha tem e como sai no papel é assunto do listas.py.
+        pg.add_init_script("window.print = () => {};")
         pg.on('console', lambda m: errs.append(f'[console.{m.type}] {m.text[:300]}') if m.type in ('error', 'warning') else None)
         pg.on('pageerror', lambda e: errs.append(f'[pageerror] {str(e)[:300]}'))
         pg.goto(URL); pg.wait_for_timeout(1000); pg.click('#aviso .pri'); pg.wait_for_timeout(200)

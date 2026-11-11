@@ -24,7 +24,8 @@ function render() {
   const c = CTX = contexto();
   REG[v].kpis(VIS[v].valores(c));
   for (const f of REG[v].at) f(c);
-  pintarCasca(c); pintarContagens(c);
+  pintarFora(); pintarCasca(c); pintarContagens(c);
+  const aberto = $('.pop-w.aberto'); if (aberto) posicionarPop(aberto);      // um número novo num botão pode ter empurrado a barra
   $$('.rolavel', $('#v-' + v)).forEach(marcarRolagem);
 }
 // listas com rolagem interna: esmaece a base enquanto houver mais itens abaixo
@@ -48,12 +49,14 @@ function montarFiltros() {
   // cada botão leva o rótulo e, ao lado, quantos livros da tela ele mostra (ver pintarContagens)
   const chips = (grupo, ops) => `<div class="chips" data-grupo="${grupo}">${ops.map(([v, n, d]) => `<button type="button" class="chip" data-v="${esc(v)}"${d ? ` title="${esc(d)}"` : ''}><span>${esc(n)}</span><em></em></button>`).join('')}</div>`;
   // chave do grupo: aparece quando há dois marcadores ligados nele (ou quando o grupo já está em "todos")
+  // opção do quadro "Ocultar": g = sit, tipo ou eixo; ao lado vai quantos livros ela esconde (ver pintarFora)
+  const opF = (g, v, n) => `<label class="opt"><input type="checkbox" data-fora="${g}" value="${esc(v)}"><span>${esc(n)}</span><em></em></label>`;
   const chave = n => `<span class="seg mini tg-m" role="group" aria-label="Como combinar os marcadores de ${esc(n)}" hidden><button type="button" data-modo="ou" title="Soma: mostra os livros que têm qualquer um dos marcadores ligados neste grupo">qualquer um</button><button type="button" data-modo="e" title="Cruza: mostra só os livros que têm todos os marcadores ligados neste grupo">todos</button></span>`;
   $('#filtros').innerHTML = `
     <div class="f-linha">
       <button type="button" class="btn f-abrir" id="f-abrir">${icone('filtro', 15)}Filtros<span class="cont" id="f-n" hidden></span></button>
       <div class="f-painel" id="f-painel">
-        <div class="f-ph"><b>Filtros</b><button type="button" class="ib" data-fechar-folha aria-label="Fechar filtros">${icone('fechar')}</button></div>
+        <div class="f-ph"><b>Filtros</b><button type="button" class="lk" data-fora-abrir>ocultar categorias</button><button type="button" class="ib" data-fechar-folha aria-label="Fechar filtros">${icone('fechar')}</button></div>
         <div class="f-corpo">
           <div class="f-g" data-g="acervo"><span class="f-r">Acervo</span>${seg('f-acervo', 'Acervo', [['tudo', 'Tudo'], ['fisico', 'Física'], ['virtual', 'Virtual'], ['ambos', 'Nas duas']])}</div>
           <div class="f-g"><span class="f-r">Tipo</span>${seg('f-tipo', 'Tipo', [['', 'Todos'], ['F', 'Ficção'], ['NF', 'Não ficção'], ['HQ', 'HQ'], ['O', 'Outros']])}</div>
@@ -70,11 +73,22 @@ function montarFiltros() {
               <div class="f-per" id="f-per"><span class="pop-r">Período <small>pela data de aquisição ou de leitura</small></span>
                 <div class="f-per-l">${seg('f-periodo', 'Período', PERIODOS).replace('class="seg"', 'class="seg mini"')}<button type="button" class="btn sm f-cal" id="f-cal" aria-expanded="false" title="Período personalizado">${icone('calendario', 14)}<span id="f-cal-r">Personalizar</span></button></div>
                 <div class="f-custom" id="f-custom" hidden><label><span>de</span><input type="date" id="f-de" aria-label="Data inicial"></label><label><span>até</span><input type="date" id="f-ate" aria-label="Data final"></label></div></div></div></div></div>
+          <div class="f-g pop-w" id="pw-fora"><button type="button" class="btn pop-b" aria-expanded="false" aria-controls="pop-fora" aria-label="Ocultar livros" title="Ocultar os livros de uma categoria em todas as telas">${icone('olhoOff', 14)}<span class="fo-rot">Ocultar</span><span class="cont" hidden></span>${icone('baixo', 14)}</button>
+            <div class="pop largo" id="pop-fora"><div class="pop-h"><b>Ocultar</b><button type="button" class="lk" data-fora-limpar hidden>mostrar tudo</button></div>
+              <p class="pop-n fo-n">O que você marcar aqui <b>sai de todas as telas</b> — listas, gráficos e contagens — até ser desmarcado. A escolha fica guardada neste navegador. O número ao lado é quantos livros cada opção esconde.</p>
+              <span class="pop-r">Situação</span><div class="pop-l">${SIT_FORA.map(([v, n]) => opF('sit', v, n)).join('')}</div>
+              <p class="pop-n fo-n">O que você já leu sai das listas, mas continua contando nas leituras concluídas e no andamento das trilhas.</p>
+              <span class="pop-r">Tipo</span><div class="pop-l">${Object.entries(ROTULO_TIPO).map(([v, n]) => opF('tipo', v, n)).join('')}</div>
+              <span class="pop-r">Eixo</span><div class="pop-l">${EIXOS.slice(1).map((e, i) => opF('eixo', i + 1, e.n)).join('')}</div>
+              <span class="pop-r">Marcador</span>
+              <label class="busca-t pop-q fo-q">${icone('busca', 14)}<input type="search" id="fo-tagq" placeholder="Procurar marcador para ocultar" aria-label="Procurar marcador para ocultar"></label>
+              <div class="chips fo-tags" id="fo-tags"></div><p class="pop-n fo-n" id="fo-tags-n"></p></div></div>
         </div>
         <div class="f-pf"><button type="button" class="btn" data-limpar="tudo">Limpar tudo</button><button type="button" class="btn pri" data-fechar-folha id="f-ver">Ver resultados</button></div>
       </div>
     </div>
-    <div class="f-ativos" id="f-ativos" hidden></div>`;
+    <div class="f-ativos" id="f-ativos" hidden></div>
+    <div class="f-fora" id="f-fora" role="note" hidden></div>`;
   const F = $('#filtros');
   $('#f-periodo').addEventListener('click', e => { const b = e.target.closest('button'); if (!b) return; S.periodo = b.dataset.v; $('#f-custom').hidden = true; filtrosMudaram(); });
   $('#f-cal').addEventListener('click', () => {
@@ -103,7 +117,15 @@ function montarFiltros() {
     const b = e.target.closest('.chip'); if (!b) return; const g = b.parentElement.dataset.grupo; alternar(S[g], g === 'tags' ? b.dataset.v : +b.dataset.v); filtrosMudaram();
   });
   $('#f-tagq').addEventListener('input', e => { const q = norm(e.target.value.trim()); for (const c of CHIPS) if (c.g === 'tags') c.el.hidden = !!q && !c.q.includes(q); $$('#f-tags .tg-g').forEach(g => { g.hidden = !$$('.chip', g).some(c => !c.hidden); }); });
+  // "Ocultar": cada opção marcada tira livros de todas as telas; é preferência, fica guardada (S.ui.fora)
+  const foraMudou = () => { refazerFora(); salvar(); filtrosMudaram(); };
+  const alternarFora = (g, v, liga) => { const l = S.ui.fora[g], k = l.indexOf(v); if (k < 0 && liga !== false) l.push(v); else if (k >= 0 && liga !== true) l.splice(k, 1); foraMudou(); };
+  $('#pop-fora').addEventListener('change', e => { const i = e.target; if (i.matches('input[data-fora]')) alternarFora(i.dataset.fora, i.dataset.fora === 'eixo' ? +i.value : i.value, i.checked); });
+  $('#fo-tags').addEventListener('click', e => { const b = e.target.closest('.chip'); if (b) alternarFora('tag', b.dataset.v); });
+  $('#fo-tagq').addEventListener('input', () => { pintarFora(); ($('#fo-tags-n').textContent ? $('#fo-tags-n') : $('#fo-tags')).scrollIntoView({ block: 'nearest' }); });
   F.addEventListener('click', e => {
+    if (e.target.closest('[data-fora-limpar]')) { const havia = FORA.n; S.ui.fora = lerFora(null); $('#fo-tagq').value = ''; foraMudou(); if (havia) toast('Nada mais está oculto.'); return; }
+    if (e.target.closest('[data-fora-abrir]')) { abrirFora(); return; }
     const l = e.target.closest('[data-limpar]');
     if (l) { const x = l.dataset.limpar; if (x === 'eixos') S.eixos.clear(); else if (x === 'mais') { S.dif.clear(); S.ext.clear(); S.tags.clear(); S.top = false; S.periodo = 'tudo'; S.de = S.ate = null; $('#f-custom').hidden = true; } else { limparFiltros(true); $('#f-custom').hidden = true; } filtrosMudaram(); return; }
     const r = e.target.closest('[data-rm]');
@@ -112,11 +134,7 @@ function montarFiltros() {
     if (pb) {
       const w = pb.parentElement, abrir = !w.classList.contains('aberto'); fecharPops();
       if (abrir) {
-        w.classList.add('aberto'); pb.setAttribute('aria-expanded', 'true');
-        // o quadro não pode sair da janela pela direita: recua o quanto for preciso (sem passar da borda esquerda da barra)
-        const pop = $('.pop', w); pop.style.left = '';
-        const r = pop.getBoundingClientRect(), sobra = r.right - (document.documentElement.clientWidth - 12);
-        if (sobra > 0) pop.style.left = -Math.min(sobra, Math.max(0, r.left - F.getBoundingClientRect().left - 12)) + 'px';
+        w.classList.add('aberto'); pb.setAttribute('aria-expanded', 'true'); posicionarPop(w);
       }
       return;
     }
@@ -136,6 +154,12 @@ function verEditados() {
   const q = $('input[type=search]', t), aba = $('.abas [aria-selected="true"]', t); if (q) q.value = '';
   t.scrollIntoView({ block: 'start' });
   if (aba) aba.scrollIntoView({ block: 'nearest', inline: 'end' });      // no celular as abas rolam de lado: a escolhida tem de aparecer
+}
+// o quadro aberto não pode sair da janela pela direita: recua o quanto for preciso (sem passar da borda esquerda da barra)
+function posicionarPop(w) {
+  const pop = $('.pop', w); pop.style.left = '';
+  const r = pop.getBoundingClientRect(), sobra = r.right - (document.documentElement.clientWidth - 12);
+  if (sobra > 0) pop.style.left = -Math.min(sobra, Math.max(0, r.left - $('#filtros').getBoundingClientRect().left - 12)) + 'px';
 }
 const fecharPops = () => $$('.pop-w.aberto').forEach(w => { w.classList.remove('aberto'); $('.pop-b', w).setAttribute('aria-expanded', 'false'); });
 /* folha de filtros (telas estreitas): comporta-se como um diálogo — recebe o foco ao abrir, prende o Tab (ver 60-drawer) e devolve o foco ao fechar */
@@ -184,6 +208,8 @@ function sincronizarFiltros() {
   const el = $('#f-ativos'); el.hidden = !nAtivos;
   setHtml(el, nAtivos ? `<span class="fa-r">Filtros ativos</span>${ch.join('')}${nAtivos > 1 ? '<button type="button" class="lk" data-limpar="tudo">limpar tudo</button>' : ''}` : '');
 }
+// os filtros ligados, em palavras — lidos de "Filtros ativos", para o papel dizer exatamente o que a tela diz
+const filtrosEmTexto = () => { const el = $('#f-ativos'); return !el || el.hidden ? [] : [...el.children].filter(e => !e.matches('.fa-r, .lk')).map(e => (e.matches('.fa-g') ? [...e.children].map(x => x.textContent.trim()).join(' ') : e.textContent.trim())); };
 /* Números dos filtros (ver contagens, em 30-state): quantos livros a lista desta tela mostra com cada opção ligada.
    A opção que não mostraria nenhum fica apagada — pela cor, não por opacidade, para continuar legível — e segue clicável. */
 function pintarContagens(c) {
@@ -195,6 +221,35 @@ function pintarContagens(c) {
     if (x.n !== n) { x.n = n; x.em.textContent = fInt(n); x.el.dataset.n = n; x.el.setAttribute('aria-label', `${x.rot}: ${nenhum(n)}`); }
     if (x.zero !== zero) { x.zero = zero; x.el.classList.toggle('zero', zero); x.el.title = zero ? (x.dica ? x.dica + ' — ' : '') + 'nenhum livro nesta tela com os filtros atuais' : x.dica; }
   }
+}
+
+/* "Ocultar" (ver 30-state): marca as opções do quadro, põe ao lado de cada uma quantos livros ela esconde — no painel inteiro,
+   sem olhar os filtros — e mantém o aviso, sempre à vista sob a barra, de quantos livros estão fora e por quê. */
+let MARCS = null;
+function pintarFora() {
+  const f = S.ui.fora, inc = (m, k) => m.set(k, (m.get(k) || 0) + 1), k = { sit: new Map(), tipo: new Map(), eixo: new Map(), tag: new Map() };
+  let n = 0;
+  for (const b of DB.livros) { if (oculto(b)) n++; for (const x of SIT_FORA) if (x[2](b)) inc(k.sit, x[0]); inc(k.tipo, tipoFiltro(b._tipo)); inc(k.eixo, b.eixo); for (const t of b.tags) inc(k.tag, t); }
+  FORA.livros = n;
+  $$('#pop-fora input[data-fora]').forEach(i => { const g = i.dataset.fora, v = g === 'eixo' ? +i.value : i.value, q = k[g].get(v) || 0; i.checked = f[g].includes(v); $('em', i.parentElement).textContent = fInt(q); i.parentElement.classList.toggle('zero', !q && !i.checked); });
+  // marcadores: os ocultos ficam sempre à vista (clicar tira); a busca traz os outros
+  if (!MARCS) MARCS = CHIPS.filter(c => c.g === 'tags').map(c => ({ v: c.v, rot: c.rot, q: c.q, dica: c.dica }));
+  const q = norm($('#fo-tagq').value.trim()), todos = q ? MARCS.filter(m => m.q.includes(q) && !f.tag.includes(m.v)) : [], achados = todos.slice(0, 24);
+  const de = v => MARCS.find(m => m.v === v) || { v, rot: maiuscula(rotTag(v)), dica: '#' + v };
+  const chip = (m, on) => `<button type="button" class="chip" data-v="${esc(m.v)}" aria-pressed="${on}" title="${esc((m.dica ? m.dica + ' — ' : '') + (on ? 'clique para voltar a mostrar' : 'clique para ocultar'))}"><span>${esc(m.rot)}</span><em>${fInt(k.tag.get(m.v) || 0)}</em></button>`;
+  setHtml($('#fo-tags'), f.tag.map(v => chip(de(v), true)).join('') + achados.map(m => chip(m, false)).join(''));
+  $('#fo-tags-n').textContent = q ? (!todos.length ? 'Nenhum marcador com esse nome.' : todos.length > achados.length ? `Mostrando ${achados.length} de ${todos.length}: refine a busca.` : '') : f.tag.length ? '' : 'Digite para achar um marcador: gênero, tema, trilha, cenário…';
+  const cont = $('#pw-fora .cont'); cont.hidden = !FORA.n; cont.textContent = FORA.n;
+  $('#pw-fora').classList.toggle('ativo', FORA.n > 0); $('#pop-fora [data-fora-limpar]').hidden = !FORA.n;
+  const av = $('#f-fora'); av.hidden = !FORA.n;
+  if (!FORA.n) return;
+  setHtml(av, `<span class="ff-t">${icone('olhoOff', 15)}<b>${n ? plural(n, 'livro oculto', 'livros ocultos') : 'Nenhum livro oculto por enquanto'}</b><span class="ff-r">${esc(regrasFora().join(' · '))}</span></span><span class="ff-a"><button type="button" class="lk" data-fora-abrir>mudar</button><button type="button" class="lk" data-fora-limpar>mostrar todos</button></span>`);
+}
+/* abre as opções de "Ocultar": o quadro, na tela larga; a folha de filtros, rolada até elas, na estreita */
+function abrirFora() {
+  const w = $('#pw-fora');
+  if (window.matchMedia && matchMedia('(max-width: 820px)').matches) { folha(true, true); setTimeout(() => { w.scrollIntoView({ block: 'start' }); focar($('input', w), 3); }, 80); return; }
+  if (!w.classList.contains('aberto')) $('.pop-b', w).click();
 }
 
 /* ───────── casca: navegação, cabeçalho, avisos ───────── */
@@ -222,7 +277,7 @@ function pintarCasca(c) {
   }
   av.hidden = !mostrar;
   if (mostrar && DB.exemplos) setHtml(av, `<span class="av-i">${icone('info', 18)}</span><div><b>Seu catálogo é real; o movimento é de exemplo.</b><p>Os ${fInt(DB.livros.filter(b => b.sec >= 0).length)} títulos, autores, marcadores, eixos, a estante física e a biblioteca virtual vieram do seu catálogo. Datas e valores pagos, leituras, a lista de próximas aquisições e os históricos de preço são <b>simulados</b> para dar vida aos gráficos, e os preços não vêm das lojas: entram por cotações que você registra.</p></div><div class="av-a"><button type="button" class="btn sm" data-av="dados">Gerenciar dados</button><button type="button" class="btn sm pri" data-av="ok">Entendi</button></div>`);
-  $('#rodape-n').textContent = `${plural(DB.livros.length, 'livro', 'livros')} · ${c.I.tudo ? 'todo o histórico' : c.I.rot}${nFiltros() ? ' · ' + plural(nFiltros(), 'filtro ativo', 'filtros ativos') : ''}`;
+  $('#rodape-n').textContent = `${plural(DB.livros.length, 'livro', 'livros')}${FORA.livros ? ' · ' + plural(FORA.livros, 'oculto', 'ocultos') : ''} · ${c.I.tudo ? 'todo o histórico' : c.I.rot}${nFiltros() ? ' · ' + plural(nFiltros(), 'filtro ativo', 'filtros ativos') : ''}`;
 }
 function aplicarTema() {
   const t = S.tema || (window.matchMedia && matchMedia('(prefers-color-scheme: dark)').matches ? 'escuro' : 'claro');
@@ -277,7 +332,7 @@ function montarBusca() {
     const achados = DB.livros.filter(b => termos.every(t => b._busca.includes(t)));
     itens = achados.map(b => [b, nota(b)]).sort((a, z) => a[1] - z[1] || a[0].t.localeCompare(z[0].t, 'pt-BR')).slice(0, 8).map(x => x[0]);
     foco = itens.length ? 0 : -1;
-    r.innerHTML = itens.length ? itens.map((b, i) => `<button type="button" role="option" class="qr${i === foco ? ' foco' : ''}" data-id="${b.id}"><span class="tt"><b>${esc(b.t)}</b><span>${esc(b.a || 'Autor não informado')}</span></span><span class="pill col-${b.col}">${COLECOES[b.col].n}</span></button>`).join('') + (achados.length > itens.length ? `<span class="qr-n">+ ${fInt(achados.length - itens.length)} resultados · refine a busca ou use o filtro da tabela</span>` : '') : '<span class="qr-n">Nenhum livro encontrado.</span>';
+    r.innerHTML = itens.length ? itens.map((b, i) => `<button type="button" role="option" class="qr${i === foco ? ' foco' : ''}" data-id="${b.id}"><span class="tt"><b>${esc(b.t)}</b><span>${esc(b.a || 'Autor não informado')}${oculto(b) ? ' · fora das listas (oculto)' : ''}</span></span><span class="pill col-${b.col}">${COLECOES[b.col].n}</span></button>`).join('') + (achados.length > itens.length ? `<span class="qr-n">+ ${fInt(achados.length - itens.length)} resultados · refine a busca ou use o filtro da tabela</span>` : '') : '<span class="qr-n">Nenhum livro encontrado.</span>';
     r.hidden = false; q.setAttribute('aria-expanded', 'true');
   };
   const abrir = id => { fecharBusca(); q.value = ''; q.blur(); abrirLivro(id); };
@@ -306,6 +361,7 @@ function iniciar() {
   document.addEventListener('error', e => { const im = e.target; if (im && im.tagName === 'IMG' && im.parentElement && im.parentElement.classList.contains('capa')) { const c = im.parentElement; if (c.classList.contains('g')) c.remove(); else im.remove(); } }, true);
   if (cfg.visao && VISOES[cfg.visao]) S.visao = cfg.visao;
   if (cfg.ui && typeof cfg.ui === 'object') Object.assign(S.ui, cfg.ui);
+  S.ui.fora = lerFora(S.ui.fora); refazerFora();      // "Ocultar": só valem regras que existem
   // "Temas e camadas": até a rodada 7 guardava-se a posição do grupo na lista; agora, o nome (a lista ganhou um grupo no meio)
   if (typeof S.ui.temas === 'number') S.ui.temas = GRUPOS_TAG_V1[S.ui.temas] || 'Temas';
   if (grupoTag(S.ui.temas) < 0) S.ui.temas = 'Temas';

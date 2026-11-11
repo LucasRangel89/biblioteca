@@ -9,7 +9,8 @@ Confere, em oito tamanhos de janela (da de 1536 × 745 em que o defeito apareceu
   · fica inteira dentro da janela;
   · tem cada botão do rodapé e o X de fechar à vista e recebendo o clique (nada por cima);
   · quando o conteúdo não cabe, rola pelo miolo — o cabeçalho e o rodapé ficam parados — e a rolagem chega ao fim.
-O mesmo vale para os botões da ficha do livro, os quadros "Eixo" e "Mais filtros" e, no celular, a folha de filtros.
+O mesmo vale para os botões da ficha do livro, os quadros "Eixo", "Mais filtros" e "Ocultar" e, no celular, a folha de
+filtros.
 Por fim, numa janela de notebook comum (1366 × 650, onde o botão ficava inteiro fora da tela), usa de verdade: adiciona
 um livro e o edita, clicando com o mouse.
 """
@@ -86,11 +87,13 @@ with sync_playwright() as p:
         if w > 820:
             js('#pw-eixo .pop-b'); eixo = pg.evaluate(QUADRO, '#pop-eixo'); fecha()
             js('#pw-mais .pop-b'); mais = pg.evaluate(QUADRO, '#pop-mais'); fecha()
-            ok(f'{w} × {h}: os botões da ficha e os quadros "Eixo" e "Mais filtros" também', ficha['n'] >= 3 and not ficha['ruins'] and eixo and mais, (ficha, eixo, mais))
+            js('#pw-fora .pop-b'); fora = pg.evaluate(QUADRO, '#pop-fora'); fecha()
+            ok(f'{w} × {h}: os botões da ficha e os quadros "Eixo", "Mais filtros" e "Ocultar" também', ficha['n'] >= 3 and not ficha['ruins'] and eixo and mais and fora, (ficha, eixo, mais, fora))
         else:
             js('#f-abrir'); pg.wait_for_timeout(250)
             folha = pg.evaluate(BOTOES, '#f-painel .f-pf button, #f-painel .f-ph button'); fecha()
-            ok(f'{w} × {h}: os botões da ficha e os da folha de filtros também', ficha['n'] >= 3 and not ficha['ruins'] and folha['n'] == 3 and not folha['ruins'], (ficha, folha))
+            # na folha: "ocultar categorias" e o X, no topo; "Limpar tudo" e "Ver resultados", no pé
+            ok(f'{w} × {h}: os botões da ficha e os da folha de filtros também', ficha['n'] >= 3 and not ficha['ruins'] and folha['n'] == 4 and not folha['ruins'], (ficha, folha))
         pg.context.close()
 
     print('DE VERDADE, NUMA JANELA DE NOTEBOOK (1366 × 650, painel sem exemplos)')

@@ -187,6 +187,22 @@ input[type="checkbox"] { width: 16px; height: 16px; margin: 0; accent-color: var
 .fa-g { display: inline-flex; align-items: center; flex-wrap: wrap; gap: 4px; max-width: 100%; margin: -3px 0; padding: 2px; border: 1px dashed var(--line-2); border-radius: 16px; }
 .fa-c { font-style: normal; font-size: 12px; color: var(--ink-3); padding: 0 1px; }
 
+/* "Ocultar": o aviso sob a barra (fica à vista enquanto houver regra ligada) e o que é só do quadro de opções */
+.f-fora { display: flex; align-items: center; flex-wrap: wrap; gap: 2px 14px; margin-top: 9px; padding: 3px 11px; border-radius: 10px; border: 1px dashed var(--line-2); background: var(--surface-2); font-size: 12.5px; color: var(--ink-2); }
+.ff-t { display: inline-flex; align-items: center; flex-wrap: wrap; gap: 2px 7px; min-width: 0; flex: 1 1 240px; }
+.ff-t .ic { flex: none; color: var(--ink-3); }
+.ff-t b { color: var(--ink); font-weight: 600; white-space: nowrap; }
+.ff-r { min-width: 0; overflow-wrap: anywhere; }
+.ff-a { display: inline-flex; gap: 14px; flex: none; }
+.ff-a .lk { display: inline-flex; align-items: center; min-height: 24px; }
+.fo-n b { color: var(--ink-2); font-weight: 600; }
+.fo-tags { padding-top: 8px; }
+.fo-tags:empty, #fo-tags-n:empty { display: none; }
+.gv-fora, .li-fora, .nota.tr-fora { display: flex; align-items: flex-start; gap: 7px; font-size: 12.5px; line-height: 1.45; color: var(--ink-2); }
+.gv-fora .ic, .li-fora .ic, .tr-fora .ic { flex: none; margin-top: 2px; color: var(--ink-3); }
+.gv-fora { margin-top: 10px; }
+.gv-fora b { color: var(--ink); font-weight: 600; }
+.li-fora { padding: 10px 2px 2px; }
 .aviso { display: flex; align-items: flex-start; gap: 12px; margin: 16px var(--pad) 0; padding: 14px 16px; border: 1px dashed color-mix(in srgb, var(--warn) 50%, var(--line)); border-radius: var(--r); background: var(--warn-soft); }
 .av-i { color: var(--warn); margin-top: 1px; }
 /* recado de boas-vindas (painel sem dados de exemplo): mesmo desenho, sem o tom de alerta */
@@ -364,7 +380,7 @@ button.hb:hover { background: var(--surface-3); }
 .tr-b i.l { background: var(--good); }
 .tr-b i.c { background: var(--c2); }
 .tr-res { display: flex; align-items: center; flex-wrap: wrap; gap: 6px 12px; margin: 0 0 10px; color: var(--ink-2); font-size: 13px; }
-.tr-res .lk { margin-left: auto; }
+.tr-a { display: inline-flex; flex-wrap: wrap; gap: 0 16px; margin-left: auto; }
 /* links que ficam sozinhos, fora de um parágrafo: altura mínima para o dedo */
 .card-f .lk, .tr-res .lk, .nt-ab .lnk { display: inline-flex; align-items: center; min-height: 24px; }
 .tr-res b { color: var(--ink); font-weight: 600; }
@@ -495,6 +511,7 @@ input[type="range"] { accent-color: var(--accent); width: 100%; height: 28px; pa
 /* ───────────── tabela ───────────── */
 .card-tab .card-t { flex-wrap: wrap; justify-content: flex-end; }
 .card-tab .busca-t { width: 250px; }
+.tb-levar { display: inline-flex; gap: 6px; flex: none; }      /* imprimir, copiar e CSV: andam juntos */
 .ord-m { display: none; align-items: center; gap: 6px; font-size: 12.5px; color: var(--ink-3); }
 .ord-m select { height: 32px; font-size: 13px; }
 .ord-m .ib { width: 32px; height: 32px; }
@@ -713,6 +730,9 @@ td.c-spark svg { margin-left: auto; margin-right: auto; }
   .grade > .card { grid-column: span 12; }
   .grade > .m-6 { grid-column: span 6; }
 }
+/* janela média: o botão "Ocultar" fica só com o ícone, para a barra de filtros continuar numa linha mesmo com os números ligados
+   (em 1366 px, a largura mais comum de notebook, a barra tem 1078 px e os cinco controles pedem 1058 sem número nenhum) */
+@media (min-width: 821px) and (max-width: 1439px) { .fo-rot { display: none; } }
 /* janela média: a busca encolhe e o título perde um ponto, para "Próximas aquisições" caber numa linha */
 @media (max-width: 1240px) {
   .busca { width: clamp(170px, 18vw, 240px); }
@@ -765,6 +785,10 @@ td.c-spark svg { margin-left: auto; margin-right: auto; }
   .filtros.folha .f-painel { display: flex; animation: folha .26s cubic-bezier(.3, .7, .2, 1); outline: 0; }
   .f-ph { display: flex; align-items: center; justify-content: space-between; padding: 14px 14px 8px 18px; }
   .f-ph b { font: 600 18px var(--serif); }
+  .f-ph .lk { display: inline-flex; align-items: center; min-height: 36px; margin-left: auto; margin-right: 10px; padding: 0 4px; font-size: 13px; }
+  .f-fora { padding: 2px 11px; }
+  .ff-a { gap: 6px; margin-left: -6px; }
+  .ff-a .lk { min-height: 32px; padding: 0 6px; }
   .f-corpo { flex-direction: column; align-items: stretch; flex-wrap: nowrap; gap: 16px; overflow: auto; padding: 6px 18px 16px; overscroll-behavior: contain; }
   .f-pf { display: flex; gap: 8px; padding: 12px 18px calc(12px + env(safe-area-inset-bottom)); border-top: 1px solid var(--line); }
   .f-pf .btn { flex: 1; height: 42px; }
@@ -796,6 +820,10 @@ td.c-spark svg { margin-left: auto; margin-right: auto; }
   .tb th:last-child, .tb td:last-child { padding-right: 14px; }
   .card-tab .card-t { width: 100%; justify-content: flex-start; }
   .card-tab .busca-t { flex: 1; width: auto; min-width: 150px; }
+  .tb-levar { margin-left: auto; }
+  .tb-levar [data-imprimir] span, .tb-levar [data-copiar] span { display: none; }
+  .tb-levar .btn.sm { height: 32px; min-width: 36px; }
+  .ord-m { min-width: 0; } .ord-m select { min-width: 0; max-width: 100%; }
   .ord-m { display: inline-flex; }
   .ord-m span { display: none; }
   .tam span { display: none; }
@@ -840,7 +868,42 @@ td.c-spark svg { margin-left: auto; margin-right: auto; }
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after { animation-duration: .001s !important; transition-duration: .001s !important; scroll-behavior: auto !important; }
 }
+/* A folha de uma lista ou de uma trilha (ver 52-listas.js): só existe no papel. Preto no branco, em qualquer tema.
+   O desenho dela fica fora do @media print para o painel poder medi-la (".medindo": montada fora da tela, na largura
+   útil de uma folha A4) e dizer, antes de imprimir, quantas páginas são. */
+.impressao { display: none; color: #000; font: 9.5pt/1.35 var(--sans); }
+.impressao.medindo { display: block; position: absolute; left: -10000px; top: 0; width: 184mm; visibility: hidden; pointer-events: none; }
+.impressao .imp-m { margin: 0; font-size: 7.5pt; letter-spacing: .09em; text-transform: uppercase; color: #444; }
+.impressao h1 { margin: 1.2mm 0 1.6mm; font: 600 17pt/1.2 var(--serif); color: #000; }
+.impressao .imp-d { margin: 0 0 1.6mm; max-width: 165mm; font-size: 10pt; color: #222; }
+.impressao .imp-i { margin: 0; font-size: 9pt; color: #333; }
+.impressao .imp-l { width: 100%; margin-top: 4.5mm; border-collapse: collapse; table-layout: auto; }
+.impressao thead { display: table-header-group; }
+.impressao tr { break-inside: avoid; page-break-inside: avoid; }
+.impressao th { padding: 0 2.5mm 1.2mm 0; border-bottom: .35mm solid #000; text-align: left; vertical-align: bottom; font-size: 7.5pt; font-weight: 600; letter-spacing: .06em; text-transform: uppercase; color: #333; }
+.impressao td { padding: 1.15mm 2.5mm 1.15mm 0; border-bottom: .2mm solid #b8b8b8; vertical-align: top; color: #000; overflow-wrap: anywhere; }
+.impressao .q { width: 6mm; padding-right: 0; }
+.impressao td.n, .impressao th.n { width: 8mm; text-align: right; padding-right: 3mm; color: #333; font-variant-numeric: tabular-nums; }
+.impressao td.t { font-weight: 600; }
+.impressao td.a { width: 24%; color: #111; }
+.impressao td.x, .impressao th.x { width: 1%; white-space: nowrap; }       /* as colunas curtas ficam do tamanho do texto: nome de eixo não quebra em duas linhas */
+.impressao td.x { font-size: 8.5pt; color: #222; }
+.impressao td:last-child, .impressao th:last-child { padding-right: 0; }
+.imp-q { display: inline-block; position: relative; width: 3.4mm; height: 3.4mm; margin-top: .2mm; border: .3mm solid #000; border-radius: .5mm; vertical-align: top; }
+.imp-q.ok::after { content: ""; position: absolute; left: 1mm; top: .15mm; width: 1mm; height: 2.1mm; border: solid #000; border-width: 0 .45mm .45mm 0; transform: rotate(45deg); }   /* o visto é desenhado: não depende da fonte */
+.imp-e { width: 2.9mm; height: 2.9mm; margin-left: 1.2mm; vertical-align: -.35mm; fill: #000; stroke: #000; stroke-width: 1.6; stroke-linejoin: round; }
+.impressao .imp-n { margin: 3mm 0 0; font-size: 8.5pt; color: #333; }
+.impressao .imp-leg .imp-e { margin: 0 .6mm 0 0; }
+.impressao .imp-leg .imp-q { margin: 0 .8mm 0 0; vertical-align: -.5mm; }
+.impressao .imp-leg i { display: inline-block; width: 6mm; }
+.impressao .imp-n + .imp-n { margin-top: 1mm; }
 @media print {
   .lateral, .inferior, .filtros, .topo-a, .aviso, .gaveta, .dlg, .toasts { display: none !important; }
   .app { display: block; } body { background: #fff; } .card, .kpi { box-shadow: none; break-inside: avoid; }
+  @page { margin: 14mm 13mm 15mm; }
+  /* com uma caixa aberta a página fica travada (overflow: hidden), e o papel sairia cortado na primeira página */
+  html.imprimindo, html.imprimindo body { background: #fff !important; color: #000 !important; overflow: visible !important; height: auto !important; }
+  html.imprimindo body > *:not(.impressao) { display: none !important; }
+  html.imprimindo .impressao { display: block; position: static; width: auto; visibility: visible; }
 }
+
