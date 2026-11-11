@@ -235,6 +235,12 @@ guia Finanças fica zerada, e cada gráfico vazio diz o que falta para ele se pr
 de preços ou de quando comprou algum livro da estante, melhor, mas não é necessário. Também dá para marcar direto no
 painel ("Já li", "Começar a ler"); aí a informação fica só no navegador em que foi marcada.
 
+**Novo em 11/11/2026: "Já li" para o livro que você não tem.** Até aqui, o painel só deixava marcar como lido um
+livro do acervo. *A Metamorfose* mostrou o furo: você leu, e o exemplar se perdeu. Agora a ficha de qualquer
+recomendação (e de qualquer livro da lista de compra) tem o botão **Já li**. O livro conta nas suas leituras como
+"de fora", sai da fila de recomendações e da ordem de compra, e a trilha de leitura o dá por feito. A data e a nota
+são opcionais. **Não li** desfaz.
+
 **O que será feito com a lista:** os lidos entram no catálogo (`#lido`), para não dependerem do navegador.
 
 **Pronta quando** as suas leituras estiverem no catálogo.

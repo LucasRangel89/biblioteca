@@ -52,7 +52,7 @@ with sync_playwright() as p:
 
     print('PAINEL NOVO, SEM NADA SALVO')
     pg = pagina(b); pg.goto(PAINEL_URL); pg.wait_for_timeout(1200); pg.click('#aviso .pri'); pg.wait_for_timeout(200)
-    k = pg.evaluate(K); ok('acervo: 97 físicos · 2.049 digitais · 24 nos dois', k['acervo']['v'] == '2.122' and k['acervo']['s'] == '97 físicos · 2.049 digitais · 24 nos dois', k['acervo'])
+    k = pg.evaluate(K); ok('acervo: 100 físicos · 2.049 digitais · 25 nos dois', k['acervo']['v'] == '2.124' and k['acervo']['s'] == '100 físicos · 2.049 digitais · 25 nos dois', k['acervo'])
 
     abrir(pg, 'Mal-Estar Civilização Freud'); f = pg.evaluate(FATOS); v = pg.evaluate(VIRTUAL)      # o arquivo é de outra tradução: "O Mal-Estar na Cultura"
     ok('só digital: formato "Digital · Biblioteca virtual", sem data', f.get('Formato') == 'Digital · Biblioteca virtual' and f.get('Adquirido em') == 'sem data' and 'Valor pago' not in f, f)
@@ -71,12 +71,12 @@ with sync_playwright() as p:
     pg.select_option('#dlg [data-f=fmt]', 'ambos'); pg.click('#dlg footer .pri'); pg.wait_for_timeout(800)
     f = pg.evaluate(FATOS); ok('marcar "Físico e digital" à mão', f.get('Formato') == 'Físico e digital', f.get('Formato'))
     pg.keyboard.press('Escape'); pg.wait_for_timeout(300); pg.fill('#p-tab-geral input[type=search]', ''); pg.wait_for_timeout(900)
-    k = pg.evaluate(K); ok('acervo: 25 nos dois depois da edição', k['acervo']['s'] == '97 físicos · 2.050 digitais · 25 nos dois', k['acervo']['s'])
+    k = pg.evaluate(K); ok('acervo: 26 nos dois depois da edição', k['acervo']['s'] == '100 físicos · 2.050 digitais · 26 nos dois', k['acervo']['s'])
     pg.reload(); pg.wait_for_timeout(1200)
-    k = pg.evaluate(K); ok('a edição sobrevive ao recarregar', k['acervo']['s'] == '97 físicos · 2.050 digitais · 25 nos dois', k['acervo']['s'])
+    k = pg.evaluate(K); ok('a edição sobrevive ao recarregar', k['acervo']['s'] == '100 físicos · 2.050 digitais · 26 nos dois', k['acervo']['s'])
     ok('recarregar não anuncia mudança de catálogo', 'O catálogo mudou' not in pg.evaluate(TOASTS), pg.evaluate(TOASTS))
     pg.click('#f-acervo button[data-v="ambos"]'); pg.wait_for_timeout(900)
-    k = pg.evaluate(K); ok('filtro "Nas duas": 25 livros', k['acervo']['v'] == '25', k['acervo'])
+    k = pg.evaluate(K); ok('filtro "Nas duas": 26 livros', k['acervo']['v'] == '26', k['acervo'])
     pg.click('#f-acervo button[data-v="virtual"]'); pg.wait_for_timeout(900)
     k = pg.evaluate(K); pg.click('#nav [data-ir=financas]'); pg.wait_for_timeout(900); f = pg.evaluate(K)
     ok('filtro "Virtual": 2.050 livros, nenhuma compra', k['acervo']['v'] == '2.050' and f['investido']['v'] == 'R$ 0', (k['acervo']['v'], f['investido']['v']))
@@ -91,7 +91,7 @@ with sync_playwright() as p:
         pg.click(f'#f-tipo button[data-v="{t}"]'); pg.wait_for_timeout(900); por_tipo[t] = pg.evaluate(K); chips[t] = pg.inner_text('#f-ativos').replace('\n', ' ').replace('\u00a0', ' ')
     hq = por_tipo['HQ']; n = {t: int(por_tipo[t]['acervo']['v'].replace('.', '')) for t in por_tipo}
     ok('filtro "HQ": 244 quadrinhos no acervo (um deles também na estante) e 1 nas recomendações', hq['acervo']['v'] == '244' and hq['acervo']['s'] == '1 físico · 244 digitais · 1 nos dois' and hq['recs']['v'] == '1', (hq['acervo'], hq['recs']['v']))
-    ok('os quatro tipos somam o acervo inteiro: nenhum quadrinho ficou também em "Outros"', sum(n.values()) == 2122 and all(n.values()), n)
+    ok('os quatro tipos somam o acervo inteiro: nenhum quadrinho ficou também em "Outros"', sum(n.values()) == 2124 and all(n.values()), n)
     ok('o filtro ativo se chama "HQ"; o de "Outros", "Poesia e outros"', 'HQ' in chips['HQ'] and 'Poesia e outros' in chips['O'] and 'HQ' not in chips['O'], (chips['HQ'], chips['O']))
     tipos = pg.evaluate("""() => { const cab = [...document.querySelectorAll('#p-tab-geral thead th')].map(x => x.textContent.trim().toLowerCase()), i = cab.indexOf('tipo');
         return i < 0 ? ['sem coluna Tipo'] : [...new Set([...document.querySelectorAll('#p-tab-geral tbody tr[data-id]')].map(r => r.children[i].textContent.trim()))]; }""")
@@ -148,9 +148,9 @@ with sync_playwright() as p:
         pg.context.close()
 
         pg = pagina(b, salvo); pg.goto(PAINEL_URL); pg.wait_for_timeout(1500); t = pg.evaluate(TOASTS)
-        ok('aviso: 1.910 livros entraram e as edições foram mantidas', 'O catálogo mudou: 1.910 livros entraram.' in t and 'O que você editou no painel foi mantido.' in t, t)
+        ok('aviso: 1.970 livros entraram e as edições foram mantidas', 'O catálogo mudou: 1.970 livros entraram.' in t and 'O que você editou no painel foi mantido.' in t, t)
         if pg.locator('#aviso .pri').is_visible(): pg.click('#aviso .pri'); pg.wait_for_timeout(200)
-        k = pg.evaluate(K); ok('acervo migrado: 97 físicos · 2.049 digitais · 24 nos dois', k['acervo']['v'] == '2.122' and k['acervo']['s'] == '97 físicos · 2.049 digitais · 24 nos dois', k['acervo'])
+        k = pg.evaluate(K); ok('acervo migrado: 100 físicos · 2.049 digitais · 25 nos dois', k['acervo']['v'] == '2.124' and k['acervo']['s'] == '100 físicos · 2.049 digitais · 25 nos dois', k['acervo'])
         abrir(pg, 'Zz Livro da Versão Antiga'); f = pg.evaluate(FATOS)
         ok('o livro que eu tinha criado continua na lista de compra, com o alvo', pg.locator('#gaveta.on').count() == 1 and 'R$ 40,00' in f.get('Preço-alvo', ''), f)
         abrir(pg, 'Fundação Asimov', 'Fundação'); f = pg.evaluate(FATOS); v = pg.evaluate(VIRTUAL)
@@ -158,12 +158,12 @@ with sync_playwright() as p:
         pg.keyboard.press('Escape'); pg.wait_for_timeout(300)
         novo = json.loads(pg.evaluate(f"() => localStorage.getItem('{CHAVE}')"))
         marcas = sorted({t for x in novo['livros'] for t in x.get('tags', []) if t.startswith(('ja-tenho', 'tenho-'))})
-        ok('o estado regravado tem 2.555 livros, a assinatura do catálogo e nenhum #ja-tenho', len(novo['livros']) == 2555 and marcas == ['tenho-digital', 'tenho-fisico'] and bool(novo.get('cat')), (len(novo['livros']), marcas, novo.get('cat')))
+        ok('o estado regravado tem 2.615 livros, a assinatura do catálogo e nenhum #ja-tenho', len(novo['livros']) == 2615 and marcas == ['tenho-digital', 'tenho-fisico'] and bool(novo.get('cat')), (len(novo['livros']), marcas, novo.get('cat')))
         pg.reload(); pg.wait_for_timeout(1500); t = pg.evaluate(TOASTS)
         # se falhar, isto ajuda a ver de onde veio: [livros guardados, assinatura do catálogo, as duas marcas de "já posto"]
         guardado = pg.evaluate("() => { const s = JSON.parse(localStorage.getItem('%s') || 'null'); return [s && s.livros.length, s && (s.cat || ''), sessionStorage.getItem('qa-posto'), window.name]; }" % CHAVE)
         ok('ao reabrir, a migração não se repete', 'O catálogo mudou' not in t, t and (t, guardado))
-        k = pg.evaluate(K); ok('e os números continuam os mesmos', k['acervo']['v'] == '2.122' and k['acervo']['s'] == '97 físicos · 2.049 digitais · 24 nos dois', k['acervo'])
+        k = pg.evaluate(K); ok('e os números continuam os mesmos', k['acervo']['v'] == '2.124' and k['acervo']['s'] == '100 físicos · 2.049 digitais · 25 nos dois', k['acervo'])
         pg.context.close()
 
         print('MIGRAÇÃO: BACKUP EXPORTADO PELO PAINEL ANTERIOR')
@@ -172,9 +172,9 @@ with sync_playwright() as p:
         txt = pg.inner_text('#dlg.on').replace('\u00a0', ' ').replace('\n', ' ')
         ok('a confirmação reconhece o backup antigo (645 livros)', '645 livros' in txt, txt[:160])
         pg.click('#dlg footer .pri'); pg.wait_for_timeout(1200); t = pg.evaluate(TOASTS)
-        ok('importado, com o aviso dos 1.910 livros que entraram', 'Backup importado. O catálogo mudou: 1.910 livros entraram.' in t, t)
+        ok('importado, com o aviso dos 1.970 livros que entraram', 'Backup importado. O catálogo mudou: 1.970 livros entraram.' in t, t)
         for _ in range(2): pg.keyboard.press('Escape'); pg.wait_for_timeout(150)
-        k = pg.evaluate(K); ok('acervo depois de importar: 97 físicos · 2.049 digitais · 24 nos dois', k['acervo']['v'] == '2.122' and k['acervo']['s'] == '97 físicos · 2.049 digitais · 24 nos dois', k['acervo'])
+        k = pg.evaluate(K); ok('acervo depois de importar: 100 físicos · 2.049 digitais · 25 nos dois', k['acervo']['v'] == '2.124' and k['acervo']['s'] == '100 físicos · 2.049 digitais · 25 nos dois', k['acervo'])
         abrir(pg, 'Fundação Asimov', 'Fundação'); f = pg.evaluate(FATOS)
         ok('a edição feita no painel antigo veio no backup', f.get('Páginas') == '777' and f.get('Formato') == 'Físico e digital', f)
         abrir(pg, 'Zz Livro da Versão Antiga'); f = pg.evaluate(FATOS)
@@ -205,7 +205,7 @@ with sync_playwright() as p:
 
         pg = pagina(b, salvo); pg.goto(PAINEL_URL); pg.wait_for_timeout(1500); t = pg.evaluate(TOASTS)
         # as 6 que saíram são linhas que a vistoria juntou a outra (duas edições da mesma obra; a recomendação que já estava num arquivo)
-        ok('entraram os 260 livros e quadrinhos que vieram depois e saíram as 6 linhas repetidas; nenhum corrigido "saiu" nem "entrou"', 'O catálogo mudou: 260 livros entraram e 6 saíram. O que você editou no painel foi mantido.' in t, t)
+        ok('entraram os 320 livros e quadrinhos que vieram depois e saíram as 6 linhas repetidas; nenhum corrigido "saiu" nem "entrou"', 'O catálogo mudou: 320 livros entraram e 6 saíram. O que você editou no painel foi mantido.' in t, t)
         if pg.locator('#aviso .pri').is_visible(): pg.click('#aviso .pri'); pg.wait_for_timeout(200)
         for busca, antes, depois, autor, pags, conhece in casos:      # a busca é a mesma de antes: nos casos com título novo, é pelo nome antigo
             pg.keyboard.press('Escape'); pg.wait_for_timeout(200); pg.fill('#p-tab-geral input[type=search]', busca); pg.wait_for_timeout(600)
@@ -217,7 +217,7 @@ with sync_playwright() as p:
             else: ok(f'{depois}: a gaveta não fala em título anterior', anterior_na_gaveta == '', anterior_na_gaveta[:120])
         pg.keyboard.press('Escape'); pg.wait_for_timeout(300)
         novo = json.loads(pg.evaluate(f"() => localStorage.getItem('{CHAVE}')"))
-        ok('o estado regravado tem os 2.554 livros do catálogo de agora, sem nenhum repetido', len(novo['livros']) == 2554, len(novo['livros']))
+        ok('o estado regravado tem os 2.614 livros do catálogo de agora, sem nenhum repetido', len(novo['livros']) == 2614, len(novo['livros']))
         pg.context.close()
     b.close()
 print('FALHAS:', falhas); print('ERROS:', len(errs) + len(falhas)); [print('  ', x[:300]) for x in errs[:10]]

@@ -28,10 +28,10 @@ AVISO = """() => { const a = document.querySelector('#aviso'); if (a.hidden) ret
 SALVO = """() => { const t = localStorage.getItem('%s'); if (!t) return null; const s = JSON.parse(t);
     return { exemplos: s.exemplos, demo: 'demo' in s ? s.demo : null, comDemo: s.livros.filter(x => x.demo).length, meus: s.livros.filter(x => x.u).length, saiu: (s.cfg || {}).saiu ?? null, n: s.livros.length }; }""" % CHAVE
 PILULA = "() => !document.querySelector('#b-exemplo').hidden"
-LIMPO = {'acervo': '2.122', 'leituras': '2', 'fila': '2.122', 'recs': '430'}                 # só o catálogo
-EXEMPLO = {'acervo': '2.122', 'leituras': '60', 'fila': '2.059', 'recs': '404'}              # com os dados simulados
+LIMPO = {'acervo': '2.124', 'leituras': '3', 'fila': '2.124', 'recs': '487'}                 # só o catálogo
+EXEMPLO = {'acervo': '2.124', 'leituras': '63', 'fila': '2.059', 'recs': '461'}              # com os dados simulados
 F_LIMPO = {'investido': 'R$ 0', 'medio': '—', 'cesta': '—', 'oport': '0'}
-F_EXEMPLO = {'investido': 'R$ 4.355', 'medio': 'R$ 48,93', 'cesta': 'R$ 1.249', 'oport': '6'}
+F_EXEMPLO = {'investido': 'R$ 4.428', 'medio': 'R$ 48,66', 'cesta': 'R$ 1.296', 'oport': '6'}
 SAIU = 'Os dados de exemplo saíram: agora o painel mostra só o que é seu.'
 
 
@@ -76,12 +76,12 @@ with sync_playwright() as p:
     print('PRIMEIRA ABERTURA: SÓ O CATÁLOGO')
     pg = pagina(); abre(pg, PAINEL_LIMPO); a = pg.evaluate(AVISO)
     ok('o recado de abertura diz que só aparece o que é do usuário', a and a['inicio'] and a['titulo'] == 'Aqui só aparece o que é seu.' and a['botoes'] == ['Entendi'], a)
-    ok('e explica que nada é obrigatório, nem as datas', a and 'Os 2.554 títulos, a estante física e a biblioteca virtual vieram do seu catálogo.' in a['texto'] and 'Nada disso é obrigatório — nem as datas.' in a['texto'], a and a['texto'][:260])
+    ok('e explica que nada é obrigatório, nem as datas', a and 'Os 2.614 títulos, a estante física e a biblioteca virtual vieram do seu catálogo.' in a['texto'] and 'Nada disso é obrigatório — nem as datas.' in a['texto'], a and a['texto'][:260])
     ok('nenhum aviso de "dados de exemplo" na barra de cima', not pg.evaluate(PILULA))
     g, f = numeros(pg)
-    ok('indicadores: 2.122 no acervo, 2 leituras (as que o catálogo registra), nada por comprar', g == LIMPO and f == F_LIMPO, (g, f))
+    ok('indicadores: 2.124 no acervo, 3 leituras (as que o catálogo registra), nada por comprar', g == LIMPO and f == F_LIMPO, (g, f))
     pg.click('#aviso .pri'); pg.wait_for_timeout(400); s = pg.evaluate(SALVO)
-    ok('o que fica guardado não tem nada marcado como exemplo', s and s['exemplos'] is False and s['demo'] is None and s['comDemo'] == 0 and s['meus'] == 0 and s['n'] == 2554, s)
+    ok('o que fica guardado não tem nada marcado como exemplo', s and s['exemplos'] is False and s['demo'] is None and s['comDemo'] == 0 and s['meus'] == 0 and s['n'] == 2614, s)
     recarrega(pg)
     ok('depois do "Entendi", o recado não volta ao recarregar', pg.evaluate(AVISO) is None and ir(pg, 'geral') == LIMPO)
     dados(pg); texto = pg.inner_text('#dlg').replace('\u00a0', ' ')
@@ -98,7 +98,7 @@ with sync_playwright() as p:
     ok('o recado volta, agora dizendo que o movimento é de exemplo', a and not a['inicio'] and a['titulo'] == 'Seu catálogo é real; o movimento é de exemplo.' and a['botoes'] == ['Gerenciar dados', 'Entendi'], a)
     ok('e a barra de cima passa a avisar "Dados de exemplo"', pg.evaluate(PILULA))
     g, f = numeros(pg)
-    ok('indicadores: os mesmos de quem abre com ?exemplo=1 (60 leituras, R$ 4.355 investidos)', g == EXEMPLO and f == F_EXEMPLO, (g, f))
+    ok('indicadores: os mesmos de quem abre com ?exemplo=1 (63 leituras, R$ 4.428 investidos)', g == EXEMPLO and f == F_EXEMPLO, (g, f))
     s = pg.evaluate(SALVO)
     ok('guardado como exemplo pedido (não como exemplo de fábrica)', s and s['exemplos'] is True and s['demo'] == 1 and s['comDemo'] > 500 and s['meus'] == 0, s)
     recarrega(pg); t = pg.evaluate(TOASTS)
@@ -118,7 +118,7 @@ with sync_playwright() as p:
     pg = pagina(); abre(pg, PAINEL_LIMPO); pg.click('#aviso .pri'); pg.wait_for_timeout(200)
     livro(pg, 'Peste Camus', 'A Peste'); pg.click('#gv-acoes [data-acao=lido]'); pg.wait_for_timeout(500); pg.click('#dlg footer .pri'); pg.wait_for_timeout(800)
     pg.keyboard.press('Escape'); pg.wait_for_timeout(200); pg.fill('#p-tab-geral input[type=search]', ''); pg.wait_for_timeout(500)
-    ok('uma leitura registrada (sem data): 3 leituras', ir(pg, 'geral')['leituras'] == '3', pg.evaluate(K))
+    ok('uma leitura registrada (sem data): 4 leituras', ir(pg, 'geral')['leituras'] == '4', pg.evaluate(K))
     dados(pg); pg.click('#dlg [data-x=restaurar]'); pg.wait_for_timeout(400); confirma(pg)
     for _ in range(2): pg.keyboard.press('Escape'); pg.wait_for_timeout(150)
     com = ir(pg, 'geral'); s = pg.evaluate(SALVO)
@@ -127,7 +127,7 @@ with sync_playwright() as p:
     dados(pg); pg.click('#dlg [data-x=limpar]'); pg.wait_for_timeout(400); confirma(pg)
     for _ in range(2): pg.keyboard.press('Escape'); pg.wait_for_timeout(150)
     g = ir(pg, 'geral'); s = pg.evaluate(SALVO)
-    ok('limpar tira os exemplos e deixa os dois livros do usuário', s['meus'] == 2 and s['exemplos'] is False and s['comDemo'] == 0 and g['acervo'] == '2.122' and g['recs'] == '430' and int(g['leituras']) in (3, 4), (g, s))
+    ok('limpar tira os exemplos e deixa os dois livros do usuário', s['meus'] == 2 and s['exemplos'] is False and s['comDemo'] == 0 and g['acervo'] == '2.124' and g['recs'] == '487' and int(g['leituras']) in (4, 5), (g, s))
     livro(pg, 'Peste Camus', 'A Peste')
     fatos = pg.evaluate("() => Object.fromEntries([...document.querySelectorAll('#gaveta .fatos > div')].map(d => [d.querySelector('dt').textContent, d.querySelector('dd').innerText.replace(/\\u00a0/g, ' ').replace(/\\s+/g, ' ').trim()]))")
     ok('a leitura registrada antes continua lá, sem data inventada', fatos.get('Leitura') == 'Lido' and fatos.get('Concluído em') == 'sem data', fatos)
@@ -163,7 +163,7 @@ with sync_playwright() as p:
     # quem já tem coisas salvas e abre o endereço de demonstração: nada inventado entra no meio do que é dele
     pg = pagina(); abre(pg, PAINEL_LIMPO); pg.click('#aviso .pri'); pg.wait_for_timeout(200); cria(pg, 'Zz Meu Livro de Verdade'); pg.wait_for_timeout(800)
     abre(pg, PAINEL_URL); g, f = numeros(pg); s = pg.evaluate(SALVO)
-    ok('com dados já salvos, ?exemplo=1 não mistura exemplos ao que é do usuário', g == dict(LIMPO, acervo='2.123', fila='2.123') and f == F_LIMPO and not pg.evaluate(PILULA) and s['exemplos'] is False and s['comDemo'] == 0 and s['meus'] == 1, (g, f, s))
+    ok('com dados já salvos, ?exemplo=1 não mistura exemplos ao que é do usuário', g == dict(LIMPO, acervo='2.125', fila='2.125') and f == F_LIMPO and not pg.evaluate(PILULA) and s['exemplos'] is False and s['comDemo'] == 0 and s['meus'] == 1, (g, f, s))
     pg.context.close()
 
     # ─────────────────────────────────────────────────────────────────────────────────────────────
@@ -183,7 +183,7 @@ with sync_playwright() as p:
         ok(f'{rotulo}: guardado sem exemplos; só os livros do usuário continuam marcados', s and s['exemplos'] is False and s['demo'] is None and s['comDemo'] == 0 and s['meus'] == n and s['saiu'] == n + 1, s)
         if largura >= 700:
             g, f = numeros(pg)
-            ok(f'{rotulo}: acervo {2122 + len(criados):,} e 430 recomendações; nada do que não foi editado tem leitura ou valor'.replace(',', '.'), g['acervo'] == f'{2122 + len(criados):,}'.replace(',', '.') and g['recs'] == '430' and 2 <= int(g['leituras']) <= 2 + len(editados) and (n > 0 or (g == LIMPO and f == F_LIMPO)), (g, f))
+            ok(f'{rotulo}: acervo {2124 + len(criados):,} e 487 recomendações; nada do que não foi editado tem leitura ou valor'.replace(',', '.'), g['acervo'] == f'{2124 + len(criados):,}'.replace(',', '.') and g['recs'] == '487' and 3 <= int(g['leituras']) <= 3 + len(editados) and (n > 0 or (g == LIMPO and f == F_LIMPO)), (g, f))
         else:
             r = pg.evaluate("""() => { const a = document.querySelector('#aviso').getBoundingClientRect(), bs = [...document.querySelectorAll('#aviso button')].map(x => x.getBoundingClientRect());
                 return { pagina: document.documentElement.scrollWidth - document.documentElement.clientWidth, fora: bs.filter(q => q.left < a.left - .5 || q.right > a.right + .5 || q.height < 30).length, n: bs.length }; }""")

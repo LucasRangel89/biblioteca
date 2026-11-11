@@ -3650,14 +3650,15 @@ function dlgComprei(b, jaTinha) {
     } }] });
 }
 function dlgLido(b) {
-  Dlg.abrir({ titulo: 'Concluir leitura', corpo: `<p class="dlg-sub"><b>${esc(b.t)}</b>${b.a ? ' · ' + esc(b.a) : ''}</p>
+  const meu = b.col === 'acervo';
+  Dlg.abrir({ titulo: meu ? 'Concluir leitura' : 'Já li este livro', corpo: `<p class="dlg-sub"><b>${esc(b.t)}</b>${b.a ? ' · ' + esc(b.a) : ''}</p>${meu ? '' : `<p class="form-n ini">Para o livro que você leu e não tem: emprestado, de biblioteca, perdido. Ele conta nas suas leituras e ${b.col === 'desejo' ? 'continua na lista de compra' : 'sai da fila de recomendações'}.</p>`}
     <div class="form"><label class="cp"><span>Concluído em <small>opcional</small></span><input data-f="em" type="date" value="${iso(b.lidoEm)}" max="${iso(DB.hoje)}"></label>
     <label class="cp"><span>Nota <small>opcional</small></span><select data-f="nota">${opcoes([[0, 'Sem nota'], [5, '★★★★★  excelente'], [4, '★★★★  muito bom'], [3, '★★★  bom'], [2, '★★  regular'], [1, '★  fraco']], b.nota || 0)}</select></label>
     <p class="form-n">Não lembra quando terminou? Deixe a data em branco: a leitura conta do mesmo jeito, só não entra nos gráficos por data. <button type="button" class="lk" data-hoje>Terminei hoje</button></p></div>`,
     aoAbrir(el) { $('[data-hoje]', el).addEventListener('click', () => { const i = $('[data-f="em"]', el); i.value = iso(DB.hoje); i.focus(); }); },
     botoes: [{ n: 'Cancelar' }, { n: 'Marcar como lido', cls: 'pri', acao(el) {
       const em = deIso($('[data-f="em"]', el).value); if (em != null && em > DB.hoje) return erroCampo($('[data-f="em"]', el), 'A data não pode estar no futuro.');
-      Object.assign(b, { leit: 'lido', lidoEm: em, prog: 100, nota: +$('[data-f="nota"]', el).value }); tocar(b); toast('Leitura concluída.');
+      Object.assign(b, { leit: 'lido', lidoEm: em, prog: 100, nota: +$('[data-f="nota"]', el).value }); tocar(b); toast(meu ? 'Leitura concluída.' : 'Leitura registrada.');
     } }] });
 }
 function dlgProgresso(b) {
@@ -3671,6 +3672,7 @@ function acao(b, a) {
   if (a === 'comprei') dlgComprei(b, false);
   else if (a === 'tenho') dlgComprei(b, true);
   else if (a === 'lido') dlgLido(b);
+  else if (a === 'naoli') { Object.assign(b, { leit: '', lidoEm: null, prog: 0, nota: 0 }); tocar(b); toast('Leitura desmarcada.'); }
   else if (a === 'progresso') dlgProgresso(b);
   else if (a === 'ler') { b.leit = 'lendo'; if (b.prog >= 100) b.prog = 0; tocar(b); toast('Boa leitura!'); }
   else if (a === 'desejar') { paraListaDeCompra(b); tocar(b); toast(b.alvo ? 'Adicionado às próximas aquisições.' : 'Adicionado. Defina um preço-alvo em “Editar”.'); }
@@ -3811,7 +3813,7 @@ function desenharGaveta() {
     f += fato('Páginas', b.pg ? (b.demo ? '~' : '') + fInt(b.pg) : '');
   } else {
     if (b.col === 'desejo') { f += fato('Prioridade', `<span class="prio p${b.prio || 0}"><i></i>${PRIORIDADES[b.prio || 0].n}</span>`); f += fato('Formato desejado', `<span class="fmt">${icone(ICONE_FMT[b.fmt] || 'livro', 14)}${FORMATOS[b.fmt] ? FORMATOS[b.fmt].n : 'Físico'}</span>`); }
-    if (b.leit === 'lido') f += fato('Leitura', `<span class="pill leit-lido">Lido</span>`);
+    if (b.leit === 'lido') { f += fato('Leitura', `<span class="pill leit-lido">Lido</span>${b.lidoEm == null ? '' : ` <span class="mudo">· ${fData(b.lidoEm)}</span>`}`); f += fato('Nota', b.nota ? estrelas(b.nota) : ''); }
     f += fato('Melhor preço', x.hoje ? `<b class="num">${fBRL(x.hoje.p)}</b><span class="sub">${esc(x.hoje.f)}</span>` : b.col === 'desejo' ? '<span class="mudo">sem cotação</span>' : '');
     f += fato('Preço-alvo', b.alvo ? fBRL(b.alvo) : b.col === 'desejo' ? '<span class="mudo">não definido</span>' : '');
     if (x.hoje) f += fato('Situação', badgeSit(x.sit));
@@ -3858,8 +3860,10 @@ function desenharGaveta() {
     (b.demo ? `<p class="nota ex">${icone('info', 14)}<span>Título, autor, marcadores e eixo vêm do seu catálogo. ${b.col === 'acervo' ? 'Data, valor, origem, leitura e páginas' : b.px ? 'Datas, preço-alvo e histórico de preços' : 'A data de inclusão e as páginas'} deste item são <b>dados de exemplo</b>. Ao editar ou usar uma das ações abaixo, o item passa a ser tratado como seu.</span></p>` : '');
   const bt = (a, n, ic, cls) => `<button type="button" class="btn ${cls || ''}" data-acao="${a}">${ic ? icone(ic, 15) : ''}${n}</button>`;
   let ac = '';
-  if (b.col === 'rec') ac = bt('desejar', 'Quero comprar', 'sacola', 'pri') + bt('tenho', 'Já tenho', 'check') + (b.px ? (b.track ? bt('parar', 'Pausar preço', 'sino') : bt('monitorar', 'Monitorar preço', 'sino')) : bt('cotar', 'Monitorar preço', 'sino'));
-  else if (b.col === 'desejo') ac = bt('comprei', 'Comprei', 'check', 'pri') + (fontes.length ? '' : bt('cotar', 'Registrar cotação', 'etiqueta')) + bt('tirar', 'Tirar da lista', 'desfazer');
+  // livro lido que não está no acervo (emprestado, de biblioteca, perdido): conta como leitura "de fora" e sai da fila de recomendações
+  const li = b.leit === 'lido' ? bt('naoli', 'Não li', 'fechar') : bt('lido', 'Já li', 'livro');
+  if (b.col === 'rec') ac = bt('desejar', 'Quero comprar', 'sacola', 'pri') + bt('tenho', 'Já tenho', 'check') + li + (b.px ? (b.track ? bt('parar', 'Pausar preço', 'sino') : bt('monitorar', 'Monitorar preço', 'sino')) : bt('cotar', 'Monitorar preço', 'sino'));
+  else if (b.col === 'desejo') ac = bt('comprei', 'Comprei', 'check', 'pri') + (fontes.length ? '' : bt('cotar', 'Registrar cotação', 'etiqueta')) + bt('tirar', 'Tirar da lista', 'desfazer') + li;
   else if (b.leit === 'lendo') ac = bt('lido', 'Concluir leitura', 'check', 'pri') + bt('progresso', 'Progresso', 'relogio');
   else if (b.leit === 'lido') ac = bt('ler', 'Reler', 'livro');
   else ac = bt('ler', 'Começar a ler', 'livro', 'pri') + bt('lido', 'Já li', 'check');
