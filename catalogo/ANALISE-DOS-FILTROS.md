@@ -2,6 +2,11 @@
 
 Feita em 11/11/2026, sobre o catálogo como ficou nesta data: 2.614 linhas, 203 marcadores diferentes em uso.
 
+> **O que mudou depois.** As propostas 1, 2 e 3 (parte 4) foram feitas no painel na rodada seguinte: cada botão de
+> filtro mostra quantos livros tem, dois marcadores do mesmo grupo passaram a somar, e a psicologia ganhou um grupo de
+> filtros só dela. Os números abaixo continuam sendo o retrato de 11/11/2026, de antes dessas mudanças; onde uma
+> afirmação deixou de valer, há uma nota marcada **[depois]**.
+
 - A **análise** (parte 1) olha os filtros por dentro: quantos livros cada um alcança, onde eles se repetem, onde
   deixam buracos e como se combinam.
 - A **meta-análise** (parte 2) dá um passo atrás e pergunta quanto dá para confiar na categorização: de onde veio cada
@@ -18,10 +23,13 @@ Todos os números saem de `python tools/analisar_marcadores.py`, que pode ser ro
    virtual.
 2. **A psicologia está apertada.** Um eixo só guarda 440 livros (17% do catálogo; 422 são seus). Nas suas pastas, a
    mesma área ocupa **doze** pastas diferentes. O seu jeito de arquivar é mais fino que o do catálogo.
+   **[depois]** O eixo continua um só, mas os filtros ganharam um grupo da psicologia, com dez portas (proposta 3).
 3. **O grupo "Temas" mistura três coisas**: a área (filosofia, psicologia), o assunto (morte, memória) e a forma do
    livro (introdução, didático, biografia). São 62 botões num grupo só.
+   **[depois]** São 52: os dez da psicologia saíram para o grupo deles. A mistura continua (proposta 4, em aberto).
 4. **Marcar dois botões do mesmo grupo quase sempre dá zero.** Os marcadores se combinam com "e"; por isso 73% dos
    pares de gêneros e de temas não têm nenhum livro, e o painel não avisa antes do clique.
+   **[depois]** Dentro do grupo os marcadores passaram a somar, e cada botão diz quantos livros tem (propostas 1 e 2).
 5. **Havia dois vocabulários.** 26 marcadores só existiam na biblioteca virtual: o filtro "Contos" achava 123 livros
    digitais e nenhum da estante. **Isto foi corrigido nesta rodada** (sobraram 10, que são próprios dos quadrinhos e
    da informática).
@@ -31,7 +39,8 @@ Todos os números saem de `python tools/analisar_marcadores.py`, que pode ser ro
 
 O que eu faria primeiro: mostrar o número de livros ao lado de cada marcador (proposta 1), trocar o "e" por "ou"
 dentro de um mesmo grupo (proposta 2) e dar à psicologia um grupo de filtros só dela (proposta 3). As três são
-mudanças do painel; nenhuma mexe na classificação.
+mudanças do painel; nenhuma mexe na classificação. **As três foram feitas na rodada seguinte** — o que ficou está na
+parte 4.
 
 ---
 
@@ -159,6 +168,19 @@ metade do eixo 12). Já "filosofia" e "romance histórico" coincidem quase intei
 só repete o eixo.
 
 ### 1.6 Como os filtros se combinam
+
+**[depois] Como é hoje** (propostas 1 e 2, feitas):
+
+- Dentro de **Eixo**, **Dificuldade**, **Extensão** e de **cada grupo de marcadores**, marcar dois botões **soma**:
+  "Rússia" e "Nova Inglaterra" mostram os 25 livros dos dois cenários.
+- **Entre** grupos, **cruza**: "Rússia" ou "Nova Inglaterra", **e** "claustrofóbico", mostram 3 livros.
+- Cada grupo de marcadores tem uma chave **qualquer um / todos**, que aparece quando há dois botões ligados nele. Em
+  "todos", o grupo volta a cruzar: é assim que se pede "filosofia **e** introdução" (106 livros). A escolha fica
+  guardada.
+- Cada botão mostra **quantos livros** a lista da tela teria com ele ligado. O que não mostraria nenhum fica apagado
+  — e continua clicável. Os filtros ativos dizem "ou" e "e".
+
+**Como era em 11/11/2026**, quando esta análise foi feita:
 
 - Dentro de **Eixo**, **Dificuldade** e **Extensão**, marcar dois botões **soma**: "leve" e "média" mostram os dois.
 - Entre os **marcadores**, marcar dois botões **cruza**: mostra só os livros que têm os dois — mesmo quando os dois
@@ -313,16 +335,42 @@ Em ordem do que eu faria primeiro. As três primeiras mexem só no painel; as ou
 Ganho: acaba o clique no escuro; o painel passa a dizer, sozinho, quais combinações existem. Trabalho: pequeno.
 Risco: nenhum para os dados.
 
+> **Feita.** O número aparece em todos os filtros — marcadores, eixo, dificuldade, extensão e "só prioridades" — e é
+> sempre o tamanho que a lista da tela teria depois do clique: na guia Biblioteca conta só o acervo; nas
+> Recomendações, só o que não está nele; com outros filtros ligados, conta dentro deles. O botão que daria zero fica
+> apagado pela cor e pelo contorno tracejado, e continua clicável.
+
 **2. Dentro de um mesmo grupo, somar ("ou"); entre grupos, cruzar ("e").**
 "Rússia" e "Nova Inglaterra" mostrariam os dois cenários; "Rússia" e "melancólico" continuariam cruzando. É como as
 lojas e as bibliotecas fazem. Ganho: o segundo clique deixa de ser um beco. Custo: perde-se o cruzamento de dois
 temas entre si (filosofia **e** ciência) — dá para manter uma chave "todos / qualquer um" no grupo "Temas".
 Trabalho: médio.
 
+> **Feita**, com uma diferença para melhor: a chave "qualquer um / todos" existe em **todos** os grupos, não só em
+> "Temas". Ela aparece quando há dois marcadores ligados no grupo, e a escolha fica guardada. Nada do que o cruzamento
+> permitia se perdeu: horror **e** Nova Inglaterra continua sendo um cruzamento entre grupos (12 livros); filosofia
+> **e** ciência, um grupo em "todos" (18). Os filtros ativos mostram "ou" e "e", e o quadro "Temas e camadas" das
+> recomendações segue a mesma regra — as barras não somem mais quando uma é clicada.
+
 **3. Um grupo de filtros só para a psicologia.**
 "Psicologia: abordagens e áreas", com o que já existe: psicanálise, TCC, behaviorismo, analítica, humanista, social,
 psicopatologia, psicometria, neurociência, autoconhecimento — na ordem das suas pastas. Ganho: o eixo de 440 livros
 passa a ter dez portas. Trabalho: pequeno no painel; médio se for para conferir os marcadores com as pastas.
+
+> **Feita no painel.** O grupo vem logo depois de "Temas", na ordem das suas pastas: Psicanálise 152 · TCC 16 ·
+> Behaviorismo 13 · Analítica (Jung) 24 · Humanista 14 · Social 34 · Psicopatologia 41 · Psicometria 9 ·
+> Neurociência 84 · Autoconhecimento 101. Os dez saíram de "Temas" (62 → 52 botões), porque cada marcador mora num
+> grupo só: é o grupo que diz se dois marcadores somam ou cruzam. **Nenhum marcador de livro foi mudado.**
+>
+> Conferi os marcadores com as pastas, só olhando. Em nove das dez pastas, quase todo arquivo já tem o marcador da
+> porta: 236 de 251 (psicanálise 138 de 141, neurociências 30 de 36, as outras sete com um ou nenhum de fora). O que
+> falta são apostilas, um artigo, quatro manuais de psiquiatria guardados em "Neurociencias" e três de psicologia
+> cognitiva guardados com a TCC. A exceção é "autoconhecimento e desenvolvimento pessoal", uma pasta mista: 69 de
+> 123 — o resto é escrita, criação de filhos, argumentação e jogos de lógica, e está certo não levar o marcador.
+>
+> O que as dez portas **não** alcançam: 99 dos 440 livros do eixo. Deles, 97 só têm o marcador geral "psicologia"
+> (manuais, introduções, os livros de Yalom). As suas pastas "psicologia" (240 arquivos) e "historia fundamentos e
+> introducoes psico" (23) não têm porta própria: quem as acha é o marcador "Psicologia", que ficou em "Temas".
 
 **4. Separar "Temas" em três grupos: Áreas, Assuntos e Forma.**
 "Forma" ficaria com introdução, didático, biografia, testemunho, humor, contos, crônicas, teatro, antologia.

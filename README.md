@@ -74,7 +74,7 @@ do autor e do tipo de obra — nenhum arquivo foi aberto.
 | `catalogo/renomeados.tsv` | O nome antigo de cada linha da estante ou das recomendações que teve título ou autor corrigido (ver "Corrigir o título ou o autor…") |
 | `catalogo/capas.tsv` | A capa de cada livro: o número da imagem na Open Library, o endereço da imagem na Apple Books, ou vazio quando não foi achada (ver "As capas") |
 | `catalogo/trilhas.md` | As 36 trilhas de leitura: nome, marcador, descrição e os livros, em ordem (ver "Trilhas de leitura") |
-| `catalogo/ANALISE-DOS-FILTROS.md` | Análise e meta-análise dos filtros e da categorização, de 11/11/2026: o que cada filtro alcança, quanto confiar em cada dado, o que foi corrigido e o que fica proposto. Os números saem de `tools/analisar_marcadores.py` |
+| `catalogo/ANALISE-DOS-FILTROS.md` | Análise e meta-análise dos filtros e da categorização, de 11/11/2026: o que cada filtro alcança, quanto confiar em cada dado, o que foi corrigido e o que fica proposto (as propostas 1 a 3 já foram feitas; as notas **[depois]** dizem o que mudou). Os números saem de `tools/analisar_marcadores.py` |
 | `catalogo/VISTORIA.md` | Relatório da vistoria dos marcadores de 10/11/2026: o que foi conferido, o que mudou e as dúvidas que ficaram. É um retrato daquela data; não é refeito pelas ferramentas |
 | `catalogo/antes-da-vistoria.tsv` | A classificação que 289 linhas tinham antes da vistoria. O painel precisa dela para atualizar os livros de quem já tinha anotações (ver "Quando a classificação muda no catálogo"). **Não apague nem refaça** |
 | `biblioteca-virtual/listagens/*.txte` | A lista de arquivos de cada pasta da biblioteca virtual (uma listagem por pasta) |
@@ -226,9 +226,22 @@ Seis guias: **Visão geral**, **Biblioteca**, **Recomendações**, **Finanças**
 - **Mais filtros** reúne prioridade, dificuldade, extensão, marcadores e o **período** (30 dias, 90 dias, 12 meses,
   este ano, tudo, ou datas à escolha). O período vale pela data de aquisição ou de leitura; sem escolha, o painel
   mostra todo o histórico. No celular, os filtros ficam na folha "Filtros".
-- **Os marcadores vêm em grupos:** gêneros, temas, época e origem, afinidades, as cinco camadas (perguntas centrais,
-  clima da leitura, papel na biblioteca, pontes entre áreas, cenários), trilhas de leitura, pendências e "Suas
-  marcas" (hoje, só "possui análise"). Dificuldade e extensão filtram também a biblioteca virtual.
+- **Os marcadores vêm em grupos:** gêneros, temas, psicologia (dez abordagens e áreas, na ordem das pastas do dono),
+  época e origem, afinidades, as cinco camadas (perguntas centrais, clima da leitura, papel na biblioteca, pontes
+  entre áreas, cenários), trilhas de leitura, pendências e "Suas marcas" (hoje, só "possui análise"). Cada marcador
+  está num grupo só. Dificuldade e extensão filtram também a biblioteca virtual.
+- **Cada opção de filtro mostra quantos livros tem** — marcador, eixo, dificuldade, extensão e "só prioridades". O
+  número é o tamanho que a lista da guia (a tabela, na aba "Todos") teria com a opção ligada, contados os outros
+  filtros que já estiverem ligados; a busca da tabela e a aba escolhida não entram na conta. A opção que não
+  mostraria nenhum livro fica apagada, pela cor e pelo contorno tracejado, e continua clicável.
+- **Como os filtros se combinam.** Opções do mesmo filtro **somam**: dois eixos, duas dificuldades, dois marcadores
+  do mesmo grupo mostram os livros de um **ou** de outro. Filtros diferentes **cruzam** — e, entre os marcadores,
+  cada grupo é um filtro: "Rússia" ou "Nova Inglaterra", **e** "claustrofóbico". Com dois marcadores ligados num
+  grupo aparece, ao lado do nome dele, a chave **qualquer um / todos**; em "todos", o grupo passa a cruzar. A chave
+  é de cada grupo e fica guardada com as preferências. Os "Filtros ativos" dizem "ou" e "e". O marcador que não
+  está em grupo nenhum (posto à mão num livro e clicado na ficha) conta sozinho.
+- **Procurar marcador** acha pelo nome do botão, pelo nome completo ("psicologia social" acha "Social"), pelo
+  marcador como é escrito no catálogo e pela explicação que aparece ao passar o mouse ("jung", "skinner").
 - **Dinheiro tem lugar próprio.** Visão geral, Biblioteca e Recomendações não mostram valores. **Finanças** reúne o
   que foi investido, o preço médio pago, os gastos por período e por loja e a tabela das compras registradas;
   Próximas aquisições e Preços continuam com a lista de compra e as cotações.
@@ -276,7 +289,8 @@ vale exportar um backup de vez em quando.
 - **Trilhas de leitura** (guia Recomendações): as 36 trilhas, com o que você já tem e já leu de cada uma e uma barra
   de andamento. Abrir uma trilha mostra os livros na ordem, o que falta comprar e um atalho para vê-los na tabela.
   "Falta" o livro que não está no acervo nem foi lido.
-- **Temas e camadas** (guia Recomendações): os marcadores mais frequentes de cada grupo, à escolha.
+- **Temas e camadas** (guia Recomendações): os marcadores mais frequentes de cada grupo, à escolha. Clicar numa
+  barra filtra por ela; as outras barras do grupo continuam à vista, porque dentro do grupo os marcadores somam.
 - **O que comprar primeiro** (guias Recomendações e Próximas aquisições): as recomendações que você ainda não tem, na
   ordem sugerida, com o motivo ao lado e um botão que põe o livro na lista de compra. A tabela das recomendações tem
   a coluna "Ordem de compra", e a ficha de cada recomendação diz a posição dela.
@@ -345,6 +359,10 @@ Os dados do usuário ficam no `localStorage` do navegador (chave `biblioteca-luc
 capas enviadas, no IndexedDB (banco `biblioteca-lucas`); o backup é pelo botão "Seus dados". **O que já estava salvo
 por uma versão anterior é mantido:** os livros que você criou ou editou continuam, e o painel avisa quantos livros
 entraram ou saíram com o catálogo novo.
+
+Junto vão as preferências (`cfg.ui`): entre elas, o grupo mostrado em "Temas e camadas" — pelo nome; o painel
+anterior guardava a posição na lista, que é convertida ao abrir — e os grupos de marcadores postos em "todos"
+(`cruzar`). Os filtros ligados não são guardados: o painel sempre abre sem filtro.
 
 O arquivo do painel mudou de lugar (saiu de `biblioteca-dashboard/` para a raiz). Se, ao abri-lo no lugar novo, o que
 você tinha anotado não aparecer — há navegadores que guardam os dados por caminho de arquivo —, ponha o painel novo no
@@ -456,6 +474,7 @@ avisa no fim, em vez de dar o teste por completo. `git fetch --unshallow` traz o
 | `opcionais` | Só o título é obrigatório: "Novo livro", "Já tenho", "Comprei", "Já li" e "Terminei hoje" sem data, loja ou valor; o que a ficha, os indicadores, Finanças, o CSV e o backup mostram nesses casos; data futura e valor ilegível recusados |
 | `anotacoes` | "Suas anotações" na ficha: comentário (salvo sozinho, limite de tamanho), "possui análise" (à mão e ao anexar; o filtro e a aba "Com anotações"), arquivos (anexar, abrir, baixar, remover; limites de tamanho e de quantidade), capa enviada (reduzida, vale com as capas desligadas, tirar); o que fica no `localStorage` e no IndexedDB; backup com anexos (exportar, importar noutro navegador, backup antigo sem anexos); CSV; celular; página em sandbox |
 | `trilhas` | Camadas e trilhas: os grupos de marcadores nos filtros; "Por que ler" na ficha; o painel das trilhas e a ficha de uma trilha (o que tenho, o que li, o que falta); "O que comprar primeiro" e a coluna "Ordem de compra" (a ordem, os motivos, o botão para a lista de compra; a ordem se refaz quando um livro é comprado); "Temas e camadas"; celular |
+| `filtros` | Os filtros por marcador, com o que se espera contado direto de `src/catalog.json`: os treze grupos, cada marcador num só, e as dez portas da psicologia; o número de cada botão contra o catálogo, na Visão geral, na Biblioteca e nas Recomendações; o botão apagado (cor e contorno, não transparência) que continua clicável; a soma dentro do grupo e o cruzamento entre grupos, com "ou" e "e" nos filtros ativos; a chave "qualquer um / todos", guardada e mantida ao recarregar; o quadro "Temas e camadas" (as barras não somem; a barra ligada sem livros fica, com zero); a busca de marcador pelo nome completo e pela explicação; **o número do botão contra a lista**, em seis guias com os dados de exemplo — 119 botões clicados, também com um período escolhido; preferências guardadas pelo painel anterior ou estragadas; a chave na folha de filtros do celular; contraste AA do que é novo, nos dois temas |
 | `vistoria` | O catálogo revisto no painel (todo livro com tipo, eixo, dificuldade e extensão; os marcadores novos nos filtros) e **o que acontece com quem já tinha livros editados**: com o painel anterior, tirado do Git, edita oito livros e abre o painel novo — o que não foi mexido acompanha a vistoria, o que foi mexido fica; duas edições que viraram uma linha; a recomendação que mudou de título. Depois, o catálogo muda de novo em quatro livros (só no catálogo, só no painel, nos dois, em nada) |
 | `capas_painel` | As capas no painel, com uma lista de capas conhecida: tabela, listas e ficha; capa da Open Library, capa da Apple Books e capa posta à mão; imagem que falta (nas duas fontes); o que o navegador pede, e quando; a chave "Mostrar as capas"; a capa do catálogo não é guardada nem aceita de um backup; endereços inválidos; celular |
 | `financas` | A guia Finanças e a navegação: nenhum valor em reais em Visão geral, Biblioteca e Recomendações; indicadores, cartões e tabela de Finanças, com e sem compras; ocultar valores; as seis guias numa linha só no celular (412 a 320 px) e nenhuma guia estourando a largura da tela |
@@ -471,11 +490,11 @@ avisa no fim, em vez de dar o teste por completo. `git fetch --unshallow` traz o
 | `run1`, `run5` … `run13` | Capturas de tela para conferência visual (só `run7` e `run9` entram no `tudo.py`) |
 
 **Depois de mudar o catálogo, alguns testes precisam de números novos.** `func6`, `limpo`, `posse`, `inicio`,
-`opcionais`, `leitura_de_fora`, `financas`, `capas_painel`, `trilhas` e `vistoria` comparam o painel com contagens do
-catálogo atual (2.124 livros no acervo, 487 recomendações na fila, 461 com os dados de exemplo etc.). Quando entrarem
-livros, rode-os, confira os valores impressos nas linhas `FALHA` e atualize os literais. Os dados de exemplo são
-sorteados a partir do catálogo: mudar a dificuldade ou a extensão de um livro da estante muda também os valores em
-reais que `func6`, `financas`, `inicio` e `limpo` esperam.
+`opcionais`, `leitura_de_fora`, `financas`, `capas_painel`, `trilhas`, `filtros` e `vistoria` comparam o painel com
+contagens do catálogo atual (2.124 livros no acervo, 487 recomendações na fila, 461 com os dados de exemplo etc.).
+Quando entrarem livros, rode-os, confira os valores impressos nas linhas `FALHA` e atualize os literais. Os dados de
+exemplo são sorteados a partir do catálogo: mudar a dificuldade ou a extensão de um livro da estante muda também os
+valores em reais que `func6`, `financas`, `inicio` e `limpo` esperam.
 
 ## O que ainda pede conferência
 

@@ -19,7 +19,8 @@ Este arquivo é atualizado ao fim de cada rodada. Para saber em que pé as coisa
 | 5 | Rotina à prova de erro | A fazer |
 | 6 | Melhorias do painel | **Em parte** (11/11/2026) — endereço próprio, guia Finanças, capas (agora de duas fontes), só o título obrigatório, suas anotações, ordem de compra |
 | 7 | A versão 3 do catálogo: camadas e trilhas de leitura | **Feita** (11/11/2026) |
-| 8 | Análise dos filtros, trilhas personalizadas e novas recomendações | **Feita** (11/11/2026) — oito propostas esperam a sua decisão (lista abaixo) |
+| 8 | Análise dos filtros, trilhas personalizadas e novas recomendações | **Feita** (11/11/2026) — das oito propostas, três viraram a etapa 9; cinco esperam a sua decisão (lista abaixo) |
+| 9 | Filtros que dizem quantos livros têm e somam dentro do grupo; grupo da psicologia; conserto das caixas que não cabiam na tela | **Feita** (11/11/2026) |
 
 A ordem pode mudar: as etapas que faltam não dependem umas das outras. Se alguma interessar mais, peça por ela.
 
@@ -472,7 +473,8 @@ O relatório inteiro está em `catalogo/ANALISE-DOS-FILTROS.md`. Em resumo:
 | 7 | Levar "clima" e "papel" aos cerca de 400 romances digitais | Grande |
 | 8 | Conferência por amostragem: eu sorteio 40 livros, você diz se eixo, dificuldade e extensão estão certos | Dez minutos seus |
 
-Para pedir: "pode fazer as propostas 1, 2 e 3", por exemplo.
+**As propostas 1, 2 e 3 foram feitas: são a etapa 9.** As outras cinco continuam em aberto. Para pedir: "pode fazer
+as propostas 4 e 6", por exemplo.
 
 ### As 16 trilhas novas
 
@@ -552,11 +554,62 @@ isso é você. Elas sobem na lista quando fecham uma trilha — *Análise*, por 
 
 **De você:**
 
-1. Dizer quais das oito propostas valem a pena.
+1. Dizer quais das propostas que restam (4 a 8) valem a pena.
 2. Olhar as trilhas novas e as recomendações, e pedir o que quiser tirar, trocar ou acrescentar.
 3. A conferência por amostragem (proposta 8), quando tiver dez minutos.
 
 **Pronta quando** o relatório, as trilhas e as recomendações estiverem no catálogo e no painel. Estão.
+
+---
+
+## Etapa 9 — Filtros que dizem o que têm, e as caixas que não cabiam na tela
+
+**Feita** (11/11/2026).
+
+**O que você pediu:** as propostas 1, 2 e 3 da análise dos filtros (etapa 8) e, depois, o conserto de duas caixas —
+"Novo livro" e "Editar livro" — em que o botão de baixo ficava fora da tela.
+
+### Os filtros
+
+1. **Cada botão de filtro mostra quantos livros tem.** O número é o tamanho que a lista da tela teria depois do
+   clique: na guia Biblioteca conta só o acervo; nas Recomendações, só o que não está nele; com outros filtros
+   ligados, conta dentro deles. Vale para marcadores, eixo, dificuldade, extensão e "só prioridades". O botão que não
+   mostraria nenhum livro fica apagado, com contorno tracejado — e continua clicável.
+2. **Dois marcadores do mesmo grupo somam; de grupos diferentes, cruzam.** "Rússia" (12 livros) com "Nova Inglaterra"
+   (13) mostra 25; antes mostrava zero. Juntando "claustrofóbico", que é de outro grupo, ficam 3. Os filtros ativos
+   passaram a dizer "ou" e "e". Quando há dois marcadores ligados num grupo, aparece ao lado do nome dele uma chave
+   **qualquer um / todos**: em "todos", o grupo volta a cruzar — "filosofia" **e** "introdução" dão as 106
+   introduções à filosofia. A escolha fica guardada no navegador, grupo por grupo.
+3. **A psicologia ganhou um grupo de filtros só dela**, logo depois de "Temas", na ordem das suas pastas:
+   Psicanálise 152 · TCC 16 · Behaviorismo 13 · Analítica (Jung) 24 · Humanista 14 · Social 34 · Psicopatologia 41 ·
+   Psicometria 9 · Neurociência 84 · Autoconhecimento 101. Os dez saíram de "Temas", que ficou com 52 botões.
+   "Procurar marcador" acha pelo nome inteiro ("psicologia social") e pela explicação ("jung", "skinner").
+
+O quadro "Temas e camadas", nas Recomendações, segue a mesma regra: clicar numa barra não faz mais as outras sumirem.
+
+**O que não mudou:** nenhum marcador de nenhum livro. As dez portas alcançam 341 dos 440 livros do eixo da
+psicologia; os outros 99 só têm o marcador geral "Psicologia" (manuais, introduções, os livros de Yalom), que
+continua em "Temas". Conferi os marcadores com as suas pastas, só olhando: batem — os detalhes estão na parte 4 de
+`catalogo/ANALISE-DOS-FILTROS.md`.
+
+### O conserto das caixas
+
+Em janela de navegador com menos de uns 800 px de altura — a de qualquer notebook —, as caixas "Novo livro", "Editar
+livro" e "Seus dados" ficavam mais altas que a janela, e o rodapé, com "Adicionar livro" e "Salvar alterações", caía
+abaixo da borda da tela. Agora a caixa encolhe até caber: o miolo rola, e o cabeçalho e o rodapé ficam sempre à
+vista. Os testes não viam o defeito porque abriam o painel numa janela alta; há um teste novo que abre todas as
+caixas em oito tamanhos de janela, do notebook ao celular deitado.
+
+**De você:**
+
+1. Dizer se a soma dentro do grupo ficou natural, ou se algum grupo deveria nascer em "todos".
+2. As propostas 4 a 8 da análise continuam em aberto.
+
+**Ideias suas que ficaram para a próxima rodada:** exportar ou imprimir listas de livros; um filtro para **ocultar**
+uma categoria; uma sinopse curta na ficha de cada livro; temas visuais para a página, com modelos inspirados em
+livros e sagas.
+
+**Pronta quando** os filtros novos e o conserto estiverem no painel, com teste. Estão.
 
 ---
 
