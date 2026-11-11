@@ -71,7 +71,11 @@ A terceira saiu do título do arquivo, que diz que a coletânea traz o conto. Pa
 - *Antologia H.P. Lovecraft* — `Terror e horror\Antologia H. P. Lovecraft - H. P. Lovecraft.pdf`;
 - *Biblioteca Lovecraft, vol. 1* — o arquivo citado acima.
 
+> **Respondido em 11/11/2026.** O dono da biblioteca informou que *O Chamado de Cthulhu*, *Nas Montanhas da Loucura* e *A Sombra sobre Innsmouth* estão dentro do livro de contos de Lovecraft que ele tem em papel. As três linhas ganharam `#tenho-fisico`. *O Horror de Dunwich* e *Um Sussurro nas Trevas* continuam como recomendações, até alguém olhar o sumário.
+
 **Fica a dúvida** (não mudei nada): *A Metamorfose*, de Franz Kafka, continua como recomendação, mas pode estar dentro da coletânea *Essencial Franz Kafka*, que você tem: `autoconhecimento e desenvolvimento pessoal\Essencial - Franz Kafka.pdf`.
+
+> **Respondido em 11/11/2026.** O dono da biblioteca já leu *A Metamorfose*; tinha o livro em papel, emprestou e ele não voltou. A linha ganhou `#lido` e continua sem posse. Se a coletânea trouxer a novela, ele a tem em arquivo — a pergunta deixou de pesar, porque livro lido não entra na ordem de compra.
 
 Ter a adaptação em quadrinhos não conta como ter o livro (*1984*, *Hamlet*, *Moby Dick*, *Odisseia*, *Nas Montanhas da Loucura*…): a regra já valia e foi mantida.
 

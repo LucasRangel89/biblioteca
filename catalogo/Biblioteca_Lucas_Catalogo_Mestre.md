@@ -8,6 +8,8 @@ Os **quadrinhos** da biblioteca virtual entraram na mesma data, também na seç�
 
 Revisto em 10/11/2026 (**vistoria dos marcadores**): as linhas da biblioteca virtual ganharam dificuldade, extensão, gênero e temas, livro a livro, e o eixo de 189 delas foi corrigido; 44 linhas das seções 0 a 16 tiveram dificuldade, extensão ou marcadores recalibrados; as recomendações foram conferidas de novo com os dois acervos. Entraram também as **camadas curatoriais** e as **trilhas de leitura** (vindas da versão 3 do catálogo). O que mudou, e por quê, está em `catalogo/VISTORIA.md`.
 
+Revisto em 11/11/2026: entraram **60 recomendações novas**, todas com edição brasileira conferida; nove recomendações que constavam como `#sem-pt` já têm edição no Brasil (sete passaram a ter o título brasileiro); e há **16 trilhas novas**, montadas a partir do que está no acervo, com livros da biblioteca virtual. Os marcadores que só existiam na biblioteca virtual passaram a valer também nas seções 0 a 16, e as afinidades, para os livros digitais dos mesmos autores. A análise dos filtros e da categorização está em `catalogo/ANALISE-DOS-FILTROS.md`.
+
 **Como o catálogo se divide:** a seção 0 é a **estante física**; as seções 1 a 16 são as **recomendações**, por eixo temático (as que você já tem em arquivo levam `#tenho-digital`); a seção 17 é a **biblioteca virtual** — o que há em arquivo e não estava nas seções anteriores.
 
 Formato das linhas: `Título | Autor | Tags`. As tags usam `#` (compatível com Obsidian e Notion). Para classificar depois, filtre por qualquer tag.
@@ -20,7 +22,7 @@ Formato das linhas: `Título | Autor | Tags`. As tags usam `#` (compatível com 
 
 **Extensão (aprox.):** `#e1` curta (até ~250 p.) · `#e2` média (~250–500 p.) · `#e3` longa (500+ p., ou série/trilogia)
 
-**Posse:** `#tenho-fisico` (está na estante física) · `#tenho-digital` (está na biblioteca virtual) · os dois juntos quando há o livro nos dois formatos · sem nenhum dos dois, é recomendação. O antigo `#ja-tenho` virou `#tenho-fisico`.
+**Posse:** `#tenho-fisico` (está na estante física — ou dentro de um volume que está nela, como três textos de Lovecraft da seção 7) · `#tenho-digital` (está na biblioteca virtual) · os dois juntos quando há o livro nos dois formatos · sem nenhum dos dois, é recomendação. O antigo `#ja-tenho` virou `#tenho-fisico`.
 
 **Status e prioridade:** `#lido` (você disse que leu) · `#top` (marcado como prioridade nas listas) · `#verificar` (autor, título ou edição a conferir) · `#sem-pt` (título em inglês, sem edição brasileira confirmada)
 
@@ -30,9 +32,9 @@ Formato das linhas: `Título | Autor | Tags`. As tags usam `#` (compatível com 
 
 **Gêneros:** `#ficcao-cientifica` `#fantasia` `#distopia` `#utopia` `#historia-alternativa` `#horror` `#gotico` `#lovecraftiano` `#misterio` `#thriller` `#thriller-medico` `#romance-historico` `#medieval` `#antiguidade` `#roma` `#renascimento` `#pre-historia` `#neandertal` `#regional-gaucho` `#teatro` `#contos` `#cronicas` `#aventura` `#policial` `#faroeste` `#super-herois` `#manga` `#adaptacao` (adaptação de um livro para os quadrinhos). `#antologia` e `#poesia` também aparecem ao lado de `#F` ou `#NF`, quando o livro é uma coletânea de vários autores ou mistura prosa e poesia.
 
-**Biblioteca virtual** (seção 17): usa os mesmos marcadores, mais `#autoconhecimento` `#tecnologia` `#fisica` `#behaviorismo` `#tcc` `#psicometria` `#psicopatologia` `#psicologia-analitica` `#psicologia-humanista` `#psicologia-social`. A dificuldade e a extensão dessas linhas são **estimativas** feitas em 10/11/2026 a partir do título, do autor e do tipo de obra — ninguém abriu os arquivos; confira por amostragem. Nos quadrinhos, a extensão diz o tamanho da obra: um álbum (`#e1`), uma minissérie encadernada (`#e2`) ou uma série longa (`#e3`).
+**Biblioteca virtual** (seção 17): usa os mesmos marcadores do resto do catálogo. Os que entraram com ela — `#autoconhecimento` `#tecnologia` `#fisica` `#behaviorismo` `#tcc` `#psicometria` `#psicopatologia` `#psicologia-analitica` `#psicologia-humanista` `#psicologia-social`, `#contos`, `#cronicas`, `#aventura` — valem, desde 11/11/2026, para as seções 0 a 16 também. A dificuldade e a extensão dessas linhas são **estimativas** feitas em 10/11/2026 a partir do título, do autor e do tipo de obra — ninguém abriu os arquivos; confira por amostragem. Nos quadrinhos, a extensão diz o tamanho da obra: um álbum (`#e1`), uma minissérie encadernada (`#e2`) ou uma série longa (`#e3`).
 
-**Afinidades (relacionados):** `#rel-imortais` (afins a Os Imortais/Os Herdeiros) · `#rel-widows-bay` (afins a Lovecraft e Widow's Bay) · `#rel-cornwell` (afins a O Arqueiro/O Físico) · `#rel-asimov-clarke` · `#rel-yalom` · `#rel-fromm` (autoritarismo e psicologia social)
+**Afinidades (relacionados):** `#rel-imortais` (afins a Os Imortais/Os Herdeiros) · `#rel-widows-bay` (afins a Lovecraft e Widow's Bay) · `#rel-cornwell` (afins a O Arqueiro/O Físico) · `#rel-asimov-clarke` · `#rel-yalom` · `#rel-fromm` (autoritarismo e psicologia social). Os livros dos próprios autores levam a afinidade também na biblioteca virtual.
 
 **Camadas curatoriais** (seções 0 a 16): dizem *por que* o livro importa e com o que ele conversa.
 - **Pergunta central** `#q-…`: `#q-o-que-e-humano` · `#q-liberdade-e-obediencia` · `#q-sentido-e-como-viver` · `#q-morte-e-finitude` · `#q-identidade-e-eu` · `#q-poder-e-violencia` · `#q-realidade-e-percepcao` · `#q-memoria-e-esquecimento` · `#q-fe-e-duvida` · `#q-alteridade-e-contato` · `#q-culpa-e-justica` · `#q-natureza-e-civilizacao`
@@ -40,7 +42,7 @@ Formato das linhas: `Título | Autor | Tags`. As tags usam `#` (compatível com 
 - **Papel na biblioteca** `#papel-…`: `porta-de-entrada` (melhor primeiro livro de uma área) · `leitura-relampago` (curto e potente) · `desafio` (exige tempo, atenção ou bagagem) · `contraponto` (para ler ao lado de uma visão oposta) · `ponte` (cruza áreas) · `fonte-primaria` (texto fundacional)
 - **Pontes entre áreas** `#ponte-…`: `ciencia-e-fe` · `psicanalise-e-politica` · `literatura-e-neurociencia` · `ficcao-e-filosofia` · `historia-e-ficcao` · `ecologia-e-colonialismo` · `corpo-e-poder` · `ia-e-humanidade`
 - **Cenários** `#cenario-…`: `russia` · `nova-inglaterra` · `sertao-e-nordeste` · `espaco-profundo` · `ilha-e-isolamento` · `guerra-mundial` · `oriente-feudal` · `futuro-proximo` · `cidade-pequena`
-- **Trilhas de leitura** `#trilha-…`: vinte roteiros prontos, com os livros em ordem. A lista de cada trilha está em `catalogo/trilhas.md`.
+- **Trilhas de leitura** `#trilha-…`: trinta e seis roteiros, com os livros em ordem. Vinte vieram da versão 3 do catálogo; dezesseis foram montados em 11/11/2026 a partir do acervo e incluem livros da biblioteca virtual. A lista de cada trilha está em `catalogo/trilhas.md`.
 
 ---
 
