@@ -27,6 +27,11 @@ on:
         description: Quantos livros procurar nesta execução (vazio = todos os que faltam)
         type: string
         default: ''
+  # TEMPORÁRIO (rodada 7): daqui de dentro não dá para apertar "Run workflow"; a busca é pedida mudando o arquivo abaixo.
+  # Sai antes de a rodada entrar em main.
+  push:
+    branches: ['arena/4be90c14-biblioteca']
+    paths: ['.github/capas-pedido.txt']
 
 permissions:
   contents: write   # gravar o catalogo/capas.tsv no ramo
@@ -56,7 +61,11 @@ jobs:
             ''|*[!0-9]*) limite='' ;;
             *) limite="--limite $LIMITE" ;;
           esac
-          python3 tools/capas.py --minutos 170 $REFAZER $limite
+          pedido=''
+          if [ "$GITHUB_EVENT_NAME" = push ] && [ -f .github/capas-pedido.txt ]; then
+            pedido=$(head -n 1 .github/capas-pedido.txt | tr -cd 'a-z0-9 -')    # TEMPORÁRIO, como o gatilho acima
+          fi
+          python3 tools/capas.py --minutos 170 $REFAZER $limite $pedido
 
       - name: Guardar o resultado
         if: always()
