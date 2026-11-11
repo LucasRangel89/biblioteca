@@ -868,32 +868,42 @@ td.c-spark svg { margin-left: auto; margin-right: auto; }
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after { animation-duration: .001s !important; transition-duration: .001s !important; scroll-behavior: auto !important; }
 }
-/* A folha de uma lista ou de uma trilha (ver 52-listas.js): só existe no papel. Preto no branco, em qualquer tema. */
-.impressao { display: none; }
+/* A folha de uma lista ou de uma trilha (ver 52-listas.js): só existe no papel. Preto no branco, em qualquer tema.
+   O desenho dela fica fora do @media print para o painel poder medi-la (".medindo": montada fora da tela, na largura
+   útil de uma folha A4) e dizer, antes de imprimir, quantas páginas são. */
+.impressao { display: none; color: #000; font: 9.5pt/1.35 var(--sans); }
+.impressao.medindo { display: block; position: absolute; left: -10000px; top: 0; width: 184mm; visibility: hidden; pointer-events: none; }
+.impressao .imp-m { margin: 0; font-size: 7.5pt; letter-spacing: .09em; text-transform: uppercase; color: #444; }
+.impressao h1 { margin: 1.2mm 0 1.6mm; font: 600 17pt/1.2 var(--serif); color: #000; }
+.impressao .imp-d { margin: 0 0 1.6mm; max-width: 165mm; font-size: 10pt; color: #222; }
+.impressao .imp-i { margin: 0; font-size: 9pt; color: #333; }
+.impressao .imp-l { width: 100%; margin-top: 4.5mm; border-collapse: collapse; table-layout: auto; }
+.impressao thead { display: table-header-group; }
+.impressao tr { break-inside: avoid; page-break-inside: avoid; }
+.impressao th { padding: 0 2.5mm 1.2mm 0; border-bottom: .35mm solid #000; text-align: left; vertical-align: bottom; font-size: 7.5pt; font-weight: 600; letter-spacing: .06em; text-transform: uppercase; color: #333; }
+.impressao td { padding: 1.15mm 2.5mm 1.15mm 0; border-bottom: .2mm solid #b8b8b8; vertical-align: top; color: #000; overflow-wrap: anywhere; }
+.impressao .q { width: 6mm; padding-right: 0; }
+.impressao td.n, .impressao th.n { width: 8mm; text-align: right; padding-right: 3mm; color: #333; font-variant-numeric: tabular-nums; }
+.impressao td.t { font-weight: 600; }
+.impressao td.a { width: 24%; color: #111; }
+.impressao td.x, .impressao th.x { width: 1%; white-space: nowrap; }       /* as colunas curtas ficam do tamanho do texto: nome de eixo não quebra em duas linhas */
+.impressao td.x { font-size: 8.5pt; color: #222; }
+.impressao td:last-child, .impressao th:last-child { padding-right: 0; }
+.imp-q { display: inline-block; position: relative; width: 3.4mm; height: 3.4mm; margin-top: .2mm; border: .3mm solid #000; border-radius: .5mm; vertical-align: top; }
+.imp-q.ok::after { content: ""; position: absolute; left: 1mm; top: .15mm; width: 1mm; height: 2.1mm; border: solid #000; border-width: 0 .45mm .45mm 0; transform: rotate(45deg); }   /* o visto é desenhado: não depende da fonte */
+.imp-e { width: 2.9mm; height: 2.9mm; margin-left: 1.2mm; vertical-align: -.35mm; fill: #000; stroke: #000; stroke-width: 1.6; stroke-linejoin: round; }
+.impressao .imp-n { margin: 3mm 0 0; font-size: 8.5pt; color: #333; }
+.impressao .imp-leg .imp-e { margin: 0 .6mm 0 0; }
+.impressao .imp-leg .imp-q { margin: 0 .8mm 0 0; vertical-align: -.5mm; }
+.impressao .imp-leg i { display: inline-block; width: 6mm; }
+.impressao .imp-n + .imp-n { margin-top: 1mm; }
 @media print {
   .lateral, .inferior, .filtros, .topo-a, .aviso, .gaveta, .dlg, .toasts { display: none !important; }
   .app { display: block; } body { background: #fff; } .card, .kpi { box-shadow: none; break-inside: avoid; }
   @page { margin: 14mm 13mm 15mm; }
-  html.imprimindo, html.imprimindo body { background: #fff !important; color: #000 !important; }
+  /* com uma caixa aberta a página fica travada (overflow: hidden), e o papel sairia cortado na primeira página */
+  html.imprimindo, html.imprimindo body { background: #fff !important; color: #000 !important; overflow: visible !important; height: auto !important; }
   html.imprimindo body > *:not(.impressao) { display: none !important; }
-  html.imprimindo .impressao { display: block; color: #000; font: 10pt/1.35 var(--sans); }
-  .impressao .imp-m { margin: 0; font-size: 7.5pt; letter-spacing: .09em; text-transform: uppercase; color: #444; }
-  .impressao h1 { margin: 1.2mm 0 1.6mm; font: 600 17pt/1.2 var(--serif); color: #000; }
-  .impressao .imp-d { margin: 0 0 1.6mm; max-width: 165mm; font-size: 10pt; color: #222; }
-  .impressao .imp-i { margin: 0; font-size: 9pt; color: #333; }
-  .impressao .imp-l { width: 100%; margin-top: 4.5mm; border-collapse: collapse; table-layout: auto; font-size: 10pt; }
-  .impressao thead { display: table-header-group; }
-  .impressao tr { break-inside: avoid; page-break-inside: avoid; }
-  .impressao th { padding: 0 2mm 1.2mm 0; border-bottom: .35mm solid #000; text-align: left; vertical-align: bottom; font-size: 7.5pt; font-weight: 600; letter-spacing: .06em; text-transform: uppercase; color: #333; }
-  .impressao td { padding: 1.45mm 2mm 1.45mm 0; border-bottom: .2mm solid #b8b8b8; vertical-align: top; color: #000; overflow-wrap: anywhere; }
-  .impressao .q { width: 6.5mm; padding-right: 0; }
-  .impressao td.n, .impressao th.n { width: 8mm; text-align: right; padding-right: 3mm; color: #333; font-variant-numeric: tabular-nums; }
-  .impressao td.t { font-weight: 600; }
-  .impressao td.a { width: 27%; color: #111; }
-  .impressao td.x { width: 17%; font-size: 9pt; color: #222; }
-  .impressao td:last-child, .impressao th:last-child { padding-right: 0; }
-  .imp-q { display: inline-block; position: relative; width: 3.5mm; height: 3.5mm; margin-top: .25mm; border: .3mm solid #000; border-radius: .5mm; vertical-align: top; }
-  .imp-q.ok::after { content: ""; position: absolute; left: 1.05mm; top: .2mm; width: 1mm; height: 2.1mm; border: solid #000; border-width: 0 .45mm .45mm 0; transform: rotate(45deg); }   /* o visto é desenhado: não depende da fonte */
-  .impressao .imp-n { margin: 3mm 0 0; font-size: 8.5pt; color: #333; }
-  .impressao .imp-n + .imp-n { margin-top: 1mm; }
+  html.imprimindo .impressao { display: block; position: static; width: auto; visibility: visible; }
 }
+

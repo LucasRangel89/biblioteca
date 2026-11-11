@@ -101,6 +101,9 @@ const TABELAS = {
    As de dinheiro ficam de fora quando os valores estão ocultos (o botão do olho). */
 const eixoTxt = b => (EIXOS[b.eixo] ? EIXOS[b.eixo].n : '');
 const melhorTxt = (b, c) => { const h = c.px(b).hoje; return h ? `${fBRL(h.p)} · ${h.f}` : ''; };
+// como dizer "em ordem de…" quando o nome da coluna, feito para caber no cabeçalho da tabela, não serve numa frase
+const NOME_ORDEM = { data: 'data', adq: 'data de aquisição', add: 'data de inclusão', compra: 'compra sugerida', folego: 'dificuldade', leit: 'situação de leitura', pago: 'valor pago', pg: 'número de páginas', prio: 'prioridade', melhor: 'melhor preço',
+  alvo: 'preço-alvo', difAlvo: 'distância até o preço-alvo', min: 'menor preço no período', faixa: 'menor preço no período', varP: 'variação do preço', sit: 'situação do preço', ult: 'data da última cotação' };
 const FOLHAS = {
   geral: [['Lista', b => COLECOES[b.col].n], ['Eixo', eixoTxt]],
   biblioteca: [['Formato', b => rotuloFmt(b)], ['Eixo', eixoTxt]],
@@ -135,9 +138,8 @@ function Tabela(visao) {
     const aba = cfg.abas.find(a => a[0] === st.aba) || cfg.abas[0], col = cols.find(x => x.id === st.ord && x.ord) || cols[0], q = st.q.trim(), n = filtradas.length;
     const extras = (FOLHAS[visao] || []).filter(x => !(x[2] && S.ocultar)), filtros = filtrosEmTexto().concat(q ? [`busca “${q}”`] : []), oc = ocultosDaqui();
     return { titulo: cfg.tit + (aba[2] ? ' — ' + aba[1] : ''), cols: [['Título', 't'], ['Autor', 'a']].concat(extras.map(x => [x[0], 'x'])),
-      meta: [`${plural(n, 'livro', 'livros')}, em ordem de ${col.n.toLowerCase()}${st.dir < 0 ? ' (decrescente)' : ''}`].concat(filtros.length ? ['Filtros: ' + filtros.join(' · ')] : []),
-      itens: filtradas.map(b => ({ ok: b.leit === 'lido', cel: [b.t + (b._top ? ' ★' : ''), b.a || ''].concat(extras.map(x => x[1](b, ctx))), txt: b.t + (b.a ? ' — ' + b.a : '') })),
-      legenda: [[filtradas.some(b => b._top) ? '★ prioridade' : '', filtradas.some(b => b.leit === 'lido') ? 'quadradinho marcado: já li' : ''].filter(Boolean).join(' · ')].filter(Boolean).map(maiuscula),
+      meta: [`${plural(n, 'livro', 'livros')}, em ordem de ${NOME_ORDEM[col.id] || col.n.toLowerCase()}${st.dir < 0 ? ' (decrescente)' : ''}`].concat(filtros.length ? ['Filtros: ' + filtros.join(' · ')] : []),
+      itens: filtradas.map(b => ({ ok: b.leit === 'lido', top: !!b._top, cel: [b.t, b.a || ''].concat(extras.map(x => x[1](b, ctx))), txt: b.t + (b.a ? ' — ' + b.a : '') })),
       notas: oc ? [`${oc === 1 ? 'Não entra 1 livro que está oculto' : `Não entram ${fInt(oc)} livros que estão ocultos`} (${regrasFora().join(' · ')}).`] : [] };
   }
 
