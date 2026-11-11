@@ -78,8 +78,9 @@ const S = {
   tema: '', ocultar: false, avisoVisto: false, saiu: 0, capas: true, sel: '',
   tab: {},
   // temas = grupo de marcadores mostrado em "Temas e camadas" (pelo nome); cruzar = { nome do grupo: true } nos grupos em que
-  // dois marcadores ligados se cruzam ("todos") em vez de se somar ("qualquer um", o padrão)
-  ui: { compor: 'fmt', temas: 'Temas', prio: 'valor', sorteio: 0, trilhas: 'ordem', cruzar: {} },
+  // dois marcadores ligados se cruzam ("todos") em vez de se somar ("qualquer um", o padrão);
+  // fora = o que o usuário pediu para ocultar (ver "ocultar", abaixo)
+  ui: { compor: 'fmt', temas: 'Temas', prio: 'valor', sorteio: 0, trilhas: 'ordem', cruzar: {}, fora: { sit: [], tipo: [], eixo: [], tag: [] } },
 };
 const nFiltros = () => (S.acervo !== 'tudo' && S.visao !== 'recs' ? 1 : 0) + (S.tipo ? 1 : 0) + S.eixos.size + S.dif.size + S.ext.size + S.tags.size + (S.top ? 1 : 0) + (S.periodo !== 'tudo' ? 1 : 0);
 function limparFiltros(tambemPeriodo) {
@@ -104,6 +105,49 @@ function selTags() {
     SEL = [...m].map(([g, ts]) => ({ g, ts, e: cruza(g) })); SEL_CHAVE = chave;
   }
   return SEL;
+}
+
+/* ───────── ocultar ─────────
+   O contrário de um filtro: o livro que cai numa regra daqui sai de todas as listas, gráficos e contagens, em todas as telas,
+   até a regra ser desligada. É preferência — fica guardada em S.ui.fora — e a barra de filtros diz sempre quantos livros
+   estão fora (pintarFora, em 70-app). Regras: situação (já li · sem edição em PT · a verificar), tipo, eixo e marcador;
+   basta uma para o livro sair.
+   Exceção única: quem saiu só por "já li" continua contando no que é número de leitura — leituras concluídas e suas páginas,
+   adquiridos × lidos, o andamento das trilhas. O livro some das listas, mas não deixa de ter sido lido (ver c.L, em contexto). */
+const SIT_FORA = [['lido', 'Já li', b => b.leit === 'lido'], ['sem-pt', 'Sem edição em PT', b => b.tags.includes('sem-pt')], ['verificar', 'A verificar', b => b.tags.includes('verificar')]];
+const ROTULO_TIPO = { F: 'Ficção', NF: 'Não ficção', HQ: 'HQ', O: 'Poesia e outros' };
+const minuscula = s => (s === s.toUpperCase() ? s : s.charAt(0).toLowerCase() + s.slice(1));      // no meio da frase: "Sem edição em PT" → "sem edição em PT"; "HQ" fica
+// o que veio guardado só vale se for regra que existe (marcador desconhecido é mantido: pode ser de um livro que o usuário ainda vai criar)
+function lerFora(o) {
+  const l = (v, ok) => (Array.isArray(v) ? [...new Set(v.filter(ok))].slice(0, 80) : []);
+  o = o && typeof o === 'object' ? o : {};
+  return { sit: l(o.sit, x => SIT_FORA.some(y => y[0] === x)), tipo: l(o.tipo, x => typeof x === 'string' && Object.prototype.hasOwnProperty.call(ROTULO_TIPO, x)),
+    eixo: l(o.eixo, x => Number.isInteger(x) && x >= 1 && x < EIXOS.length), tag: l(o.tag, x => typeof x === 'string' && !!x && x.length < 80) };
+}
+let FORA = { n: 0 };
+function refazerFora() {       // chamar sempre que S.ui.fora mudar
+  const f = S.ui.fora;
+  FORA = { n: f.sit.length + f.tipo.length + f.eixo.length + f.tag.length, lido: f.sit.includes('lido'), sit: SIT_FORA.filter(x => x[0] !== 'lido' && f.sit.includes(x[0])).map(x => x[2]), tipo: new Set(f.tipo), eixo: new Set(f.eixo), tag: new Set(f.tag) };
+  FORA.outras = FORA.n - (FORA.lido ? 1 : 0);
+}
+// oculto(b): o livro está fora das listas · oculto(b, true): está fora por alguma regra que não a de "já li"
+function oculto(b, semLido) {
+  if (!FORA.n) return false;
+  if (!semLido && FORA.lido && b.leit === 'lido') return true;
+  if (!FORA.outras) return false;
+  for (const f of FORA.sit) if (f(b)) return true;
+  if (FORA.tipo.has(tipoFiltro(b._tipo)) || FORA.eixo.has(b.eixo)) return true;
+  if (FORA.tag.size) for (const t of b.tags) if (FORA.tag.has(t)) return true;
+  return false;
+}
+// as regras que tiram este livro das listas, em palavras (para a ficha)
+function motivosFora(b) {
+  if (!FORA.n) return [];
+  const m = SIT_FORA.filter(x => S.ui.fora.sit.includes(x[0]) && x[2](b)).map(x => minuscula(x[1])), tp = tipoFiltro(b._tipo);
+  if (FORA.tipo.has(tp)) m.push('tipo: ' + minuscula(ROTULO_TIPO[tp]));
+  if (FORA.eixo.has(b.eixo)) m.push('eixo: ' + EIXOS[b.eixo].n);
+  for (const t of b.tags) if (FORA.tag.has(t)) m.push('marcador: ' + rotTag(t));
+  return m;
 }
 
 /* filtros de segmento (o período é tratado à parte, porque filtra eventos e não livros)
@@ -170,7 +214,8 @@ function precoBase(b, d) {                   // melhor preço em d; antes da 1ª
 const temCotacaoPropria = b => !!b.px && Object.values(b.px).some(pts => pts.some(p => p[2]));
 
 function recorte(I, o) {
-  const op = Object.assign({ semAcervo: S.visao === 'recs', sel: selTags() }, o), seg = DB.livros.filter(b => passaSeg(b, op));
+  // comLidos: deixa passar quem só está fora por "já li" (é o recorte dos números de leitura)
+  const op = Object.assign({ semAcervo: S.visao === 'recs', sel: selTags() }, o), seg = DB.livros.filter(b => !oculto(b, op.comLidos) && passaSeg(b, op));
   const ac = [], des = [], rec = [];
   for (const b of seg) (b.col === 'acervo' ? ac : b.col === 'desejo' ? des : rec).push(b);
   return { seg, ac, des, rec, acP: I.tudo ? ac : ac.filter(b => dentro(adqDe(b), I)), recP: I.tudo ? rec : rec.filter(b => dentro(b.add, I)) };
@@ -178,7 +223,10 @@ function recorte(I, o) {
 function contexto() {
   const I = intervalo(), c = recorte(I, {});
   c.I = I; c.T = DB.hoje;
-  c.lidos = c.seg.filter(b => b.leit === 'lido');
+  // c.L: o mesmo recorte, contando quem só está fora das listas por "já li" — é dele que saem os números de leitura
+  let Lr;
+  Object.defineProperty(c, 'L', { get: () => Lr || (Lr = FORA.lido ? recorte(I, { comLidos: true }) : c) });
+  c.lidos = c.L.seg.filter(b => b.leit === 'lido');
   c.lidosP = I.tudo ? c.lidos : c.lidos.filter(b => dentro(b.lidoEm, I));
   c.rast = c.seg.filter(rastreado);
   let E, DE;
@@ -236,12 +284,14 @@ function contagens(c) {
    Para cada trilha: os livros (na ordem da lista; quem ganhou o marcador no painel entra no fim), quantos estão no acervo,
    quantos foram lidos e quais ainda faltam — isto é, nem estão no acervo nem foram lidos (um livro lido emprestado não falta). */
 function estadoTrilhas() {
-  const porTag = new Map(TRILHAS.map(t => [t.tag, []]));
-  for (const b of DB.livros) for (const tg of b.tags) { const l = porTag.get(tg); if (l) l.push(b); }
+  // Livro oculto (ver "ocultar") não entra na trilha. O que só saiu das listas por "já li" continua contando no andamento:
+  // fica em livros e fora de vis (o que a trilha mostra). esc = quantos livros da trilha não aparecem, por um motivo ou por outro.
+  const porTag = new Map(TRILHAS.map(t => [t.tag, []])), foraDe = new Map();
+  for (const b of DB.livros) { const f = oculto(b, true); for (const tg of b.tags) { const l = porTag.get(tg); if (!l) continue; if (f) foraDe.set(tg, (foraDe.get(tg) || 0) + 1); else l.push(b); } }
   return TRILHAS.map(t => {
     const pos = new Map(t.linhas.map((k, i) => [k, i])), ord = b => (pos.has(b.o) ? pos.get(b.o) : 1e6);
-    const livros = porTag.get(t.tag).sort((a, z) => ord(a) - ord(z) || a.t.localeCompare(z.t, 'pt-BR'));
-    return { t, livros, n: livros.length, tenho: livros.filter(b => b.col === 'acervo').length, lidos: livros.filter(b => b.leit === 'lido').length, faltam: livros.filter(b => b.col !== 'acervo' && b.leit !== 'lido') };
+    const livros = porTag.get(t.tag).sort((a, z) => ord(a) - ord(z) || a.t.localeCompare(z.t, 'pt-BR')), vis = FORA.lido ? livros.filter(b => b.leit !== 'lido') : livros;
+    return { t, livros, vis, esc: (foraDe.get(t.tag) || 0) + livros.length - vis.length, n: livros.length, tenho: livros.filter(b => b.col === 'acervo').length, lidos: livros.filter(b => b.leit === 'lido').length, faltam: livros.filter(b => b.col !== 'acervo' && b.leit !== 'lido') };
   });
 }
 
@@ -260,7 +310,7 @@ function estadoTrilhas() {
 function ordemDeCompra(trilhas) {
   const daTrilha = new Map(trilhas.map(x => [x.t.tag, x])), lista = [];
   for (const b of DB.livros) {
-    if (b.col !== 'rec' || b.leit === 'lido') continue;
+    if (b.col !== 'rec' || b.leit === 'lido' || oculto(b)) continue;
     let pts = 0; const motivos = [], curtos = [];
     const soma1 = (n, longo, curto) => { pts += n; if (longo) { motivos.push(longo); curtos.push(curto || longo); } };
     if (b._top) soma1(40, 'prioridade sua (#top)', 'prioridade sua');

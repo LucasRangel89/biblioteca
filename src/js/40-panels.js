@@ -92,10 +92,11 @@ const K = {
     return { v: lendo.length, cmp: lendo.length ? `em média ${Math.round(media)}% lido` : '', sub: perto ? `mais adiantado: ${perto.t}` : 'abra um livro e use “Começar a ler”', dica: perto ? perto.t : '' };
   },
   fila(c) {
-    const I = c.I, fila = c.ac.filter(b => b.leit !== 'lido' && b.leit !== 'aband'), lendo = c.ac.filter(b => b.leit === 'lendo').length, lidos = c.ac.filter(b => b.leit === 'lido').length;
-    const entrou = c.ac.filter(b => dentro(adqDe(b), I.cur)).length, saiu = c.ac.filter(b => b.leit === 'lido' && dentro(b.lidoEm, I.cur)).length;
-    const datado = c.ac.some(b => adqDe(b) != null || b.lidoEm != null);
-    return { v: fila.length, tend: datado ? tendAbs(entrou - saiu, 'baixa') : null, cmp: datado ? I.cmpC : '', sub: `${fInt(lendo)} em leitura · ${c.ac.length ? fPct(lidos / c.ac.length) : '0%'} do acervo já lido` };
+    // número de leitura: conta também os lidos que estão fora das listas por "ocultar o que já li" (c.L)
+    const I = c.I, ac = c.L.ac, fila = ac.filter(b => b.leit !== 'lido' && b.leit !== 'aband'), lendo = ac.filter(b => b.leit === 'lendo').length, lidos = ac.filter(b => b.leit === 'lido').length;
+    const entrou = ac.filter(b => dentro(adqDe(b), I.cur)).length, saiu = ac.filter(b => b.leit === 'lido' && dentro(b.lidoEm, I.cur)).length;
+    const datado = ac.some(b => adqDe(b) != null || b.lidoEm != null);
+    return { v: fila.length, tend: datado ? tendAbs(entrou - saiu, 'baixa') : null, cmp: datado ? I.cmpC : '', sub: `${fInt(lendo)} em leitura · ${ac.length ? fPct(lidos / ac.length) : '0%'} do acervo já lido` };
   },
 };
 
@@ -200,7 +201,7 @@ function pAdqLidos() {
     const g = GraficoLinha(k.corpo, { legenda: k.pe, rotulo: 'Livros adquiridos e livros lidos, acumulados' });
     return c => {
       const B = baldes(c.I.de, c.I.ate, 64), x = B.lista.map(b => b.f);
-      const adq = acumulado(B, c.ac, b => adqDe(b)), lid = acumulado(B, c.ac.filter(b => b.leit === 'lido'), b => b.lidoEm);
+      const ac = c.L.ac, adq = acumulado(B, ac, b => adqDe(b)), lid = acumulado(B, ac.filter(b => b.leit === 'lido'), b => b.lidoEm);     // número de leitura: ver c.L
       const tem = adq.length && adq[adq.length - 1] > 0;
       k.sub.textContent = `Acumulado no acervo · a distância entre as linhas é a fila de leitura · ${c.I.rot}`;
       g.atualizar({ x: tem ? x : [], inteiro: true, zero: c.I.tudo, rot: i => (B.g === 'dia' || B.g === 'semana' ? fDiaMes(x[i]) : B.g === 'ano' ? String(partes(x[i]).y) : fMesAno(x[i])), tit: i => 'Até ' + fData(x[i]),
@@ -248,11 +249,14 @@ function pLendo(w, id) {
     k.corpo.classList.add('lista');
     return c => {
       const lendo = c.ac.filter(b => b.leit === 'lendo').sort((a, z) => (z.prog || 0) - (a.prog || 0)).slice(0, 4);
-      const ult = c.lidosP.slice().sort((a, z) => (z.lidoEm == null ? -1 : z.lidoEm) - (a.lidoEm == null ? -1 : a.lidoEm) || a._busca.localeCompare(z._busca)).slice(0, 5);   // com data primeiro, da mais recente para trás; depois as sem data
+      // as lidas que o usuário pediu para ocultar contam nos números, mas não aparecem nesta lista — que avisa quantas são
+      const lidasVis = c.lidosP.filter(b => !oculto(b)), lidasFora = c.lidosP.length - lidasVis.length;
+      const ult = lidasVis.sort((a, z) => (z.lidoEm == null ? -1 : z.lidoEm) - (a.lidoEm == null ? -1 : a.lidoEm) || a._busca.localeCompare(z._busca)).slice(0, 5);   // com data primeiro, da mais recente para trás; depois as sem data
       k.sub.textContent = 'Em leitura agora e últimas leituras concluídas' + (c.I.tudo ? '' : ' ' + c.I.rot);
       let h = '';
       if (lendo.length) h += '<h4 class="li-t">Lendo agora</h4>' + lendo.map(b => linhaLivro(b, '', `<span class="li-prog" title="${b.prog || 0}% lido"><span class="barra"><i style="width:${clamp(b.prog || 0, 0, 100)}%"></i></span><b class="num">${b.prog || 0}%</b></span><span class="fmt so-ic" title="${FORMATOS[b.fmt] ? FORMATOS[b.fmt].n : ''}">${icone(ICONE_FMT[b.fmt] || 'livro', 15)}</span>`)).join('');
       if (ult.length) h += '<h4 class="li-t">Concluídas</h4>' + ult.map(b => linhaLivro(b, '', `<span class="li-v"><b>${b.nota ? estrelas(b.nota) : '<span class="mudo">sem nota</span>'}</b><span>${b.lidoEm != null ? fData(b.lidoEm) : 'sem data'}</span></span>`)).join('');
+      if (lidasFora) h += `<p class="li-fora">${icone('olhoOff', 14)}<span>${plural(lidasFora, 'leitura concluída está oculta', 'leituras concluídas estão ocultas')}: você pediu para ocultar o que já leu.</span></p>`;
       setHtml(k.corpo, h || vazioHtml('Nada em leitura nem leituras concluídas neste recorte. Abra um livro e use “Começar a ler” ou “Já li”.'));
     };
   } };
@@ -321,7 +325,7 @@ function pTemas() {
 
 /* ───────── trilhas de leitura ───────── */
 // "tenho 7 de 8 · li 1 · falta 1" — falta o que não está no acervo nem foi lido; sem nada faltando (e sem ter todos), diz que não há o que comprar
-const frasesTrilha = x => [x.tenho === x.n ? 'tenho todos os ' + x.n : `tenho ${x.tenho} de ${x.n}`, x.lidos ? `li ${x.lidos}` : '', x.faltam.length ? (x.faltam.length === 1 ? 'falta 1' : 'faltam ' + x.faltam.length) : x.tenho < x.n ? 'nenhum por comprar' : ''].filter(Boolean).join(' · ');
+const frasesTrilha = x => [x.tenho === x.n ? 'tenho todos os ' + x.n : `tenho ${x.tenho} de ${x.n}`, x.lidos ? `li ${x.lidos}` : '', x.faltam.length ? (x.faltam.length === 1 ? 'falta 1' : 'faltam ' + x.faltam.length) : x.tenho < x.n ? 'nenhum por comprar' : '', x.esc ? plural(x.esc, 'oculto', 'ocultos') : ''].filter(Boolean).join(' · ');
 // barra da trilha: lidos (cheio), em casa mas não lidos (claro) e o que falta (vazio)
 const barraTrilha = x => { const lidos = x.livros.filter(b => b.leit === 'lido').length, casa = x.livros.filter(b => b.col === 'acervo' && b.leit !== 'lido').length; return `<span class="tr-b" aria-hidden="true"><i class="l" style="width:${x.n ? (lidos / x.n * 100).toFixed(1) : 0}%"></i><i class="c" style="width:${x.n ? (casa / x.n * 100).toFixed(1) : 0}%"></i></span>`; };
 function pTrilhas(w, id) {
@@ -346,7 +350,8 @@ function dlgTrilha(t) {
     const x = ctxAtual().trilhas.find(y => y.t === t), paraLista = x.faltam.filter(b => b.col === 'rec');
     return { x, paraLista, html: `<p class="dlg-sub">${esc(t.desc)}</p>
       <p class="tr-res">${barraTrilha(x)}<span><b>${maiuscula(frasesTrilha(x))}</b></span><button type="button" class="lk" data-tr-tabela>ver na tabela</button></p>
-      <ol class="tr-l">${x.livros.map((b, i) => { const [cls, rot] = estadoNaTrilha(b); return `<li><button type="button" class="li" data-livro="${b.id}"><span class="tr-n">${i + 1}</span>${capaHtml(b)}<span class="li-m"><b>${esc(b.t)}</b><span>${esc(b.a || 'Autor não informado')}</span></span><span class="pill ${cls}">${rot}</span></button></li>`; }).join('')}</ol>
+      <ol class="tr-l">${x.vis.map((b, i) => { const [cls, rot] = estadoNaTrilha(b); return `<li><button type="button" class="li" data-livro="${b.id}"><span class="tr-n">${i + 1}</span>${capaHtml(b)}<span class="li-m"><b>${esc(b.t)}</b><span>${esc(b.a || 'Autor não informado')}</span></span><span class="pill ${cls}">${rot}</span></button></li>`; }).join('')}</ol>
+      ${x.esc ? `<p class="nota tr-fora">${icone('olhoOff', 14)}<span>${plural(x.esc, 'livro desta trilha não aparece', 'livros desta trilha não aparecem')} aqui: você pediu para ocultar. Para vê-${x.esc === 1 ? 'lo' : 'los'}, use “Ocultar”, na barra de filtros.</span></p>` : ''}
       <p class="nota">A ordem é a sugerida no catálogo (catalogo/trilhas.md). Clique num livro para abrir a ficha.</p>` };
   };
   const r = corpo();

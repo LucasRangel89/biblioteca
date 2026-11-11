@@ -187,6 +187,21 @@ input[type="checkbox"] { width: 16px; height: 16px; margin: 0; accent-color: var
 .fa-g { display: inline-flex; align-items: center; flex-wrap: wrap; gap: 4px; max-width: 100%; margin: -3px 0; padding: 2px; border: 1px dashed var(--line-2); border-radius: 16px; }
 .fa-c { font-style: normal; font-size: 12px; color: var(--ink-3); padding: 0 1px; }
 
+/* "Ocultar": o aviso sob a barra (fica à vista enquanto houver regra ligada) e o que é só do quadro de opções */
+.f-fora { display: flex; align-items: center; flex-wrap: wrap; gap: 4px 14px; margin-top: 9px; padding: 6px 11px; border-radius: 10px; border: 1px dashed var(--line-2); background: var(--surface-2); font-size: 12.5px; color: var(--ink-2); }
+.ff-t { display: inline-flex; align-items: center; flex-wrap: wrap; gap: 2px 7px; min-width: 0; flex: 1 1 240px; }
+.ff-t .ic { flex: none; color: var(--ink-3); }
+.ff-t b { color: var(--ink); font-weight: 600; white-space: nowrap; }
+.ff-r { min-width: 0; overflow-wrap: anywhere; }
+.ff-a { display: inline-flex; gap: 14px; flex: none; }
+.fo-n b { color: var(--ink-2); font-weight: 600; }
+.fo-tags { padding-top: 8px; }
+.fo-tags:empty, #fo-tags-n:empty { display: none; }
+.gv-fora, .li-fora, .nota.tr-fora { display: flex; align-items: flex-start; gap: 7px; font-size: 12.5px; line-height: 1.45; color: var(--ink-2); }
+.gv-fora .ic, .li-fora .ic, .tr-fora .ic { flex: none; margin-top: 2px; color: var(--ink-3); }
+.gv-fora { margin-top: 10px; }
+.gv-fora b { color: var(--ink); font-weight: 600; }
+.li-fora { padding: 10px 2px 2px; }
 .aviso { display: flex; align-items: flex-start; gap: 12px; margin: 16px var(--pad) 0; padding: 14px 16px; border: 1px dashed color-mix(in srgb, var(--warn) 50%, var(--line)); border-radius: var(--r); background: var(--warn-soft); }
 .av-i { color: var(--warn); margin-top: 1px; }
 /* recado de boas-vindas (painel sem dados de exemplo): mesmo desenho, sem o tom de alerta */
@@ -713,6 +728,9 @@ td.c-spark svg { margin-left: auto; margin-right: auto; }
   .grade > .card { grid-column: span 12; }
   .grade > .m-6 { grid-column: span 6; }
 }
+/* janela média: o botão "Ocultar" fica só com o ícone, para a barra de filtros continuar numa linha mesmo com os números ligados
+   (em 1366 px, a largura mais comum de notebook, a barra tem 1078 px e os cinco controles pedem 1058 sem número nenhum) */
+@media (min-width: 821px) and (max-width: 1439px) { .fo-rot { display: none; } }
 /* janela média: a busca encolhe e o título perde um ponto, para "Próximas aquisições" caber numa linha */
 @media (max-width: 1240px) {
   .busca { width: clamp(170px, 18vw, 240px); }
@@ -765,6 +783,7 @@ td.c-spark svg { margin-left: auto; margin-right: auto; }
   .filtros.folha .f-painel { display: flex; animation: folha .26s cubic-bezier(.3, .7, .2, 1); outline: 0; }
   .f-ph { display: flex; align-items: center; justify-content: space-between; padding: 14px 14px 8px 18px; }
   .f-ph b { font: 600 18px var(--serif); }
+  .f-ph .lk { margin-left: auto; margin-right: 14px; font-size: 13px; }
   .f-corpo { flex-direction: column; align-items: stretch; flex-wrap: nowrap; gap: 16px; overflow: auto; padding: 6px 18px 16px; overscroll-behavior: contain; }
   .f-pf { display: flex; gap: 8px; padding: 12px 18px calc(12px + env(safe-area-inset-bottom)); border-top: 1px solid var(--line); }
   .f-pf .btn { flex: 1; height: 42px; }
