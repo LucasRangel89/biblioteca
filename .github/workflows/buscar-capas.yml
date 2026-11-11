@@ -65,7 +65,13 @@ jobs:
           if [ "$GITHUB_EVENT_NAME" = push ] && [ -f .github/capas-pedido.txt ]; then
             pedido=$(head -n 1 .github/capas-pedido.txt | tr -cd 'a-z0-9 -')    # TEMPORÁRIO, como o gatilho acima
           fi
-          python3 tools/capas.py --minutos 170 $REFAZER $limite $pedido
+          codigo=0
+          python3 tools/capas.py --minutos 170 $REFAZER $limite $pedido > "$RUNNER_TEMP/busca.txt" || codigo=$?
+          cat "$RUNNER_TEMP/busca.txt"
+          # O resumo da busca vira um aviso da execução: aparece na página dela, sem precisar abrir o registro.
+          resultado=$(grep -m1 '^Resultado:' "$RUNNER_TEMP/busca.txt" || true)
+          if [ -n "$resultado" ]; then echo "::notice title=Busca::${resultado}"; fi
+          exit $codigo
 
       - name: Guardar o resultado
         if: always()
