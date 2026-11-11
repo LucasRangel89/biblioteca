@@ -3,7 +3,12 @@ const REG = {};
 let CTX = null, pendente = 0;
 const ctxAtual = () => CTX || (CTX = contexto());
 const cfgAtual = () => ({ tema: S.tema, ocultar: S.ocultar, avisoVisto: S.avisoVisto, saiu: S.saiu || undefined, capas: S.capas, visao: S.visao, ui: S.ui, tam: Object.fromEntries(Object.entries(S.tab).map(([k, v]) => [k, v.tam])) });
-const salvar = debounce(() => { const ok = Loja.gravar(serializar(cfgAtual())); pintarStatus(ok); }, 350);
+/* salvar() agenda a gravação (várias alterações seguidas viram uma só); gravarJa() grava na hora — usada quando a página
+   vai sair de cena, para o que acabou de ser digitado não se perder. */
+let SUJO = false;
+const gravarJa = () => { SUJO = false; const ok = Loja.gravar(serializar(cfgAtual())); pintarStatus(ok); };
+const gravarDepois = debounce(gravarJa, 350);
+const salvar = () => { SUJO = true; gravarDepois(); };
 
 function montarVisao(v) {
   const sec = $('#v-' + v), def = VIS[v];
@@ -40,7 +45,7 @@ function irPara(v, inicial) {
 /* ───────── barra de filtros ───────── */
 function montarFiltros() {
   const seg = (id, rot, ops) => `<div class="seg" id="${id}" role="group" aria-label="${rot}">${ops.map(([v, n]) => `<button type="button" data-v="${v}">${n}</button>`).join('')}</div>`;
-  const chips = (grupo, ops) => `<div class="chips" data-grupo="${grupo}">${ops.map(([v, n, d]) => `<button type="button" class="chip" data-v="${v}"${d ? ` title="${d}"` : ''}>${n}</button>`).join('')}</div>`;
+  const chips = (grupo, ops) => `<div class="chips" data-grupo="${grupo}">${ops.map(([v, n, d]) => `<button type="button" class="chip" data-v="${esc(v)}"${d ? ` title="${esc(d)}"` : ''}>${esc(n)}</button>`).join('')}</div>`;
   $('#filtros').innerHTML = `
     <div class="f-linha">
       <button type="button" class="btn f-abrir" id="f-abrir">${icone('filtro', 15)}Filtros<span class="cont" id="f-n" hidden></span></button>
@@ -57,7 +62,7 @@ function montarFiltros() {
               <span class="pop-r">Dificuldade</span>${chips('dif', [1, 2, 3].map(d => [d, NIVEIS[d].n]))}
               <span class="pop-r">Extensão</span>${chips('ext', [1, 2, 3].map(e => [e, EXTENSOES[e].n, EXTENSOES[e].d]))}
               <label class="busca-t pop-q">${icone('busca', 14)}<input type="search" id="f-tagq" placeholder="Procurar marcador" aria-label="Procurar marcador"></label>
-              <div id="f-tags">${GRUPOS_TAG.map(([n, lista]) => `<div class="tg-g"><span class="pop-r">${n}</span>${chips('tags', lista.map(t => [t, maiuscula(rotTag(t)), '#' + t]))}</div>`).join('')}</div>
+              <div id="f-tags">${GRUPOS_TAG.map(([n, lista]) => `<div class="tg-g"><span class="pop-r">${esc(n)}</span>${chips('tags', lista.map(t => [t, maiuscula(rotCurto(t)), DICA_TAG[t] || '#' + t]))}</div>`).join('')}</div>
               <div class="f-per" id="f-per"><span class="pop-r">Período <small>pela data de aquisição ou de leitura</small></span>
                 <div class="f-per-l">${seg('f-periodo', 'Período', PERIODOS).replace('class="seg"', 'class="seg mini"')}<button type="button" class="btn sm f-cal" id="f-cal" aria-expanded="false" title="Período personalizado">${icone('calendario', 14)}<span id="f-cal-r">Personalizar</span></button></div>
                 <div class="f-custom" id="f-custom" hidden><label><span>de</span><input type="date" id="f-de" aria-label="Data inicial"></label><label><span>até</span><input type="date" id="f-ate" aria-label="Data final"></label></div></div></div></div></div>
@@ -148,7 +153,7 @@ function sincronizarFiltros() {
   if (S.top) add('top:', 'Só prioridades');
   for (const d of S.dif) add('dif:' + d, 'Dificuldade ' + NIVEIS[d].n.toLowerCase());
   for (const e of S.ext) add('ext:' + e, 'Extensão ' + EXTENSOES[e].n.toLowerCase());
-  for (const t of S.tags) add('tags:' + t, '#' + rotTag(t));
+  for (const t of S.tags) add('tags:' + t, ehCamada(t) || t === TAG_ANALISE ? maiuscula(rotTag(t)) : '#' + rotTag(t));
   if (S.periodo !== 'tudo') add('periodo:', custom ? `${fData(I.de)} – ${fData(I.ate)}` : 'Período: ' + (PERIODOS.find(([v]) => v === S.periodo) || ['', ''])[1].toLowerCase());
   const el = $('#f-ativos'); el.hidden = !ch.length;
   setHtml(el, ch.length ? `<span class="fa-r">Filtros ativos</span>${ch.join('')}${ch.length > 1 ? '<button type="button" class="lk" data-limpar="tudo">limpar tudo</button>' : ''}` : '');
@@ -268,6 +273,11 @@ function iniciar() {
   if (window.matchMedia) { const mq = matchMedia('(prefers-color-scheme: dark)'), f = () => { if (!S.tema) aplicarTema(); }; if (mq.addEventListener) mq.addEventListener('change', f); }
   irPara(S.visao, true);
   document.documentElement.classList.add('pronto');
+  carregarCapas();                                  // capas enviadas pelo usuário: chegam do banco do navegador e a tela é redesenhada
+  // a página vai sair de cena (aba fechada, outro aplicativo no telefone): grava o comentário em edição e o que estiver pendente
+  const fechando = () => { Notas.guardar(); if (SUJO) gravarJa(); };
+  window.addEventListener('pagehide', fechando);
+  document.addEventListener('visibilitychange', () => { if (document.visibilityState === 'hidden') fechando(); });
   // o painel chegou com outro catálogo: os dados salvos já foram conciliados (ver conciliarCatalogo); grava e avisa
   if (DB.novidade) { salvar(); if (textoNovidade()) toast(textoNovidade().trim() + ' O que você editou no painel foi mantido.'); }
   // os dados de exemplo de um painel antigo saíram (ver carregarDB): grava e avisa

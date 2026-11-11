@@ -53,7 +53,7 @@ with sync_playwright() as p:
     guardado = lambda titulo: pg.evaluate("t => (JSON.parse(localStorage.getItem('%s')).livros.find(x => x.t === t) || null)" % CHAVE, titulo)
 
     k0 = ir('geral')
-    ok('ponto de partida: 2.125 no acervo, 2 leituras, 433 recomendações na fila', (k0['acervo']['v'], k0['leituras']['v'], k0['recs']['v']) == ('2.125', '2', '433'), {a: k0[a]['v'] for a in k0})
+    ok('ponto de partida: 2.122 no acervo, 2 leituras, 430 recomendações na fila', (k0['acervo']['v'], k0['leituras']['v'], k0['recs']['v']) == ('2.122', '2', '430'), {a: k0[a]['v'] for a in k0})
 
     print('LIVRO NOVO: SÓ O TÍTULO')
     pg.click('#b-novo'); pg.wait_for_timeout(500)
@@ -70,7 +70,7 @@ with sync_playwright() as p:
     ok('a ficha mostra "sem data" e nenhum valor inventado', f.get('Adquirido em') == 'sem data' and f.get('Valor pago', '') == '' and 'R$' not in ' '.join(f.values()), f)
     g = guardado('Zz Livro Só com Título')
     ok('o que foi guardado não tem data, valor nem loja', g is not None and all(g.get(c) in (None, '', 0) for c in ('adq', 'pago', 'loja', 'lidoEm')), g)
-    k = ir('geral'); ok('o acervo passou a 2.126', k['acervo']['v'] == '2.126', k['acervo'])
+    k = ir('geral'); ok('o acervo passou a 2.123', k['acervo']['v'] == '2.123', k['acervo'])
     k = ir('financas'); ok('nenhum gasto apareceu: investido R$ 0, preço médio "—"', k['investido']['v'] == 'R$ 0' and k['medio']['v'] == '—', (k['investido'], k['medio']))
 
     print('"JÁ TENHO": SEM DATA, SEM LOJA, SEM VALOR')
@@ -80,7 +80,7 @@ with sync_playwright() as p:
     ok('data, loja, valor e condição marcados como opcionais', op == ['adq', 'loja', 'pago', 'cond'], op)
     confirma(); f = pg.evaluate(FATOS)
     ok('confirmar sem preencher nada: entra no acervo, sem data', pg.evaluate(TOAST) == 'Adicionado ao acervo.' and f.get('Adquirido em') == 'sem data' and f.get('Valor pago', '') == '', (pg.evaluate(TOAST), f))
-    k = ir('geral'); ok('acervo 2.127; a recomendação saiu da fila (432)', k['acervo']['v'] == '2.127' and k['recs']['v'] == '432', (k['acervo']['v'], k['recs']['v']))
+    k = ir('geral'); ok('acervo 2.124; a recomendação saiu da fila (429)', k['acervo']['v'] == '2.124' and k['recs']['v'] == '429', (k['acervo']['v'], k['recs']['v']))
     ir('financas')
     ok('sem valor e sem loja, o livro não aparece nas compras registradas', pg.inner_text('#p-tab-financas .tb-info').strip() == 'Nenhum livro', pg.inner_text('#p-tab-financas .tb-info'))
 
@@ -148,7 +148,7 @@ with sync_playwright() as p:
     pg.wait_for_timeout(700); pg.reload(); pg.wait_for_timeout(1300)
     depois = {v: ir(v) for v in ('geral', 'biblioteca', 'financas')}
     ok('ao recarregar, os indicadores são os mesmos', antes == depois, {v: {a: depois[v][a]['v'] for a in depois[v]} for v in depois})
-    ok('visão geral: 2.128 no acervo, 4 leituras', depois['geral']['acervo']['v'] == '2.128' and depois['geral']['leituras']['v'] == '4', {a: depois['geral'][a]['v'] for a in depois['geral']})
+    ok('visão geral: 2.125 no acervo, 4 leituras', depois['geral']['acervo']['v'] == '2.125' and depois['geral']['leituras']['v'] == '4', {a: depois['geral'][a]['v'] for a in depois['geral']})
     pg.click('#b-dados'); pg.wait_for_timeout(400)
     with pg.expect_download() as d: pg.click('#dlg [data-x=exportar]')
     d.value.save_as(f'{TMP}/opcionais-backup.json'); bk = json.load(open(f'{TMP}/opcionais-backup.json', encoding='utf-8'))

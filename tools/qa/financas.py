@@ -10,7 +10,7 @@
     tela, com ou sem dados (um gráfico vazio já estourou, a 320 px).
 """
 from caminhos import PAINEL_LIMPO, PAINEL_URL
-from relogio import fixa
+from relogio import fixa, fonte_usada
 from playwright.sync_api import sync_playwright
 
 errs = []; falhas = []
@@ -66,7 +66,7 @@ with sync_playwright() as p:
 
     print('A GUIA FINANÇAS')
     g = ir(pg, 'financas'); kf = pg.evaluate(K)
-    ok('quatro indicadores: investido, preço médio pago, cesta e itens abaixo do alvo', kf == {'investido': 'R$ 4.469', 'medio': 'R$ 50,22', 'cesta': 'R$ 1.257', 'oport': '7'}, kf)
+    ok('quatro indicadores: investido, preço médio pago, cesta e itens abaixo do alvo', kf == {'investido': 'R$ 4.355', 'medio': 'R$ 48,93', 'cesta': 'R$ 1.249', 'oport': '6'}, kf)
     ok('cinco cartões e a tabela "Compras registradas"', [c['id'] for c in g['cartoes']] == CARTOES and [c['titulo'] for c in g['cartoes']] == ['Evolução do investimento', 'Gastos por período', 'Gasto por loja ou origem', 'Melhores oportunidades', 'Custo da cesta de aquisições', 'Compras registradas'], [(c['id'], c['titulo']) for c in g['cartoes']])
     ok('com dados, nenhum cartão fica vazio', not [c['id'] for c in g['cartoes'] if c['vazio']], [(c['id'], c['vazio'][:60]) for c in g['cartoes'] if c['vazio']])
     ok('a tabela traz aquisição, origem, condição e o valor pago', g['colunas'] == ['Título', 'Formato', 'Aquisição', 'Origem', 'Condição', 'Pago'], g['colunas'])
@@ -78,7 +78,7 @@ with sync_playwright() as p:
         g = ir(pg, v); nome = next(n for i, n, _ in GUIAS if i == v)
         ok(f'{nome}: com o olho fechado, nenhum valor em reais à vista (só "R$ •••")', g['comNumero'] == 0 and g['ocultos'] >= 5, (g['comNumero'], g['ocultos']))
     pg.click('#b-olho'); pg.wait_for_timeout(700); g = ir(pg, 'financas')
-    ok('abrir o olho traz os valores de volta', g['comNumero'] >= 20 and g['ocultos'] == 0 and pg.evaluate(K)['investido'] == 'R$ 4.469', (g['comNumero'], g['ocultos']))
+    ok('abrir o olho traz os valores de volta', g['comNumero'] >= 20 and g['ocultos'] == 0 and pg.evaluate(K)['investido'] == 'R$ 4.355', (g['comNumero'], g['ocultos']))
     pg.context.close()
 
     print('FINANÇAS SEM NENHUMA COMPRA REGISTRADA')
@@ -99,7 +99,8 @@ with sync_playwright() as p:
     for largura in (412, 390, 360, 320):
         pg = pagina(PAINEL_LIMPO, largura, 800); r = pg.evaluate(MEDE)
         ok(f'{largura} px: os seis itens numa linha só, presos ao pé da tela', r['n'] == 6 and r['linhas'] == 1 and r['fixa'] == 'fixed' and abs(r['baixo']) <= 1, r)
-        ok(f'{largura} px: nenhum nome cortado nem para fora da tela; cada item com espaço para o dedo', r['fora'] == [] and r['cortados'] == [] and r['semNome'] == [] and r['menor'] >= 48 and r['alt'] >= 44, r)
+        ok(f'{largura} px: nenhum nome cortado nem para fora da tela; cada item com espaço para o dedo', r['fora'] == [] and r['cortados'] == [] and r['semNome'] == [] and r['menor'] >= 48 and r['alt'] >= 44,
+           dict(r, fonte=fonte_usada(pg, '#nav-m .nv-c')) if r['cortados'] else r)     # nome cortado: antes de mexer no painel, veja com que fonte o teste rodou (relogio.py)
         estouros = {}
         for v, nome, _ in GUIAS:
             g = ir(pg, v, '#nav-m')
@@ -116,7 +117,7 @@ with sync_playwright() as p:
         ok(f'{largura} px: o mesmo com os dados de exemplo (gráficos cheios)', estouros == {}, estouros)
         g = ir(pg, 'financas', '#nav-m'); kf = pg.evaluate(K)
         cab = pg.evaluate("() => { const k = [...document.querySelectorAll('#v-financas .kpi')].map(x => { const v = x.querySelector('.kpi-v b'); return v.scrollWidth > v.clientWidth + 1; }); return k.filter(Boolean).length; }")
-        ok(f'{largura} px: os indicadores de Finanças cabem sem cortar o valor', kf.get('investido') == 'R$ 4.469' and cab == 0, (kf, cab))
+        ok(f'{largura} px: os indicadores de Finanças cabem sem cortar o valor', kf.get('investido') == 'R$ 4.355' and cab == 0, (kf, cab))
         pg.context.close()
     b.close()
 print('FALHAS:', falhas); print('ERROS:', len(errs) + len(falhas)); [print('  ', x[:300]) for x in errs[:10]]

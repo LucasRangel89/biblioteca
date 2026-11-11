@@ -21,8 +21,12 @@ No catálogo a série é uma linha só, sejam quantas forem as edições: os arq
 o mesmo título e o mesmo autor no inventário. A exceção é a subpasta que não é uma série, e sim outra pasta da
 biblioteca, com a sua listagem (SUBPASTAS_LISTADAS): o que há nela entra por essa listagem.
 
-O inventário é a parte feita à mão: título, autor, eixo e gênero de cada arquivo foram revisados ali.
+O inventário é a parte feita à mão: título, autor, eixo, gênero e marcadores de cada arquivo foram revisados ali.
 Para corrigir um livro digital, corrija a linha dele no inventário e rode este script de novo.
+
+Classificação (coluna `marcadores`): dificuldade (d1–d3), extensão (e1–e3), temas e gêneros de cada obra, sem o `#`.
+Enquanto a coluna está vazia — arquivo novo, ainda não classificado —, valem os marcadores padrão da pasta.
+Na seção 17 do catálogo, só `#lido` e `#top` são postos à mão e preservados; todo o resto vem do inventário.
 """
 import collections, csv, io, pathlib, re, sys, unicodedata
 
@@ -35,7 +39,8 @@ LISTAGENS = DIGITAL / 'listagens'
 INVENTARIO = DIGITAL / 'inventario.tsv'
 RESUMO = DIGITAL / 'RESUMO.md'
 
-COLUNAS = ['pasta', 'arquivo', 'formato', 'tipo', 'titulo', 'autor', 'catalogo', 'eixo', 'genero', 'obs']
+COLUNAS = ['pasta', 'arquivo', 'formato', 'tipo', 'titulo', 'autor', 'catalogo', 'eixo', 'genero', 'marcadores', 'obs']
+OPCIONAIS = {'marcadores'}                      # coluna que um inventário antigo pode não ter (vale como vazia)
 TIPOS_CATALOGO = {'livro', 'hq'}                # o que entra no catálogo; apostila, periódico, artigo e outro ficam só no inventário
 EXT_ARQUIVO = {'epub', 'pdf', 'mobi', 'azw3', 'azw', 'djvu', 'doc', 'docx', 'rtf', 'txt', 'cbr', 'cbz', 'rar', 'zip', '7z'}
 PASTAS_HQ = {'HQs', 'novashqs', 'novasHQSS', 'novas'}   # pastas de quadrinhos ('novas' é a subpasta de novashqs; a listagem dela chama-se novasHQSS)
@@ -70,9 +75,11 @@ PASTAS = {
 }
 PALAVRA_TAG = {'sociologia e antropologia': (('antropolog', 'antropologia'), ('sociolog', 'sociologia'))}   # nestas pastas o marcador sai do título
 GENEROS = {'F': 'F', 'NF': 'NF', 'poesia': 'poesia', 'HQ': 'HQ'}
-# marcadores que este script põe e tira sozinho na seção 17; qualquer outro, acrescentado à mão, é preservado
-TAGS_GERADAS = {'tenho-digital', 'verificar', *GENEROS.values(), *(t for p in PASTAS.values() for t in p[2].split()),
-                *(t for regras in PALAVRA_TAG.values() for _, t in regras)}
+# Na seção 17, o script põe e tira sozinho o tipo, a posse, #verificar e a classificação (coluna `marcadores` do
+# inventário ou, enquanto ela está vazia, os marcadores padrão da pasta). Postos à mão na linha do catálogo, e
+# preservados, só os de situação:
+SITUACAO_A_MAO = ('lido', 'top')
+NAO_SAO_MARCADORES = {'tenho-digital', 'tenho-fisico', 'ja-tenho', 'verificar', *SITUACAO_A_MAO}   # não vão na coluna `marcadores`
 
 
 # ───────────────────────── texto ─────────────────────────
@@ -192,7 +199,7 @@ def ler_inventario(caminho=INVENTARIO):
     if not linhas:
         return []
     cab = [c.strip().lower() for c in linhas[0]]
-    falta = [c for c in COLUNAS if c not in cab]
+    falta = [c for c in COLUNAS if c not in cab and c not in OPCIONAIS]
     if falta:
         sys.exit(f'{caminho}: faltam as colunas {", ".join(falta)}')
     out = []
@@ -200,6 +207,8 @@ def ler_inventario(caminho=INVENTARIO):
         if not any(c.strip() for c in cel):
             continue
         r = {c: (cel[i].strip() if i < len(cel) else '') for i, c in enumerate(cab)}
+        for c in OPCIONAIS:
+            r.setdefault(c, '')
         if not r['arquivo'] or not r['titulo']:
             sys.exit(f'{caminho}, linha {n}: arquivo e título são obrigatórios')
         out.append(r)
@@ -319,14 +328,14 @@ def _linha_nova(pasta, nome, series):
         eixo, genero, _ = PASTAS.get(pasta, (None, '', ''))
         titulo, autor = deduzir(nome)
         return dict(pasta=pasta, arquivo=nome, formato=extensao(nome), tipo='livro', titulo=titulo, autor=autor,
-                    catalogo='', eixo=str(eixo or ''), genero=genero, obs='novo')
+                    catalogo='', eixo=str(eixo or ''), genero=genero, marcadores='', obs='novo')
     titulo, autor = deduzir_hq(nome)
     r = dict(pasta=pasta, arquivo=nome, formato=extensao(nome) or FORMATO_PASTA, tipo='hq', titulo=titulo, autor=autor,
-             catalogo='', eixo='', genero='HQ', obs='novo')
+             catalogo='', eixo='', genero='HQ', marcadores='', obs='novo')
     serie = series.get(chave(titulo))
     if serie:                                                   # mais uma edição de uma série conhecida: herda os dados dela
         r.update(titulo=serie['titulo'], autor=serie['autor'], catalogo=serie['catalogo'], eixo=serie['eixo'],
-                 obs='novo' if tem_obs(serie, 'novo') else '')
+                 marcadores=serie.get('marcadores', ''), obs='novo' if tem_obs(serie, 'novo') else '')
     return r
 
 
@@ -384,6 +393,8 @@ def obras_do_inventario(inventario):
         generos = collections.Counter(r['genero'] for r in L if r['genero'] in GENEROS)
         o['genero'] = 'HQ' if all(r['tipo'] == 'hq' for r in L) else (generos.most_common(1)[0][0] if generos else '')
         o['verificar'] = any(tem_obs(r, 'verificar') or tem_obs(r, 'novo') for r in L)
+        # a classificação da obra: o que as linhas dela trazem na coluna `marcadores`, sem repetir
+        o['marcadores'] = list(dict.fromkeys(t.lstrip('#') for r in L for t in r.get('marcadores', '').split() if t.lstrip('#')))
     return obras
 
 
@@ -407,17 +418,25 @@ def casar(obras, livros):
     return ligadas, soltas
 
 
-def tags_da_obra(o, a_mao=()):
-    """Marcadores de uma linha da seção 17, na ordem do resto do catálogo: tipo, temas, os postos à mão, pendências, posse."""
-    tags = [GENEROS[o['genero']]] if o['genero'] else []
-    ficcao = lambda g: g in ('F', 'poesia', 'HQ')
+def tags_da_pasta(o):
+    """Os marcadores padrão de uma obra ainda não classificada: os da pasta (ou pastas) em que ela está."""
+    tags, ficcao = [], lambda g: g in ('F', 'poesia', 'HQ')
     for pasta in o['pastas']:
         _, genero_pasta, da_pasta = PASTAS.get(pasta, (None, '', ''))
         if genero_pasta and o['genero'] and ficcao(genero_pasta) != ficcao(o['genero']):
             continue                                            # livro guardado na pasta "errada": o marcador da pasta não vale
         achados = [t for trecho, t in PALAVRA_TAG.get(pasta, ()) if trecho in chave(o['t'])]
         tags += [t for t in da_pasta.split() + achados if t not in tags]
-    tags += [t for t in a_mao if t not in tags]
+    return tags
+
+
+def tags_da_obra(o, a_mao=()):
+    """Marcadores de uma linha da seção 17, na ordem do resto do catálogo: tipo, classificação, situação (posta à mão),
+    pendências, posse. A classificação é a do inventário (coluna `marcadores`); sem ela, a padrão da pasta."""
+    tipo = [GENEROS[o['genero']]] if o['genero'] else []
+    classe = [t for t in (o.get('marcadores') or tags_da_pasta(o)) if t not in NAO_SAO_MARCADORES]
+    tags = list(dict.fromkeys(tipo + classe))
+    tags += [t for t in a_mao if t in SITUACAO_A_MAO and t not in tags]
     return tags + (['verificar'] if o['verificar'] else []) + ['tenho-digital']
 
 
@@ -479,11 +498,11 @@ def atualizar_catalogo(md, obras):
         if novas != tags:
             L[i] = _linha(c[0], c[1], novas)
 
-    # 2 ▸ seção 17, refeita a partir do inventário (marcadores postos à mão nas linhas antigas são mantidos)
+    # 2 ▸ seção 17, refeita a partir do inventário (#lido e #top postos à mão nas linhas antigas são mantidos)
     extras = {}
     for i, s, c in linhas:
         if s == SECAO_DIGITAL:
-            mais = [t for t in _tags(c[2]) if t not in TAGS_GERADAS]
+            mais = [t for t in _tags(c[2]) if t in SITUACAO_A_MAO]
             if mais:
                 extras[(chave(c[0]), chave('' if c[1] == SEM_AUTOR else c[1]))] = (c[0], mais)
     por_eixo = collections.defaultdict(list)
@@ -494,13 +513,14 @@ def atualizar_catalogo(md, obras):
     rel['tags_perdidas'] = sorted(extras.values())
     rel['secao17'] = {e: len(v) for e, v in sorted(por_eixo.items())}
     rel['secao17_hq'] = dict(collections.Counter(o['eixo'] for o in soltas if o['genero'] == 'HQ'))
+    rel['sem_classe'] = sorted((o['t'], o['a'], o['pastas'][0]) for o in soltas if not o.get('marcadores'))
     rel['nomes'] = nomes
     bloco = [f'## {SECAO_DIGITAL}. Biblioteca virtual (tenho: digital)', '',
              'Livros e quadrinhos da biblioteca virtual que não estavam nas seções anteriores, separados pelos mesmos eixos. Os que já '
              'estavam catalogados continuam na seção de origem e ganharam `#tenho-digital`. Os quadrinhos levam `#HQ`; uma série é uma '
              'linha só, sejam quantas forem as edições.', '',
-             '> Seção gerada por `tools/importar_digital.py` a partir de `biblioteca-virtual/inventario.tsv`. Para corrigir título, autor ou eixo, '
-             'corrija o inventário e rode o script; aqui, só os marcadores acrescentados à mão (`#lido`, `#top`, temas…) são preservados.', '']
+             '> Seção gerada por `tools/importar_digital.py` a partir de `biblioteca-virtual/inventario.tsv`. Para corrigir título, autor, eixo, '
+             'dificuldade, extensão ou temas, corrija o inventário e rode o script; aqui, só `#lido` e `#top`, postos à mão, são preservados.', '']
     for e in sorted(por_eixo, key=lambda e: (e == 0, e)):
         nome = nomes.get(e, f'Eixo {e}') if e else 'A classificar (sem eixo no inventário)'
         bloco += [f'### {SECAO_DIGITAL}.{e} {nome}', '', '| Título | Autor | Tags |', '|---|---|---|']
@@ -581,9 +601,14 @@ def texto_resumo(inventario, obras, rel, listagens, sem_listagem, outros=()):
     difer = sorted({(r['titulo'], r['catalogo']) for r in ativos if r['tipo'] in TIPOS_CATALOGO and r['catalogo']}, key=lambda x: (chave(x[1]), chave(x[0])))
     lista('Edições com título diferente do catálogo', 'O arquivo tem um título; a linha do catálogo, outro. Confira se é mesmo o mesmo livro '
           '(se não for, apague a coluna `catalogo` da linha no inventário).', [f'- “{t}” → catálogo: **{c}**' for t, c in difer])
-    verif = sorted({(r['titulo'], r['autor'], r['pasta'], r['tipo'] in TIPOS_CATALOGO) for r in ativos if tem_obs(r, 'verificar')}, key=lambda x: chave(x[0]))
-    lista('A verificar', 'Título, autor ou identificação incertos (coluna `obs` = `verificar`). Os que estão no catálogo levam `#verificar`.',
-          [f'- {t} — {a or "sem autor"} · pasta `{p}`' + ('' if no_catalogo else ' · fora do catálogo') for t, a, p, no_catalogo in verif])
+    verif = sorted({(r['titulo'], r['autor'], r['pasta'], r['arquivo'], r['formato'] == FORMATO_PASTA, r['tipo'] in TIPOS_CATALOGO)
+                    for r in ativos if tem_obs(r, 'verificar')}, key=lambda x: (chave(x[0]), x[3]))
+    lista('A verificar', 'Título, autor ou identificação incertos (coluna `obs` = `verificar`). Os que estão no catálogo levam `#verificar`. '
+          'Depois de cada um, onde ele está na biblioteca virtual: a pasta e o nome exato do arquivo (ou da subpasta).',
+          [f'- {t} — {a or "sem autor"} · {"subpasta" if e_pasta else "arquivo"} `{p}\\{arq}`' + ('' if no_catalogo else ' · fora do catálogo')
+           for t, a, p, arq, e_pasta, no_catalogo in verif])
+    lista('Sem dificuldade nem extensão', 'Obras da seção 17 ainda não classificadas (coluna `marcadores` vazia no inventário): por ora levam só os '
+          'marcadores padrão da pasta.', [f'- {t} — {a or "sem autor"} · pasta `{p}`' for t, a, p in rel.get('sem_classe', [])])
     novos = [r for r in ativos if tem_obs(r, 'novo')]
     lista('Arquivos novos, a revisar', 'Entraram nesta execução ou numa anterior, com título e autor deduzidos do nome do arquivo (nas pastas de '
           'quadrinhos, também do nome da subpasta). Revise a linha no inventário (tipo, título, autor, eixo, gênero) e apague `novo` da coluna `obs`.',
@@ -596,7 +621,7 @@ def texto_resumo(inventario, obras, rel, listagens, sem_listagem, outros=()):
           [f'- {tp}: {t} · pasta `{p}`' for tp, t, p in naolivro])
     lista('Marcados `#tenho-digital` sem arquivo no inventário', 'O catálogo diz que há cópia digital, mas o inventário não tem o arquivo. '
           'Nada foi alterado; tire o marcador à mão se for engano.', [f'- {t} — {a}' for t, a in rel['orfas']])
-    lista('Marcadores que ficaram sem linha', 'Linhas da seção 17 que tinham marcadores postos à mão e deixaram de existir (título ou autor mudou no inventário).',
+    lista('Marcadores que ficaram sem linha', 'Linhas da seção 17 que tinham `#lido` ou `#top` postos à mão e deixaram de existir (título ou autor mudou no inventário).',
           [f'- {t}: {" ".join("#" + x for x in tags)}' for t, tags in rel['tags_perdidas']])
     fora = []
     if N['series']:

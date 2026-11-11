@@ -10,8 +10,15 @@ Saída: lista de [titulo, autor, "tags separadas por espaço", secao, eixo, obse
            Os identificadores deixam o painel reconhecer o livro mesmo depois de o título ser corrigido no inventário.
 - nomes antigos: só nas linhas cujo título ou autor foi corrigido no catálogo (catalogo/renomeados.tsv):
            [[título antigo, autor antigo], …]. Com eles o painel reencontra o que o usuário já tinha anotado naquele livro.
+
+Também gera:
+- src/capas.json (catalogo/capas.tsv);
+- src/trilhas.json (catalogo/trilhas.md): as trilhas de leitura, cada uma como
+  [marcador, nome, descrição, [posições das linhas do catálogo, na ordem da trilha]];
+- src/antes.json (catalogo/antes-da-vistoria.tsv): [posição da linha, eixo, "marcadores"] que a linha tinha no painel
+  publicado antes da vistoria de 10/11/2026 — só nas linhas em que a vistoria trocou ou tirou alguma coisa.
 """
-import csv, hashlib, json, pathlib, sys, unicodedata
+import csv, hashlib, json, pathlib, re, sys, unicodedata
 sys.path.insert(0, str(pathlib.Path(__file__).parent))
 from parse_catalog import parse, SRC
 from eixos import eixo_estante
@@ -21,7 +28,11 @@ import capas
 RAIZ = pathlib.Path(__file__).resolve().parent.parent
 DEST = RAIZ / 'src' / 'catalog.json'
 DEST_CAPAS = RAIZ / 'src' / 'capas.json'
+DEST_TRILHAS = RAIZ / 'src' / 'trilhas.json'
 RENOMEADOS = RAIZ / 'catalogo' / 'renomeados.tsv'
+TRILHAS = RAIZ / 'catalogo' / 'trilhas.md'
+ANTES = RAIZ / 'catalogo' / 'antes-da-vistoria.tsv'
+DEST_ANTES = RAIZ / 'src' / 'antes.json'
 AUTOR_FIX = {
     'Liev Tolstói (na prateleira consta Dostoiévski; autor correto: Tolstói)': ('Liev Tolstói', 'Na prateleira consta Dostoiévski; o autor correto é Tolstói.'),
     'Irvin D. Yalom (conforme a prateleira)': ('Irvin D. Yalom', 'Autoria conforme a prateleira — conferir.'),
@@ -116,6 +127,92 @@ def nomes_antigos(linhas, avisos):
     return {i: v for i, v in out.items() if v}
 
 
+def ler_trilhas(books, avisos, caminho=None):
+    """As trilhas de leitura (catalogo/trilhas.md): [[marcador, nome, descrição, [posições das linhas, em ordem]], …].
+
+    Cada item da trilha é `Título | Autor`, como na linha do catálogo; o livro é achado pelo título (e pelo autor, se
+    houver dois títulos iguais). O marcador da trilha também vai na linha do livro: as duas listas têm de bater."""
+    caminho = caminho or TRILHAS
+    if not pathlib.Path(caminho).exists():
+        return []
+    por_titulo = {}
+    for i, b in enumerate(books):
+        por_titulo.setdefault(_norm(b['t']), []).append(i)
+    trilhas, t = [], None
+    for linha in pathlib.Path(caminho).read_text(encoding='utf-8').splitlines():
+        m = re.match(r'^##\s+\d+\.\s+(.+)$', linha)
+        if m:
+            t = {'nome': m.group(1).strip(), 'tag': '', 'desc': [], 'itens': []}
+            trilhas.append(t)
+            continue
+        if t is None or not linha.strip():
+            continue
+        m = re.match(r'^`#(trilha-[a-z0-9-]+)`\s*$', linha)
+        if m:
+            t['tag'] = m.group(1)
+            continue
+        m = re.match(r'^\d+\.\s+(.+?)\s+\|\s+(.+?)\s*$', linha)
+        if m:
+            cand = por_titulo.get(_norm(m.group(1)), [])
+            if len(cand) > 1:
+                cand = [i for i in cand if _norm(books[i]['a']) == _norm(m.group(2))] or cand[:1]
+            if cand:
+                t['itens'].append(cand[0])
+            else:
+                avisos.append(f'trilhas.md: “{m.group(1)}” ({t["nome"]}) não é uma linha do catálogo')
+            continue
+        t['desc'].append(linha.strip())
+    out, vistos = [], set()
+    for t in trilhas:
+        if not t['tag'] or t['tag'] in vistos:
+            avisos.append(f'trilhas.md: a trilha “{t["nome"]}” está sem marcador (`#trilha-…`) ou repete o de outra')
+            continue
+        vistos.add(t['tag'])
+        marcados = {i for i, b in enumerate(books) if t['tag'] in b['tags']}
+        for i in sorted(marcados ^ set(t['itens'])):
+            onde = 'está na lista da trilha, mas a linha não tem o marcador' if i in t['itens'] else 'tem o marcador, mas não está na lista da trilha'
+            avisos.append(f'trilhas.md: “{books[i]["t"]}” {onde} #{t["tag"]}')
+        out.append([t['tag'], t['nome'], ' '.join(t['desc']), list(dict.fromkeys(t['itens']))])
+    for tag in sorted({x for b in books for x in b['tags'] if x.startswith('trilha-')} - vistos):
+        avisos.append(f'catálogo: o marcador #{tag} não corresponde a nenhuma trilha de catalogo/trilhas.md')
+    return out
+
+
+def classe_anterior(linhas, avisos, caminho=None):
+    """[[posição da linha, eixo, "marcadores"], …]: a classificação de antes da vistoria (catalogo/antes-da-vistoria.tsv).
+
+    O painel guarda no navegador os livros em que o usuário mexeu. Quando chega um catálogo novo, ele precisa saber o que
+    mudou no catálogo e o que foi mudado à mão — e, para isso, o que o catálogo dizia antes. Os painéis publicados até
+    10/11/2026 não guardavam essa base; este arquivo a devolve para as linhas em que a vistoria trocou ou tirou algo
+    (eixo, tipo, dificuldade, extensão ou tema). Nas demais a vistoria só acrescentou, e o painel não precisa de base.
+    `linhas` é a saída de build(): a linha é achada pelo título e autor de hoje ou por um nome antigo dela."""
+    caminho = pathlib.Path(caminho or ANTES)
+    if not caminho.exists():
+        return []
+    autor = lambda a: AUTOR_FIX[a][0] if a in AUTOR_FIX else a
+    chave = lambda t, a: (_norm(t), _norm(autor(a)))
+    pos = {}
+    for i, l in enumerate(linhas):
+        for t, a in [(l[0], l[1])] + [tuple(n) for n in (l[7] if len(l) > 7 and l[7] else [])]:
+            pos.setdefault(chave(t, a), i)
+    out, vistos = [], set()
+    with open(caminho, encoding='utf-8-sig', newline='') as f:
+        for r in csv.DictReader(f, delimiter='\t'):
+            t, a = (r.get('titulo') or '').strip(), (r.get('autor') or '').strip()
+            if not t:
+                continue
+            i = pos.get(chave(t, a))
+            eixo = (r.get('eixo') or '').strip()
+            if i is None:
+                avisos.append(f'antes-da-vistoria.tsv: “{t}” ({a or "sem autor"}) não é mais uma linha do catálogo; a linha foi ignorada')
+            elif not eixo.isdigit() or not 1 <= int(eixo) <= 16:
+                avisos.append(f'antes-da-vistoria.tsv: “{t}” está com o eixo “{eixo}” (esperado: 1 a 16); a linha foi ignorada')
+            elif i not in vistos:
+                vistos.add(i)
+                out.append([i, int(eixo), ' '.join((r.get('marcadores') or '').replace('#', '').split())])
+    return sorted(out)
+
+
 def build(avisos=None):
     avisos = [] if avisos is None else avisos
     books = parse(SRC.read_text(encoding='utf-8'))
@@ -151,5 +248,13 @@ if __name__ == '__main__':
     with open(DEST_CAPAS, 'w', encoding='utf-8', newline='\n') as f:
         f.write(json.dumps(lista, ensure_ascii=False, separators=(',', ':')))
     print(sum(1 for c in lista if c), 'capas ->', DEST_CAPAS, DEST_CAPAS.stat().st_size, 'bytes')
+    trilhas = ler_trilhas(parse(SRC.read_text(encoding='utf-8')), avisos)
+    with open(DEST_TRILHAS, 'w', encoding='utf-8', newline='\n') as f:
+        f.write(json.dumps(trilhas, ensure_ascii=False, separators=(',', ':')))
+    print(len(trilhas), 'trilhas ->', DEST_TRILHAS, DEST_TRILHAS.stat().st_size, 'bytes')
+    antes = classe_anterior(data, avisos)
+    with open(DEST_ANTES, 'w', encoding='utf-8', newline='\n') as f:
+        f.write(json.dumps(antes, ensure_ascii=False, separators=(',', ':')))
+    print(len(antes), 'classificações de antes da vistoria ->', DEST_ANTES, DEST_ANTES.stat().st_size, 'bytes')
     for a in avisos:
         print('AVISO:', a)

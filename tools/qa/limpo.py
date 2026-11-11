@@ -2,8 +2,8 @@
 depois de "Limpar dados de exemplo" e do jeito que o painel abre (só o catálogo; o endereço sem ?exemplo).
 No fim, a guia Preços sem nenhum livro para cotar: o quadro "Registrar cotação" explica como começar.
 
-Os números esperados são um retrato do catálogo atual (2.125 livros no acervo: 97 na estante + 2.028 só digitais;
-435 recomendações, 2 delas já lidas). Se o catálogo mudar, rode, confira as linhas FALHA e atualize os literais.
+Os números esperados são um retrato do catálogo atual (2.122 livros no acervo: 97 na estante + 2.025 só digitais;
+432 recomendações, 2 delas já lidas). Se o catálogo mudar, rode, confira as linhas FALHA e atualize os literais.
 """
 from caminhos import PAINEL_LIMPO, PAINEL_URL
 from relogio import fixa
@@ -23,7 +23,7 @@ with sync_playwright() as p:
     pg.goto(URL); pg.wait_for_timeout(1000); pg.click('#aviso .pri'); pg.wait_for_timeout(200)
     print('DEMO')
     pg.click('#nav [data-ir=desejos]'); pg.wait_for_timeout(800); k = pg.evaluate(K)
-    ok('cesta: 26 itens · 33% abaixo da capa', k['cesta']['s'] == '26 itens · 33% abaixo da capa', k['cesta'])
+    ok('cesta: 26 itens · 28,9% abaixo da capa', k['cesta']['s'] == '26 itens · 28,9% abaixo da capa', k['cesta'])
     ok('itens: 26 incluídos em 12 meses', k['itens']['t'] == '26 incluídos em 12 meses', k['itens']['t'])
     print('ITEM SEM ALVO')
     pg.click('#b-novo'); pg.wait_for_timeout(400); pg.fill('#dlg [data-f=t]', 'Um Livro Sem Alvo'); pg.fill('#dlg [data-f=a]', 'Autora Teste'); pg.select_option('#dlg [data-f=col]', 'desejo'); pg.click('#dlg footer .pri'); pg.wait_for_timeout(700)
@@ -35,7 +35,7 @@ with sync_playwright() as p:
     f = fatos(); ok('situação "Sem alvo" com R$ 48,00 na Amazon', f.get('Situação') == 'Sem alvo' and 'R$ 48,00' in f.get('Melhor preço', '') and 'Amazon' in f.get('Melhor preço', ''), f)
     pg.keyboard.press('Escape'); pg.wait_for_timeout(400)
     ok('Esc fecha a gaveta', pg.evaluate("() => !document.querySelector('#gaveta').classList.contains('on')"))
-    k = pg.evaluate(K); ok('item sem capa não distorce o desconto (33%)', k['cesta']['s'] == '27 itens · 33% abaixo da capa', k['cesta'])
+    k = pg.evaluate(K); ok('item sem capa não distorce o desconto (28,9%)', k['cesta']['s'] == '27 itens · 28,9% abaixo da capa', k['cesta'])
     pg.fill('#p-tab-desejos input[type=search]', 'sem alvo'); pg.wait_for_timeout(600)
     lin = pg.evaluate("() => [...document.querySelectorAll('#p-tab-desejos tbody tr td')].map(t => t.innerText.replace(/\\u00a0/g, ' ').replace(/\\n/g, ' / '))")
     ok('linha da tabela com o selo "Sem alvo"', len(lin) > 3 and lin[-1] == 'Sem alvo' and 'R$ 48,00 / Amazon' in lin, lin)
@@ -55,9 +55,9 @@ with sync_playwright() as p:
     print('SEM OS DADOS DE EXEMPLO')
     pg.click('#b-dados'); pg.wait_for_timeout(400); pg.click('#dlg [data-x=limpar]'); pg.wait_for_timeout(400); pg.click('#dlg footer .pri'); pg.wait_for_timeout(900); pg.keyboard.press('Escape'); pg.wait_for_timeout(300)
     visoes({
-        'geral': {'acervo': ('2.125', 'sem datas de aquisição'), 'leituras': ('2', ''), 'fila': ('2.125', ''), 'recs': ('433', '')},
-        'biblioteca': {'acervo': ('2.125', 'sem datas de aquisição'), 'leituras': ('2', ''), 'fila': ('2.125', ''), 'lendo': ('0', '')},
-        'recs': {'recs': ('433', ''), 'top': ('32', '7,4% da fila'), 'leves': ('50', '11,5% da fila'), 'pend': ('61', '')},
+        'geral': {'acervo': ('2.122', 'sem datas de aquisição'), 'leituras': ('2', ''), 'fila': ('2.122', ''), 'recs': ('430', '')},
+        'biblioteca': {'acervo': ('2.122', 'sem datas de aquisição'), 'leituras': ('2', ''), 'fila': ('2.122', ''), 'lendo': ('0', '')},
+        'recs': {'recs': ('430', ''), 'top': ('30', '7% da fila'), 'leves': ('50', '11,6% da fila'), 'pend': ('60', '')},
         'financas': {'investido': ('R$ 0', ''), 'medio': ('—', ''), 'cesta': ('R$ 48', 'histórico começa hoje'), 'oport': ('0', 'histórico começa hoje')},
         'desejos': {'itens': ('1', '1 incluído em 12 meses'), 'cesta': ('R$ 48', 'histórico começa hoje'), 'oport': ('0', 'histórico começa hoje'), 'minimo': ('R$ 48', None)},
         'precos': {'monit': ('1', 'em 1 loja'), 'oport': ('0', 'histórico começa hoje'), 'queda': ('—', ''), 'cot': ('1', None)},
@@ -71,9 +71,9 @@ with sync_playwright() as p:
     pg.on('pageerror', lambda e: errs.append(f'[pageerror] {e}'))
     pg.goto(PAINEL_LIMPO); pg.wait_for_timeout(1000); pg.click('#aviso .pri'); pg.wait_for_timeout(200)
     visoes({
-        'geral': {'acervo': ('2.125', 'sem datas de aquisição'), 'leituras': ('2', ''), 'fila': ('2.125', ''), 'recs': ('433', '')},
-        'biblioteca': {'acervo': ('2.125', 'sem datas de aquisição'), 'leituras': ('2', ''), 'fila': ('2.125', ''), 'lendo': ('0', '')},
-        'recs': {'recs': ('433', ''), 'top': ('32', '7,4% da fila'), 'leves': ('50', '11,5% da fila'), 'pend': ('61', '')},
+        'geral': {'acervo': ('2.122', 'sem datas de aquisição'), 'leituras': ('2', ''), 'fila': ('2.122', ''), 'recs': ('430', '')},
+        'biblioteca': {'acervo': ('2.122', 'sem datas de aquisição'), 'leituras': ('2', ''), 'fila': ('2.122', ''), 'lendo': ('0', '')},
+        'recs': {'recs': ('430', ''), 'top': ('30', '7% da fila'), 'leves': ('50', '11,6% da fila'), 'pend': ('60', '')},
         'financas': {'investido': ('R$ 0', ''), 'medio': ('—', ''), 'cesta': ('—', ''), 'oport': ('0', '')},
         'desejos': {'itens': ('0', ''), 'cesta': ('—', ''), 'oport': ('0', ''), 'minimo': ('—', None)},
         'precos': {'monit': ('0', ''), 'oport': ('0', ''), 'queda': ('—', ''), 'cot': ('0', None)},
