@@ -9,6 +9,7 @@
      é cortada entre páginas; com uma caixa aberta (a página travada) a folha não sai cortada; o PDF de verdade tem o
      número de páginas que o painel estimou;
   D. depois de imprimir, a página volta a ser a de sempre — também quando o navegador não avisa que a impressão acabou;
+     e, quando o navegador recusa o pedido (ele recusa pedidos muito seguidos, sem avisar a página), o painel avisa;
   E. lista longa — o painel diz quantas páginas são e pergunta; "Cancelar" não imprime; "Imprimir assim mesmo" imprime tudo;
   F. lista vazia — avisa e não imprime nem copia;
   G. as marcas — o livro lido sai com o quadradinho marcado e a prioridade com a estrela, os dois desenhados (não dependem
@@ -42,7 +43,8 @@ FOLHA = """() => { const el = document.querySelector('#impressao'), t = s => (el
     linhas: [...el.querySelectorAll('tbody tr')].map(tr => [...tr.cells].slice(1).map(td => td.textContent)), ok: [...el.querySelectorAll('tbody tr')].map((tr, i) => tr.querySelector('.imp-q.ok') ? i : -1).filter(i => i >= 0),
     estrelas: [...el.querySelectorAll('tbody tr')].map((tr, i) => tr.querySelector('.imp-e') ? i : -1).filter(i => i >= 0), notas: [...el.querySelectorAll('.imp-n')].map(p => p.textContent.replace(/\\s+/g, ' ').trim()) }; }"""
 # a caixa de impressão não existe no navegador de teste: no lugar dela, guarda-se a folha como estava na hora do pedido
-STUB = "() => { window.__imp = []; window.print = () => { window.__imp.push({ classe: document.documentElement.classList.contains('imprimindo'), titulo: document.title, folha: (%s)() }); }; }" % FOLHA
+# (como o navegador de verdade, o substituto anuncia que vai imprimir; quem diz que acabou é o teste)
+STUB = "() => { window.__imp = []; window.print = () => { window.dispatchEvent(new Event('beforeprint')); window.__imp.push({ classe: document.documentElement.classList.contains('imprimindo'), titulo: document.title, folha: (%s)() }); }; }" % FOLHA
 PEDIDOS = "() => window.__imp.length"
 ULTIMA = "() => window.__imp[window.__imp.length - 1] || null"
 ACABOU = "() => window.dispatchEvent(new Event('afterprint'))"
@@ -164,6 +166,12 @@ with sync_playwright() as p:
     ok('se o navegador não avisar que acabou, o primeiro clique na página desfaz a folha', antes['classe'] and depois == {'classe': False, 'folha': 0, 'titulo': 'Recomendações · Biblioteca do Lucas'}, (antes, depois))
     imprime('#p-tab-recs [data-imprimir]'); f2 = imprime('#p-tab-recs [data-imprimir]'); acabou()
     ok('dois pedidos seguidos não se atrapalham: vale a folha do último, e a página volta ao normal', f2 is not None and len(f2['folha']['linhas']) == espera_n and pg.evaluate(ESTADO) == {'classe': False, 'folha': 0, 'titulo': 'Recomendações · Biblioteca do Lucas'}, pg.evaluate(ESTADO))
+    # o navegador recusa o pedido sem dizer nada (acontece logo depois de uma impressão cancelada): nem anuncia que vai imprimir
+    pg.evaluate("() => { window.__mudo = 0; window.__de_verdade = window.print; window.print = () => { window.__mudo++; }; }")
+    pg.click('#p-tab-recs [data-imprimir]'); pg.wait_for_timeout(1100)
+    recado = pg.evaluate(TOASTS)[-1:]; est = pg.evaluate(ESTADO)
+    ok('se o navegador recusar o pedido, o painel avisa e a página volta ao normal', pg.evaluate('() => window.__mudo') == 1 and recado and recado[0].startswith('O navegador não abriu a caixa de impressão') and est == {'classe': False, 'folha': 0, 'titulo': 'Recomendações · Biblioteca do Lucas'}, (recado, est))
+    pg.evaluate("() => { window.print = window.__de_verdade; }")
     eixo(7)
 
     print('E. Lista longa')

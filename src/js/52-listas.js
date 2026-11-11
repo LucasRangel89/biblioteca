@@ -55,10 +55,18 @@ function imprimirFolha(f) {
       desfazerFolha = null; raiz.classList.remove('imprimindo'); el.innerHTML = ''; document.title = titulo;
       window.removeEventListener('afterprint', fim); document.removeEventListener('pointerdown', fim, true); document.removeEventListener('keydown', fim, true);
     };
-    window.addEventListener('afterprint', fim);
-    // há navegador de celular que não avisa o fim da impressão: o primeiro toque ou tecla depois dela desfaz a folha
-    setTimeout(() => { if (desfazerFolha === fim) { document.addEventListener('pointerdown', fim, true); document.addEventListener('keydown', fim, true); } }, 800);
-    try { window.print(); } catch (e) { fim(); toast('Este navegador não abriu a caixa de impressão.', 'aviso'); }
+    let abriu = false; const viu = () => { abriu = true; };
+    window.addEventListener('beforeprint', viu); window.addEventListener('afterprint', fim);
+    setTimeout(() => {
+      window.removeEventListener('beforeprint', viu);
+      if (desfazerFolha !== fim) return;                    // a impressão já acabou (ou foi cancelada), e a folha já se desfez
+      // O navegador recusa, sem avisar a página, um pedido feito logo depois de uma impressão cancelada (2 segundos; mais, se
+      // os cancelamentos se repetem). Dá para saber porque ele nem chega a anunciar que vai imprimir.
+      if (!abriu) { fim(); toast('O navegador não abriu a caixa de impressão: ele recusa pedidos muito seguidos. Espere alguns segundos e tente de novo.', 'aviso'); return; }
+      // há navegador de celular que não avisa o fim da impressão: o primeiro toque ou tecla depois dela desfaz a folha
+      document.addEventListener('pointerdown', fim, true); document.addEventListener('keydown', fim, true);
+    }, 800);
+    try { window.print(); } catch (e) { window.removeEventListener('beforeprint', viu); fim(); toast('Este navegador não abriu a caixa de impressão.', 'aviso'); }
   };
   const pags = n > 60 ? paginasDaFolha(f) : 1;        // até 60 linhas não chega perto do limite: nem mede
   if (pags > PAGINAS_SEM_PERGUNTAR) confirmar('Imprimir uma lista longa', `Esta lista tem <b>${fInt(n)} livros</b>: no papel, umas <b>${fInt(pags)} páginas</b>. Para uma folha menor, filtre a lista antes de imprimir.`, 'Imprimir assim mesmo', () => { setTimeout(ir, 60); });
