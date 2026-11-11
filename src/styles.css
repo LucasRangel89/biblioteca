@@ -149,7 +149,9 @@ input.erro, select.erro { border-color: var(--bad); box-shadow: 0 0 0 3px color-
 .pop-w.aberto > .pop-b { background: var(--surface-3); }
 .pop-b > .ic:last-child { color: var(--ink-3); transition: transform .18s; }
 .pop-w.aberto > .pop-b > .ic:last-child { transform: rotate(180deg); }
-.pop { display: none; position: absolute; top: calc(100% + 8px); left: 0; width: 318px; max-height: min(64vh, 520px); overflow: auto; background: var(--surface); border: 1px solid var(--line); border-radius: 13px; box-shadow: var(--sombra-2); padding: 8px; z-index: 50; }
+/* altura do quadro: 64% da janela, no máximo 520 px — e nunca mais do que cabe abaixo da barra de filtros (ela ocupa até ~190 px
+   quando quebra em duas linhas): em janela com menos de ~550 px de altura o quadro passava da borda de baixo */
+.pop { display: none; position: absolute; top: calc(100% + 8px); left: 0; width: 318px; max-height: min(64vh, 520px, calc(100vh - 200px)); overflow: auto; background: var(--surface); border: 1px solid var(--line); border-radius: 13px; box-shadow: var(--sombra-2); padding: 8px; z-index: 50; }
 .pop.largo { width: 430px; }
 .pop-w.aberto > .pop { display: block; animation: desce .16s ease-out; }
 .pop-h { display: flex; justify-content: space-between; align-items: center; padding: 4px 8px 8px; }
@@ -568,7 +570,10 @@ td.c-spark svg { margin-left: auto; margin-right: auto; }
 
 /* ───────────── gaveta e diálogo ───────────── */
 .gaveta, .dlg { position: fixed; inset: 0; z-index: 90; visibility: hidden; pointer-events: none; }
-.dlg { z-index: 100; display: grid; grid-template-columns: minmax(0, 1fr); place-items: center; padding: 18px; }   /* minmax(0, …): a caixa nunca passa da largura da tela, por mais largo que seja o conteúdo */
+/* minmax(0, 1fr) na coluna E na linha: a caixa nunca passa da largura nem da ALTURA da janela, por maior que seja o conteúdo.
+   Sem a linha definida, a grade crescia até a altura do formulário e o "max-height: 100%" da caixa não tinha a que se referir:
+   em janela com menos de ~800 px de altura (todo notebook) o rodapé, com o botão de salvar, ficava abaixo da borda da tela. */
+.dlg { z-index: 100; display: grid; grid-template-columns: minmax(0, 1fr); grid-template-rows: minmax(0, 1fr); place-items: center; padding: 18px; }
 .gaveta.on, .dlg.on { visibility: visible; pointer-events: auto; }
 .gv-fundo, .dlg-fundo { position: absolute; inset: 0; background: var(--veu); opacity: 0; transition: opacity .22s; }
 .gaveta.on .gv-fundo, .dlg.on .dlg-fundo { opacity: 1; }
