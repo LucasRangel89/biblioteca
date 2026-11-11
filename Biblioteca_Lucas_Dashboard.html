@@ -888,7 +888,7 @@ td.c-spark svg { margin-left: auto; margin-right: auto; }
 
     <footer class="rodape">
       <span id="rodape-n"></span>
-      <span>Painel pessoal · os dados ficam apenas neste dispositivo · nada do que você anota é enviado para a internet · as capas vêm da Open Library</span>
+      <span>Painel pessoal · os dados ficam apenas neste dispositivo · nada do que você anota é enviado para a internet · as capas vêm da Open Library e da Apple Books</span>
     </footer>
   </div>
 
@@ -1173,7 +1173,7 @@ function novoLivro(o) {
     arq: '',        // identificadores dos arquivos da biblioteca virtual (reconhecem o livro se o título mudar no catálogo)
     _dg: null,      // dados da biblioteca virtual; vêm sempre do catálogo embutido e não são salvos
     _ant: null,     // [[título, autor], …] que a linha do catálogo já teve (catalogo/renomeados.tsv); também vêm do catálogo e não são salvos
-    _img: 0,        // imagem da capa: número na Open Library ou endereço https (catalogo/capas.tsv); vem do catálogo e não é salva
+    _img: 0,        // imagem da capa: número na Open Library ou endereço https — o da Apple Books, ou um posto à mão (catalogo/capas.tsv); vem do catálogo e não é salva
   }, o));
 }
 const MAX_COMENTARIO = 5000, MAX_ANEXOS = 8;
@@ -3536,7 +3536,7 @@ function dlgDados() {
       <div class="dd-st ${Loja.ok ? 'ok' : 'aviso'}">${icone(Loja.ok ? 'check' : 'info', 16)}<div><b>${Loja.ok ? 'Salvo neste navegador' : 'Pré-visualização: nada é salvo'}</b><span>${Loja.ok ? 'Tudo fica só neste dispositivo (armazenamento local do navegador). Nada do que você anota é enviado para a internet.' : 'Este ambiente não permite gravar. Baixe o arquivo HTML e abra-o no navegador para que suas alterações fiquem salvas no seu dispositivo.'}</span></div></div>
       <dl class="dd-n"><div><dt>Livros</dt><dd>${fInt(DB.livros.length)}</dd></div><div><dt>Editados por você</dt><dd>${fInt(meus)}</dd></div><div><dt>Cotações suas</dt><dd>${fInt(cot)}</dd></div><div><dt>Com anotações</dt><dd>${fInt(notas)}</dd></div></dl>
       <section><h3>Backup</h3><p>Guarde uma cópia em arquivo ou leve seus dados para outro navegador. O backup leva junto os comentários, as capas que você enviou e os arquivos anexados.</p><div class="dd-b"><button type="button" class="btn" data-x="exportar">${icone('baixar', 15)}Exportar backup (.json)</button><button type="button" class="btn" data-x="importar">${icone('enviar', 15)}Importar backup…</button></div></section>
-      <section><h3>Capas dos livros</h3><p>As imagens das capas vêm da <b>Open Library</b> (openlibrary.org), um catálogo aberto de livros. Para mostrá-las, o navegador pede cada imagem a esse site; nada do que você anota aqui é enviado. ${fInt(DB.livros.filter(temCapa).length)} dos ${fInt(DB.livros.length)} livros têm capa encontrada. As capas que você mesmo envia, na ficha do livro, ficam guardadas neste navegador e aparecem sempre${proprias ? ` (${plural(proprias, 'enviada', 'enviadas')} até agora)` : ''}.</p>
+      <section><h3>Capas dos livros</h3><p>As imagens das capas vêm de dois catálogos de livros na internet: a <b>Open Library</b> (openlibrary.org) e a <b>Apple Books</b>. Para mostrá-las, o navegador pede cada imagem a um desses dois sites; nada do que você anota aqui é enviado. ${fInt(DB.livros.filter(temCapa).length)} dos ${fInt(DB.livros.length)} livros têm capa encontrada. As capas que você mesmo envia, na ficha do livro, ficam guardadas neste navegador e aparecem sempre${proprias ? ` (${plural(proprias, 'enviada', 'enviadas')} até agora)` : ''}.</p>
         <div class="dd-b"><label class="opt so dd-capas"><input type="checkbox" data-x="capas"${S.capas ? ' checked' : ''}><span>Mostrar as capas</span></label></div></section>
       <section><h3>Dados de exemplo</h3><p>${DB.exemplos ? 'Os dados de exemplo estão <b>ligados</b>: datas e valores pagos, leituras, notas, a lista de próximas aquisições e os históricos de preço são <b>simulados</b>, para mostrar como os gráficos ficam. Ao limpar, fica só o que é do catálogo e o que você editou ou registrou.' : 'O painel mostra só o que é seu: o catálogo e o que você registrou aqui. Para ver como os gráficos ficam cheios, você pode ligar os dados de exemplo (datas, valores, leituras e preços <b>simulados</b>) — eles não mexem no que você editou e saem com um clique.'}</p>
         <div class="dd-b">${DB.exemplos ? `<button type="button" class="btn" data-x="limpar">${icone('lixo', 15)}Limpar dados de exemplo</button>` : `<button type="button" class="btn" data-x="restaurar">${icone('desfazer', 15)}Ver com dados de exemplo</button>`}</div></section>
