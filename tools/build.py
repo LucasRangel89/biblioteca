@@ -1,8 +1,8 @@
 #!/usr/bin/env python3
 """Gera o painel em um único arquivo HTML (CSS, dados e scripts embutidos).
 
-A única coisa que o painel busca fora são as imagens das capas, na Open Library (ou no endereço posto à mão em
-catalogo/capas.tsv) — e só quando "Mostrar as capas" está ligado. Nenhum dado do usuário sai do navegador."""
+A única coisa que o painel busca fora são as imagens das capas — na Open Library, na Apple Books ou no endereço posto
+à mão em catalogo/capas.tsv — e só quando "Mostrar as capas" está ligado. Nenhum dado do usuário sai do navegador."""
 import json, pathlib, re, sys
 
 RAIZ = pathlib.Path(__file__).resolve().parent.parent

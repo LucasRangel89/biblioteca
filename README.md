@@ -3,7 +3,7 @@
 Um catálogo só para as duas bibliotecas — a **estante física** e a **biblioteca virtual** (os livros digitais) — e um
 painel que mostra as duas juntas ou separadas.
 
-- **Catálogo Mestre** (`catalogo/Biblioteca_Lucas_Catalogo_Mestre.md`): a fonte única. 2.554 linhas — o que tenho e o
+- **Catálogo Mestre** (`catalogo/Biblioteca_Lucas_Catalogo_Mestre.md`): a fonte única. 2.614 linhas — o que tenho e o
   que foi recomendado.
 - **Painel**: no ar em <https://lucasrangel89.github.io/biblioteca/>. É um único arquivo HTML
   (`Biblioteca_Lucas_Dashboard.html`), que também abre direto no navegador, sem internet e sem servidor.
@@ -11,14 +11,18 @@ painel que mostra as duas juntas ou separadas.
 
 | | Livros e quadrinhos |
 | --- | ---: |
-| Só na estante física | 73 |
-| Na estante **e** na biblioteca virtual | 24 |
-| Só na biblioteca virtual | 2.025 |
-| Recomendações (ainda não tenho) | 432 |
-| **Total no catálogo** | **2.554** |
+| Só na estante física | 75 |
+| Na estante **e** na biblioteca virtual | 25 |
+| Só na biblioteca virtual | 2.024 |
+| Recomendações (ainda não tenho) | 490 |
+| **Total no catálogo** | **2.614** |
 
-Estante física: 97 livros. Biblioteca virtual: 2.049 obras — 1.805 livros e 244 quadrinhos — em 2.382 arquivos e 104
-pastas de séries de quadrinhos.
+Estante física: 97 volumes. No catálogo são 100 linhas em papel, porque três textos de Lovecraft que estavam entre as
+recomendações (*O Chamado de Cthulhu*, *Nas Montanhas da Loucura*, *A Sombra sobre Innsmouth*) estão dentro de um
+desses volumes: levam `#tenho-fisico`, e a ficha de cada um diz que não é um volume à parte.
+
+Biblioteca virtual: 2.049 obras — 1.805 livros e 244 quadrinhos — em 2.382 arquivos e 104 pastas de séries de
+quadrinhos.
 
 ## Como um livro é marcado
 
@@ -26,7 +30,7 @@ No catálogo, a posse é um marcador na linha do livro:
 
 | Marcador | Significa |
 | --- | --- |
-| `#tenho-fisico` | está na estante (antes era `#ja-tenho`) |
+| `#tenho-fisico` | está na estante, ou dentro de um volume que está nela (antes era `#ja-tenho`) |
 | `#tenho-digital` | está na biblioteca virtual |
 | os dois | tenho em papel e em arquivo |
 | nenhum | é uma recomendação |
@@ -64,12 +68,13 @@ do autor e do tipo de obra — nenhum arquivo foi aberto.
 | --- | --- |
 | `Biblioteca_Lucas_Dashboard.html` | O painel pronto (gerado; não edite à mão). É este arquivo que vai para o site |
 | `.github/workflows/publicar-site.yml` | Publica o painel como site a cada mudança em `main` (ver "O site") |
-| `.github/workflows/buscar-capas.yml` | Procura as capas dos livros na Open Library e grava `catalogo/capas.tsv`. Só roda quando pedido, pela aba Actions (ver "As capas") |
+| `.github/workflows/buscar-capas.yml` | Procura as capas dos livros na Open Library e na Apple Books e grava `catalogo/capas.tsv`. Só roda quando pedido, pela aba Actions (ver "As capas") |
 | `ROTEIRO.md` | As etapas de desenvolvimento e as pendências de cada uma |
 | `catalogo/Biblioteca_Lucas_Catalogo_Mestre.md` | O Catálogo Mestre |
 | `catalogo/renomeados.tsv` | O nome antigo de cada linha da estante ou das recomendações que teve título ou autor corrigido (ver "Corrigir o título ou o autor…") |
-| `catalogo/capas.tsv` | A capa de cada livro: o número da imagem na Open Library, ou vazio quando não foi achada (ver "As capas") |
-| `catalogo/trilhas.md` | As 20 trilhas de leitura: nome, marcador, descrição e os livros, em ordem (ver "Trilhas de leitura") |
+| `catalogo/capas.tsv` | A capa de cada livro: o número da imagem na Open Library, o endereço da imagem na Apple Books, ou vazio quando não foi achada (ver "As capas") |
+| `catalogo/trilhas.md` | As 36 trilhas de leitura: nome, marcador, descrição e os livros, em ordem (ver "Trilhas de leitura") |
+| `catalogo/ANALISE-DOS-FILTROS.md` | Análise e meta-análise dos filtros e da categorização, de 11/11/2026: o que cada filtro alcança, quanto confiar em cada dado, o que foi corrigido e o que fica proposto. Os números saem de `tools/analisar_marcadores.py` |
 | `catalogo/VISTORIA.md` | Relatório da vistoria dos marcadores de 10/11/2026: o que foi conferido, o que mudou e as dúvidas que ficaram. É um retrato daquela data; não é refeito pelas ferramentas |
 | `catalogo/antes-da-vistoria.tsv` | A classificação que 289 linhas tinham antes da vistoria. O painel precisa dela para atualizar os livros de quem já tinha anotações (ver "Quando a classificação muda no catálogo"). **Não apague nem refaça** |
 | `biblioteca-virtual/listagens/*.txte` | A lista de arquivos de cada pasta da biblioteca virtual (uma listagem por pasta) |
@@ -81,7 +86,8 @@ do autor e do tipo de obra — nenhum arquivo foi aberto.
 | `tools/importar_digital.py` | Listagens + inventário → Catálogo Mestre (seção 17 e `#tenho-digital`) e `RESUMO.md` |
 | `tools/build_catalog.py` | Catálogo Mestre + inventário → `src/catalog.json`; `catalogo/capas.tsv` → `src/capas.json`; `catalogo/trilhas.md` → `src/trilhas.json`; `catalogo/antes-da-vistoria.tsv` → `src/antes.json` (usa `parse_catalog.py`, `eixos.py` e `capas.py`). O que não bate sai como `AVISO:` |
 | `tools/build.py` | `src/` → `Biblioteca_Lucas_Dashboard.html`; confere que não sobrou referência externa |
-| `tools/capas.py` | Busca das capas na Open Library → `catalogo/capas.tsv`. É o único script que precisa de internet; no GitHub, quem o roda é o serviço "Buscar capas" |
+| `tools/capas.py` | Busca das capas na Open Library e, para o que ela não tem, na Apple Books → `catalogo/capas.tsv`. É o único script que precisa de internet; no GitHub, quem o roda é o serviço "Buscar capas" |
+| `tools/analisar_marcadores.py` | Mede os filtros e a categorização (alcance de cada grupo, marcadores raros e amplos, pastas × eixos…). Só mostra; não grava nada |
 | `tools/qa/` | Testes automatizados |
 | `referencias/` | Material guardado só como referência: um painel de inspiração, um protótipo abandonado e `catalogo-v3-enviado-2026-11-10.md`, a "versão 3" do catálogo, de onde vieram as camadas e as trilhas (nada lê esse arquivo) |
 
@@ -160,7 +166,7 @@ classificação muda no catálogo").
 Uma trilha é uma lista de livros em ordem, com nome e descrição, em `catalogo/trilhas.md`:
 
 ```
-## 21. Nome da Trilha
+## 37. Nome da Trilha
 
 `#trilha-nome-da-trilha`
 
@@ -173,8 +179,18 @@ Uma ou duas frases dizendo o que a trilha percorre.
 Cada livro da lista leva também o marcador da trilha na sua linha do catálogo — as duas coisas têm de bater. Para pôr
 ou tirar um livro, mude a lista **e** o marcador; `python tools/atualizar.py` avisa (`AVISO: trilhas.md: …`) quando um
 livro está na lista sem o marcador, tem o marcador sem estar na lista, ou não é uma linha do catálogo. O título é
-escrito como no catálogo. Hoje só há livros das seções 0 a 16 nas trilhas; para pôr um da seção 17, o marcador da
-trilha vai na coluna `marcadores` do inventário, como o resto da classificação dele.
+escrito como no catálogo.
+
+São 36 trilhas. As 20 primeiras vieram da "versão 3" do catálogo e só têm livros das seções 0 a 16. As de 21 a 36
+foram montadas em 11/11/2026 a partir do acervo e têm livros da biblioteca virtual: nesses, o marcador da trilha vai
+na coluna `marcadores` do inventário, como o resto da classificação deles — e não na linha da seção 17, que é gerada.
+
+### Entraram recomendações novas
+
+Acrescente a linha no fim da tabela da seção do eixo (1 a 16), com tipo, temas, dificuldade e extensão:
+`| Título | Autor | #NF #psicologia #d1 #e2 |`. Use o título da edição brasileira; só leva `#sem-pt` o livro que não
+tem edição em português. Depois, `python tools/atualizar.py` e, para a capa, o serviço "Buscar capas" (ver "As capas").
+Se o livro já estiver na biblioteca virtual, o importador avisa: a linha ganha `#tenho-digital` em vez de repetir.
 
 ### Corrigir o título ou o autor de um livro da estante ou de uma recomendação
 
@@ -257,7 +273,7 @@ vale exportar um backup de vez em quando.
 - **Por que ler** (na ficha): as camadas do livro — a pergunta central, o clima, o papel na biblioteca, as pontes e o
   cenário — e as trilhas de que ele faz parte, com a posição nelas. Cada camada é um filtro: um toque mostra os
   outros livros com a mesma marca. O nome de uma trilha abre a trilha.
-- **Trilhas de leitura** (guia Recomendações): as 20 trilhas, com o que você já tem e já leu de cada uma e uma barra
+- **Trilhas de leitura** (guia Recomendações): as 36 trilhas, com o que você já tem e já leu de cada uma e uma barra
   de andamento. Abrir uma trilha mostra os livros na ordem, o que falta comprar e um atalho para vê-los na tabela.
   "Falta" o livro que não está no acervo nem foi lido.
 - **Temas e camadas** (guia Recomendações): os marcadores mais frequentes de cada grupo, à escolha.
@@ -292,6 +308,10 @@ catálogo com outra classificação — como o da vistoria —, cada um desses l
 - o que você **não** mudou (eixo, tipo, dificuldade, extensão, cada marcador) passa a seguir o catálogo;
 - o que você pôs, tirou ou trocou fica como você deixou;
 - leitura, notas, datas, valores, comentários e anexos nunca são tocados.
+
+A última regra vale nos dois sentidos: se o catálogo passa a dizer `#lido` ou `#tenho-fisico` de um livro em que o
+usuário já tinha mexido no painel, fica o que está no navegador. Ele acerta pela ficha: "Já tenho", "Já li" (que
+existe também para o livro que não está no acervo) ou "Não li".
 
 Para saber o que foi mudado por você, o painel guarda em cada livro editado a classificação que o catálogo dava a ele
 naquele momento. Os painéis publicados até 10/11/2026 não guardavam isso; para quem já tinha livros editados antes, a
@@ -333,26 +353,42 @@ importação faz a mesma conciliação.
 
 ### As capas
 
-O painel mostra a capa do livro nas listas, nas tabelas e na ficha. Hoje **761 dos 2.554** livros têm capa; os outros
-aparecem com um desenho com a inicial do título.
+O painel mostra a capa do livro nas listas, nas tabelas e na ficha. Hoje **1.564 dos 2.614** livros têm capa (60 dos
+97 da estante, 494 das 607 linhas de recomendações, 1.009 dos 1.910 da biblioteca virtual); os outros aparecem com um
+desenho com a inicial do título. Até 11/11/2026 eram 761, todas da primeira fonte.
 
-- **De onde vêm.** Da [Open Library](https://openlibrary.org), um catálogo aberto de livros. Nenhuma imagem fica no
-  repositório: `catalogo/capas.tsv` guarda só o número da capa de cada livro, e o navegador busca a imagem em
-  `covers.openlibrary.org` quando ela aparece na tela. É o único pedido que o painel faz à internet, e nada do que
-  foi anotado vai junto. Sem internet, ou se a imagem faltar, fica o desenho. Em "Seus dados" há uma chave para
-  desligar as capas.
-- **Por que só 761.** A busca só aceita uma capa quando o título **e** o autor conferem com os do catálogo, de
-  preferência a de uma edição em português — e as edições brasileiras são minoria na Open Library. Livro sem autor
-  certo (ou de "Vários autores") e adaptação em quadrinhos com um autor só não são procurados: o resultado não seria
-  confiável. Os volumes de uma série nunca ficam com a mesma capa.
+- **De onde vêm.** De dois catálogos de livros na internet, nesta ordem:
+  1. a [Open Library](https://openlibrary.org), um catálogo aberto (784 capas). Tem poucas edições brasileiras;
+  2. a **Apple Books**, a loja de livros digitais da Apple, consultada pela busca pública do iTunes na loja do Brasil
+     (780 capas). Só é procurada para o que a Open Library não achou. Traz a capa do livro digital em português que
+     está à venda: quase sempre a da edição brasileira, às vezes a da edição de Portugal.
+
+  Nenhuma imagem fica no repositório: `catalogo/capas.tsv` guarda só o número da capa (Open Library) ou o endereço da
+  imagem (Apple), e o navegador busca a imagem em `covers.openlibrary.org` ou em `is…-ssl.mzstatic.com` quando ela
+  aparece na tela. São os únicos pedidos que o painel faz à internet; nada do que foi anotado vai junto, e o pedido
+  não diz de que página veio. Sem internet, ou se a imagem faltar, fica o desenho. Em "Seus dados" há uma chave
+  para desligar as capas.
+- **Por que não são todas.** A busca só aceita uma capa quando o título **e** o autor conferem com os do catálogo.
+  Fica sem capa o livro que não está em nenhum dos dois catálogos com esse título — é o caso de muita edição antiga,
+  de teses e de quadrinhos —, o livro sem autor certo (ou de "Vários autores") e a adaptação em quadrinhos com um
+  autor só: nesses dois últimos casos nem se procura, porque o resultado não seria confiável. Os volumes de uma
+  série nunca ficam com a mesma capa. A capa da Apple é a do livro digital à venda hoje: pode não ser a da edição que
+  está na sua estante. Na busca de 11/11/2026, 967 livros não foram achados em nenhuma das duas fontes e 83 não foram
+  procurados; entre os 245 quadrinhos, só 58 têm capa.
 - **Procurar de novo** (depois de entrarem livros, por exemplo): no GitHub, aba **Actions** → **Buscar capas** →
-  **Run workflow**. O serviço procura só os livros que ainda não foram procurados (marcando "refazer", também os que
-  não tinham sido achados), grava `catalogo/capas.tsv` e, no fim, pede 40 das capas guardadas para conferir se as
-  imagens abrem — o resultado ("40 de 40 abriram como imagem") aparece na página da execução. Ele não monta o
-  painel: as capas novas aparecem depois de `python tools/atualizar.py`, numa rodada.
+  **Run workflow**. O serviço procura só o que falta — os livros novos, nas duas fontes, e os que só tinham passado
+  pela primeira —, grava `catalogo/capas.tsv` e, no fim, pede 40 capas de cada fonte para conferir se as imagens
+  abrem; o resumo aparece na página da execução. Marcando "refazer", tenta de novo, nas duas fontes, os que não foram
+  achados. A busca da Apple aceita cerca de 20 consultas por minuto: mil livros levam perto de uma hora; se o tempo
+  acabar, basta rodar de novo, que ele continua de onde parou. O serviço não monta o painel: as capas novas aparecem
+  depois de `python tools/atualizar.py`, numa rodada.
+- **O que a coluna `origem` diz:** `edicao` e `obra`, capa da Open Library (a da edição com o nosso título, ou a da
+  obra em outra língua); `apple`, capa da Apple Books; `manual`, posta à mão; `nao-achei`, procurada só na Open
+  Library (falta a Apple); `nao-achei-2`, procurada nas duas; `sem-autor`, não procurada.
 - **Corrigir uma capa errada:** em `catalogo/capas.tsv`, troque o número da linha (ou ponha o endereço `https://…` de
   uma imagem) e escreva `manual` na coluna `origem` — a busca nunca mexe nessas linhas. Para um livro ficar sem
-  capa, apague o número e deixe `manual`. Depois, `python tools/atualizar.py`.
+  capa, apague o número e deixe `manual`. Depois, `python tools/atualizar.py`. Para a busca procurar de novo a capa de
+  um livro só, apague a linha dele em `catalogo/capas.tsv`: na execução seguinte ele conta como livro novo.
 - **Ou envie a capa pelo painel:** na ficha do livro, "Suas anotações" → "Enviar capa…". Essa imagem fica guardada no
   seu navegador (e no backup), vale só para você e aparece mesmo com as capas desligadas — não é pedida à internet.
 
@@ -412,15 +448,16 @@ avisa no fim, em vez de dar o teste por completo. `git fetch --unshallow` traz o
 
 | Script | Cobre |
 | --- | --- |
-| `importador` | Leitura das listagens, arquivo novo e ausente, casamento com o catálogo, seção 17, execução repetida sem mudanças; a classificação que vem da coluna `marcadores` do inventário (e o inventário antigo, sem ela); a pasta e o nome do arquivo de cada item a verificar, no resumo; quadrinhos (subpasta de série, edição nova de série conhecida, série nova, adaptação com o título de um livro, subpasta com listagem própria); `src/catalog.json` em dia com o catálogo; `renomeados.tsv`; as trilhas (`trilhas.md` × marcadores das linhas, com os avisos); `antes-da-vistoria.tsv`; o HTML pronto em dia com `src/` |
+| `importador` | Leitura das listagens, arquivo novo e ausente, casamento com o catálogo, seção 17, execução repetida sem mudanças; a classificação que vem da coluna `marcadores` do inventário (e o inventário antigo, sem ela); a pasta e o nome do arquivo de cada item a verificar, no resumo; quadrinhos (subpasta de série, edição nova de série conhecida, série nova, adaptação com o título de um livro, subpasta com listagem própria); `src/catalog.json` em dia com o catálogo; `renomeados.tsv`; as trilhas (`trilhas.md` × marcadores das linhas, com os avisos; um livro da biblioteca virtual numa trilha); `antes-da-vistoria.tsv`; o HTML pronto em dia com `src/`; `analisar_marcadores.py` roda e conta o catálogo inteiro |
 | `posse` | Físico × digital × nos dois: indicadores, gaveta, formulário, filtros, cartão no celular; quadrinhos (filtro "HQ", gaveta de uma série guardada em subpasta, busca pelo nome da subpasta, os cinco botões do filtro Tipo no celular); **migração do que o painel anterior salvou** no navegador e de um backup exportado por ele; livro anotado no painel e depois corrigido no catálogo ou no inventário (os painéis antigos são tirados do histórico do Git) |
-| `busca_capas` | A busca de capas (`tools/capas.py`), sem internet: a consulta feita para cada livro, a capa escolhida (edição em português antes da capa da obra), a segunda tentativa só pelo título, o `capas.tsv` (retomar de onde parou, não mexer no que foi posto à mão, a mesma capa em volumes de uma série), a amostra de `--testar`; `src/capas.json` em dia com `catalogo/capas.tsv` |
+| `busca_capas` | A busca de capas (`tools/capas.py`), sem internet. Open Library: a consulta feita para cada livro, a capa escolhida (edição em português antes da capa da obra), a segunda tentativa só pelo título. Apple Books: a consulta, o resultado que serve (título e autor conferem; caixa, trilogia, resumo e audiolivro não), o endereço da imagem, a espera quando a busca recusa por excesso de consultas. As duas em ordem: livro novo passa pelas duas; quem só tinha passado pela primeira vai só à segunda; a Apple fora do ar não atrapalha a Open Library. O `capas.tsv` (retomar de onde parou, não mexer no que foi posto à mão, a mesma capa em volumes de uma série), a amostra de `--testar` nas duas fontes; `src/capas.json` em dia com `catalogo/capas.tsv` |
 | `inicio` | Como o painel abre e os dados de exemplo: primeira abertura só com o catálogo; "Ver com dados de exemplo", "Limpar dados de exemplo" e "Recomeçar"; o endereço com `?exemplo=1`; **a saída dos exemplos de fábrica** para quem usava o painel anterior — sem edições, com um e com três livros editados, no computador e no celular, e com o painel que estava no ar antes da mudança (tirado do histórico do Git) |
+| `leitura_de_fora` | "Já li" para o livro que não está no acervo (emprestado, de biblioteca, perdido): a ficha da recomendação e a do item da lista de compra oferecem o botão; a leitura conta como "de fora", o livro sai da fila de recomendações e da ordem de compra e a trilha o dá por feito; data e nota opcionais; "Não li" desfaz, também no livro que o catálogo traz como lido; a recomendação lida que vai para a lista de compra e é comprada continua lida; os botões da ficha na largura do celular |
 | `opcionais` | Só o título é obrigatório: "Novo livro", "Já tenho", "Comprei", "Já li" e "Terminei hoje" sem data, loja ou valor; o que a ficha, os indicadores, Finanças, o CSV e o backup mostram nesses casos; data futura e valor ilegível recusados |
 | `anotacoes` | "Suas anotações" na ficha: comentário (salvo sozinho, limite de tamanho), "possui análise" (à mão e ao anexar; o filtro e a aba "Com anotações"), arquivos (anexar, abrir, baixar, remover; limites de tamanho e de quantidade), capa enviada (reduzida, vale com as capas desligadas, tirar); o que fica no `localStorage` e no IndexedDB; backup com anexos (exportar, importar noutro navegador, backup antigo sem anexos); CSV; celular; página em sandbox |
 | `trilhas` | Camadas e trilhas: os grupos de marcadores nos filtros; "Por que ler" na ficha; o painel das trilhas e a ficha de uma trilha (o que tenho, o que li, o que falta); "O que comprar primeiro" e a coluna "Ordem de compra" (a ordem, os motivos, o botão para a lista de compra; a ordem se refaz quando um livro é comprado); "Temas e camadas"; celular |
 | `vistoria` | O catálogo revisto no painel (todo livro com tipo, eixo, dificuldade e extensão; os marcadores novos nos filtros) e **o que acontece com quem já tinha livros editados**: com o painel anterior, tirado do Git, edita oito livros e abre o painel novo — o que não foi mexido acompanha a vistoria, o que foi mexido fica; duas edições que viraram uma linha; a recomendação que mudou de título. Depois, o catálogo muda de novo em quatro livros (só no catálogo, só no painel, nos dois, em nada) |
-| `capas_painel` | As capas no painel, com uma lista de capas conhecida: tabela, listas e ficha; imagem que falta; o que o navegador pede, e quando; a chave "Mostrar as capas"; a capa do catálogo não é guardada nem aceita de um backup; endereços inválidos; celular |
+| `capas_painel` | As capas no painel, com uma lista de capas conhecida: tabela, listas e ficha; capa da Open Library, capa da Apple Books e capa posta à mão; imagem que falta (nas duas fontes); o que o navegador pede, e quando; a chave "Mostrar as capas"; a capa do catálogo não é guardada nem aceita de um backup; endereços inválidos; celular |
 | `financas` | A guia Finanças e a navegação: nenhum valor em reais em Visão geral, Biblioteca e Recomendações; indicadores, cartões e tabela de Finanças, com e sem compras; ocultar valores; as seis guias numa linha só no celular (412 a 320 px) e nenhuma guia estourando a largura da tela |
 | `func3` … `func8` | Cotações, novo livro, limpar/restaurar exemplos, exportar/importar, períodos (dentro de "Mais filtros"), filtros, Finanças, CSV, dados corrompidos |
 | `valores`, `resto` | Valores digitados; excluir livro; período invertido; importação com registros ilegíveis |
@@ -433,11 +470,11 @@ avisa no fim, em vez de dar o teste por completo. `git fetch --unshallow` traz o
 | `run1`, `run5` … `run13` | Capturas de tela para conferência visual (só `run7` e `run9` entram no `tudo.py`) |
 
 **Depois de mudar o catálogo, alguns testes precisam de números novos.** `func6`, `limpo`, `posse`, `inicio`,
-`opcionais`, `financas`, `capas_painel`, `trilhas` e `vistoria` comparam o painel com contagens do catálogo atual
-(2.122 livros no acervo, 430 recomendações na fila, 404 com os dados de exemplo etc.). Quando entrarem livros,
-rode-os, confira os valores impressos nas linhas `FALHA` e atualize os literais. Os dados de exemplo são sorteados a
-partir do catálogo: mudar a dificuldade ou a extensão de um livro da estante muda também os valores em reais que
-`func6`, `financas`, `inicio` e `limpo` esperam.
+`opcionais`, `leitura_de_fora`, `financas`, `capas_painel`, `trilhas` e `vistoria` comparam o painel com contagens do
+catálogo atual (2.124 livros no acervo, 487 recomendações na fila, 461 com os dados de exemplo etc.). Quando entrarem
+livros, rode-os, confira os valores impressos nas linhas `FALHA` e atualize os literais. Os dados de exemplo são
+sorteados a partir do catálogo: mudar a dificuldade ou a extensão de um livro da estante muda também os valores em
+reais que `func6`, `financas`, `inicio` e `limpo` esperam.
 
 ## O que ainda pede conferência
 
@@ -451,8 +488,11 @@ exato do arquivo a abrir em cada caso. A mesma lista, sempre em dia, sai em `bib
 - **A classificação da biblioteca virtual é estimada.** Dificuldade, extensão e temas das 1.910 linhas da seção 17
   saíram do título, do autor e do tipo de obra; nenhum arquivo foi aberto. Pede uma conferência por amostragem.
 - **Dúvidas da vistoria** (`catalogo/VISTORIA.md`): dois arquivos de Rafael B. Correa que parecem ser o mesmo livro;
-  quatro novelas de Lovecraft e *A Metamorfose*, que continuam como recomendações mas talvez estejam dentro de
-  coletâneas que já estão no acervo; e a coletânea que fez *O Chamado de Cthulhu* passar a "tenho em digital".
+  e em qual dos dois livros de Lovecraft da estante (*Contos* ou *Lovecraft: Medo Clássico*) estão *O Chamado de
+  Cthulhu*, *Nas Montanhas da Loucura* e *A Sombra sobre Innsmouth* — e se *O Horror de Dunwich* e *Um Sussurro nas
+  Trevas*, que continuam como recomendações, também estão nele.
+- **A categorização ainda não foi conferida pelo dono.** `catalogo/ANALISE-DOS-FILTROS.md` diz quanto confiar em cada
+  dado e propõe uma conferência por amostragem de 40 livros.
 - **3 livros da estante** com `#verificar`: *Noite do Sul* (Érico Veríssimo), *A Arte de Envelhecer* (na prateleira
   consta Irvin D. Yalom) e *Coraline* (HQ ou romance ilustrado?). E **3 recomendações** marcadas desde antes da
   biblioteca virtual.

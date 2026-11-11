@@ -18,6 +18,8 @@ from playwright.sync_api import sync_playwright
 
 CHAVE = 'biblioteca-lucas:v1'
 OL = 'https://covers.openlibrary.org/b/id/'
+APPLE = 'https://is1-ssl.mzstatic.com/image/thumb/Publication115/v4/aa/bb/cc/capa-de-teste.jpg/200x300bb.jpg'     # como a busca guarda a capa da Apple Books
+APPLE_SUMIU = 'https://is1-ssl.mzstatic.com/image/thumb/Publication9/v4/dd/ee/ff/saiu-da-loja.jpg/200x300bb.jpg'     # uma que a Apple deixou de ter
 errs = []; falhas = []
 TOAST = "() => { const t = [...document.querySelectorAll('#toasts .toast')].map(t => t.textContent.replace(/\\u00a0/g, ' ')); return t[t.length - 1] || ''; }"
 
@@ -37,6 +39,8 @@ CONHECIDAS = {
     'As Cavernas de Aço': 222,                                      # capa que existe
     'A Peste': 404404,                                              # número sem imagem: a Open Library responde 404
     'Guerra e Paz': 'https://exemplo.org/capas/guerra-e-paz.jpg',   # endereço posto à mão no capas.tsv
+    'Contos da Taberna': APPLE,                                     # capa achada na Apple Books: o endereço inteiro
+    '1984': APPLE_SUMIU,                                            # capa da Apple que não existe mais: responde 404
     'O Vento Solar': 'javascript:alert(1)',                         # não é https: tem de ser ignorado
     'A Ilha': 'https://exemplo.org/x.jpg" onerror="window.__furo=1',  # aspas no endereço: não podem virar atributo
 }
@@ -55,12 +59,12 @@ with sync_playwright() as p:
         ctx = b.new_context(viewport={'width': largura, 'height': altura}, locale='pt-BR', timezone_id='America/Sao_Paulo', accept_downloads=True, is_mobile=celular, has_touch=celular)
         pg = ctx.new_page(); fixa(pg)
         pedidos = []
-        capas_de_mentira(pg, faltam=[404404], pedidos=pedidos)          # as da Open Library (a 404404 não existe)
+        capas_de_mentira(pg, faltam=[404404, APPLE_SUMIU], pedidos=pedidos)   # as da Open Library (a 404404 não existe) e as da Apple (uma saiu da loja)
         def outras(rota):                                                # qualquer outro endereço de fora
             pedidos.append(rota.request.url)
             if rota.request.url.startswith('https://exemplo.org/'): rota.fulfill(status=200, content_type='image/png', body=png(40, 90, 160))
             else: rota.abort()
-        pg.route(re.compile(r'^https?://(?!covers\.openlibrary\.org/)'), outras)
+        pg.route(re.compile(r'^https?://(?!covers\.openlibrary\.org/|is\d+-ssl\.mzstatic\.com/)'), outras)
         # a imagem que falta deixa uma linha no console do navegador ("Failed to load resource … 404"): é esperado
         pg.on('console', lambda m: errs.append(f'[{m.type}] {m.text}') if m.type in ('error', 'warning') and 'Failed to load resource' not in m.text else None)
         pg.on('pageerror', lambda e: errs.append(f'[pageerror] {e}'))
@@ -89,6 +93,10 @@ with sync_playwright() as p:
     ok('capa que não existe (404): a imagem some e fica o desenho com a inicial', c and not c['img'] and c['letra'] == 'A' and any(u.startswith(OL + '404404-') for u in pedidos), c)
     busca(pg, 'Guerra e Paz Tolstói'); pg.wait_for_timeout(400); c = pg.evaluate(CAPA, LINHA1)
     ok('capa posta à mão: vale o endereço completo', c and c['img'] and c['src'] == 'https://exemplo.org/capas/guerra-e-paz.jpg' and c['carregou'], c)
+    busca(pg, 'Contos da Taberna'); pg.wait_for_timeout(400); c = pg.evaluate(CAPA, LINHA1)
+    ok('capa da Apple Books: a imagem vem do endereço guardado, sem nada acrescentado', c and c['img'] and c['src'] == APPLE and c['carregou'] and c['preguica'] == 'lazy', c)
+    busca(pg, '1984 Orwell'); pg.wait_for_timeout(500); c = pg.evaluate(CAPA, '#p-tab-geral tbody tr[data-id]:first-child .capa')
+    ok('capa da Apple que deixou de existir (404): fica o desenho com a inicial, como na Open Library', c and not c['img'] and c['letra'] == '1' and APPLE_SUMIU in pedidos, c)
     busca(pg, 'Vento Solar'); c = pg.evaluate(CAPA, LINHA1)
     ok('endereço que não é https é ignorado', c and not c['img'], c)
     busca(pg, 'A Ilha Huxley'); pg.wait_for_timeout(300); c = pg.evaluate(CAPA, LINHA1)
@@ -112,8 +120,8 @@ with sync_playwright() as p:
 
     print('O QUE O NAVEGADOR PEDIU')
     de_fora = sorted(set(pedidos))
-    ruins = [u for u in de_fora if not re.fullmatch(re.escape(OL) + r'\d+-M\.jpg\?default=false', u) and u != 'https://exemplo.org/capas/guerra-e-paz.jpg' and not u.startswith('https://exemplo.org/x.jpg')]
-    ok('só imagens de capa, pelo número ou pelo endereço posto à mão', bool(de_fora) and not ruins, ruins[:3] or de_fora)
+    ruins = [u for u in de_fora if not re.fullmatch(re.escape(OL) + r'\d+-M\.jpg\?default=false', u) and u not in ('https://exemplo.org/capas/guerra-e-paz.jpg', APPLE, APPLE_SUMIU) and not u.startswith('https://exemplo.org/x.jpg')]
+    ok('só imagens de capa: pelo número (Open Library), pelo endereço da Apple ou pelo posto à mão', bool(de_fora) and not ruins, ruins[:3] or de_fora)
     numeros = sorted({re.search(r'/(\d+)-M', u).group(1) for u in de_fora if u.startswith(OL)})
     ok('e só das capas que apareceram na tela (111 e 404404; a 222 não foi vista)', numeros == ['111', '404404'], numeros)
     ok('nenhum pedido de capa para "javascript:" nem para livro sem capa', not any('javascript' in u for u in de_fora))
@@ -121,7 +129,7 @@ with sync_playwright() as p:
     print('CAPAS DESLIGADAS')
     pg.click('#b-dados'); pg.wait_for_timeout(400)
     texto = pg.inner_text('#dlg').replace('\u00a0', ' ')
-    ok('"Seus dados" explica de onde vêm as capas e quantos livros têm', 'Open Library' in texto and '5 dos 2.554 livros têm capa encontrada' in texto, re.findall(r'\d+ dos [\d.]+ livros[^.]*', texto))
+    ok('"Seus dados" explica de onde vêm as capas e quantos livros têm', 'Open Library' in texto and 'Apple Books' in texto and '7 dos 2.614 livros têm capa encontrada' in texto, re.findall(r'\d+ dos [\d.]+ livros[^.]*', texto))
     ok('a chave "mostrar as capas" começa ligada', pg.is_checked('#dlg input[data-x=capas]'))
     pg.click('#dlg input[data-x=capas]'); pg.wait_for_timeout(500)
     ok('desligar avisa que nada mais será buscado', pg.evaluate(TOAST) == 'Capas desligadas: o painel não busca mais nenhuma imagem.', pg.evaluate(TOAST))

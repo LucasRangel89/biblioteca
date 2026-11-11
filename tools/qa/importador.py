@@ -232,9 +232,9 @@ confere(renomeados('impar\tjose\tÍmpar\tJosé') == ({}, []), 'só acento ou mai
 
 # 10 ▸ as trilhas de leitura (catalogo/trilhas.md): a lista de cada trilha e o marcador #trilha-… nas linhas dos livros
 L0 = parse(antes['catalogo.md']); av = []; tr = bc.ler_trilhas(L0, av)
-confere(len(tr) == 20 and not av and tr == json.loads(bc.DEST_TRILHAS.read_text(encoding='utf-8')), 'as 20 trilhas são lidas sem avisos, e src/trilhas.json está em dia' + (': ' + ' | '.join(av[:3]) if av else ''))
+confere(len(tr) == 36 and not av and tr == json.loads(bc.DEST_TRILHAS.read_text(encoding='utf-8')), 'as 36 trilhas são lidas sem avisos, e src/trilhas.json está em dia' + (': ' + ' | '.join(av[:3]) if av else ''))
 confere(all(sorted(t[3]) == [i for i, b in enumerate(L0) if t[0] in b['tags']] and len(set(t[3])) == len(t[3]) >= 3 for t in tr), 'a lista de cada trilha são exatamente as linhas do catálogo que levam o marcador dela')
-confere(all(t[1] and 30 < len(t[2]) < 400 and '|' not in t[2] and '#' not in t[2] for t in tr) and len({t[0] for t in tr}) == len({t[1] for t in tr}) == 20, 'cada trilha tem nome, marcador próprio e uma descrição curta, sem tabela nem marcador colados')
+confere(all(t[1] and 30 < len(t[2]) < 400 and '|' not in t[2] and '#' not in t[2] for t in tr) and len({t[0] for t in tr}) == len({t[1] for t in tr}) == 36, 'cada trilha tem nome, marcador próprio e uma descrição curta, sem tabela nem marcador colados')
 
 def trilhas(texto, linhas):
     (tmp / 'trilhas.md').write_text(texto, encoding='utf-8', newline='\n'); av = []
@@ -286,6 +286,17 @@ def embutido(nome):
     return json.loads(m.group(1)) if m else None
 confere(embutido('CATALOGO') == dados and embutido('TRILHAS_DADOS') == tr and embutido('CLASSE_ANTES') == ca,
         'Biblioteca_Lucas_Dashboard.html leva o catálogo, as trilhas e a classificação de antes que estão em src/ (se falhar: python tools/atualizar.py)')
+
+# 13 ▸ a medição dos filtros (tools/analisar_marcadores.py): de onde saem os números de catalogo/ANALISE-DOS-FILTROS.md
+import analisar_marcadores as am
+LA = am.carregar(); GA = am.grupos_do_painel(LA); medida = am.medir()
+confere(len(LA) == len(dados) and f'CATÁLOGO: {len(LA)} linhas' in medida and all(k in medida for k in ('COBERTURA', 'ESPECÍFICO × GERAL', 'EIXOS', 'DIFICULDADE E EXTENSÃO', 'PASTA DO DONO')),
+        'analisar_marcadores.py mede o catálogo inteiro: alcance dos filtros, eixos, dificuldade e extensão, pastas × eixos')
+confere(len(GA['Gêneros']) > 20 and len(GA['Temas']) > 40 and len(GA['Trilhas de leitura']) == len(tr) and all(1 <= b['eixo'] <= 16 and b['d'] and b['e'] and b['tipo'] for b in LA),
+        'os grupos medidos são os do painel, e toda linha do catálogo tem tipo, eixo, dificuldade e extensão')
+usados = {t for b in LA for t in b['tags']}
+sem_uso = [t for g in ('Gêneros', 'Temas', 'Época e origem', 'Afinidades') for t in GA[g] if t not in usados]
+confere(not sem_uso, 'todo marcador que o painel oferece nos filtros está em uso em algum livro' + (': ' + ', '.join(sem_uso[:5]) if sem_uso else ''))
 
 shutil.rmtree(tmp, ignore_errors=True)
 print('ERROS:', len(erros))

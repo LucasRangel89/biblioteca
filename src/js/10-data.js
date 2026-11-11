@@ -164,7 +164,7 @@ function novoLivro(o) {
     arq: '',        // identificadores dos arquivos da biblioteca virtual (reconhecem o livro se o título mudar no catálogo)
     _dg: null,      // dados da biblioteca virtual; vêm sempre do catálogo embutido e não são salvos
     _ant: null,     // [[título, autor], …] que a linha do catálogo já teve (catalogo/renomeados.tsv); também vêm do catálogo e não são salvos
-    _img: 0,        // imagem da capa: número na Open Library ou endereço https (catalogo/capas.tsv); vem do catálogo e não é salva
+    _img: 0,        // imagem da capa: número na Open Library ou endereço https — o da Apple Books, ou um posto à mão (catalogo/capas.tsv); vem do catálogo e não é salva
   }, o));
 }
 const MAX_COMENTARIO = 5000, MAX_ANEXOS = 8;

@@ -6,8 +6,8 @@ Gerado por `tools/importar_digital.py`. Não edite: é refeito a cada execução
 
 - **2382 arquivos** no inventário (1161 pdf, 1065 epub, 84 cbr, 44 cbz, 13 rar, 5 mobi, 5 zip, 4 azw3, 1 txt) e **104 pastas de séries** de quadrinhos (cada uma guarda as edições de uma série), em 38 pastas.
 - **2049 obras** diferentes: **1805 livros** e **244 quadrinhos**. O mesmo livro em dois formatos, ou em duas pastas, conta uma vez; uma série de quadrinhos conta uma vez, sejam quantas forem as edições.
-- **24** delas também estão na estante física (`#tenho-fisico #tenho-digital`).
-- **115** estavam entre as recomendações do catálogo e agora aparecem como `#tenho-digital`.
+- **25** delas também estão na estante física (`#tenho-fisico #tenho-digital`).
+- **114** estavam entre as recomendações do catálogo e agora aparecem como `#tenho-digital`.
 - **1910** são novas no catálogo: entraram na seção 17.
 - Ficaram só no inventário, fora do catálogo: 12 apostila, 3 artigo, 8 outro, 13 periodico (linhas do inventário).
 - A subpasta `novas`, de `novashqs`, tem listagem própria, `novasHQSS`: o que há nela está contado nessa pasta.
@@ -60,6 +60,7 @@ Livros da estante física que também estão na biblioteca virtual.
 - Coraline — Neil Gaiman e Dave (P. Craig) Russell
 - Psicopatologia — David H. Barlow e V. Mark Durand
 - História da Psicologia Moderna — Duane P. Schultz e Sydney E. Schultz
+- O Chamado de Cthulhu — H.P. Lovecraft
 
 ## Recomendações que já tenho em digital
 
@@ -131,7 +132,6 @@ Estavam no catálogo como recomendação; continuam na seção de origem, agora 
 - Série Sharpe — Bernard Cornwell (seção 6)
 - Aniquilação (trilogia: Aniquilação · Autoridade · Aceitação) — Jeff VanderMeer (seção 7)
 - O Caso de Charles Dexter Ward — H.P. Lovecraft (seção 7)
-- O Chamado de Cthulhu — H.P. Lovecraft (seção 7)
 - O Pescador — John Langan (seção 7)
 - O Rei de Amarelo — Robert W. Chambers (seção 7)
 - A Paisagem Moral — Sam Harris (seção 9)

@@ -3,7 +3,7 @@
 
 Os outros testes abrem o arquivo por file://. Aqui se confere o que só aparece num site:
   · o painel vem inteiro numa única requisição: nenhum arquivo ao lado dele. De outro endereço só vêm as imagens das
-    capas (Open Library), pedidas sem dizer de que página; com as capas desligadas, não vem nada;
+    capas (Open Library e Apple Books), pedidas sem dizer de que página; com as capas desligadas, não vem nada;
   · é o mesmo painel: os indicadores são iguais aos do arquivo aberto direto, e ele abre sem dados de exemplo
     (que só entram com ?exemplo no fim do endereço);
   · o navegador guarda o que se anota, e isso continua lá depois de recarregar a página;
@@ -11,12 +11,13 @@ Os outros testes abrem o arquivo por file://. Aqui se confere o que só aparece 
   · quem já usava o arquivo no computador leva os dados para o site por um backup.
 """
 from caminhos import PAINEL, PAINEL_LIMPO, TMP
-from relogio import fixa
+from relogio import fixa, eh_capa, CAPA_APPLE
 import functools, http.server, json, re, shutil, threading
 from playwright.sync_api import sync_playwright
 
 CHAVE = 'biblioteca-lucas:v1'
-CAPA = 'https://covers.openlibrary.org/b/id/'       # as imagens das capas: a única coisa que o painel busca fora (relogio.py responde no lugar da internet)
+CAPA = 'https://covers.openlibrary.org/b/id/'       # as imagens das capas são a única coisa que o painel busca fora: aqui, as da Open Library;
+                                                    # as da Apple Books têm a forma de CAPA_APPLE (relogio.py responde no lugar da internet)
 errs = []; falhas = []; origens = []
 K = "() => Object.fromEntries([...document.querySelectorAll('.visao:not([hidden]) .kpi')].map(k => [k.dataset.k, k.querySelector('.kpi-v b').textContent + ' ¦ ' + k.querySelector('.kpi-s').textContent]))"
 TOASTS = "() => [...document.querySelectorAll('#toasts .toast')].map(t => t.textContent).join(' ¦ ')"
@@ -39,7 +40,7 @@ def pagina(b, pedidos=None):
     pg = ctx.new_page(); fixa(pg)
     pg.on('console', lambda m: errs.append(f'[{m.type}] {m.text}') if m.type in ('error', 'warning') else None)
     pg.on('pageerror', lambda e: errs.append(f'[pageerror] {e}'))
-    if pedidos is not None: pg.on('request', lambda r: (pedidos.append(r.url), origens.append(r.headers.get('referer', '')) if r.url.startswith(CAPA) else None))
+    if pedidos is not None: pg.on('request', lambda r: (pedidos.append(r.url), origens.append(r.headers.get('referer', '')) if eh_capa(r.url) else None))
     return pg
 
 
@@ -120,13 +121,13 @@ with sync_playwright() as p:
     ok('depois de recarregar, o site tem o que estava no arquivo', achados == ['Livro Anotado no Arquivo'], achados)
 
     print('DE FORA, SÓ AS CAPAS')
-    capas = [u for u in pedidos if u.startswith(CAPA)]
-    fora = sorted({u for u in pedidos if u != SITE and not u.startswith(('data:', 'blob:', CAPA))})
+    capas = [u for u in pedidos if eh_capa(u)]
+    fora = sorted({u for u in pedidos if u != SITE and not u.startswith(('data:', 'blob:')) and not eh_capa(u)})
     ok('além da própria página, o navegador só buscou imagens de capa', pedidos.count(SITE) >= 3 and not fora, fora or f'{pedidos.count(SITE)} cargas da página, {len(capas)} pedidos de capa')
     com_capa = pg.evaluate("() => document.querySelectorAll('.capa img').length")
     ok('há pedidos de capa quando há capas na tela, e só então', (len(capas) > 0) == (com_capa > 0), (len(capas), com_capa))
-    ruins = [u for u in capas if not re.fullmatch(re.escape(CAPA) + r'\d+-M\.jpg\?default=false', u)]
-    ok('cada pedido de capa leva só o número da capa', not ruins, ruins[:3])
+    ruins = [u for u in capas if not re.fullmatch(re.escape(CAPA) + r'\d+-M\.jpg\?default=false', u) and not CAPA_APPLE.fullmatch(u)]
+    ok('cada pedido de capa leva só o número da capa (Open Library) ou o endereço da imagem (Apple Books)', not ruins, ruins[:3])
     ok('e não diz de que página veio (sem "referer")', not any(origens), sorted(set(origens))[:3])
     # capas desligadas em "Seus dados": depois disso, o painel não busca mais nada fora
     pg.click('#b-dados'); pg.wait_for_timeout(400); pg.click('#dlg [data-x=capas]'); pg.wait_for_timeout(500); pg.keyboard.press('Escape'); pg.wait_for_timeout(300)

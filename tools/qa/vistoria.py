@@ -67,7 +67,7 @@ with sync_playwright() as p:
     print('O CATÁLOGO REVISTO, NO PAINEL')
     pg = pagina(b); pg.goto(PAINEL_LIMPO); pg.wait_for_timeout(1200); pg.click('#aviso .pri'); pg.wait_for_timeout(600)
     k = pg.evaluate(K); todos = lista_de(pg); L = livros_de(pg)
-    ok('2.554 livros: 2.122 no acervo, 2 leituras, 430 recomendações na fila', len(todos) == 2554 and (k['acervo']['v'], k['leituras']['v'], k['recs']['v']) == ('2.122', '2', '430') and k['acervo']['s'] == '97 físicos · 2.049 digitais · 24 nos dois', {a: k[a] for a in ('acervo', 'recs')})
+    ok('2.614 livros: 2.124 no acervo, 3 leituras, 487 recomendações na fila', len(todos) == 2614 and (k['acervo']['v'], k['leituras']['v'], k['recs']['v']) == ('2.124', '3', '487') and k['acervo']['s'] == '100 físicos · 2.049 digitais · 25 nos dois', {a: k[a] for a in ('acervo', 'recs')})
     semd = [x['t'] for x in todos if not any(m in x['tags'] for m in ('d1', 'd2', 'd3'))]; seme = [x['t'] for x in todos if not any(m in x['tags'] for m in ('e1', 'e2', 'e3'))]
     ok('todo livro tem dificuldade e extensão (antes, nenhum da biblioteca virtual tinha)', not semd and not seme, (len(semd), len(seme), semd[:3]))
     semtipo = [x['t'] for x in todos if not any(m in x['tags'] for m in ('F', 'NF', 'HQ', 'poesia', 'antologia'))]
@@ -130,8 +130,8 @@ with sync_playwright() as p:
 
         pg = pagina(b, salvo); pg.goto(PAINEL_LIMPO); pg.wait_for_timeout(1500); t = pg.evaluate(TOASTS); pg.wait_for_timeout(700)
         N = livros_de(pg); k = pg.evaluate(K); total = len(lista_de(pg))
-        ok('o painel novo abre com os dados antigos e avisa que o catálogo mudou', t == 'O catálogo mudou: 6 saíram. O que você editou no painel foi mantido.' and total == 2554, (t, total))
-        ok('os indicadores: os dois livros lidos contam; os dois postos na lista de compra não estão no acervo nem nas recomendações', (k['acervo']['v'], k['leituras']['v'], k['recs']['v']) == ('2.121', '4', '429'), {a: k[a]['v'] for a in k})
+        ok('o painel novo abre com os dados antigos e avisa que o catálogo mudou', t == 'O catálogo mudou: 60 livros entraram e 6 saíram. O que você editou no painel foi mantido.' and total == 2614, (t, total))
+        ok('os indicadores: os dois livros lidos contam; os dois postos na lista de compra não estão no acervo nem nas recomendações', (k['acervo']['v'], k['leituras']['v'], k['recs']['v']) == ('2.123', '5', '486'), {a: k[a]['v'] for a in k})
         x = N['Contato']
         ok('1 ▸ só marcado como lido: a classificação acompanha a vistoria (ficção, eixo 2, temas trocados) e a leitura fica', x['tags'] == ['F', 'd2', 'e2', 'ficcao-cientifica', 'classico', 'tenho-digital', 'lido'] and x['eixo'] == 2 and x.get('leit') == 'lido' and x.get('u') == 1, (x['tags'], x['eixo'], x.get('leit')))
         ok('    e o livro passa a guardar a classificação do catálogo de agora, para a próxima mudança', x.get('cl') == '2|F ficcao-cientifica classico d2 e2', x.get('cl'))

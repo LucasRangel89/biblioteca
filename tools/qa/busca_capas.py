@@ -1,10 +1,15 @@
-"""A busca de capas (tools/capas.py), sem internet: as respostas da Open Library usadas aqui foram montadas no
-formato das respostas reais (consultadas em 10/11/2026), só com os campos que o script lê.
+"""A busca de capas (tools/capas.py), sem internet: as respostas da Open Library e da busca do iTunes (Apple Books)
+usadas aqui foram montadas no formato das respostas reais (consultadas em 10 e 11/11/2026), só com os campos que o
+script lê.
 
   · que consulta é feita para cada livro, e para quais não se procura;
   · que capa é escolhida entre os resultados (a da edição em português antes da capa da obra);
   · a segunda tentativa, só pelo título, quando o autor está escrito de outro jeito (Tolstói · Толстой);
+  · a segunda fonte, a Apple Books: a consulta, o resultado que serve (título e autor conferem; caixa, trilogia e
+    resumo não), o endereço da imagem, a espera quando a busca recusa por excesso de consultas;
   · catalogo/capas.tsv: gravar, ler de novo, retomar de onde parou, não mexer no que foi posto à mão;
+  · as duas fontes em ordem: livro novo passa pelas duas; quem só tinha passado pela Open Library vai só à Apple;
+    a Apple fora do ar não atrapalha a Open Library, e o que faltou fica para a execução seguinte;
   · a mesma capa nunca fica em dois volumes de uma série;
   · a amostra (--testar): conta como capa só o que é mesmo uma imagem, e exige "não encontrada" para capa que não existe;
   · o que vai para o painel (src/capas.json): uma posição por linha do catálogo, em dia com o capas.tsv.
@@ -142,6 +147,17 @@ real = C.buscar_json
 C.buscar_json = rede
 procurar_real = C.procurar
 C.procurar = lambda t, a, hq, lim, buscar=None: procurar_real(t, a, hq, lim, rede)
+class Apple:
+    """Faz o papel da busca do iTunes: responde pelo termo consultado e anota o que foi perguntado."""
+    def __init__(self, respostas=None): self.respostas, self.feitas = respostas or {}, []
+    def __call__(self, params, limite):
+        self.feitas.append(params['term'])
+        r = self.respostas.get(params['term'])
+        if isinstance(r, Exception): raise r
+        return {'resultCount': len(r or []), 'results': r or []}
+apple = Apple()                                                    # nesta parte, a Apple não tem nenhum dos livros
+procurar_apple_real = C.procurar_apple
+C.procurar_apple = lambda t, a, hq, lim, buscar=None: procurar_apple_real(t, a, hq, lim, apple)
 
 def roda(*args):
     s = io.StringIO()
@@ -153,7 +169,8 @@ confere(codigo == 0 and '5 a procurar' in saida and rede.feitas == [] and 'Livro
 codigo, saida = roda()
 linhas = {l.split('\t')[0]: l.split('\t')[2:] for l in tsv.read_text(encoding='utf-8').splitlines()[1:]}
 confere(linhas.get('As Cavernas de Aço') == ['15138088', 'edicao'] and linhas.get('Guerra e Paz') == ['12369940', 'obra'], 'capas achadas: número e origem gravados', linhas)
-confere(linhas.get('Livro Que Não Existe') == ['', 'nao-achei'] and linhas.get('Antologia de Contos') == ['', 'sem-autor'], 'sem capa: a linha fica, com o motivo', linhas)
+confere(linhas.get('Livro Que Não Existe') == ['', 'nao-achei-2'] and linhas.get('Antologia de Contos') == ['', 'sem-autor'], 'sem capa: a linha fica, com o motivo ("nao-achei-2" = procurado nas duas fontes)', linhas)
+confere(apple.feitas == ['Livro Que Não Existe tal'], 'só o que a Open Library não achou é procurado na Apple (o livro sem autor e o de capa posta à mão, não)', apple.feitas)
 confere(linhas.get('Capa Posta à Mão') == ['https://exemplo.org/capa.jpg', 'manual'], 'capa posta à mão não é procurada nem trocada')
 confere('Fundação' not in linhas and '1 consulta(s) falharam' in saida, 'consulta que falhou: o livro fica fora do arquivo, para a próxima execução', saida.strip().splitlines()[-2:])
 confere(linhas.get('Livro Que Saiu') == ['999', 'manual'] and 'Outro Que Saiu' not in linhas, 'livro que saiu do catálogo: a linha só fica se foi posta à mão')
@@ -172,8 +189,10 @@ codigo, saida = roda()
 confere(rede.feitas == [] and '0 a procurar' in saida, 'terceira execução: nada a procurar')
 texto2 = tsv.read_text(encoding='utf-8')
 rede.feitas.clear()
+apple.feitas.clear()
 codigo, saida = roda('--refazer')
-confere(rede.feitas == ['title:"Livro Que Não Existe" author:tal', 'title:"Livro Que Não Existe"'] and tsv.read_text(encoding='utf-8') == texto2, '--refazer procura de novo só os "nao-achei"', rede.feitas)
+confere(rede.feitas == ['title:"Livro Que Não Existe" author:tal', 'title:"Livro Que Não Existe"'] and apple.feitas == ['Livro Que Não Existe tal'] and tsv.read_text(encoding='utf-8') == texto2,
+        '--refazer procura de novo, nas duas fontes, só os que não foram achados', (rede.feitas, apple.feitas))
 
 # capa tirada à mão: a linha fica sem número e marcada "manual" — nunca mais é procurada, nem com --refazer
 tsv.write_text(texto2.replace('Guerra e Paz\tLiev Tolstói\t12369940\tobra', 'Guerra e Paz\tLiev Tolstói\t\tmanual'), encoding='utf-8')
@@ -196,11 +215,12 @@ class Fora:
     feitas = 0
     def __call__(self, params, limite): Fora.feitas += 1; raise OSError('rede fora')
 C.procurar = lambda t, a, hq, lim, buscar=None: procurar_real(t, a, hq, lim, Fora())
+apple.feitas.clear()
 codigo, saida = roda()
 confere(codigo == 1 and 'parei de procurar' in saida and 30 <= Fora.feitas <= 32, 'nenhuma consulta responde: para depois das 30 primeiras e avisa', (codigo, Fora.feitas))
 confere('a Open Library não respondeu' in saida, 'e diz que o resto ficou para a próxima execução', saida.strip().splitlines()[-1:])
-confere(tsv.read_text(encoding='utf-8').strip() == 'titulo\tautor\tcapa\torigem', 'e nenhum livro é dado como "não achei"')
-C.procurar, C.buscar_json = procurar_real, real
+confere(tsv.read_text(encoding='utf-8').strip() == 'titulo\tautor\tcapa\torigem' and apple.feitas == [], 'e nenhum livro é dado como "não achei", nem levado à Apple')
+C.procurar, C.procurar_apple, C.buscar_json = procurar_real, procurar_apple_real, real
 
 # uma capa não serve a dois livros (volumes de uma série que casaram com a mesma edição)
 serie = {('transurfing', 'z'): {'titulo': 'Transurfing', 'autor': 'Z', 'capa': '8729438', 'origem': 'edicao'},
@@ -219,7 +239,143 @@ confere(serie[('sapiens', 'h')]['capa'] == '14540965', 'capa de um livro só, co
 confere(serie[('serie vol 1', 'm')]['capa'] == serie[('serie vol 2', 'm')]['capa'] == '777', 'capas postas à mão nunca saem, mesmo repetidas')
 confere(C.sem_repetidas(serie) == 0, 'aplicar de novo não muda mais nada')
 
-# ───────── 6 ▸ a amostra: as capas guardadas abrem? ─────────
+# ───────── 6 ▸ a segunda fonte: Apple Books ─────────
+print('A SEGUNDA FONTE: APPLE BOOKS')
+ARTE = lambda n: f'https://is1-ssl.mzstatic.com/image/thumb/Publication{n}/v4/aa/bb/cc/capa-{n}.jpg/100x100bb.jpg'       # como vem na resposta
+NO_PAINEL = lambda n: f'https://is1-ssl.mzstatic.com/image/thumb/Publication{n}/v4/aa/bb/cc/capa-{n}.jpg/200x300bb.jpg'  # como é guardado
+def ap(titulo, autor, arte, tipo='ebook'):
+    return {'kind': tipo, 'trackName': titulo, 'artistName': autor, 'artworkUrl60': arte.replace('100x100bb', '60x60bb'), 'artworkUrl100': arte}
+
+qa = lambda t, a: (C.consulta_apple(t, a) or {}).get('term')
+confere(qa('Mamãe e o Sentido da Vida', 'Irvin D. Yalom') == 'Mamãe e o Sentido da Vida yalom', 'a consulta: título e sobrenome do autor', qa('Mamãe e o Sentido da Vida', 'Irvin D. Yalom'))
+confere(qa('Sapiens: Uma Breve História da Humanidade', 'Yuval Noah Harari') == 'Sapiens harari' and qa('Herege (Busca do Graal, vol. 3)', 'Bernard Cornwell') == 'Herege cornwell', 'subtítulo e parênteses não entram na consulta')
+pa = C.consulta_apple('Mamãe e o Sentido da Vida', 'Irvin D. Yalom')
+confere(pa['country'] == 'br' and pa['media'] == 'ebook', 'procura na loja do Brasil, só entre os livros digitais', pa)
+confere(all(C.consulta_apple('Um Livro Qualquer', a) is None for a in ('', 'Vários autores', 'Autor não informado')), 'sem autor certo não se procura, como na Open Library')
+confere(C.consulta_apple('1984 (em quadrinhos)', 'George Orwell') is None and qa('1984 (em quadrinhos)', 'George Orwell e Fido Nesti') == '1984 nesti', 'adaptação em quadrinhos: só com o autor da adaptação')
+
+YALOM = [ap('Mama a zmysel života', 'Irvin D. Yalom', ARTE(3)), ap('Mamãe e o sentido da vida', 'Irvin D. Yalom', ARTE(115))]
+confere(C.escolher_apple('Mamãe e o Sentido da Vida', 'yalom', YALOM) == NO_PAINEL(115), 'fica o livro com o nosso título (a edição em outra língua vem antes na resposta e não serve)', C.escolher_apple('Mamãe e o Sentido da Vida', 'yalom', YALOM))
+confere(C.escolher_apple('Mamãe e o Sentido da Vida', 'yalom', [ap('Mamãe e o sentido da vida', 'Outra Pessoa', ARTE(1))]) == '', 'mesmo título, outro autor: não serve')
+confere(C.escolher_apple('Guerra e Paz', 'tolstoi', [ap('Guerra e paz', 'Leo Tolstoy', ARTE(2))]) == NO_PAINEL(2) and C.som('Dostoiévski') == C.som('Dostoievsky'), 'o mesmo autor em outra grafia (Tolstói · Tolstoy) serve')
+SAPIENS_A = [ap('Sapiens: Uma breve história da humanidade', 'Yuval Noah Harari', ARTE(4)), ap('Sapiens', 'Yuval Noah Harari', ARTE(5))]
+confere(C.escolher_apple('Sapiens', 'harari', SAPIENS_A) == NO_PAINEL(5) and C.escolher_apple('Sapiens', 'harari', SAPIENS_A[:1]) == NO_PAINEL(4), 'título igual ganha de título com subtítulo, mesmo vindo depois; subtítulo de um lado só também serve')
+OUTROS = [ap('Fundação - Trilogia', 'Isaac Asimov', ARTE(6)), ap('Box Fundação', 'Isaac Asimov', ARTE(7)), ap('Fundação: Resumo do livro de Isaac Asimov', 'Isaac Asimov', ARTE(8))]
+confere(C.escolher_apple('Fundação', 'asimov', OUTROS) == '', 'caixa, trilogia e resumo do livro não servem')
+confere(C.escolher_apple('A Trilogia de Nova York', 'auster', [ap('A trilogia de Nova York', 'Paul Auster', ARTE(9))]) == NO_PAINEL(9), 'mas "trilogia" no nosso próprio título não atrapalha')
+confere(C.escolher_apple('Batman: Ano Um', 'miller', [ap('Batman', 'Frank Miller', ARTE(10))], hq=True) == '', 'quadrinho: o subtítulo não pode faltar')
+confere(C.escolher_apple('Sapiens', 'harari', [ap('Sapiens', 'Yuval Noah Harari', ARTE(11), tipo='audiobook')]) == '', 'o que não é livro digital (audiolivro) não serve')
+r60 = {'kind': 'ebook', 'trackName': 'Sapiens', 'artistName': 'Yuval Noah Harari', 'artworkUrl60': ARTE(12).replace('100x100bb', '60x60bb')}
+confere(C.escolher_apple('Sapiens', 'harari', [r60]) == NO_PAINEL(12), 'o endereço guardado é sempre o do tamanho que o painel usa (200 × 300), venha a resposta no tamanho que vier')
+tortos = ['', 'http://is1-ssl.mzstatic.com/image/thumb/a/b.jpg/100x100bb.jpg', 'https://exemplo.org/image/thumb/a/b.jpg/100x100bb.jpg', 'https://is1-ssl.mzstatic.com/image/thumb/a/b.jpg/100x100bb.jpg"><script>',
+          'https://is1-ssl.mzstatic.com/outra/coisa.jpg', 'https://is1-ssl.mzstatic.com.exemplo.org/image/thumb/a/b.jpg/100x100bb.jpg']
+confere(all(C.escolher_apple('Sapiens', 'harari', [ap('Sapiens', 'Yuval Noah Harari', u)]) == '' for u in tortos), 'endereço que não tem a forma dos da Apple não é guardado (vazio, http, outro site, aspas)', [u for u in tortos if C.escolher_apple('Sapiens', 'harari', [ap('Sapiens', 'Yuval Noah Harari', u)])])
+confere(C.escolher_apple('Sapiens', 'harari', None) == '' and C.escolher_apple('Sapiens', 'harari', ['texto solto', {}]) == '', 'resposta vazia ou torta: nada')
+
+apl = Apple({'Mamãe e o Sentido da Vida yalom': YALOM})
+confere(C.procurar_apple('Mamãe e o Sentido da Vida', 'Irvin D. Yalom', False, None, apl) == (NO_PAINEL(115), 'apple') and apl.feitas == ['Mamãe e o Sentido da Vida yalom'], 'achou: o endereço e a origem "apple", com uma consulta só')
+confere(C.procurar_apple('Livro Que Não Existe', 'Fulano de Tal', False, None, Apple()) == ('', 'nao-achei-2'), 'não achou: "nao-achei-2", sem capa')
+try: C.procurar_apple('Mamãe e o Sentido da Vida', 'Irvin D. Yalom', False, None, Apple({'Mamãe e o Sentido da Vida yalom': OSError('rede fora')})); levantou = False
+except OSError: levantou = True
+confere(levantou, 'consulta que falha levanta erro (o livro não é dado como "não achei")')
+
+# a busca recusa quando as consultas vêm depressa demais: esperar e tentar de novo
+import urllib.error
+class Resposta:
+    def __init__(self, corpo): self.corpo = corpo
+    def read(self): return self.corpo
+    def __enter__(self): return self
+    def __exit__(self, *a): return False
+class SemEspera:
+    def espera(self): pass
+def servidor(respostas):
+    fila, pedidos = list(respostas), []
+    def abre(req, timeout=None):
+        pedidos.append(req.full_url)
+        r = fila.pop(0)
+        if isinstance(r, int): raise urllib.error.HTTPError(req.full_url, r, 'recusado', {}, None)
+        return Resposta(json.dumps(r).encode('utf-8'))
+    return abre, pedidos
+abrir_url_real, esperas = C.urllib.request.urlopen, []
+try:
+    C.urllib.request.urlopen, pedidos = servidor([403, 429, {'resultCount': 0, 'results': []}])
+    r = C.buscar_apple(pa, SemEspera(), dormir=esperas.append)
+    confere(r == {'resultCount': 0, 'results': []} and esperas == [60, 120] and len(pedidos) == 3, 'busca recusada por excesso de consultas (403, 429): espera um minuto, depois dois, e tenta de novo', (esperas, len(pedidos)))
+    confere(pedidos[0].startswith('https://itunes.apple.com/search?') and 'term=Mam%C3%A3e+e+o+Sentido+da+Vida+yalom' in pedidos[0] and 'country=br' in pedidos[0] and 'media=ebook' in pedidos[0], 'o endereço consultado é o da busca do iTunes', pedidos[0])
+    C.urllib.request.urlopen, pedidos = servidor([403, 403, 403]); esperas.clear()
+    try: C.buscar_apple(pa, SemEspera(), dormir=esperas.append); levantou = False
+    except urllib.error.HTTPError: levantou = True
+    confere(levantou and len(pedidos) == 3 and esperas == [60, 120], 'recusada três vezes: a consulta falha (e o livro fica para a próxima execução)', (len(pedidos), esperas))
+    C.urllib.request.urlopen, pedidos = servidor([404, {}]); esperas.clear()
+    try: C.buscar_apple(pa, SemEspera(), dormir=esperas.append); levantou = False
+    except urllib.error.HTTPError: levantou = True
+    confere(levantou and len(pedidos) == 1 and esperas == [], 'outro erro (404): não insiste')
+finally:
+    C.urllib.request.urlopen = abrir_url_real
+
+# as duas fontes, em ordem, com o arquivo
+print('AS DUAS FONTES, EM ORDEM')
+def catalogo_de(linhas):
+    cat.write_text('\n'.join(['# Catálogo de teste', '', '## 1. Ficção', '', '| Título | Autor | Tags |', '| --- | --- | --- |'] + [f'| {t} | {a} | #F |' for t, a in linhas] + ['']), encoding='utf-8')
+def linhas_do_tsv(): return {l.split('\t')[0]: l.split('\t')[2:] for l in tsv.read_text(encoding='utf-8').splitlines()[1:]}
+catalogo_de([('Mamãe e o Sentido da Vida', 'Irvin D. Yalom'), ('Livro Só da Open Library', 'Autora Um'), ('Livro Só da Apple', 'Autor Dois'), ('Livro de Lugar Nenhum', 'Autora Três'),
+             ('Outro Sem Capa', 'Autor Quatro'), ('Já Procurado nas Duas', 'Autora Cinco'), ('Antologia', 'Vários autores')])
+tsv.write_text('titulo\tautor\tcapa\torigem\nMamãe e o Sentido da Vida\tIrvin D. Yalom\t\tnao-achei\nOutro Sem Capa\tAutor Quatro\t\tnao-achei\nJá Procurado nas Duas\tAutora Cinco\t\tnao-achei-2\nAntologia\tVários autores\t\tsem-autor\n', encoding='utf-8')
+rede = Rede({'title:"Livro Só da Open Library" author:um': [doc('Livro Só da Open Library', 'Autora Um', 501, ('Livro Só da Open Library', 502, 'por'))]})
+apple = Apple({'Mamãe e o Sentido da Vida yalom': YALOM, 'Livro Só da Apple dois': [ap('Livro só da Apple', 'Autor Dois', ARTE(20))]})
+C.procurar = lambda t, a, hq, lim, buscar=None: procurar_real(t, a, hq, lim, rede)
+C.procurar_apple = lambda t, a, hq, lim, buscar=None: procurar_apple_real(t, a, hq, lim, apple)
+codigo, saida = roda('--conferir')
+confere('5 a procurar (2 só na Apple' in saida and rede.feitas == [] and apple.feitas == [], '--conferir: três livros novos e dois que só tinham passado pela Open Library', saida.strip())
+codigo, saida = roda()
+L = linhas_do_tsv()
+confere(L.get('Mamãe e o Sentido da Vida') == [NO_PAINEL(115), 'apple'] and not any('Mamãe' in q or 'Outro Sem Capa' in q for q in rede.feitas),
+        'livro que já tinha passado pela Open Library ("nao-achei"): vai só à Apple, e a capa entra com a origem "apple"', (L.get('Mamãe e o Sentido da Vida'), rede.feitas))
+confere(L.get('Livro Só da Open Library') == ['502', 'edicao'] and 'Livro Só da Open Library um' not in apple.feitas, 'livro novo achado na Open Library: a Apple nem é consultada')
+confere(L.get('Livro Só da Apple') == [NO_PAINEL(20), 'apple'] and 'title:"Livro Só da Apple" author:dois' in rede.feitas, 'livro novo que a Open Library não tem: a capa vem da Apple')
+confere(L.get('Livro de Lugar Nenhum') == ['', 'nao-achei-2'] and L.get('Outro Sem Capa') == ['', 'nao-achei-2'], 'quem não está em nenhuma das duas fica "nao-achei-2"', (L.get('Livro de Lugar Nenhum'), L.get('Outro Sem Capa')))
+confere(L.get('Já Procurado nas Duas') == ['', 'nao-achei-2'] and L.get('Antologia') == ['', 'sem-autor'] and not any('Procurado' in q or 'Antologia' in q for q in rede.feitas + apple.feitas),
+        'quem já tinha passado pelas duas, ou não tem autor, não é procurado')
+confere(sorted(apple.feitas) == ['Livro Só da Apple dois', 'Livro de Lugar Nenhum tres', 'Mamãe e o Sentido da Vida yalom', 'Outro Sem Capa quatro'] and codigo == 0, 'quatro consultas à Apple, uma por livro', sorted(apple.feitas))
+confere('Resultado: 2 apple · 1 edicao · 3 nao-achei-2 · 1 sem-autor · 0 consulta(s) falharam' in saida, 'o resumo conta cada origem', saida.strip().splitlines()[-1:])
+rede.feitas.clear(); apple.feitas.clear(); texto3 = tsv.read_text(encoding='utf-8')
+codigo, saida = roda()
+confere('0 a procurar' in saida and rede.feitas == [] and apple.feitas == [] and tsv.read_text(encoding='utf-8') == texto3, 'segunda execução: nada a procurar, nada muda')
+codigo, saida = roda('--refazer')
+confere(len(rede.feitas) == 6 and sorted(apple.feitas) == ['Já Procurado nas Duas cinco', 'Livro de Lugar Nenhum tres', 'Outro Sem Capa quatro'] and tsv.read_text(encoding='utf-8') == texto3,
+        '--refazer: os três "nao-achei-2" voltam às duas fontes', (rede.feitas, apple.feitas))
+confere(C.para_o_painel(parse(cat.read_text(encoding='utf-8')), C.ler_capas(tsv))[:3] == [NO_PAINEL(115), 502, NO_PAINEL(20)], 'para o painel: o número da Open Library ou o endereço da Apple')
+
+# uma consulta à Apple falha no meio: só aquele livro fica para depois
+apple = Apple({'Mamãe e o Sentido da Vida yalom': YALOM, 'Outro Sem Capa quatro': OSError('caiu')})
+tsv.write_text('titulo\tautor\tcapa\torigem\nMamãe e o Sentido da Vida\tIrvin D. Yalom\t\tnao-achei\nOutro Sem Capa\tAutor Quatro\t\tnao-achei\n', encoding='utf-8')
+catalogo_de([('Mamãe e o Sentido da Vida', 'Irvin D. Yalom'), ('Outro Sem Capa', 'Autor Quatro')])
+codigo, saida = roda(); L = linhas_do_tsv()
+confere(codigo == 0 and L.get('Mamãe e o Sentido da Vida') == [NO_PAINEL(115), 'apple'] and L.get('Outro Sem Capa') == ['', 'nao-achei'] and '1 consulta(s) falharam' in saida and 'falhou: Outro Sem Capa — Apple: OSError' in saida,
+        'uma consulta à Apple que falha: o livro continua "nao-achei" (a próxima execução tenta de novo), os outros seguem', (codigo, L, saida.strip().splitlines()[-2:]))
+
+# a Apple fora do ar: para de insistir nela, e a Open Library continua
+antigos = [(f'Antigo {n}', f'Autora Velha{n}') for n in range(12)]
+catalogo_de(antigos + [('Livro Só da Open Library', 'Autora Um'), ('Livro Novo Sem Capa', 'Autor Seis')])
+tsv.write_text('titulo\tautor\tcapa\torigem\n' + ''.join(f'{t}\t{a}\t\tnao-achei\n' for t, a in antigos), encoding='utf-8')
+class AppleFora:
+    feitas = 0
+    def __call__(self, params, limite): AppleFora.feitas += 1; raise OSError('recusado')
+C.procurar_apple = lambda t, a, hq, lim, buscar=None: procurar_apple_real(t, a, hq, lim, AppleFora())
+rede.feitas.clear()
+codigo, saida = roda(); L = linhas_do_tsv()
+confere(codigo == 1 and 'A Apple não respondeu a 5 consultas seguidas' in saida and 5 <= AppleFora.feitas <= 7, 'a Apple não responde: para de procurar nela depois de 5 falhas seguidas, e a execução termina com erro', (codigo, AppleFora.feitas))
+confere(all(L.get(t) == ['', 'nao-achei'] for t, _ in antigos) and 'ficaram para a próxima execução (a Apple não respondeu)' in saida, 'os livros que só faltavam na Apple continuam como estavam, para a próxima execução', saida.strip().splitlines()[-1:])
+confere(L.get('Livro Só da Open Library') == ['502', 'edicao'] and L.get('Livro Novo Sem Capa') == ['', 'nao-achei'], 'os livros novos passam pela Open Library do mesmo jeito; o que ela não achou fica "nao-achei", à espera da Apple', (L.get('Livro Só da Open Library'), L.get('Livro Novo Sem Capa')))
+C.procurar, C.procurar_apple = procurar_real, procurar_apple_real
+
+# a mesma capa da Apple em volumes de uma série
+serie_a = {('saga', 'z'): {'titulo': 'Saga', 'autor': 'Z', 'capa': NO_PAINEL(30), 'origem': 'apple'},
+           ('saga volume um', 'z'): {'titulo': 'Saga: Volume Um', 'autor': 'Z', 'capa': NO_PAINEL(30), 'origem': 'apple'}}
+confere(C.sem_repetidas(serie_a) == 1 and serie_a[('saga', 'z')]['capa'] == NO_PAINEL(30) and serie_a[('saga volume um', 'z')] == {'titulo': 'Saga: Volume Um', 'autor': 'Z', 'capa': '', 'origem': 'nao-achei-2'},
+        'capa da Apple repetida em volumes de uma série: sai do volume, que fica "nao-achei-2" (já passou pelas duas fontes)', serie_a)
+
+# ───────── 7 ▸ a amostra: as capas guardadas abrem? ─────────
 print('A AMOSTRA DAS CAPAS (--testar)')
 JPEG = b'\xff\xd8\xff\xe0' + b'\x00' * 3000                       # o começo de uma imagem de verdade
 EM_BRANCO = b'GIF89a' + b'\x00' * 37                                 # o quadradinho de 43 bytes que a Open Library manda quando não tem a capa
@@ -261,7 +417,29 @@ confere(codigo == 1 and 'responde "não encontrada": NÃO' in saida, '--testar: 
 confere(C.CAPAS.read_text(encoding='utf-8') == antes, '--testar não grava nada')
 C.abrir_imagem = abrir_real
 
-# ───────── 7 ▸ o que vai para o painel ─────────
+# as capas da Apple entram na amostra pelo endereço guardado
+guardadas_a = dict(guardadas_t)
+for i in range(20): guardadas_a[(f'apple {i}', 'x')] = {'titulo': f'Da Apple {i}', 'autor': 'X', 'capa': NO_PAINEL(100 + i), 'origem': 'apple'}
+class ImagensDasDuas(Imagens):
+    def __call__(self, url):
+        if '/b/id/' in url: return super().__call__(url)
+        self.pedidos.append(url)
+        return (404, '', b'') if url in self.ruins else (200, 'image/jpeg', JPEG)
+im = ImagensDasDuas(); r = C.testar_apple(guardadas_a, 5, im, 0)
+confere(r == (5, 5, []) and im.pedidos == [NO_PAINEL(100 + n) for n in (0, 4, 8, 12, 16)], 'amostra da Apple: pede o endereço guardado (o mesmo que o painel usa), espalhando pelo arquivo', (r, im.pedidos[:2]))
+im = ImagensDasDuas(ruins={NO_PAINEL(104)}); r = C.testar_apple(guardadas_a, 5, im, 0)
+confere(r[:2] == (4, 5) and r[2][0][:2] == (NO_PAINEL(104), 404), 'capa da Apple que não abre é contada e apontada pelo endereço', r)
+confere(C.testar_apple(guardadas_t, 5, ImagensDasDuas(), 0) == (0, 0, []), 'sem capas da Apple: nada a pedir')
+C.CAPAS.write_text(C.texto_capas(livros, {(C.chave(b_['t']), C.chave(b_['a'])): {'titulo': b_['t'], 'autor': b_['a'], 'capa': str(2000 + i) if i % 2 else NO_PAINEL(200 + i), 'origem': 'edicao' if i % 2 else 'apple'} for i, b_ in enumerate(livros)}), encoding='utf-8')
+antes = C.CAPAS.read_text(encoding='utf-8')
+C.abrir_imagem = ImagensDasDuas(); codigo, saida = roda('--testar', '3')
+confere(codigo == 0 and 'Amostra das capas: 3 de 3 abriram como imagem' in saida and 'Amostra das capas da Apple: 3 de 3 abriram como imagem' in saida, '--testar: uma amostra de cada fonte', saida.strip().splitlines()[-2:])
+C.abrir_imagem = ImagensDasDuas(ruins={NO_PAINEL(200)}); codigo, saida = roda('--testar', '3')
+confere(codigo == 1 and 'Amostra das capas da Apple: 2 de 3' in saida and f'não abriu: {NO_PAINEL(200)} — resposta 404' in saida, '--testar: capas da Apple que não abrem também terminam com erro', saida.strip().splitlines()[-2:])
+confere(C.CAPAS.read_text(encoding='utf-8') == antes, '--testar continua sem gravar nada')
+C.abrir_imagem = abrir_real
+
+# ───────── 8 ▸ o que vai para o painel ─────────
 print('O QUE VAI PARA O PAINEL')
 caps = {('a', 'x'): {'capa': '123'}, ('b', 'x'): {'capa': 'https://exemplo.org/b.jpg'}, ('c', 'x'): {'capa': ''}, ('d', 'x'): {'capa': 'http://sem-s.org/d.jpg'},
         ('e', 'x'): {'capa': 'https://exemplo.org/"><script>'}, ('f', 'x'): {'capa': '0'}, ('g', 'x'): {'capa': 'abc'}}
@@ -277,7 +455,9 @@ confere(no_painel == C.para_o_painel(do_catalogo), 'src/capas.json está em dia 
 confere(no_painel is not None and len(no_painel) == len(json.loads(bc.DEST.read_text(encoding='utf-8'))), 'uma posição por linha de src/catalog.json')
 guardadas = C.ler_capas()
 confere(all(r['origem'] in C.ORIGENS for r in guardadas.values()), 'capas.tsv: toda origem é uma das conhecidas', sorted({r['origem'] for r in guardadas.values()} - C.ORIGENS))
-confere(all((r['capa'] == '') == (r['origem'] in ('nao-achei', 'sem-autor')) for r in guardadas.values() if r['origem'] != 'manual'), 'capas.tsv: tem capa quem foi achado, e só quem foi achado')
+confere(all((r['capa'] == '') == (r['origem'] in C.SEM_CAPA) for r in guardadas.values() if r['origem'] != 'manual'), 'capas.tsv: tem capa quem foi achado, e só quem foi achado')
+confere(all(r['capa'].isdigit() for r in guardadas.values() if r['origem'] in ('edicao', 'obra')) and all(C.IMAGEM_APPLE.match(r['capa']) and r['capa'].endswith('/' + C.TAMANHO_APPLE) for r in guardadas.values() if r['origem'] == 'apple'),
+        'capas.tsv: capa da Open Library é um número; capa da Apple é um endereço de imagem da Apple, no tamanho que o painel usa')
 confere(all(r['capa'] == '' or r['capa'].isdigit() or r['capa'].lower().startswith('https://') for r in guardadas.values()), 'capas.tsv: a capa é um número ou um endereço https')
 chaves = {(C.chave(b['t']), C.chave(b['a'])) for b in do_catalogo}
 confere(all(k in chaves or r['origem'] == 'manual' for k, r in guardadas.items()), 'capas.tsv: toda linha é de um livro do catálogo')
