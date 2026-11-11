@@ -175,17 +175,31 @@ input.erro, select.erro { border-color: var(--bad); box-shadow: 0 0 0 3px color-
 .opt:hover { background: var(--surface-3); }
 .opt span { flex: 1; min-width: 0; display: inline-flex; align-items: center; gap: 6px; }
 .opt em { font-style: normal; font-size: 12px; color: var(--ink-3); font-variant-numeric: tabular-nums; }
+.opt.zero span { color: var(--ink-3); }                       /* opção que não mostraria nenhum livro: apagada pela cor (contraste AA) */
 input[type="checkbox"] { width: 16px; height: 16px; margin: 0; accent-color: var(--accent); flex: none; }
 .chips { display: flex; flex-wrap: wrap; gap: 6px; padding: 0 8px; }
-.chip { height: 27px; padding: 0 10px; border-radius: 14px; border: 1px solid var(--line); background: var(--surface); font-size: 12.5px; color: var(--ink-2); transition: background .14s, color .14s, border-color .14s; }
+.chip { display: inline-flex; align-items: center; gap: 6px; height: 27px; padding: 0 10px; border-radius: 14px; border: 1px solid var(--line); background: var(--surface); font-size: 12.5px; color: var(--ink-2); white-space: nowrap; transition: background .14s, color .14s, border-color .14s; }
 .chip:hover { border-color: var(--line-2); color: var(--ink); }
 .chip[aria-pressed="true"] { background: var(--accent); border-color: var(--accent); color: var(--accent-ink); font-weight: 600; }
+/* o número ao lado do rótulo: quantos livros da tela o botão mostra */
+.chip em { font-style: normal; font-size: 11.5px; font-weight: 500; color: var(--ink-3); font-variant-numeric: tabular-nums; }
+.chip[aria-pressed="true"] em { color: inherit; font-weight: 600; }
+/* botão que não mostraria nenhum livro: apagado pela cor e pelo contorno, não por opacidade (o texto continua legível, contraste AA) */
+.chip.zero { color: var(--ink-3); background: none; border-style: dashed; border-color: var(--line-2); }
+.chip.zero:hover { color: var(--ink-2); }
 .pop-q { margin: 14px 8px 0; }
+.pop-n { margin: 10px 8px 0; font-size: 12px; line-height: 1.45; color: var(--ink-3); }
+/* cabeça de um grupo de marcadores: o nome e, quando há dois ligados, a chave "qualquer um / todos" */
+.tg-h { display: flex; align-items: flex-end; justify-content: space-between; gap: 8px; }
+.tg-m { flex: none; margin: 0 8px 3px 0; }
 .f-ativos { display: flex; align-items: center; flex-wrap: wrap; gap: 6px; margin-top: 9px; }
 .fa-r { font-size: 12px; color: var(--ink-3); margin-right: 2px; }
 .f-ativos .ativo { display: inline-flex; align-items: center; gap: 5px; height: 26px; padding: 0 7px 0 10px; border-radius: 13px; background: var(--accent-soft); color: var(--accent-forte); font-size: 12.5px; font-weight: 550; max-width: 100%; }
 .f-ativos .ativo:hover { background: color-mix(in srgb, var(--accent) 24%, var(--surface)); }
 .f-ativos .lk { margin-left: 6px; }
+/* filtros que se somam ("ou") ou se cruzam ("e") entre si andam juntos, dentro de um contorno */
+.fa-g { display: inline-flex; align-items: center; flex-wrap: wrap; gap: 4px; max-width: 100%; margin: -3px 0; padding: 2px; border: 1px dashed var(--line-2); border-radius: 16px; }
+.fa-c { font-style: normal; font-size: 12px; color: var(--ink-3); padding: 0 1px; }
 
 .aviso { display: flex; align-items: flex-start; gap: 12px; margin: 16px var(--pad) 0; padding: 14px 16px; border: 1px dashed color-mix(in srgb, var(--warn) 50%, var(--line)); border-radius: var(--r); background: var(--warn-soft); }
 .av-i { color: var(--warn); margin-top: 1px; }
@@ -756,6 +770,8 @@ td.c-spark svg { margin-left: auto; margin-right: auto; }
   .f-per-l, .f-custom { padding-left: 0; padding-right: 0; }
   .f-g .f-per-l .seg { display: inline-flex; }
   .f-g .f-per-l .seg.mini button { flex: none; height: 32px; padding: 0 10px; }
+  .f-g .tg-m { display: inline-flex; }
+  .f-g .tg-m.seg.mini button { flex: none; height: 30px; padding: 0 10px; }   /* vence a regra geral dos segmentos da folha, mais abaixo */
   .f-per-l .f-cal { height: 36px; }
   .f-painel { display: none; position: fixed; left: 0; right: 0; bottom: 0; z-index: 80; max-height: 86dvh; flex-direction: column; background: var(--surface); border-radius: 18px 18px 0 0; border: 1px solid var(--line); box-shadow: var(--sombra-2); }
   .filtros.folha { z-index: 85; }
@@ -1054,7 +1070,8 @@ const rotTag = t => ROTULO_TAG[t] || t.replace(/-/g, ' ');
 const TAGS_ESTRUTURA = new Set(['F', 'NF', 'HQ', 'poesia', 'antologia', 'd1', 'd2', 'd3', 'e1', 'e2', 'e3', 'ja-tenho', 'tenho-fisico', 'tenho-digital', 'lido', 'top']);
 const GRUPOS_TAG = [
   ['Gêneros', ['ficcao-cientifica', 'fantasia', 'distopia', 'utopia', 'historia-alternativa', 'horror', 'gotico', 'lovecraftiano', 'misterio', 'thriller', 'thriller-medico', 'romance-historico', 'medieval', 'antiguidade', 'roma', 'renascimento', 'pre-historia', 'neandertal', 'regional-gaucho', 'teatro', 'contos', 'cronicas', 'aventura', 'policial', 'faroeste', 'poesia', 'HQ', 'super-herois', 'manga', 'adaptacao', 'antologia']],
-  ['Temas', ['filosofia', 'existencialismo', 'etica', 'politica', 'autoritarismo', 'economia', 'geopolitica', 'psicologia', 'psicanalise', 'psiquiatria', 'neurociencia', 'consciencia', 'ciencia', 'ia', 'historia', 'antropologia', 'sociologia', 'religiao', 'espiritualidade', 'espiritismo', 'umbanda', 'oriental', 'mistica', 'morte', 'memoria', 'identidade', 'raca', 'genero', 'colonialismo', 'ecologia', 'linguagem', 'guerra', 'testemunho', 'medicina', 'biografia', 'escrita', 'cinema', 'arte', 'parentalidade', 'humor', 'introducao', 'gestao', 'esporte', 'didatico', 'tecnologia', 'fisica', 'autoconhecimento', 'behaviorismo', 'tcc', 'psicometria', 'psicopatologia', 'psicologia-analitica', 'psicologia-humanista', 'psicologia-social', 'mitologia', 'educacao', 'biologia', 'matematica', 'programacao', 'dados', 'design', 'enigmas']],
+  ['Temas', ['filosofia', 'existencialismo', 'etica', 'politica', 'autoritarismo', 'economia', 'geopolitica', 'psicologia', 'psiquiatria', 'consciencia', 'ciencia', 'ia', 'historia', 'antropologia', 'sociologia', 'religiao', 'espiritualidade', 'espiritismo', 'umbanda', 'oriental', 'mistica', 'morte', 'memoria', 'identidade', 'raca', 'genero', 'colonialismo', 'ecologia', 'linguagem', 'guerra', 'testemunho', 'medicina', 'biografia', 'escrita', 'cinema', 'arte', 'parentalidade', 'humor', 'introducao', 'gestao', 'esporte', 'didatico', 'tecnologia', 'fisica', 'mitologia', 'educacao', 'biologia', 'matematica', 'programacao', 'dados', 'design', 'enigmas']],
+  ['Psicologia: abordagens e áreas', ['psicanalise', 'tcc', 'behaviorismo', 'psicologia-analitica', 'psicologia-humanista', 'psicologia-social', 'psicopatologia', 'psicometria', 'neurociencia', 'autoconhecimento']],
   ['Época e origem', ['classico', 'contemporaneo', 'BR', 'RS', 'portugal', 'latam', 'africa', 'asia', 'europa-leste']],
   ['Afinidades', ['rel-imortais', 'rel-widows-bay', 'rel-cornwell', 'rel-asimov-clarke', 'rel-yalom', 'rel-fromm']],
 ];
@@ -1092,6 +1109,17 @@ for (const c of CAMADAS) {
   for (const k in c.v) { const t = c.p + '-' + k; ROTULO_TAG[t] = c.r + ': ' + c.v[k][0]; ROTULO_CURTO[t] = c.v[k][0]; DICA_TAG[t] = c.v[k][1]; }
   GRUPOS_TAG.push([c.g, Object.keys(c.v).map(k => c.p + '-' + k)]);
 }
+/* Psicologia: o eixo é o maior do catálogo (um em cada seis livros), e estas dez portas acompanham as pastas em que o dono
+   guarda os arquivos — primeiro as abordagens, depois as áreas. Dentro do grupo o nome dispensa o "psicologia" (o grupo já
+   diz); nos filtros ativos e na ficha do livro continua valendo o rótulo completo (ROTULO_TAG). */
+const PORTAS_PSI = {
+  psicanalise: ['psicanálise', 'Freud, Lacan e a tradição psicanalítica'], tcc: ['TCC', 'Terapia cognitivo-comportamental e terapias cognitivas'],
+  behaviorismo: ['behaviorismo', 'Skinner e a análise do comportamento'], 'psicologia-analitica': ['analítica (Jung)', 'Jung e a psicologia analítica'],
+  'psicologia-humanista': ['humanista', 'Psicologia humanista, existencial e fenomenológica'], 'psicologia-social': ['social', 'Psicologia social e cultural'],
+  psicopatologia: ['psicopatologia', 'Clínica, transtornos e psicopatologia'], psicometria: ['psicometria', 'Avaliação psicológica e psicometria'],
+  neurociencia: ['neurociência', 'Neurociências e psicologia biológica'], autoconhecimento: ['autoconhecimento', 'Autoconhecimento e desenvolvimento pessoal'],
+};
+for (const t in PORTAS_PSI) { ROTULO_CURTO[t] = PORTAS_PSI[t][0]; DICA_TAG[t] = PORTAS_PSI[t][1]; }
 const camadaDe = t => CAMADAS.find(c => t.startsWith(c.p + '-') && c.v[t.slice(c.p.length + 1)]) || null;
 const ehCamada = t => !!camadaDe(t) || t.startsWith('trilha-');
 /* Trilhas de leitura (catalogo/trilhas.md): roteiros com os livros em ordem. Quem diz que um livro está na trilha é o
@@ -1100,6 +1128,12 @@ const TRILHAS = TRILHAS_DADOS.map(([tag, nome, desc, linhas], i) => ({ n: i + 1,
 for (const t of TRILHAS) { ROTULO_TAG[t.tag] = 'trilha: ' + t.curto; ROTULO_CURTO[t.tag] = t.curto; DICA_TAG[t.tag] = t.nome; }
 GRUPOS_TAG.push(['Trilhas de leitura', TRILHAS.map(t => t.tag)], ['Pendências', ['verificar', 'sem-pt']], ['Suas marcas', ['analise']]);
 const TAG_ANALISE = 'analise';                      // "possui análise": posto no painel, na ficha do livro
+/* Cada marcador mora num grupo só: é o grupo que diz como dois marcadores se combinam (ver selTags, em 30-state). */
+const GRUPO_DA_TAG = new Map();
+GRUPOS_TAG.forEach(([, lista], i) => { for (const t of lista) GRUPO_DA_TAG.set(t, i); });
+const grupoTag = nome => GRUPOS_TAG.findIndex(g => g[0] === nome);
+// até a rodada 7 o painel guardava a POSIÇÃO do grupo escolhido em "Temas e camadas"; a lista era esta (hoje guarda o nome)
+const GRUPOS_TAG_V1 = ['Gêneros', 'Temas', 'Época e origem', 'Afinidades', 'Perguntas centrais', 'Clima da leitura', 'Papel na biblioteca', 'Pontes entre áreas', 'Cenários', 'Trilhas de leitura', 'Pendências', 'Suas marcas'];
 
 const FORMATOS = {
   fisico: { n: 'Físico', cor: 'var(--c1)' },
@@ -2226,7 +2260,9 @@ const S = {
   tipo: '', eixos: new Set(), dif: new Set(), ext: new Set(), tags: new Set(), top: false,
   tema: '', ocultar: false, avisoVisto: false, saiu: 0, capas: true, sel: '',
   tab: {},
-  ui: { compor: 'fmt', temas: 1, prio: 'valor', sorteio: 0, trilhas: 'ordem' },
+  // temas = grupo de marcadores mostrado em "Temas e camadas" (pelo nome); cruzar = { nome do grupo: true } nos grupos em que
+  // dois marcadores ligados se cruzam ("todos") em vez de se somar ("qualquer um", o padrão)
+  ui: { compor: 'fmt', temas: 'Temas', prio: 'valor', sorteio: 0, trilhas: 'ordem', cruzar: {} },
 };
 const nFiltros = () => (S.acervo !== 'tudo' && S.visao !== 'recs' ? 1 : 0) + (S.tipo ? 1 : 0) + S.eixos.size + S.dif.size + S.ext.size + S.tags.size + (S.top ? 1 : 0) + (S.periodo !== 'tudo' ? 1 : 0);
 function limparFiltros(tambemPeriodo) {
@@ -2235,7 +2271,27 @@ function limparFiltros(tambemPeriodo) {
 }
 const alternar = (conj, v) => { if (conj.has(v)) conj.delete(v); else conj.add(v); };
 
-/* filtros de segmento (o período é tratado à parte, porque filtra eventos e não livros) */
+/* Como os marcadores escolhidos se combinam.
+     · dentro de um grupo de filtros (Gêneros, Cenários, Trilhas…): SOMAM — o livro precisa ter qualquer um dos ligados;
+     · com a chave do grupo em "todos": CRUZAM — o livro precisa ter todos os ligados daquele grupo;
+     · entre grupos: sempre cruzam — o livro precisa atender a cada grupo que tenha algo ligado.
+   Marcador que não está em grupo nenhum (posto à mão num livro e clicado na ficha) conta sozinho, como um grupo de um só.
+   selTags() devolve a escolha separada por grupo: [{ g: posição do grupo (ou o próprio marcador, se avulso), ts: [marcadores], e: cruza? }]. */
+const cruza = g => typeof g === 'number' && !!S.ui.cruzar[GRUPOS_TAG[g][0]];
+let SEL_CHAVE = null, SEL = [];
+function selTags() {
+  const chave = [...S.tags].join('\n') + '\n\n' + GRUPOS_TAG.map((_, i) => (cruza(i) ? 1 : 0)).join('');
+  if (chave !== SEL_CHAVE) {
+    const m = new Map();
+    for (const t of S.tags) { const g = GRUPO_DA_TAG.has(t) ? GRUPO_DA_TAG.get(t) : t; if (!m.has(g)) m.set(g, []); m.get(g).push(t); }
+    SEL = [...m].map(([g, ts]) => ({ g, ts, e: cruza(g) })); SEL_CHAVE = chave;
+  }
+  return SEL;
+}
+
+/* filtros de segmento (o período é tratado à parte, porque filtra eventos e não livros)
+   o = o que deixar de fora: semAcervo, semEixo, semDE (dificuldade e extensão), semDif, semExt, semTop, semTags (todos os
+   marcadores) ou semGrupo (os marcadores de um grupo só) — é assim que se conta "quantos livros cada opção teria". */
 function passaSeg(b, o = {}) {
   if (!o.semAcervo && S.acervo !== 'tudo') {
     // no acervo vale o que eu tenho (um livro pode estar nas duas bibliotecas); nas listas, o formato desejado
@@ -2245,9 +2301,12 @@ function passaSeg(b, o = {}) {
   }
   if (S.tipo && tipoFiltro(b._tipo) !== S.tipo) return false;
   if (!o.semEixo && S.eixos.size && !S.eixos.has(b.eixo)) return false;
-  if (!o.semDE) { if (S.dif.size && !S.dif.has(b._d)) return false; if (S.ext.size && !S.ext.has(b._e)) return false; }
-  if (!o.semTags && S.tags.size) for (const t of S.tags) if (!b.tags.includes(t)) return false;
-  if (S.top && !b._top) return false;
+  if (!o.semDE) { if (!o.semDif && S.dif.size && !S.dif.has(b._d)) return false; if (!o.semExt && S.ext.size && !S.ext.has(b._e)) return false; }
+  if (!o.semTags && S.tags.size) for (const s of o.sel || selTags()) {
+    if (s.g === o.semGrupo) continue;
+    if (s.e ? !s.ts.every(t => b.tags.includes(t)) : !s.ts.some(t => b.tags.includes(t))) return false;
+  }
+  if (S.top && !o.semTop && !b._top) return false;
   return true;
 }
 
@@ -2294,7 +2353,7 @@ function precoBase(b, d) {                   // melhor preço em d; antes da 1ª
 const temCotacaoPropria = b => !!b.px && Object.values(b.px).some(pts => pts.some(p => p[2]));
 
 function recorte(I, o) {
-  const seg = DB.livros.filter(b => passaSeg(b, Object.assign({ semAcervo: S.visao === 'recs' }, o)));
+  const op = Object.assign({ semAcervo: S.visao === 'recs', sel: selTags() }, o), seg = DB.livros.filter(b => passaSeg(b, op));
   const ac = [], des = [], rec = [];
   for (const b of seg) (b.col === 'acervo' ? ac : b.col === 'desejo' ? des : rec).push(b);
   return { seg, ac, des, rec, acP: I.tudo ? ac : ac.filter(b => dentro(adqDe(b), I)), recP: I.tudo ? rec : rec.filter(b => dentro(b.add, I)) };
@@ -2308,6 +2367,10 @@ function contexto() {
   let E, DE;
   Object.defineProperty(c, 'E', { get: () => E || (E = recorte(I, { semEixo: true })) });      // ignora o filtro de eixo (gráficos-seletores)
   Object.defineProperty(c, 'DE', { get: () => DE || (DE = recorte(I, { semDE: true })) });     // ignora dificuldade/extensão (matriz)
+  // ignora os marcadores ligados de um grupo — quando eles se somam, as barras do grupo continuam todas à vista (gráfico-seletor);
+  // quando se cruzam ("todos"), vale o recorte de sempre
+  const semG = new Map();
+  c.semGrupo = g => { if (!selTags().some(s => s.g === g && !s.e)) return c; if (!semG.has(g)) semG.set(g, recorte(I, { semGrupo: g })); return semG.get(g); };
   let ini = Infinity;
   for (const b of c.rast) for (const f in b.px) if (b.px[f].length && b.px[f][0][0] < ini) ini = b.px[f][0][0];
   c.pxIni = isFinite(ini) ? ini : I.ate;
@@ -2325,6 +2388,31 @@ function contexto() {
   Object.defineProperty(c, 'trilhas', { get: () => TR || (TR = estadoTrilhas()) });
   Object.defineProperty(c, 'compra', { get: () => OC || (OC = ordemDeCompra(c.trilhas)) });
   return c;
+}
+
+/* ───────── números dos filtros ─────────
+   Ao lado de cada opção de filtro vai quantos livros a lista da tela atual (a tabela da visão, aba "Todos") mostra com aquela
+   opção ligada — é o número que a aba passa a mostrar depois do clique. Regras:
+     · filtros cujas opções se somam (eixo, dificuldade, extensão, grupo de marcadores em "qualquer um") são contados sem a
+       própria escolha: o número de uma opção não muda quando a vizinha é marcada;
+     · num grupo de marcadores em "todos" (cruza), o número já desconta os ligados do grupo: é o que sobra se aquele entrar;
+     · tudo o mais que estiver ligado (acervo, tipo, período, os outros filtros e grupos) vale sempre. */
+function contagens(c) {
+  const linhas = r => TABELAS[S.visao].linhas(r.rast ? r : Object.assign(r, { rast: r.seg.filter(rastreado) }));
+  const sem = o => linhas(recorte(c.I, o)), base = linhas(c);
+  const porTag = L => { const m = new Map(); for (const b of L) for (const t of b.tags) m.set(t, (m.get(t) || 0) + 1); return m; };
+  const tagsBase = porTag(base), sel = selTags(), tag = new Map();
+  GRUPOS_TAG.forEach(([, lista], i) => {
+    const m = sel.some(s => s.g === i && !s.e) ? porTag(linhas(c.semGrupo(i))) : tagsBase;
+    for (const t of lista) tag.set(t, m.get(t) || 0);
+  });
+  return {
+    n: base.length, tag,
+    eixos: contarPor(S.eixos.size ? linhas(c.E) : base, b => b.eixo),
+    dif: contarPor(S.dif.size ? sem({ semDif: true }) : base, b => b._d),
+    ext: contarPor(S.ext.size ? sem({ semExt: true }) : base, b => b._e),
+    top: (S.top ? sem({ semTop: true }) : base).filter(b => b._top).length,
+  };
 }
 
 /* ───────── trilhas de leitura ─────────
@@ -2726,14 +2814,20 @@ function pTemas() {
   return { id: 'temas', w: 'p-4 m-6', tit: 'Temas e camadas', montar(k) {
     k.tools.innerHTML = `<label class="sel-w"><span class="so-leitor">Grupo de marcadores</span><select aria-label="Grupo de marcadores">${grupos.map(([i, n]) => `<option value="${i}">${esc(n)}</option>`).join('')}</select></label>`;
     const sel = $('select', k.tools);
-    sel.addEventListener('change', () => { S.ui.temas = +sel.value; salvar(); render(); });
+    sel.addEventListener('change', () => { S.ui.temas = GRUPOS_TAG[+sel.value][0]; salvar(); render(); });       // guarda o nome: a posição muda quando entra um grupo novo
     const g = BarrasH(k.corpo, { aoClicar(t) { alternar(S.tags, t); filtrosMudaram(); } });
     return c => {
-      const i = grupos.some(x => x[0] === S.ui.temas) ? S.ui.temas : 1, lista = GRUPOS_TAG[i][1], cont = new Map();
+      const i = (grupos.find(x => x[1] === S.ui.temas) || grupos[1])[0], lista = GRUPOS_TAG[i][1], cont = new Map();
       sel.value = String(i);
-      for (const b of c.recP) if (b.leit !== 'lido') for (const t of b.tags) if (lista.includes(t)) cont.set(t, (cont.get(t) || 0) + 1);
+      // enquanto os marcadores do grupo se somam, as barras são contadas sem a escolha do próprio grupo: continuam todas à vista
+      // (as ligadas em destaque) e o número de cada uma é o que ela acrescenta; com o grupo em "todos", conta-se dentro do recorte
+      for (const b of c.semGrupo(i).recP) if (b.leit !== 'lido') for (const t of b.tags) if (lista.includes(t)) cont.set(t, (cont.get(t) || 0) + 1);
+      for (const t of lista) if (S.tags.has(t) && !cont.has(t)) cont.set(t, 0);       // marcador ligado que não acha nada: a barra fica, com zero, para poder ser desligada ali mesmo
       k.sub.textContent = 'Marcadores mais frequentes nas recomendações · clique para filtrar';
-      g.atualizar({ linhas: [...cont].sort((a, z) => z[1] - a[1]).slice(0, 9).map(([t, n]) => ({ k: t, n: maiuscula(rotCurto(t)), dica: DICA_TAG[t] || '#' + t, ativo: S.tags.has(t), segs: [{ n: 'recomendações', cor: 'var(--c2)', v: n }] })), vazio: 'Nenhum marcador deste grupo no recorte atual.' });
+      // as nove mais frequentes; uma barra ligada nunca sai de cena (entra no lugar da menos frequente)
+      const ord = [...cont].sort((a, z) => z[1] - a[1]), lig = ord.filter(([t]) => S.tags.has(t));
+      const nove = lig.concat(ord.filter(([t]) => !S.tags.has(t)).slice(0, Math.max(0, 9 - lig.length))).sort((a, z) => z[1] - a[1]);
+      g.atualizar({ linhas: nove.map(([t, n]) => ({ k: t, n: maiuscula(rotCurto(t)), dica: DICA_TAG[t] || '#' + t, ativo: S.tags.has(t), segs: [{ n: 'recomendações', cor: 'var(--c2)', v: n }] })), vazio: 'Nenhum marcador deste grupo no recorte atual.' });
     };
   } };
 }
@@ -3877,7 +3971,7 @@ function desenharGaveta() {
 
 /* ───────────────────────── casca, filtros e inicialização ───────────────────────── */
 const REG = {};
-let CTX = null, pendente = 0;
+let CTX = null, pendente = 0, CHIPS = [];
 const ctxAtual = () => CTX || (CTX = contexto());
 const cfgAtual = () => ({ tema: S.tema, ocultar: S.ocultar, avisoVisto: S.avisoVisto, saiu: S.saiu || undefined, capas: S.capas, visao: S.visao, ui: S.ui, tam: Object.fromEntries(Object.entries(S.tab).map(([k, v]) => [k, v.tam])) });
 /* salvar() agenda a gravação (várias alterações seguidas viram uma só); gravarJa() grava na hora — usada quando a página
@@ -3901,7 +3995,7 @@ function render() {
   const c = CTX = contexto();
   REG[v].kpis(VIS[v].valores(c));
   for (const f of REG[v].at) f(c);
-  pintarCasca(c);
+  pintarCasca(c); pintarContagens(c);
   $$('.rolavel', $('#v-' + v)).forEach(marcarRolagem);
 }
 // listas com rolagem interna: esmaece a base enquanto houver mais itens abaixo
@@ -3922,7 +4016,10 @@ function irPara(v, inicial) {
 /* ───────── barra de filtros ───────── */
 function montarFiltros() {
   const seg = (id, rot, ops) => `<div class="seg" id="${id}" role="group" aria-label="${rot}">${ops.map(([v, n]) => `<button type="button" data-v="${v}">${n}</button>`).join('')}</div>`;
-  const chips = (grupo, ops) => `<div class="chips" data-grupo="${grupo}">${ops.map(([v, n, d]) => `<button type="button" class="chip" data-v="${esc(v)}"${d ? ` title="${esc(d)}"` : ''}>${esc(n)}</button>`).join('')}</div>`;
+  // cada botão leva o rótulo e, ao lado, quantos livros da tela ele mostra (ver pintarContagens)
+  const chips = (grupo, ops) => `<div class="chips" data-grupo="${grupo}">${ops.map(([v, n, d]) => `<button type="button" class="chip" data-v="${esc(v)}"${d ? ` title="${esc(d)}"` : ''}><span>${esc(n)}</span><em></em></button>`).join('')}</div>`;
+  // chave do grupo: aparece quando há dois marcadores ligados nele (ou quando o grupo já está em "todos")
+  const chave = n => `<span class="seg mini tg-m" role="group" aria-label="Como combinar os marcadores de ${esc(n)}" hidden><button type="button" data-modo="ou" title="Soma: mostra os livros que têm qualquer um dos marcadores ligados neste grupo">qualquer um</button><button type="button" data-modo="e" title="Cruza: mostra só os livros que têm todos os marcadores ligados neste grupo">todos</button></span>`;
   $('#filtros').innerHTML = `
     <div class="f-linha">
       <button type="button" class="btn f-abrir" id="f-abrir">${icone('filtro', 15)}Filtros<span class="cont" id="f-n" hidden></span></button>
@@ -3935,11 +4032,12 @@ function montarFiltros() {
             <div class="pop" id="pop-eixo"><div class="pop-h"><b>Eixo temático</b><button type="button" class="lk" data-limpar="eixos">limpar</button></div><div class="pop-l">${EIXOS.slice(1).map((e, i) => `<label class="opt"><input type="checkbox" value="${i + 1}"><span>${esc(e.n)}</span><em></em></label>`).join('')}</div></div></div>
           <div class="f-g pop-w" id="pw-mais"><button type="button" class="btn pop-b" aria-expanded="false" aria-controls="pop-mais">${icone('filtro', 14)}Mais filtros<span class="cont" hidden></span>${icone('baixo', 14)}</button>
             <div class="pop largo" id="pop-mais"><div class="pop-h"><b>Mais filtros</b><button type="button" class="lk" data-limpar="mais">limpar</button></div>
-              <div class="pop-l"><label class="opt so"><input type="checkbox" id="f-top"><span>${icone('estrela', 13)} Só prioridades (#top)</span></label>
+              <div class="pop-l"><label class="opt so"><input type="checkbox" id="f-top"><span>${icone('estrela', 13)} Só prioridades (#top)</span><em id="f-top-n"></em></label>
               <span class="pop-r">Dificuldade</span>${chips('dif', [1, 2, 3].map(d => [d, NIVEIS[d].n]))}
               <span class="pop-r">Extensão</span>${chips('ext', [1, 2, 3].map(e => [e, EXTENSOES[e].n, EXTENSOES[e].d]))}
               <label class="busca-t pop-q">${icone('busca', 14)}<input type="search" id="f-tagq" placeholder="Procurar marcador" aria-label="Procurar marcador"></label>
-              <div id="f-tags">${GRUPOS_TAG.map(([n, lista]) => `<div class="tg-g"><span class="pop-r">${esc(n)}</span>${chips('tags', lista.map(t => [t, maiuscula(rotCurto(t)), DICA_TAG[t] || '#' + t]))}</div>`).join('')}</div>
+              <p class="pop-n" id="f-regra">Dois marcadores do mesmo grupo somam os livros (um ou outro); de grupos diferentes, cruzam (um e outro). O número ao lado é quantos livros desta tela cada marcador mostra.</p>
+              <div id="f-tags">${GRUPOS_TAG.map(([n, lista], i) => `<div class="tg-g" data-g="${i}"><div class="tg-h"><span class="pop-r">${esc(n)}</span>${chave(n)}</div>${chips('tags', lista.map(t => [t, maiuscula(rotCurto(t)), DICA_TAG[t] || '#' + t]))}</div>`).join('')}</div>
               <div class="f-per" id="f-per"><span class="pop-r">Período <small>pela data de aquisição ou de leitura</small></span>
                 <div class="f-per-l">${seg('f-periodo', 'Período', PERIODOS).replace('class="seg"', 'class="seg mini"')}<button type="button" class="btn sm f-cal" id="f-cal" aria-expanded="false" title="Período personalizado">${icone('calendario', 14)}<span id="f-cal-r">Personalizar</span></button></div>
                 <div class="f-custom" id="f-custom" hidden><label><span>de</span><input type="date" id="f-de" aria-label="Data inicial"></label><label><span>até</span><input type="date" id="f-ate" aria-label="Data final"></label></div></div></div></div></div>
@@ -3961,8 +4059,21 @@ function montarFiltros() {
   $('#f-tipo').addEventListener('click', e => { const b = e.target.closest('button'); if (b) { S.tipo = b.dataset.v; filtrosMudaram(); } });
   $('#pop-eixo').addEventListener('change', e => { if (e.target.matches('input[type=checkbox]')) { alternar(S.eixos, +e.target.value); filtrosMudaram(); } });
   $('#f-top').addEventListener('change', e => { S.top = e.target.checked; filtrosMudaram(); });
-  $('#pop-mais').addEventListener('click', e => { const b = e.target.closest('.chip'); if (!b) return; const g = b.parentElement.dataset.grupo; alternar(S[g], g === 'tags' ? b.dataset.v : +b.dataset.v); filtrosMudaram(); });
-  $('#f-tagq').addEventListener('input', e => { const q = norm(e.target.value.trim()); $$('#f-tags .chip').forEach(c => { c.hidden = !!q && !norm(c.textContent + ' ' + c.dataset.v).includes(q); }); $$('#f-tags .tg-g').forEach(g => { g.hidden = !$$('.chip', g).some(c => !c.hidden); }); });
+  // os botões são guardados uma vez, com o que a busca e a contagem precisam: g = filtro (tags, dif, ext), v = valor, q = texto procurável
+  CHIPS = $$('#pop-mais .chip').map(el => {
+    const g = el.parentElement.dataset.grupo, tag = g === 'tags', v = tag ? el.dataset.v : +el.dataset.v, rot = $('span', el).textContent;
+    return { el, g, v, rot, em: $('em', el), dica: el.title, q: norm(tag ? [rot, rotTag(v), v, DICA_TAG[v] || ''].join(' ') : rot) };
+  });
+  $('#pop-mais').addEventListener('click', e => {
+    const m = e.target.closest('[data-modo]');
+    if (m) {                                         // chave "qualquer um / todos" de um grupo: é preferência, fica guardada
+      const nome = GRUPOS_TAG[+m.closest('.tg-g').dataset.g][0];
+      if (m.dataset.modo === 'e') S.ui.cruzar[nome] = true; else delete S.ui.cruzar[nome];
+      salvar(); filtrosMudaram(); return;
+    }
+    const b = e.target.closest('.chip'); if (!b) return; const g = b.parentElement.dataset.grupo; alternar(S[g], g === 'tags' ? b.dataset.v : +b.dataset.v); filtrosMudaram();
+  });
+  $('#f-tagq').addEventListener('input', e => { const q = norm(e.target.value.trim()); for (const c of CHIPS) if (c.g === 'tags') c.el.hidden = !!q && !c.q.includes(q); $$('#f-tags .tg-g').forEach(g => { g.hidden = !$$('.chip', g).some(c => !c.hidden); }); });
   F.addEventListener('click', e => {
     const l = e.target.closest('[data-limpar]');
     if (l) { const x = l.dataset.limpar; if (x === 'eixos') S.eixos.clear(); else if (x === 'mais') { S.dif.clear(); S.ext.clear(); S.tags.clear(); S.top = false; S.periodo = 'tudo'; S.de = S.ate = null; $('#f-custom').hidden = true; } else { limparFiltros(true); $('#f-custom').hidden = true; } filtrosMudaram(); return; }
@@ -4014,26 +4125,47 @@ function sincronizarFiltros() {
   $('#f-cal-r').textContent = custom ? `${fDiaMesAno(I.de)} – ${fDiaMesAno(I.ate)}` : 'Personalizar';
   if (custom) $('#f-custom').hidden = false;
   $('#f-de').value = iso(S.de); $('#f-ate').value = iso(S.ate); $('#f-de').max = $('#f-ate').max = iso(DB.hoje);
-  // contagens por eixo ignorando o próprio filtro de eixo
-  const base = DB.livros.filter(b => passaSeg(b, { semEixo: true, semAcervo: S.visao === 'recs' })), porEixo = contarPor(base, b => b.eixo);
-  $$('#pop-eixo .opt').forEach(o => { const inp = $('input', o), e = +inp.value; inp.checked = S.eixos.has(e); $('em', o).textContent = fInt(porEixo.get(e) || 0); });
+  $$('#pop-eixo .opt input').forEach(inp => { inp.checked = S.eixos.has(+inp.value); });
   $('#f-top').checked = S.top;
-  $$('#pop-mais .chip').forEach(c => { const g = c.parentElement.dataset.grupo; c.setAttribute('aria-pressed', String(S[g].has(g === 'tags' ? c.dataset.v : +c.dataset.v))); });
+  for (const c of CHIPS) c.el.setAttribute('aria-pressed', String(S[c.g].has(c.v)));
+  // chave "qualquer um / todos": só aparece no grupo em que faz diferença — dois marcadores ligados — ou que já está em "todos"
+  const sel = selTags();
+  $$('#f-tags .tg-g').forEach(g => {
+    const i = +g.dataset.g, e = cruza(i), s = sel.find(x => x.g === i), m = $('.tg-m', g);
+    m.hidden = !(e || (s && s.ts.length > 1));
+    $$('button', m).forEach(b => b.setAttribute('aria-pressed', String((b.dataset.modo === 'e') === e)));
+  });
   const nMais = S.dif.size + S.ext.size + S.tags.size + (S.top ? 1 : 0) + (S.periodo !== 'tudo' ? 1 : 0), cont = (sel, n) => { const el = $(sel); el.hidden = !n; el.textContent = n; };
   cont('#pw-eixo .cont', S.eixos.size); cont('#pw-mais .cont', nMais); cont('#f-n', nFiltros());
   $('#pw-eixo').classList.toggle('ativo', S.eixos.size > 0); $('#pw-mais').classList.toggle('ativo', nMais > 0);
-  // chips dos filtros ativos
-  const ch = [], add = (rm, txt) => ch.push(`<button type="button" class="ativo" data-rm="${esc(rm)}" title="Remover filtro">${esc(txt)}${icone('fechar', 12)}</button>`);
+  // Filtros ativos: cada filtro vira um botão (clicar remove). Os que se somam ou se cruzam entre si vão juntos, com a palavra que diz como:
+  // "A ou B" (qualquer um) ou "A e B" (todos); entre um conjunto e outro, vale sempre o cruzamento.
+  const ch = []; let nAtivos = 0;
+  const bt = (rm, txt) => `<button type="button" class="ativo" data-rm="${esc(rm)}" title="Remover filtro">${esc(txt)}${icone('fechar', 12)}</button>`;
+  const junta = (bts, con) => { nAtivos += bts.length; if (bts.length) ch.push(bts.length > 1 ? `<span class="fa-g">${bts.join(`<i class="fa-c">${con}</i>`)}</span>` : bts[0]); };
+  const add = (rm, txt) => junta([bt(rm, txt)]);
   if (S.acervo !== 'tudo' && S.visao !== 'recs') add('acervo:', ROTULO_ACERVO[S.acervo]);
   if (S.tipo) add('tipo:', { F: 'Ficção', NF: 'Não ficção', HQ: 'HQ', O: 'Poesia e outros' }[S.tipo]);
-  for (const e of [...S.eixos].sort((a, z) => a - z)) add('eixos:' + e, EIXOS[e].n);
+  junta([...S.eixos].sort((a, z) => a - z).map(e => bt('eixos:' + e, EIXOS[e].n)), 'ou');
   if (S.top) add('top:', 'Só prioridades');
-  for (const d of S.dif) add('dif:' + d, 'Dificuldade ' + NIVEIS[d].n.toLowerCase());
-  for (const e of S.ext) add('ext:' + e, 'Extensão ' + EXTENSOES[e].n.toLowerCase());
-  for (const t of S.tags) add('tags:' + t, ehCamada(t) || t === TAG_ANALISE ? maiuscula(rotTag(t)) : '#' + rotTag(t));
+  junta([...S.dif].map(d => bt('dif:' + d, 'Dificuldade ' + NIVEIS[d].n.toLowerCase())), 'ou');
+  junta([...S.ext].map(e => bt('ext:' + e, 'Extensão ' + EXTENSOES[e].n.toLowerCase())), 'ou');
+  for (const s of sel) junta(s.ts.map(t => bt('tags:' + t, ehCamada(t) || t === TAG_ANALISE ? maiuscula(rotTag(t)) : '#' + rotTag(t))), s.e ? 'e' : 'ou');
   if (S.periodo !== 'tudo') add('periodo:', custom ? `${fData(I.de)} – ${fData(I.ate)}` : 'Período: ' + (PERIODOS.find(([v]) => v === S.periodo) || ['', ''])[1].toLowerCase());
-  const el = $('#f-ativos'); el.hidden = !ch.length;
-  setHtml(el, ch.length ? `<span class="fa-r">Filtros ativos</span>${ch.join('')}${ch.length > 1 ? '<button type="button" class="lk" data-limpar="tudo">limpar tudo</button>' : ''}` : '');
+  const el = $('#f-ativos'); el.hidden = !nAtivos;
+  setHtml(el, nAtivos ? `<span class="fa-r">Filtros ativos</span>${ch.join('')}${nAtivos > 1 ? '<button type="button" class="lk" data-limpar="tudo">limpar tudo</button>' : ''}` : '');
+}
+/* Números dos filtros (ver contagens, em 30-state): quantos livros a lista desta tela mostra com cada opção ligada.
+   A opção que não mostraria nenhum fica apagada — pela cor, não por opacidade, para continuar legível — e segue clicável. */
+function pintarContagens(c) {
+  const k = contagens(c), nenhum = n => (n ? plural(n, 'livro', 'livros') : 'nenhum livro');
+  $$('#pop-eixo .opt').forEach(o => { const inp = $('input', o), n = k.eixos.get(+inp.value) || 0; $('em', o).textContent = fInt(n); o.classList.toggle('zero', !n && !inp.checked); });
+  $('#f-top-n').textContent = fInt(k.top); $('#f-top-n').parentElement.classList.toggle('zero', !k.top && !S.top);
+  for (const x of CHIPS) {
+    const n = (x.g === 'tags' ? k.tag.get(x.v) : k[x.g].get(x.v)) || 0, zero = !n && !S[x.g].has(x.v);
+    if (x.n !== n) { x.n = n; x.em.textContent = fInt(n); x.el.dataset.n = n; x.el.setAttribute('aria-label', `${x.rot}: ${nenhum(n)}`); }
+    if (x.zero !== zero) { x.zero = zero; x.el.classList.toggle('zero', zero); x.el.title = zero ? (x.dica ? x.dica + ' — ' : '') + 'nenhum livro nesta tela com os filtros atuais' : x.dica; }
+  }
 }
 
 /* ───────── casca: navegação, cabeçalho, avisos ───────── */
@@ -4145,6 +4277,11 @@ function iniciar() {
   document.addEventListener('error', e => { const im = e.target; if (im && im.tagName === 'IMG' && im.parentElement && im.parentElement.classList.contains('capa')) { const c = im.parentElement; if (c.classList.contains('g')) c.remove(); else im.remove(); } }, true);
   if (cfg.visao && VISOES[cfg.visao]) S.visao = cfg.visao;
   if (cfg.ui && typeof cfg.ui === 'object') Object.assign(S.ui, cfg.ui);
+  // "Temas e camadas": até a rodada 7 guardava-se a posição do grupo na lista; agora, o nome (a lista ganhou um grupo no meio)
+  if (typeof S.ui.temas === 'number') S.ui.temas = GRUPOS_TAG_V1[S.ui.temas] || 'Temas';
+  if (grupoTag(S.ui.temas) < 0) S.ui.temas = 'Temas';
+  // chaves "todos" dos grupos de marcadores: só valem as de grupos que existem
+  S.ui.cruzar = S.ui.cruzar && typeof S.ui.cruzar === 'object' && !Array.isArray(S.ui.cruzar) ? Object.fromEntries(GRUPOS_TAG.filter(g => S.ui.cruzar[g[0]] === true).map(g => [g[0], true])) : {};
   if (cfg.tam) for (const k in cfg.tam) if (TABELAS[k] && [10, 25, 50, 100].includes(cfg.tam[k])) S.tab[k] = { tam: cfg.tam[k] };
   montarCasca(); montarFiltros(); montarGaveta(); aplicarTema(); aplicarOlho(); pintarStatus(true);
   if (window.matchMedia) { const mq = matchMedia('(prefers-color-scheme: dark)'), f = () => { if (!S.tema) aplicarTema(); }; if (mq.addEventListener) mq.addEventListener('change', f); }

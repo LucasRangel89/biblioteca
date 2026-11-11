@@ -1,6 +1,6 @@
 /* ───────────────────────── casca, filtros e inicialização ───────────────────────── */
 const REG = {};
-let CTX = null, pendente = 0;
+let CTX = null, pendente = 0, CHIPS = [];
 const ctxAtual = () => CTX || (CTX = contexto());
 const cfgAtual = () => ({ tema: S.tema, ocultar: S.ocultar, avisoVisto: S.avisoVisto, saiu: S.saiu || undefined, capas: S.capas, visao: S.visao, ui: S.ui, tam: Object.fromEntries(Object.entries(S.tab).map(([k, v]) => [k, v.tam])) });
 /* salvar() agenda a gravação (várias alterações seguidas viram uma só); gravarJa() grava na hora — usada quando a página
@@ -24,7 +24,7 @@ function render() {
   const c = CTX = contexto();
   REG[v].kpis(VIS[v].valores(c));
   for (const f of REG[v].at) f(c);
-  pintarCasca(c);
+  pintarCasca(c); pintarContagens(c);
   $$('.rolavel', $('#v-' + v)).forEach(marcarRolagem);
 }
 // listas com rolagem interna: esmaece a base enquanto houver mais itens abaixo
@@ -45,7 +45,10 @@ function irPara(v, inicial) {
 /* ───────── barra de filtros ───────── */
 function montarFiltros() {
   const seg = (id, rot, ops) => `<div class="seg" id="${id}" role="group" aria-label="${rot}">${ops.map(([v, n]) => `<button type="button" data-v="${v}">${n}</button>`).join('')}</div>`;
-  const chips = (grupo, ops) => `<div class="chips" data-grupo="${grupo}">${ops.map(([v, n, d]) => `<button type="button" class="chip" data-v="${esc(v)}"${d ? ` title="${esc(d)}"` : ''}>${esc(n)}</button>`).join('')}</div>`;
+  // cada botão leva o rótulo e, ao lado, quantos livros da tela ele mostra (ver pintarContagens)
+  const chips = (grupo, ops) => `<div class="chips" data-grupo="${grupo}">${ops.map(([v, n, d]) => `<button type="button" class="chip" data-v="${esc(v)}"${d ? ` title="${esc(d)}"` : ''}><span>${esc(n)}</span><em></em></button>`).join('')}</div>`;
+  // chave do grupo: aparece quando há dois marcadores ligados nele (ou quando o grupo já está em "todos")
+  const chave = n => `<span class="seg mini tg-m" role="group" aria-label="Como combinar os marcadores de ${esc(n)}" hidden><button type="button" data-modo="ou" title="Soma: mostra os livros que têm qualquer um dos marcadores ligados neste grupo">qualquer um</button><button type="button" data-modo="e" title="Cruza: mostra só os livros que têm todos os marcadores ligados neste grupo">todos</button></span>`;
   $('#filtros').innerHTML = `
     <div class="f-linha">
       <button type="button" class="btn f-abrir" id="f-abrir">${icone('filtro', 15)}Filtros<span class="cont" id="f-n" hidden></span></button>
@@ -58,11 +61,12 @@ function montarFiltros() {
             <div class="pop" id="pop-eixo"><div class="pop-h"><b>Eixo temático</b><button type="button" class="lk" data-limpar="eixos">limpar</button></div><div class="pop-l">${EIXOS.slice(1).map((e, i) => `<label class="opt"><input type="checkbox" value="${i + 1}"><span>${esc(e.n)}</span><em></em></label>`).join('')}</div></div></div>
           <div class="f-g pop-w" id="pw-mais"><button type="button" class="btn pop-b" aria-expanded="false" aria-controls="pop-mais">${icone('filtro', 14)}Mais filtros<span class="cont" hidden></span>${icone('baixo', 14)}</button>
             <div class="pop largo" id="pop-mais"><div class="pop-h"><b>Mais filtros</b><button type="button" class="lk" data-limpar="mais">limpar</button></div>
-              <div class="pop-l"><label class="opt so"><input type="checkbox" id="f-top"><span>${icone('estrela', 13)} Só prioridades (#top)</span></label>
+              <div class="pop-l"><label class="opt so"><input type="checkbox" id="f-top"><span>${icone('estrela', 13)} Só prioridades (#top)</span><em id="f-top-n"></em></label>
               <span class="pop-r">Dificuldade</span>${chips('dif', [1, 2, 3].map(d => [d, NIVEIS[d].n]))}
               <span class="pop-r">Extensão</span>${chips('ext', [1, 2, 3].map(e => [e, EXTENSOES[e].n, EXTENSOES[e].d]))}
               <label class="busca-t pop-q">${icone('busca', 14)}<input type="search" id="f-tagq" placeholder="Procurar marcador" aria-label="Procurar marcador"></label>
-              <div id="f-tags">${GRUPOS_TAG.map(([n, lista]) => `<div class="tg-g"><span class="pop-r">${esc(n)}</span>${chips('tags', lista.map(t => [t, maiuscula(rotCurto(t)), DICA_TAG[t] || '#' + t]))}</div>`).join('')}</div>
+              <p class="pop-n" id="f-regra">Dois marcadores do mesmo grupo somam os livros (um ou outro); de grupos diferentes, cruzam (um e outro). O número ao lado é quantos livros desta tela cada marcador mostra.</p>
+              <div id="f-tags">${GRUPOS_TAG.map(([n, lista], i) => `<div class="tg-g" data-g="${i}"><div class="tg-h"><span class="pop-r">${esc(n)}</span>${chave(n)}</div>${chips('tags', lista.map(t => [t, maiuscula(rotCurto(t)), DICA_TAG[t] || '#' + t]))}</div>`).join('')}</div>
               <div class="f-per" id="f-per"><span class="pop-r">Período <small>pela data de aquisição ou de leitura</small></span>
                 <div class="f-per-l">${seg('f-periodo', 'Período', PERIODOS).replace('class="seg"', 'class="seg mini"')}<button type="button" class="btn sm f-cal" id="f-cal" aria-expanded="false" title="Período personalizado">${icone('calendario', 14)}<span id="f-cal-r">Personalizar</span></button></div>
                 <div class="f-custom" id="f-custom" hidden><label><span>de</span><input type="date" id="f-de" aria-label="Data inicial"></label><label><span>até</span><input type="date" id="f-ate" aria-label="Data final"></label></div></div></div></div></div>
@@ -84,8 +88,21 @@ function montarFiltros() {
   $('#f-tipo').addEventListener('click', e => { const b = e.target.closest('button'); if (b) { S.tipo = b.dataset.v; filtrosMudaram(); } });
   $('#pop-eixo').addEventListener('change', e => { if (e.target.matches('input[type=checkbox]')) { alternar(S.eixos, +e.target.value); filtrosMudaram(); } });
   $('#f-top').addEventListener('change', e => { S.top = e.target.checked; filtrosMudaram(); });
-  $('#pop-mais').addEventListener('click', e => { const b = e.target.closest('.chip'); if (!b) return; const g = b.parentElement.dataset.grupo; alternar(S[g], g === 'tags' ? b.dataset.v : +b.dataset.v); filtrosMudaram(); });
-  $('#f-tagq').addEventListener('input', e => { const q = norm(e.target.value.trim()); $$('#f-tags .chip').forEach(c => { c.hidden = !!q && !norm(c.textContent + ' ' + c.dataset.v).includes(q); }); $$('#f-tags .tg-g').forEach(g => { g.hidden = !$$('.chip', g).some(c => !c.hidden); }); });
+  // os botões são guardados uma vez, com o que a busca e a contagem precisam: g = filtro (tags, dif, ext), v = valor, q = texto procurável
+  CHIPS = $$('#pop-mais .chip').map(el => {
+    const g = el.parentElement.dataset.grupo, tag = g === 'tags', v = tag ? el.dataset.v : +el.dataset.v, rot = $('span', el).textContent;
+    return { el, g, v, rot, em: $('em', el), dica: el.title, q: norm(tag ? [rot, rotTag(v), v, DICA_TAG[v] || ''].join(' ') : rot) };
+  });
+  $('#pop-mais').addEventListener('click', e => {
+    const m = e.target.closest('[data-modo]');
+    if (m) {                                         // chave "qualquer um / todos" de um grupo: é preferência, fica guardada
+      const nome = GRUPOS_TAG[+m.closest('.tg-g').dataset.g][0];
+      if (m.dataset.modo === 'e') S.ui.cruzar[nome] = true; else delete S.ui.cruzar[nome];
+      salvar(); filtrosMudaram(); return;
+    }
+    const b = e.target.closest('.chip'); if (!b) return; const g = b.parentElement.dataset.grupo; alternar(S[g], g === 'tags' ? b.dataset.v : +b.dataset.v); filtrosMudaram();
+  });
+  $('#f-tagq').addEventListener('input', e => { const q = norm(e.target.value.trim()); for (const c of CHIPS) if (c.g === 'tags') c.el.hidden = !!q && !c.q.includes(q); $$('#f-tags .tg-g').forEach(g => { g.hidden = !$$('.chip', g).some(c => !c.hidden); }); });
   F.addEventListener('click', e => {
     const l = e.target.closest('[data-limpar]');
     if (l) { const x = l.dataset.limpar; if (x === 'eixos') S.eixos.clear(); else if (x === 'mais') { S.dif.clear(); S.ext.clear(); S.tags.clear(); S.top = false; S.periodo = 'tudo'; S.de = S.ate = null; $('#f-custom').hidden = true; } else { limparFiltros(true); $('#f-custom').hidden = true; } filtrosMudaram(); return; }
@@ -137,26 +154,47 @@ function sincronizarFiltros() {
   $('#f-cal-r').textContent = custom ? `${fDiaMesAno(I.de)} – ${fDiaMesAno(I.ate)}` : 'Personalizar';
   if (custom) $('#f-custom').hidden = false;
   $('#f-de').value = iso(S.de); $('#f-ate').value = iso(S.ate); $('#f-de').max = $('#f-ate').max = iso(DB.hoje);
-  // contagens por eixo ignorando o próprio filtro de eixo
-  const base = DB.livros.filter(b => passaSeg(b, { semEixo: true, semAcervo: S.visao === 'recs' })), porEixo = contarPor(base, b => b.eixo);
-  $$('#pop-eixo .opt').forEach(o => { const inp = $('input', o), e = +inp.value; inp.checked = S.eixos.has(e); $('em', o).textContent = fInt(porEixo.get(e) || 0); });
+  $$('#pop-eixo .opt input').forEach(inp => { inp.checked = S.eixos.has(+inp.value); });
   $('#f-top').checked = S.top;
-  $$('#pop-mais .chip').forEach(c => { const g = c.parentElement.dataset.grupo; c.setAttribute('aria-pressed', String(S[g].has(g === 'tags' ? c.dataset.v : +c.dataset.v))); });
+  for (const c of CHIPS) c.el.setAttribute('aria-pressed', String(S[c.g].has(c.v)));
+  // chave "qualquer um / todos": só aparece no grupo em que faz diferença — dois marcadores ligados — ou que já está em "todos"
+  const sel = selTags();
+  $$('#f-tags .tg-g').forEach(g => {
+    const i = +g.dataset.g, e = cruza(i), s = sel.find(x => x.g === i), m = $('.tg-m', g);
+    m.hidden = !(e || (s && s.ts.length > 1));
+    $$('button', m).forEach(b => b.setAttribute('aria-pressed', String((b.dataset.modo === 'e') === e)));
+  });
   const nMais = S.dif.size + S.ext.size + S.tags.size + (S.top ? 1 : 0) + (S.periodo !== 'tudo' ? 1 : 0), cont = (sel, n) => { const el = $(sel); el.hidden = !n; el.textContent = n; };
   cont('#pw-eixo .cont', S.eixos.size); cont('#pw-mais .cont', nMais); cont('#f-n', nFiltros());
   $('#pw-eixo').classList.toggle('ativo', S.eixos.size > 0); $('#pw-mais').classList.toggle('ativo', nMais > 0);
-  // chips dos filtros ativos
-  const ch = [], add = (rm, txt) => ch.push(`<button type="button" class="ativo" data-rm="${esc(rm)}" title="Remover filtro">${esc(txt)}${icone('fechar', 12)}</button>`);
+  // Filtros ativos: cada filtro vira um botão (clicar remove). Os que se somam ou se cruzam entre si vão juntos, com a palavra que diz como:
+  // "A ou B" (qualquer um) ou "A e B" (todos); entre um conjunto e outro, vale sempre o cruzamento.
+  const ch = []; let nAtivos = 0;
+  const bt = (rm, txt) => `<button type="button" class="ativo" data-rm="${esc(rm)}" title="Remover filtro">${esc(txt)}${icone('fechar', 12)}</button>`;
+  const junta = (bts, con) => { nAtivos += bts.length; if (bts.length) ch.push(bts.length > 1 ? `<span class="fa-g">${bts.join(`<i class="fa-c">${con}</i>`)}</span>` : bts[0]); };
+  const add = (rm, txt) => junta([bt(rm, txt)]);
   if (S.acervo !== 'tudo' && S.visao !== 'recs') add('acervo:', ROTULO_ACERVO[S.acervo]);
   if (S.tipo) add('tipo:', { F: 'Ficção', NF: 'Não ficção', HQ: 'HQ', O: 'Poesia e outros' }[S.tipo]);
-  for (const e of [...S.eixos].sort((a, z) => a - z)) add('eixos:' + e, EIXOS[e].n);
+  junta([...S.eixos].sort((a, z) => a - z).map(e => bt('eixos:' + e, EIXOS[e].n)), 'ou');
   if (S.top) add('top:', 'Só prioridades');
-  for (const d of S.dif) add('dif:' + d, 'Dificuldade ' + NIVEIS[d].n.toLowerCase());
-  for (const e of S.ext) add('ext:' + e, 'Extensão ' + EXTENSOES[e].n.toLowerCase());
-  for (const t of S.tags) add('tags:' + t, ehCamada(t) || t === TAG_ANALISE ? maiuscula(rotTag(t)) : '#' + rotTag(t));
+  junta([...S.dif].map(d => bt('dif:' + d, 'Dificuldade ' + NIVEIS[d].n.toLowerCase())), 'ou');
+  junta([...S.ext].map(e => bt('ext:' + e, 'Extensão ' + EXTENSOES[e].n.toLowerCase())), 'ou');
+  for (const s of sel) junta(s.ts.map(t => bt('tags:' + t, ehCamada(t) || t === TAG_ANALISE ? maiuscula(rotTag(t)) : '#' + rotTag(t))), s.e ? 'e' : 'ou');
   if (S.periodo !== 'tudo') add('periodo:', custom ? `${fData(I.de)} – ${fData(I.ate)}` : 'Período: ' + (PERIODOS.find(([v]) => v === S.periodo) || ['', ''])[1].toLowerCase());
-  const el = $('#f-ativos'); el.hidden = !ch.length;
-  setHtml(el, ch.length ? `<span class="fa-r">Filtros ativos</span>${ch.join('')}${ch.length > 1 ? '<button type="button" class="lk" data-limpar="tudo">limpar tudo</button>' : ''}` : '');
+  const el = $('#f-ativos'); el.hidden = !nAtivos;
+  setHtml(el, nAtivos ? `<span class="fa-r">Filtros ativos</span>${ch.join('')}${nAtivos > 1 ? '<button type="button" class="lk" data-limpar="tudo">limpar tudo</button>' : ''}` : '');
+}
+/* Números dos filtros (ver contagens, em 30-state): quantos livros a lista desta tela mostra com cada opção ligada.
+   A opção que não mostraria nenhum fica apagada — pela cor, não por opacidade, para continuar legível — e segue clicável. */
+function pintarContagens(c) {
+  const k = contagens(c), nenhum = n => (n ? plural(n, 'livro', 'livros') : 'nenhum livro');
+  $$('#pop-eixo .opt').forEach(o => { const inp = $('input', o), n = k.eixos.get(+inp.value) || 0; $('em', o).textContent = fInt(n); o.classList.toggle('zero', !n && !inp.checked); });
+  $('#f-top-n').textContent = fInt(k.top); $('#f-top-n').parentElement.classList.toggle('zero', !k.top && !S.top);
+  for (const x of CHIPS) {
+    const n = (x.g === 'tags' ? k.tag.get(x.v) : k[x.g].get(x.v)) || 0, zero = !n && !S[x.g].has(x.v);
+    if (x.n !== n) { x.n = n; x.em.textContent = fInt(n); x.el.dataset.n = n; x.el.setAttribute('aria-label', `${x.rot}: ${nenhum(n)}`); }
+    if (x.zero !== zero) { x.zero = zero; x.el.classList.toggle('zero', zero); x.el.title = zero ? (x.dica ? x.dica + ' — ' : '') + 'nenhum livro nesta tela com os filtros atuais' : x.dica; }
+  }
 }
 
 /* ───────── casca: navegação, cabeçalho, avisos ───────── */
@@ -268,6 +306,11 @@ function iniciar() {
   document.addEventListener('error', e => { const im = e.target; if (im && im.tagName === 'IMG' && im.parentElement && im.parentElement.classList.contains('capa')) { const c = im.parentElement; if (c.classList.contains('g')) c.remove(); else im.remove(); } }, true);
   if (cfg.visao && VISOES[cfg.visao]) S.visao = cfg.visao;
   if (cfg.ui && typeof cfg.ui === 'object') Object.assign(S.ui, cfg.ui);
+  // "Temas e camadas": até a rodada 7 guardava-se a posição do grupo na lista; agora, o nome (a lista ganhou um grupo no meio)
+  if (typeof S.ui.temas === 'number') S.ui.temas = GRUPOS_TAG_V1[S.ui.temas] || 'Temas';
+  if (grupoTag(S.ui.temas) < 0) S.ui.temas = 'Temas';
+  // chaves "todos" dos grupos de marcadores: só valem as de grupos que existem
+  S.ui.cruzar = S.ui.cruzar && typeof S.ui.cruzar === 'object' && !Array.isArray(S.ui.cruzar) ? Object.fromEntries(GRUPOS_TAG.filter(g => S.ui.cruzar[g[0]] === true).map(g => [g[0], true])) : {};
   if (cfg.tam) for (const k in cfg.tam) if (TABELAS[k] && [10, 25, 50, 100].includes(cfg.tam[k])) S.tab[k] = { tam: cfg.tam[k] };
   montarCasca(); montarFiltros(); montarGaveta(); aplicarTema(); aplicarOlho(); pintarStatus(true);
   if (window.matchMedia) { const mq = matchMedia('(prefers-color-scheme: dark)'), f = () => { if (!S.tema) aplicarTema(); }; if (mq.addEventListener) mq.addEventListener('change', f); }

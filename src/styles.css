@@ -161,17 +161,31 @@ input.erro, select.erro { border-color: var(--bad); box-shadow: 0 0 0 3px color-
 .opt:hover { background: var(--surface-3); }
 .opt span { flex: 1; min-width: 0; display: inline-flex; align-items: center; gap: 6px; }
 .opt em { font-style: normal; font-size: 12px; color: var(--ink-3); font-variant-numeric: tabular-nums; }
+.opt.zero span { color: var(--ink-3); }                       /* opção que não mostraria nenhum livro: apagada pela cor (contraste AA) */
 input[type="checkbox"] { width: 16px; height: 16px; margin: 0; accent-color: var(--accent); flex: none; }
 .chips { display: flex; flex-wrap: wrap; gap: 6px; padding: 0 8px; }
-.chip { height: 27px; padding: 0 10px; border-radius: 14px; border: 1px solid var(--line); background: var(--surface); font-size: 12.5px; color: var(--ink-2); transition: background .14s, color .14s, border-color .14s; }
+.chip { display: inline-flex; align-items: center; gap: 6px; height: 27px; padding: 0 10px; border-radius: 14px; border: 1px solid var(--line); background: var(--surface); font-size: 12.5px; color: var(--ink-2); white-space: nowrap; transition: background .14s, color .14s, border-color .14s; }
 .chip:hover { border-color: var(--line-2); color: var(--ink); }
 .chip[aria-pressed="true"] { background: var(--accent); border-color: var(--accent); color: var(--accent-ink); font-weight: 600; }
+/* o número ao lado do rótulo: quantos livros da tela o botão mostra */
+.chip em { font-style: normal; font-size: 11.5px; font-weight: 500; color: var(--ink-3); font-variant-numeric: tabular-nums; }
+.chip[aria-pressed="true"] em { color: inherit; font-weight: 600; }
+/* botão que não mostraria nenhum livro: apagado pela cor e pelo contorno, não por opacidade (o texto continua legível, contraste AA) */
+.chip.zero { color: var(--ink-3); background: none; border-style: dashed; border-color: var(--line-2); }
+.chip.zero:hover { color: var(--ink-2); }
 .pop-q { margin: 14px 8px 0; }
+.pop-n { margin: 10px 8px 0; font-size: 12px; line-height: 1.45; color: var(--ink-3); }
+/* cabeça de um grupo de marcadores: o nome e, quando há dois ligados, a chave "qualquer um / todos" */
+.tg-h { display: flex; align-items: flex-end; justify-content: space-between; gap: 8px; }
+.tg-m { flex: none; margin: 0 8px 3px 0; }
 .f-ativos { display: flex; align-items: center; flex-wrap: wrap; gap: 6px; margin-top: 9px; }
 .fa-r { font-size: 12px; color: var(--ink-3); margin-right: 2px; }
 .f-ativos .ativo { display: inline-flex; align-items: center; gap: 5px; height: 26px; padding: 0 7px 0 10px; border-radius: 13px; background: var(--accent-soft); color: var(--accent-forte); font-size: 12.5px; font-weight: 550; max-width: 100%; }
 .f-ativos .ativo:hover { background: color-mix(in srgb, var(--accent) 24%, var(--surface)); }
 .f-ativos .lk { margin-left: 6px; }
+/* filtros que se somam ("ou") ou se cruzam ("e") entre si andam juntos, dentro de um contorno */
+.fa-g { display: inline-flex; align-items: center; flex-wrap: wrap; gap: 4px; max-width: 100%; margin: -3px 0; padding: 2px; border: 1px dashed var(--line-2); border-radius: 16px; }
+.fa-c { font-style: normal; font-size: 12px; color: var(--ink-3); padding: 0 1px; }
 
 .aviso { display: flex; align-items: flex-start; gap: 12px; margin: 16px var(--pad) 0; padding: 14px 16px; border: 1px dashed color-mix(in srgb, var(--warn) 50%, var(--line)); border-radius: var(--r); background: var(--warn-soft); }
 .av-i { color: var(--warn); margin-top: 1px; }
@@ -742,6 +756,8 @@ td.c-spark svg { margin-left: auto; margin-right: auto; }
   .f-per-l, .f-custom { padding-left: 0; padding-right: 0; }
   .f-g .f-per-l .seg { display: inline-flex; }
   .f-g .f-per-l .seg.mini button { flex: none; height: 32px; padding: 0 10px; }
+  .f-g .tg-m { display: inline-flex; }
+  .f-g .tg-m.seg.mini button { flex: none; height: 30px; padding: 0 10px; }   /* vence a regra geral dos segmentos da folha, mais abaixo */
   .f-per-l .f-cal { height: 36px; }
   .f-painel { display: none; position: fixed; left: 0; right: 0; bottom: 0; z-index: 80; max-height: 86dvh; flex-direction: column; background: var(--surface); border-radius: 18px 18px 0 0; border: 1px solid var(--line); box-shadow: var(--sombra-2); }
   .filtros.folha { z-index: 85; }

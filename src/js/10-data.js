@@ -40,7 +40,8 @@ const rotTag = t => ROTULO_TAG[t] || t.replace(/-/g, ' ');
 const TAGS_ESTRUTURA = new Set(['F', 'NF', 'HQ', 'poesia', 'antologia', 'd1', 'd2', 'd3', 'e1', 'e2', 'e3', 'ja-tenho', 'tenho-fisico', 'tenho-digital', 'lido', 'top']);
 const GRUPOS_TAG = [
   ['Gêneros', ['ficcao-cientifica', 'fantasia', 'distopia', 'utopia', 'historia-alternativa', 'horror', 'gotico', 'lovecraftiano', 'misterio', 'thriller', 'thriller-medico', 'romance-historico', 'medieval', 'antiguidade', 'roma', 'renascimento', 'pre-historia', 'neandertal', 'regional-gaucho', 'teatro', 'contos', 'cronicas', 'aventura', 'policial', 'faroeste', 'poesia', 'HQ', 'super-herois', 'manga', 'adaptacao', 'antologia']],
-  ['Temas', ['filosofia', 'existencialismo', 'etica', 'politica', 'autoritarismo', 'economia', 'geopolitica', 'psicologia', 'psicanalise', 'psiquiatria', 'neurociencia', 'consciencia', 'ciencia', 'ia', 'historia', 'antropologia', 'sociologia', 'religiao', 'espiritualidade', 'espiritismo', 'umbanda', 'oriental', 'mistica', 'morte', 'memoria', 'identidade', 'raca', 'genero', 'colonialismo', 'ecologia', 'linguagem', 'guerra', 'testemunho', 'medicina', 'biografia', 'escrita', 'cinema', 'arte', 'parentalidade', 'humor', 'introducao', 'gestao', 'esporte', 'didatico', 'tecnologia', 'fisica', 'autoconhecimento', 'behaviorismo', 'tcc', 'psicometria', 'psicopatologia', 'psicologia-analitica', 'psicologia-humanista', 'psicologia-social', 'mitologia', 'educacao', 'biologia', 'matematica', 'programacao', 'dados', 'design', 'enigmas']],
+  ['Temas', ['filosofia', 'existencialismo', 'etica', 'politica', 'autoritarismo', 'economia', 'geopolitica', 'psicologia', 'psiquiatria', 'consciencia', 'ciencia', 'ia', 'historia', 'antropologia', 'sociologia', 'religiao', 'espiritualidade', 'espiritismo', 'umbanda', 'oriental', 'mistica', 'morte', 'memoria', 'identidade', 'raca', 'genero', 'colonialismo', 'ecologia', 'linguagem', 'guerra', 'testemunho', 'medicina', 'biografia', 'escrita', 'cinema', 'arte', 'parentalidade', 'humor', 'introducao', 'gestao', 'esporte', 'didatico', 'tecnologia', 'fisica', 'mitologia', 'educacao', 'biologia', 'matematica', 'programacao', 'dados', 'design', 'enigmas']],
+  ['Psicologia: abordagens e áreas', ['psicanalise', 'tcc', 'behaviorismo', 'psicologia-analitica', 'psicologia-humanista', 'psicologia-social', 'psicopatologia', 'psicometria', 'neurociencia', 'autoconhecimento']],
   ['Época e origem', ['classico', 'contemporaneo', 'BR', 'RS', 'portugal', 'latam', 'africa', 'asia', 'europa-leste']],
   ['Afinidades', ['rel-imortais', 'rel-widows-bay', 'rel-cornwell', 'rel-asimov-clarke', 'rel-yalom', 'rel-fromm']],
 ];
@@ -78,6 +79,17 @@ for (const c of CAMADAS) {
   for (const k in c.v) { const t = c.p + '-' + k; ROTULO_TAG[t] = c.r + ': ' + c.v[k][0]; ROTULO_CURTO[t] = c.v[k][0]; DICA_TAG[t] = c.v[k][1]; }
   GRUPOS_TAG.push([c.g, Object.keys(c.v).map(k => c.p + '-' + k)]);
 }
+/* Psicologia: o eixo é o maior do catálogo (um em cada seis livros), e estas dez portas acompanham as pastas em que o dono
+   guarda os arquivos — primeiro as abordagens, depois as áreas. Dentro do grupo o nome dispensa o "psicologia" (o grupo já
+   diz); nos filtros ativos e na ficha do livro continua valendo o rótulo completo (ROTULO_TAG). */
+const PORTAS_PSI = {
+  psicanalise: ['psicanálise', 'Freud, Lacan e a tradição psicanalítica'], tcc: ['TCC', 'Terapia cognitivo-comportamental e terapias cognitivas'],
+  behaviorismo: ['behaviorismo', 'Skinner e a análise do comportamento'], 'psicologia-analitica': ['analítica (Jung)', 'Jung e a psicologia analítica'],
+  'psicologia-humanista': ['humanista', 'Psicologia humanista, existencial e fenomenológica'], 'psicologia-social': ['social', 'Psicologia social e cultural'],
+  psicopatologia: ['psicopatologia', 'Clínica, transtornos e psicopatologia'], psicometria: ['psicometria', 'Avaliação psicológica e psicometria'],
+  neurociencia: ['neurociência', 'Neurociências e psicologia biológica'], autoconhecimento: ['autoconhecimento', 'Autoconhecimento e desenvolvimento pessoal'],
+};
+for (const t in PORTAS_PSI) { ROTULO_CURTO[t] = PORTAS_PSI[t][0]; DICA_TAG[t] = PORTAS_PSI[t][1]; }
 const camadaDe = t => CAMADAS.find(c => t.startsWith(c.p + '-') && c.v[t.slice(c.p.length + 1)]) || null;
 const ehCamada = t => !!camadaDe(t) || t.startsWith('trilha-');
 /* Trilhas de leitura (catalogo/trilhas.md): roteiros com os livros em ordem. Quem diz que um livro está na trilha é o
@@ -86,6 +98,12 @@ const TRILHAS = TRILHAS_DADOS.map(([tag, nome, desc, linhas], i) => ({ n: i + 1,
 for (const t of TRILHAS) { ROTULO_TAG[t.tag] = 'trilha: ' + t.curto; ROTULO_CURTO[t.tag] = t.curto; DICA_TAG[t.tag] = t.nome; }
 GRUPOS_TAG.push(['Trilhas de leitura', TRILHAS.map(t => t.tag)], ['Pendências', ['verificar', 'sem-pt']], ['Suas marcas', ['analise']]);
 const TAG_ANALISE = 'analise';                      // "possui análise": posto no painel, na ficha do livro
+/* Cada marcador mora num grupo só: é o grupo que diz como dois marcadores se combinam (ver selTags, em 30-state). */
+const GRUPO_DA_TAG = new Map();
+GRUPOS_TAG.forEach(([, lista], i) => { for (const t of lista) GRUPO_DA_TAG.set(t, i); });
+const grupoTag = nome => GRUPOS_TAG.findIndex(g => g[0] === nome);
+// até a rodada 7 o painel guardava a POSIÇÃO do grupo escolhido em "Temas e camadas"; a lista era esta (hoje guarda o nome)
+const GRUPOS_TAG_V1 = ['Gêneros', 'Temas', 'Época e origem', 'Afinidades', 'Perguntas centrais', 'Clima da leitura', 'Papel na biblioteca', 'Pontes entre áreas', 'Cenários', 'Trilhas de leitura', 'Pendências', 'Suas marcas'];
 
 const FORMATOS = {
   fisico: { n: 'Físico', cor: 'var(--c1)' },

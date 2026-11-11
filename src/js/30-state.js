@@ -77,7 +77,9 @@ const S = {
   tipo: '', eixos: new Set(), dif: new Set(), ext: new Set(), tags: new Set(), top: false,
   tema: '', ocultar: false, avisoVisto: false, saiu: 0, capas: true, sel: '',
   tab: {},
-  ui: { compor: 'fmt', temas: 1, prio: 'valor', sorteio: 0, trilhas: 'ordem' },
+  // temas = grupo de marcadores mostrado em "Temas e camadas" (pelo nome); cruzar = { nome do grupo: true } nos grupos em que
+  // dois marcadores ligados se cruzam ("todos") em vez de se somar ("qualquer um", o padrão)
+  ui: { compor: 'fmt', temas: 'Temas', prio: 'valor', sorteio: 0, trilhas: 'ordem', cruzar: {} },
 };
 const nFiltros = () => (S.acervo !== 'tudo' && S.visao !== 'recs' ? 1 : 0) + (S.tipo ? 1 : 0) + S.eixos.size + S.dif.size + S.ext.size + S.tags.size + (S.top ? 1 : 0) + (S.periodo !== 'tudo' ? 1 : 0);
 function limparFiltros(tambemPeriodo) {
@@ -86,7 +88,27 @@ function limparFiltros(tambemPeriodo) {
 }
 const alternar = (conj, v) => { if (conj.has(v)) conj.delete(v); else conj.add(v); };
 
-/* filtros de segmento (o período é tratado à parte, porque filtra eventos e não livros) */
+/* Como os marcadores escolhidos se combinam.
+     · dentro de um grupo de filtros (Gêneros, Cenários, Trilhas…): SOMAM — o livro precisa ter qualquer um dos ligados;
+     · com a chave do grupo em "todos": CRUZAM — o livro precisa ter todos os ligados daquele grupo;
+     · entre grupos: sempre cruzam — o livro precisa atender a cada grupo que tenha algo ligado.
+   Marcador que não está em grupo nenhum (posto à mão num livro e clicado na ficha) conta sozinho, como um grupo de um só.
+   selTags() devolve a escolha separada por grupo: [{ g: posição do grupo (ou o próprio marcador, se avulso), ts: [marcadores], e: cruza? }]. */
+const cruza = g => typeof g === 'number' && !!S.ui.cruzar[GRUPOS_TAG[g][0]];
+let SEL_CHAVE = null, SEL = [];
+function selTags() {
+  const chave = [...S.tags].join('\n') + '\n\n' + GRUPOS_TAG.map((_, i) => (cruza(i) ? 1 : 0)).join('');
+  if (chave !== SEL_CHAVE) {
+    const m = new Map();
+    for (const t of S.tags) { const g = GRUPO_DA_TAG.has(t) ? GRUPO_DA_TAG.get(t) : t; if (!m.has(g)) m.set(g, []); m.get(g).push(t); }
+    SEL = [...m].map(([g, ts]) => ({ g, ts, e: cruza(g) })); SEL_CHAVE = chave;
+  }
+  return SEL;
+}
+
+/* filtros de segmento (o período é tratado à parte, porque filtra eventos e não livros)
+   o = o que deixar de fora: semAcervo, semEixo, semDE (dificuldade e extensão), semDif, semExt, semTop, semTags (todos os
+   marcadores) ou semGrupo (os marcadores de um grupo só) — é assim que se conta "quantos livros cada opção teria". */
 function passaSeg(b, o = {}) {
   if (!o.semAcervo && S.acervo !== 'tudo') {
     // no acervo vale o que eu tenho (um livro pode estar nas duas bibliotecas); nas listas, o formato desejado
@@ -96,9 +118,12 @@ function passaSeg(b, o = {}) {
   }
   if (S.tipo && tipoFiltro(b._tipo) !== S.tipo) return false;
   if (!o.semEixo && S.eixos.size && !S.eixos.has(b.eixo)) return false;
-  if (!o.semDE) { if (S.dif.size && !S.dif.has(b._d)) return false; if (S.ext.size && !S.ext.has(b._e)) return false; }
-  if (!o.semTags && S.tags.size) for (const t of S.tags) if (!b.tags.includes(t)) return false;
-  if (S.top && !b._top) return false;
+  if (!o.semDE) { if (!o.semDif && S.dif.size && !S.dif.has(b._d)) return false; if (!o.semExt && S.ext.size && !S.ext.has(b._e)) return false; }
+  if (!o.semTags && S.tags.size) for (const s of o.sel || selTags()) {
+    if (s.g === o.semGrupo) continue;
+    if (s.e ? !s.ts.every(t => b.tags.includes(t)) : !s.ts.some(t => b.tags.includes(t))) return false;
+  }
+  if (S.top && !o.semTop && !b._top) return false;
   return true;
 }
 
@@ -145,7 +170,7 @@ function precoBase(b, d) {                   // melhor preço em d; antes da 1ª
 const temCotacaoPropria = b => !!b.px && Object.values(b.px).some(pts => pts.some(p => p[2]));
 
 function recorte(I, o) {
-  const seg = DB.livros.filter(b => passaSeg(b, Object.assign({ semAcervo: S.visao === 'recs' }, o)));
+  const op = Object.assign({ semAcervo: S.visao === 'recs', sel: selTags() }, o), seg = DB.livros.filter(b => passaSeg(b, op));
   const ac = [], des = [], rec = [];
   for (const b of seg) (b.col === 'acervo' ? ac : b.col === 'desejo' ? des : rec).push(b);
   return { seg, ac, des, rec, acP: I.tudo ? ac : ac.filter(b => dentro(adqDe(b), I)), recP: I.tudo ? rec : rec.filter(b => dentro(b.add, I)) };
@@ -159,6 +184,10 @@ function contexto() {
   let E, DE;
   Object.defineProperty(c, 'E', { get: () => E || (E = recorte(I, { semEixo: true })) });      // ignora o filtro de eixo (gráficos-seletores)
   Object.defineProperty(c, 'DE', { get: () => DE || (DE = recorte(I, { semDE: true })) });     // ignora dificuldade/extensão (matriz)
+  // ignora os marcadores ligados de um grupo — quando eles se somam, as barras do grupo continuam todas à vista (gráfico-seletor);
+  // quando se cruzam ("todos"), vale o recorte de sempre
+  const semG = new Map();
+  c.semGrupo = g => { if (!selTags().some(s => s.g === g && !s.e)) return c; if (!semG.has(g)) semG.set(g, recorte(I, { semGrupo: g })); return semG.get(g); };
   let ini = Infinity;
   for (const b of c.rast) for (const f in b.px) if (b.px[f].length && b.px[f][0][0] < ini) ini = b.px[f][0][0];
   c.pxIni = isFinite(ini) ? ini : I.ate;
@@ -176,6 +205,31 @@ function contexto() {
   Object.defineProperty(c, 'trilhas', { get: () => TR || (TR = estadoTrilhas()) });
   Object.defineProperty(c, 'compra', { get: () => OC || (OC = ordemDeCompra(c.trilhas)) });
   return c;
+}
+
+/* ───────── números dos filtros ─────────
+   Ao lado de cada opção de filtro vai quantos livros a lista da tela atual (a tabela da visão, aba "Todos") mostra com aquela
+   opção ligada — é o número que a aba passa a mostrar depois do clique. Regras:
+     · filtros cujas opções se somam (eixo, dificuldade, extensão, grupo de marcadores em "qualquer um") são contados sem a
+       própria escolha: o número de uma opção não muda quando a vizinha é marcada;
+     · num grupo de marcadores em "todos" (cruza), o número já desconta os ligados do grupo: é o que sobra se aquele entrar;
+     · tudo o mais que estiver ligado (acervo, tipo, período, os outros filtros e grupos) vale sempre. */
+function contagens(c) {
+  const linhas = r => TABELAS[S.visao].linhas(r.rast ? r : Object.assign(r, { rast: r.seg.filter(rastreado) }));
+  const sem = o => linhas(recorte(c.I, o)), base = linhas(c);
+  const porTag = L => { const m = new Map(); for (const b of L) for (const t of b.tags) m.set(t, (m.get(t) || 0) + 1); return m; };
+  const tagsBase = porTag(base), sel = selTags(), tag = new Map();
+  GRUPOS_TAG.forEach(([, lista], i) => {
+    const m = sel.some(s => s.g === i && !s.e) ? porTag(linhas(c.semGrupo(i))) : tagsBase;
+    for (const t of lista) tag.set(t, m.get(t) || 0);
+  });
+  return {
+    n: base.length, tag,
+    eixos: contarPor(S.eixos.size ? linhas(c.E) : base, b => b.eixo),
+    dif: contarPor(S.dif.size ? sem({ semDif: true }) : base, b => b._d),
+    ext: contarPor(S.ext.size ? sem({ semExt: true }) : base, b => b._e),
+    top: (S.top ? sem({ semTop: true }) : base).filter(b => b._top).length,
+  };
 }
 
 /* ───────── trilhas de leitura ─────────
