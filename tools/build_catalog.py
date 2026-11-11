@@ -46,6 +46,11 @@ OBS = {
     'O Xamã': '“O Xamã” e “Xamã” são o mesmo livro.',
     'A Ilha': 'Há dois livros diferentes com este título na estante (Huxley e Benchley).',
     'A Ilha (Benchley)': 'Há dois livros diferentes com este título na estante (Huxley e Benchley).',
+    # informações do dono da biblioteca (11/11/2026)
+    'O Chamado de Cthulhu': 'Na estante, este conto está dentro do seu livro de contos de Lovecraft: não é um volume à parte.',
+    'Nas Montanhas da Loucura': 'Na estante, esta novela está dentro do seu livro de contos de Lovecraft: não é um volume à parte.',
+    'A Sombra sobre Innsmouth': 'Na estante, esta novela está dentro do seu livro de contos de Lovecraft: não é um volume à parte.',
+    'A Metamorfose': 'Você já leu. Tinha o livro em papel, emprestou e ele não voltou.',
 }
 _B36 = '0123456789abcdefghijklmnopqrstuvwxyz'
 

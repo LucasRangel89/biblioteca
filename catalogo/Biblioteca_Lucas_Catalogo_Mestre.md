@@ -256,7 +256,7 @@ Formato das linhas: `Título | Autor | Tags`. As tags usam `#` (compatível com 
 | O Estrangeiro | Albert Camus | #F #existencialismo #classico #d1 #e1 #top #tenho-digital #q-culpa-e-justica #papel-leitura-relampago #ponte-ficcao-e-filosofia #trilha-relampago |
 | A Queda | Albert Camus | #F #existencialismo #etica #classico #d2 #e1 #q-culpa-e-justica #papel-leitura-relampago #ponte-ficcao-e-filosofia |
 | A Náusea | Jean-Paul Sartre | #F #existencialismo #classico #d2 #e2 #top #clima-claustrofobico #ponte-ficcao-e-filosofia |
-| A Metamorfose | Franz Kafka | #F #existencialismo #classico #d2 #e1 #clima-claustrofobico #papel-leitura-relampago #trilha-relampago |
+| A Metamorfose | Franz Kafka | #F #existencialismo #classico #d2 #e1 #lido #clima-claustrofobico #papel-leitura-relampago #trilha-relampago |
 | O Processo | Franz Kafka | #F #existencialismo #politica #classico #d2 #e2 #tenho-digital #q-liberdade-e-obediencia #q-culpa-e-justica #clima-claustrofobico |
 | A Montanha Mágica | Thomas Mann | #F #classico #d3 #e3 #papel-desafio |
 | Sidarta | Hermann Hesse | #F #espiritualidade #classico #d1 #e1 #q-sentido-e-como-viver #clima-contemplativo #papel-leitura-relampago #trilha-relampago |
@@ -435,9 +435,9 @@ Formato das linhas: `Título | Autor | Tags`. As tags usam `#` (compatível com 
 | O Wendigo | Algernon Blackwood | #F #horror #classico #d1 #e1 #rel-widows-bay |
 | A Casa no Limite do Mundo | William Hope Hodgson | #F #horror #classico #d2 #e1 #rel-widows-bay #clima-claustrofobico #cenario-ilha-e-isolamento |
 | A Terra da Noite | William Hope Hodgson | #F #horror #ficcao-cientifica #classico #d3 #e3 #rel-widows-bay #papel-desafio |
-| Nas Montanhas da Loucura | H.P. Lovecraft | #F #horror #lovecraftiano #classico #d2 #e1 #top #rel-widows-bay |
-| A Sombra sobre Innsmouth | H.P. Lovecraft | #F #horror #lovecraftiano #classico #d2 #e1 #top #rel-widows-bay #clima-claustrofobico #papel-porta-de-entrada #cenario-nova-inglaterra #cenario-cidade-pequena #trilha-lovecraft-widows-bay |
-| O Chamado de Cthulhu | H.P. Lovecraft | #F #horror #lovecraftiano #classico #d2 #e1 #top #rel-widows-bay #tenho-digital |
+| Nas Montanhas da Loucura | H.P. Lovecraft | #F #horror #lovecraftiano #classico #d2 #e1 #top #tenho-fisico #rel-widows-bay |
+| A Sombra sobre Innsmouth | H.P. Lovecraft | #F #horror #lovecraftiano #classico #d2 #e1 #top #tenho-fisico #rel-widows-bay #clima-claustrofobico #papel-porta-de-entrada #cenario-nova-inglaterra #cenario-cidade-pequena #trilha-lovecraft-widows-bay |
+| O Chamado de Cthulhu | H.P. Lovecraft | #F #horror #lovecraftiano #classico #d2 #e1 #top #tenho-fisico #rel-widows-bay #tenho-digital |
 | O Horror de Dunwich | H.P. Lovecraft | #F #horror #lovecraftiano #classico #d2 #e1 #rel-widows-bay #cenario-nova-inglaterra #cenario-cidade-pequena #trilha-lovecraft-widows-bay |
 | O Caso de Charles Dexter Ward | H.P. Lovecraft | #F #horror #lovecraftiano #classico #d2 #e1 #rel-widows-bay #tenho-digital #cenario-nova-inglaterra |
 | Um Sussurro nas Trevas | H.P. Lovecraft | #F #horror #lovecraftiano #classico #d2 #e1 #rel-widows-bay #cenario-nova-inglaterra |
