@@ -188,12 +188,13 @@ input[type="checkbox"] { width: 16px; height: 16px; margin: 0; accent-color: var
 .fa-c { font-style: normal; font-size: 12px; color: var(--ink-3); padding: 0 1px; }
 
 /* "Ocultar": o aviso sob a barra (fica à vista enquanto houver regra ligada) e o que é só do quadro de opções */
-.f-fora { display: flex; align-items: center; flex-wrap: wrap; gap: 4px 14px; margin-top: 9px; padding: 6px 11px; border-radius: 10px; border: 1px dashed var(--line-2); background: var(--surface-2); font-size: 12.5px; color: var(--ink-2); }
+.f-fora { display: flex; align-items: center; flex-wrap: wrap; gap: 2px 14px; margin-top: 9px; padding: 3px 11px; border-radius: 10px; border: 1px dashed var(--line-2); background: var(--surface-2); font-size: 12.5px; color: var(--ink-2); }
 .ff-t { display: inline-flex; align-items: center; flex-wrap: wrap; gap: 2px 7px; min-width: 0; flex: 1 1 240px; }
 .ff-t .ic { flex: none; color: var(--ink-3); }
 .ff-t b { color: var(--ink); font-weight: 600; white-space: nowrap; }
 .ff-r { min-width: 0; overflow-wrap: anywhere; }
 .ff-a { display: inline-flex; gap: 14px; flex: none; }
+.ff-a .lk { display: inline-flex; align-items: center; min-height: 24px; }
 .fo-n b { color: var(--ink-2); font-weight: 600; }
 .fo-tags { padding-top: 8px; }
 .fo-tags:empty, #fo-tags-n:empty { display: none; }
@@ -783,7 +784,10 @@ td.c-spark svg { margin-left: auto; margin-right: auto; }
   .filtros.folha .f-painel { display: flex; animation: folha .26s cubic-bezier(.3, .7, .2, 1); outline: 0; }
   .f-ph { display: flex; align-items: center; justify-content: space-between; padding: 14px 14px 8px 18px; }
   .f-ph b { font: 600 18px var(--serif); }
-  .f-ph .lk { margin-left: auto; margin-right: 14px; font-size: 13px; }
+  .f-ph .lk { display: inline-flex; align-items: center; min-height: 36px; margin-left: auto; margin-right: 10px; padding: 0 4px; font-size: 13px; }
+  .f-fora { padding: 2px 11px; }
+  .ff-a { gap: 6px; margin-left: -6px; }
+  .ff-a .lk { min-height: 32px; padding: 0 6px; }
   .f-corpo { flex-direction: column; align-items: stretch; flex-wrap: nowrap; gap: 16px; overflow: auto; padding: 6px 18px 16px; overscroll-behavior: contain; }
   .f-pf { display: flex; gap: 8px; padding: 12px 18px calc(12px + env(safe-area-inset-bottom)); border-top: 1px solid var(--line); }
   .f-pf .btn { flex: 1; height: 42px; }

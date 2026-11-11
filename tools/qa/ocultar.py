@@ -5,15 +5,16 @@
   B. o quadro "Ocultar" — ao lado de cada opção (3 situações, 4 tipos, 16 eixos) vai quantos livros ela esconde, e o
      número bate com o catálogo (contado aqui, por fora do painel);
   C. "Sem edição em PT" — os livros saem da tabela, das abas, dos números dos filtros, da fila de recomendações, da ordem
-     de compra e da trilha de que um deles faz parte; o aviso sob a barra e o rodapé dizem quantos são; a busca rápida
-     ainda acha o livro, e a ficha diz por que ele está fora das listas;
+     de compra e da trilha de que um deles faz parte; o aviso sob a barra e o rodapé dizem quantos são; a lista que fica
+     vazia por causa disso diz que o livro está oculto; a busca rápida ainda o acha, e a ficha diz por que ele está fora;
   D. a escolha fica guardada: resiste à recarga e vale em todas as telas; e o número de cada botão de filtro continua
      sendo o tamanho da lista;
   E. "Já li" — os lidos saem das listas, mas continuam contando nas leituras concluídas e no andamento da trilha; com os
-     dados de exemplo, os indicadores de leitura da Biblioteca não mudam;
+     dados de exemplo, os indicadores e os gráficos de leitura não mudam, e cada gráfico avisa que conta os ocultos;
   F. tipo, eixo e marcador — cada um esconde o que diz; o marcador é achado pela busca do quadro;
   G. regras juntas escondem a união (um livro que cai em duas conta uma vez);
-  H. "mostrar todos" traz tudo de volta e limpa o que estava guardado; "mudar" abre o quadro;
+  H. "mostrar todos" traz tudo de volta e limpa o que estava guardado; "mudar" abre o quadro; "Limpar tudo", que é dos
+     filtros, não mexe no que está oculto; "Recomeçar do catálogo original" desfaz;
   I. a barra — em 1366 px, com os três números ligados, continua numa linha só, e o quadro não sai da janela (em 1100 px,
      onde a barra já quebra em duas linhas, o quadro também fica dentro);
   J. no celular — o atalho no topo da folha de filtros leva às opções, e o aviso cabe na tela;
@@ -58,6 +59,8 @@ GUARDADO = "() => ((JSON.parse(localStorage.getItem('%s') || '{}').cfg || {}).ui
 RODAPE = "() => document.querySelector('#rodape-n').textContent"
 BOTOES_FILTRO = "() => [...document.querySelectorAll('#pop-mais .chip')].map(c => ({ g: c.parentElement.dataset.grupo, v: c.dataset.v, n: +c.dataset.n }))"
 OPCAO_EIXO = "v => { const o = document.querySelector(`#pop-eixo input[value=\"${v}\"]`).parentElement; return { n: +o.querySelector('em').textContent.replace(/\\./g, ''), zero: o.classList.contains('zero') }; }"
+VAZIO = "v => { const e = document.querySelector(`#p-tab-${v} .ch-vazio`); return e.hidden ? null : { txt: e.textContent, n: +e.dataset.ocultos }; }"
+ROSCA = "id => { const p = document.querySelector('#p-' + id), num = s => +s.replace(/\\./g, ''); return { total: num(p.querySelector('.rosca-c b').textContent), fatias: Object.fromEntries([...p.querySelectorAll('.rosca-l li')].map(li => [li.dataset.k, li.textContent.replace(/\\s+/g, ' ').trim()])), sub: p.querySelector('.card-s, .p-sub, header p').textContent }; }"
 TRILHA_PAINEL = "t => { const b = document.querySelector(`#p-trilhas [data-trilha=\"${t}\"]`); return b ? b.querySelector('.li-m span').textContent : null; }"
 TRILHA_CAIXA = "() => { const d = document.querySelector('#dlg.on'); return d ? { frase: d.querySelector('.tr-res b').textContent, livros: [...d.querySelectorAll('.tr-l li .li-m b')].map(b => b.textContent), nota: (d.querySelector('.tr-fora') || {}).textContent || '' } : null; }"
 # contraste (WCAG) do texto de um elemento contra o fundo que de fato fica atrás dele; a cor é lida pintando um ponto
@@ -122,6 +125,11 @@ with sync_playwright() as p:
     ok('saem da tabela da visão geral', aba() == N - n_sp, aba())
     pg.fill('#p-tab-geral input[type=search]', CAT[min(sp)][0]); pg.wait_for_timeout(500)
     ok('procurado pelo título na tabela, o livro não aparece', aba() == 0, (CAT[min(sp)][0], aba()))
+    vz = pg.evaluate(VAZIO, 'geral')
+    ok('…e a lista vazia diz que o único livro que caberia ali está oculto', vz and vz['n'] == 1 and vz['txt'].startswith('O único livro que caberia aqui está oculto. Para vê-lo, use “Ocultar”'), vz)
+    pg.fill('#p-tab-geral input[type=search]', 'zzzz não existe'); pg.wait_for_timeout(400)
+    vz = pg.evaluate(VAZIO, 'geral')
+    ok('…mas não põe a culpa no que está oculto quando a busca não acharia nada de qualquer jeito', vz == {'txt': 'Nenhuma linha combina com a busca ou a aba escolhida.', 'n': 0}, vz)
     pg.fill('#p-tab-geral input[type=search]', ''); pg.wait_for_timeout(400)
     ir('recs')
     fila = sum(1 for i in range(N) if not TENHO[i] and 'lido' not in MARCAS[i] and i not in sp)
@@ -190,12 +198,28 @@ with sync_playwright() as p:
     pg = abre(b, PAINEL_URL)                                             # com os dados de exemplo: dezenas de leituras, no acervo e de fora
     ir('biblioteca')
     antes = {x: pg.evaluate(KPI, x) for x in ('leituras', 'fila', 'lendo')}; lidos0, todos0 = aba('lido'), aba()
+    rosca0 = pg.evaluate(ROSCA, 'status')
     marca('sit', 'lido'); fecha(); pg.wait_for_timeout(900)
     depois = {x: pg.evaluate(KPI, x) for x in ('leituras', 'fila', 'lendo')}
+    rosca1 = pg.evaluate(ROSCA, 'status')
+    ok('dados de exemplo: a rosca "Situação de leitura" continua com a fatia dos lidos, e avisa que conta os ocultos', rosca0['total'] == todos0 and str(lidos0) in rosca0['fatias']['lido'] and (rosca1['total'], rosca1['fatias']) == (rosca0['total'], rosca0['fatias'])
+       and 'oculto' not in rosca0['sub'] and rosca1['sub'].endswith('· conta os lidos ocultos'), (rosca0, rosca1['sub']))
+    sub = pg.inner_text('#p-adq-lidos header p')
+    ok('…e "Adquiridos × lidos" também avisa', sub.endswith('· conta os lidos ocultos'), sub)
+    pg.click('#p-tab-biblioteca .abas [data-a=lido]'); pg.wait_for_timeout(400)
+    vz = pg.evaluate(VAZIO, 'biblioteca')
+    ok('…a aba "Lidos", agora vazia, diz que os livros dela estão ocultos', vz and vz['n'] == lidos0 and vz['txt'].startswith(f'Os {lidos0} livros que caberiam aqui estão ocultos. Para vê-los, use “Ocultar”'), vz)
+    pg.click('#p-tab-biblioteca .abas [data-a=todos]'); pg.wait_for_timeout(400)
     ok('dados de exemplo: os lidos do acervo saem da tabela da Biblioteca', lidos0 > 20 and aba('lido') == 0 and aba() == todos0 - lidos0, (lidos0, todos0, aba('lido'), aba()))
     ok('…e os indicadores de leitura ("Leituras concluídas", "Por ler", "Lendo agora") não mudam', antes == depois, (antes, depois))
     acervo = pg.evaluate(KPI, 'acervo')
     ok('…enquanto "Livros no acervo" passa a contar só o que está à vista', pg.evaluate(num, acervo['v']) == todos0 - lidos0, acervo)
+    ir('geral')
+    fm = pg.evaluate(ROSCA, 'composicao')
+    pg.click('#p-composicao .seg button[data-v=leit]'); pg.wait_for_timeout(500)
+    le = pg.evaluate(ROSCA, 'composicao')
+    ok('na visão geral, "Composição do acervo": por formato mostra o que está à vista; por leitura, conta os lidos ocultos e avisa',
+       fm['total'] == todos0 - lidos0 and 'oculto' not in fm['sub'] and le['total'] == todos0 and str(lidos0) in le['fatias']['lido'] and le['sub'].endswith('· conta os lidos ocultos'), (fm['total'], fm['sub'], le['total'], le['fatias'].get('lido'), le['sub']))
     pg.context.close()
 
     print('F. Tipo, eixo e marcador')
@@ -234,7 +258,11 @@ with sync_playwright() as p:
     ok('o aviso lista as quatro, na ordem do quadro', a['r'] == 'sem edição em PT · HQ · Psicologia e psicanálise · #lovecraftiano', a['r'])
     pg.screenshot(path=str(TMP / 'shots' / 'ocultar-aviso.png'))
 
-    print('H. "mostrar todos" e "mudar"')
+    print('H. "mostrar todos", "mudar", "Limpar tudo" e "Recomeçar"')
+    pg.click('#f-tipo button[data-v=F]'); pg.wait_for_timeout(400); pg.click('#f-acervo button[data-v=virtual]'); pg.wait_for_timeout(400)      # dois filtros: aparece o "limpar tudo"
+    com_filtro = aba()
+    pg.evaluate("() => document.querySelector('#f-ativos [data-limpar]').click()"); pg.wait_for_timeout(500)
+    ok('"limpar tudo", dos filtros ativos, tira o filtro e deixa o que está oculto como estava', com_filtro < N - len(uniao) and aba() == N - len(uniao) and aviso()['n'] == plural(len(uniao)) and pg.is_hidden('#f-ativos'), (com_filtro, aba(), aviso()))
     pg.click('#f-fora [data-fora-abrir]'); pg.wait_for_timeout(350)
     ok('"mudar" abre o quadro "Ocultar"', pg.evaluate("() => document.querySelector('#pw-fora').classList.contains('aberto')") and pg.is_visible('#pop-fora'))
     fecha()
@@ -245,6 +273,12 @@ with sync_playwright() as p:
     ok('e o que estava guardado é limpo', g == {'sit': [], 'tipo': [], 'eixo': [], 'tag': []}, g)
     quadro()
     ok('no quadro, nada fica marcado', not [x for x in pg.evaluate(OPCOES) if x[3]] and pg.locator('#fo-tags .chip').count() == 0)
+    marca('sit', 'verificar'); marca('tipo', 'HQ'); fecha()
+    tinha = aviso()
+    pg.click('#b-dados'); pg.wait_for_timeout(400); pg.click('#dlg.on [data-x=zerar]'); pg.wait_for_timeout(400)
+    pg.click('#dlg.on footer button:has-text("Apagar tudo")'); pg.wait_for_timeout(900)
+    g = guardado()
+    ok('"Recomeçar do catálogo original" também desfaz o que estava oculto', tinha and tinha['r'] == 'a verificar · HQ' and aviso() is None and aba() == N and g == {'sit': [], 'tipo': [], 'eixo': [], 'tag': []}, (tinha, aviso(), aba(), g))
     pg.context.close()
 
     print('I. A barra de filtros')
@@ -262,6 +296,8 @@ with sync_playwright() as p:
         try: pg.check('#pop-fora input[data-fora=sit][value=lido]', timeout=3000); clicou = True
         except Exception as e: clicou = False; print('     ', str(e).splitlines()[0][:160])
         ok(f'{larg} px: com o quadro aberto e uma regra já ligada, a opção seguinte aceita o clique', clicou)
+        alt_bts = pg.evaluate("() => [...document.querySelectorAll('#f-fora button')].map(b => Math.round(b.getBoundingClientRect().height))")
+        ok(f'{larg} px: "mudar" e "mostrar todos" têm pelo menos 24 px de altura', len(alt_bts) == 2 and min(alt_bts) >= 24, alt_bts)
         pg.context.close()
 
     print('J. No celular')
@@ -270,12 +306,15 @@ with sync_playwright() as p:
     pg.click('.f-ph [data-fora-abrir]'); pg.wait_for_timeout(500)
     geo = pg.evaluate("() => { const r = e => e.getBoundingClientRect(), c = r(document.querySelector('.f-corpo')), w = r(document.querySelector('#pw-fora')); return { topo: Math.round(w.top - c.top), vaza: Math.max(...[...document.querySelectorAll('#pw-fora *')].filter(e => e.offsetWidth).map(e => Math.round(r(e).right))) - innerWidth, opcoes: [...document.querySelectorAll('#pop-fora .opt')].filter(o => r(o).height >= 30).length }; }")
     ok('o atalho "ocultar categorias", no topo da folha, leva às opções', 0 <= geo['topo'] <= 40, geo)
+    atalho = pg.evaluate("() => { const r = document.querySelector('.f-ph [data-fora-abrir]').getBoundingClientRect(); return [Math.round(r.width), Math.round(r.height)]; }")
+    ok('…e tem tamanho para o dedo', atalho[0] >= 44 and atalho[1] >= 32, atalho)
     ok('na folha, nada vaza para o lado, e cada opção tem altura para o dedo', geo['vaza'] <= 0 and geo['opcoes'] == 23, geo)
     pg.check('#pop-fora input[data-fora=sit][value="sem-pt"]'); pg.wait_for_timeout(400)
     pg.screenshot(path=str(TMP / 'shots' / 'ocultar-celular-folha.png'))
     pg.click('#f-ver'); pg.wait_for_timeout(500)
     at = pg.evaluate("() => { const r = document.querySelector('#f-fora').getBoundingClientRect(); return { esq: Math.round(r.left), dir: Math.round(r.right), rola: document.documentElement.scrollWidth - innerWidth, bts: [...document.querySelectorAll('#f-fora button')].map(b => Math.round(b.getBoundingClientRect().height)) }; }")
     ok('fechada a folha, o aviso cabe na tela', aviso() and aviso()['n'] == plural(n_sp) and at['esq'] >= 0 and at['dir'] <= 390 and at['rola'] <= 0, (aviso(), at))
+    ok('…e os dois botões dele têm altura para o dedo (32 px ou mais)', len(at['bts']) == 2 and min(at['bts']) >= 32, at['bts'])
     pg.screenshot(path=str(TMP / 'shots' / 'ocultar-celular.png'))
     pg.click('#f-fora [data-fora-abrir]'); pg.wait_for_timeout(600)
     volta = pg.evaluate("() => { const c = document.querySelector('.f-corpo').getBoundingClientRect(), w = document.querySelector('#pw-fora').getBoundingClientRect(); return { folha: document.querySelector('#filtros').classList.contains('folha'), topo: Math.round(w.top - c.top) }; }")

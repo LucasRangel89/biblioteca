@@ -242,6 +242,17 @@ Seis guias: **Visão geral**, **Biblioteca**, **Recomendações**, **Finanças**
   está em grupo nenhum (posto à mão num livro e clicado na ficha) conta sozinho.
 - **Procurar marcador** acha pelo nome do botão, pelo nome completo ("psicologia social" acha "Social"), pelo
   marcador como é escrito no catálogo e pela explicação que aparece ao passar o mouse ("jung", "skinner").
+- **Ocultar** é o contrário de um filtro: tira de todas as guias os livros de uma categoria, e a escolha fica
+  guardada. Dá para ocultar pela situação (**já li**, **sem edição em PT**, **a verificar**), pelo tipo, pelo eixo e
+  por marcador (achado pela busca do quadro); ao lado de cada opção vai quantos livros ela esconde, no painel
+  inteiro. O livro oculto sai das tabelas, das listas, dos gráficos, das contagens e dos números dos filtros. A
+  busca do topo ainda o acha, com o aviso "fora das listas", e a ficha dele diz por que está fora. Sob a barra de
+  filtros fica, sempre à vista, um aviso com quantos livros estão ocultos e por quê, e os botões "mudar" e "mostrar
+  todos". A lista que fica vazia porque o que caberia nela está oculto diz isso. "Limpar tudo" é dos filtros e não
+  mexe no que está oculto; "Recomeçar do catálogo original" desfaz.
+  **A exceção:** quem saiu só por "já li" continua contando nos números de leitura — leituras concluídas, "Por
+  ler", "Adquiridos × lidos", as roscas por situação de leitura e o andamento das trilhas. O livro some das listas,
+  mas não deixa de ter sido lido; o quadro que faz essa conta avisa: "conta os lidos ocultos".
 - **Dinheiro tem lugar próprio.** Visão geral, Biblioteca e Recomendações não mostram valores. **Finanças** reúne o
   que foi investido, o preço médio pago, os gastos por período e por loja e a tabela das compras registradas;
   Próximas aquisições e Preços continuam com a lista de compra e as cotações.
@@ -362,7 +373,9 @@ entraram ou saíram com o catálogo novo.
 
 Junto vão as preferências (`cfg.ui`): entre elas, o grupo mostrado em "Temas e camadas" — pelo nome; o painel
 anterior guardava a posição na lista, que é convertida ao abrir — e os grupos de marcadores postos em "todos"
-(`cruzar`). Os filtros ligados não são guardados: o painel sempre abre sem filtro.
+(`cruzar`) e o que está oculto (`fora`: listas de situações, tipos, eixos e marcadores; ao abrir, só valem as regras
+que existem). Os filtros ligados não são guardados: o painel sempre abre sem filtro. O nome `ocultar`, nas
+preferências, é do botão do olho, que esconde os valores em reais.
 
 O arquivo do painel mudou de lugar (saiu de `biblioteca-dashboard/` para a raiz). Se, ao abri-lo no lugar novo, o que
 você tinha anotado não aparecer — há navegadores que guardam os dados por caminho de arquivo —, ponha o painel novo no
@@ -432,8 +445,8 @@ mais: `.github/workflows/publicar-site.yml` copia `Biblioteca_Lucas_Dashboard.ht
   sem você pedir.
 
 Módulos: `00-util` (datas, formatos) · `10-data` (livros, posse, marcadores, trilhas, conciliação com o catálogo,
-exemplos, armazenamento) · `20-charts` (gráficos SVG) · `30-state` (filtros, período, contexto, andamento das trilhas,
-ordem de compra) · `40-panels` (indicadores e painéis) · `50-table` (tabelas e CSV) · `55-anexos` (comentários, capa
+exemplos, armazenamento) · `20-charts` (gráficos SVG) · `30-state` (filtros, "ocultar", período, contexto, andamento
+das trilhas, ordem de compra) · `40-panels` (indicadores e painéis) · `50-table` (tabelas e CSV) · `55-anexos` (comentários, capa
 enviada, arquivos anexados, backup com anexos) · `60-drawer` (gaveta do livro, formulários, cotações, importação) ·
 `70-app` (navegação, inicialização).
 
@@ -475,6 +488,7 @@ avisa no fim, em vez de dar o teste por completo. `git fetch --unshallow` traz o
 | `anotacoes` | "Suas anotações" na ficha: comentário (salvo sozinho, limite de tamanho), "possui análise" (à mão e ao anexar; o filtro e a aba "Com anotações"), arquivos (anexar, abrir, baixar, remover; limites de tamanho e de quantidade), capa enviada (reduzida, vale com as capas desligadas, tirar); o que fica no `localStorage` e no IndexedDB; backup com anexos (exportar, importar noutro navegador, backup antigo sem anexos); CSV; celular; página em sandbox |
 | `trilhas` | Camadas e trilhas: os grupos de marcadores nos filtros; "Por que ler" na ficha; o painel das trilhas e a ficha de uma trilha (o que tenho, o que li, o que falta); "O que comprar primeiro" e a coluna "Ordem de compra" (a ordem, os motivos, o botão para a lista de compra; a ordem se refaz quando um livro é comprado); "Temas e camadas"; celular |
 | `filtros` | Os filtros por marcador, com o que se espera contado direto de `src/catalog.json`: os treze grupos, cada marcador num só, e as dez portas da psicologia; o número de cada botão contra o catálogo, na Visão geral, na Biblioteca e nas Recomendações; o botão apagado (cor e contorno, não transparência) que continua clicável; a soma dentro do grupo e o cruzamento entre grupos, com "ou" e "e" nos filtros ativos; a chave "qualquer um / todos", guardada e mantida ao recarregar; o quadro "Temas e camadas" (as barras não somem; a barra ligada sem livros fica, com zero); a busca de marcador pelo nome completo e pela explicação; **o número do botão contra a lista**, em seis guias com os dados de exemplo — 119 botões clicados, também com um período escolhido; preferências guardadas pelo painel anterior ou estragadas; a chave na folha de filtros do celular; contraste AA do que é novo, nos dois temas |
+| `ocultar` | "Ocultar", com o que se espera contado direto de `src/catalog.json` e `src/trilhas.json`: o número de cada opção (3 situações, 4 tipos, 16 eixos e o marcador achado pela busca); o livro oculto fora das tabelas, das abas, dos números dos filtros, da fila, da ordem de compra e das trilhas; o aviso sob a barra, o rodapé, a busca do topo e a ficha; a lista vazia que explica; guardado e resistente à recarga, nas seis guias; "já li" some das listas e continua nos números e gráficos de leitura; regras juntas escondem a união; "mostrar todos", "Limpar tudo" (não mexe) e "Recomeçar" (desfaz); a barra numa linha só em 1366 px e o quadro dentro da janela; o celular; o que veio guardado errado; contraste AA nos dois temas |
 | `vistoria` | O catálogo revisto no painel (todo livro com tipo, eixo, dificuldade e extensão; os marcadores novos nos filtros) e **o que acontece com quem já tinha livros editados**: com o painel anterior, tirado do Git, edita oito livros e abre o painel novo — o que não foi mexido acompanha a vistoria, o que foi mexido fica; duas edições que viraram uma linha; a recomendação que mudou de título. Depois, o catálogo muda de novo em quatro livros (só no catálogo, só no painel, nos dois, em nada) |
 | `capas_painel` | As capas no painel, com uma lista de capas conhecida: tabela, listas e ficha; capa da Open Library, capa da Apple Books e capa posta à mão; imagem que falta (nas duas fontes); o que o navegador pede, e quando; a chave "Mostrar as capas"; a capa do catálogo não é guardada nem aceita de um backup; endereços inválidos; celular |
 | `financas` | A guia Finanças e a navegação: nenhum valor em reais em Visão geral, Biblioteca e Recomendações; indicadores, cartões e tabela de Finanças, com e sem compras; ocultar valores; as seis guias numa linha só no celular (412 a 320 px) e nenhuma guia estourando a largura da tela |

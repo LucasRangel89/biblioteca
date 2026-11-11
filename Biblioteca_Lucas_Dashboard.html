@@ -202,12 +202,13 @@ input[type="checkbox"] { width: 16px; height: 16px; margin: 0; accent-color: var
 .fa-c { font-style: normal; font-size: 12px; color: var(--ink-3); padding: 0 1px; }
 
 /* "Ocultar": o aviso sob a barra (fica à vista enquanto houver regra ligada) e o que é só do quadro de opções */
-.f-fora { display: flex; align-items: center; flex-wrap: wrap; gap: 4px 14px; margin-top: 9px; padding: 6px 11px; border-radius: 10px; border: 1px dashed var(--line-2); background: var(--surface-2); font-size: 12.5px; color: var(--ink-2); }
+.f-fora { display: flex; align-items: center; flex-wrap: wrap; gap: 2px 14px; margin-top: 9px; padding: 3px 11px; border-radius: 10px; border: 1px dashed var(--line-2); background: var(--surface-2); font-size: 12.5px; color: var(--ink-2); }
 .ff-t { display: inline-flex; align-items: center; flex-wrap: wrap; gap: 2px 7px; min-width: 0; flex: 1 1 240px; }
 .ff-t .ic { flex: none; color: var(--ink-3); }
 .ff-t b { color: var(--ink); font-weight: 600; white-space: nowrap; }
 .ff-r { min-width: 0; overflow-wrap: anywhere; }
 .ff-a { display: inline-flex; gap: 14px; flex: none; }
+.ff-a .lk { display: inline-flex; align-items: center; min-height: 24px; }
 .fo-n b { color: var(--ink-2); font-weight: 600; }
 .fo-tags { padding-top: 8px; }
 .fo-tags:empty, #fo-tags-n:empty { display: none; }
@@ -797,7 +798,10 @@ td.c-spark svg { margin-left: auto; margin-right: auto; }
   .filtros.folha .f-painel { display: flex; animation: folha .26s cubic-bezier(.3, .7, .2, 1); outline: 0; }
   .f-ph { display: flex; align-items: center; justify-content: space-between; padding: 14px 14px 8px 18px; }
   .f-ph b { font: 600 18px var(--serif); }
-  .f-ph .lk { margin-left: auto; margin-right: 14px; font-size: 13px; }
+  .f-ph .lk { display: inline-flex; align-items: center; min-height: 36px; margin-left: auto; margin-right: 10px; padding: 0 4px; font-size: 13px; }
+  .f-fora { padding: 2px 11px; }
+  .ff-a { gap: 6px; margin-left: -6px; }
+  .ff-a .lk { min-height: 32px; padding: 0 6px; }
   .f-corpo { flex-direction: column; align-items: stretch; flex-wrap: nowrap; gap: 16px; overflow: auto; padding: 6px 18px 16px; overscroll-behavior: contain; }
   .f-pf { display: flex; gap: 8px; padding: 12px 18px calc(12px + env(safe-area-inset-bottom)); border-top: 1px solid var(--line); }
   .f-pf .btn { flex: 1; height: 42px; }
@@ -2416,8 +2420,8 @@ function precoBase(b, d) {                   // melhor preço em d; antes da 1ª
 const temCotacaoPropria = b => !!b.px && Object.values(b.px).some(pts => pts.some(p => p[2]));
 
 function recorte(I, o) {
-  // comLidos: deixa passar quem só está fora por "já li" (é o recorte dos números de leitura)
-  const op = Object.assign({ semAcervo: S.visao === 'recs', sel: selTags() }, o), seg = DB.livros.filter(b => !oculto(b, op.comLidos) && passaSeg(b, op));
+  // comLidos: deixa passar quem só está fora por "já li" (é o recorte dos números de leitura) · comOcultos: não tira ninguém
+  const op = Object.assign({ semAcervo: S.visao === 'recs', sel: selTags() }, o), seg = DB.livros.filter(b => (op.comOcultos || !oculto(b, op.comLidos)) && passaSeg(b, op));
   const ac = [], des = [], rec = [];
   for (const b of seg) (b.col === 'acervo' ? ac : b.col === 'desejo' ? des : rec).push(b);
   return { seg, ac, des, rec, acP: I.tudo ? ac : ac.filter(b => dentro(adqDe(b), I)), recP: I.tudo ? rec : rec.filter(b => dentro(b.add, I)) };
@@ -2428,6 +2432,9 @@ function contexto() {
   // c.L: o mesmo recorte, contando quem só está fora das listas por "já li" — é dele que saem os números de leitura
   let Lr;
   Object.defineProperty(c, 'L', { get: () => Lr || (Lr = FORA.lido ? recorte(I, { comLidos: true }) : c) });
+  // c.comOcultos: o recorte como seria sem nada oculto — só para a lista vazia poder dizer que o que caberia nela está oculto
+  let CO;
+  Object.defineProperty(c, 'comOcultos', { get: () => { if (!CO) { CO = FORA.n ? recorte(I, { comOcultos: true }) : c; if (CO !== c) CO.rast = CO.seg.filter(rastreado); } return CO; } });
   c.lidos = c.L.seg.filter(b => b.leit === 'lido');
   c.lidosP = I.tudo ? c.lidos : c.lidos.filter(b => dentro(b.lidoEm, I));
   c.rast = c.seg.filter(rastreado);
@@ -2695,6 +2702,8 @@ function pEvolucao(val) {      // val: em reais (Finanças); sem val: em livros 
     };
   } };
 }
+// para o subtítulo de um quadro de leitura: avisa quando ele está contando lidos que as listas não mostram
+const comLidosOcultos = base => (FORA.lido && base.some(b => b.leit === 'lido') ? ' · conta os lidos ocultos' : '');
 function pComposicao() {
   return { id: 'composicao', w: 'p-4 m-6', tit: 'Composição do acervo', montar(k) {
     segmento(k.tools, [['fmt', 'Formato'], ['tipo', 'Tipo'], ['leit', 'Leitura']], 'compor');
@@ -2705,8 +2714,9 @@ function pComposicao() {
       filtrosMudaram();
     } });
     return c => {
-      const m = S.ui.compor, mapa = m === 'fmt' ? POSSES : m === 'tipo' ? TIPOS : LEITURAS, cont = contarPor(c.acP, m === 'fmt' ? posseDe : m === 'tipo' ? b => b._tipo : b => b.leit);
-      k.sub.textContent = `${c.I.tudo ? 'Todo o acervo' : 'Adquiridos ' + c.I.rot} · por ${m === 'fmt' ? 'formato' : m === 'tipo' ? 'tipo' : 'situação de leitura'}`;
+      // por situação de leitura é número de leitura: conta os lidos que estão fora das listas (c.L), e diz que conta
+      const m = S.ui.compor, mapa = m === 'fmt' ? POSSES : m === 'tipo' ? TIPOS : LEITURAS, base = m === 'leit' ? c.L.acP : c.acP, cont = contarPor(base, m === 'fmt' ? posseDe : m === 'tipo' ? b => b._tipo : b => b.leit);
+      k.sub.textContent = `${c.I.tudo ? 'Todo o acervo' : 'Adquiridos ' + c.I.rot} · por ${m === 'fmt' ? 'formato' : m === 'tipo' ? 'tipo' : 'situação de leitura'}${m === 'leit' ? comLidosOcultos(base) : ''}`;
       g.atualizar({ unidade: 'livros', fatias: Object.keys(mapa).map(key => ({ k: key, n: mapa[key].n, cor: mapa[key].cor, v: cont.get(key) || 0, filtravel: m !== 'leit' })), vazio: 'Nenhum livro do acervo neste recorte.' });
     };
   } };
@@ -2785,7 +2795,7 @@ function pAdqLidos() {
       const B = baldes(c.I.de, c.I.ate, 64), x = B.lista.map(b => b.f);
       const ac = c.L.ac, adq = acumulado(B, ac, b => adqDe(b)), lid = acumulado(B, ac.filter(b => b.leit === 'lido'), b => b.lidoEm);     // número de leitura: ver c.L
       const tem = adq.length && adq[adq.length - 1] > 0;
-      k.sub.textContent = `Acumulado no acervo · a distância entre as linhas é a fila de leitura · ${c.I.rot}`;
+      k.sub.textContent = `Acumulado no acervo · a distância entre as linhas é a fila de leitura · ${c.I.rot}${comLidosOcultos(ac)}`;
       g.atualizar({ x: tem ? x : [], inteiro: true, zero: c.I.tudo, rot: i => (B.g === 'dia' || B.g === 'semana' ? fDiaMes(x[i]) : B.g === 'ano' ? String(partes(x[i]).y) : fMesAno(x[i])), tit: i => 'Até ' + fData(x[i]),
         series: tem ? [{ k: 'adq', n: 'Adquiridos', cor: 'var(--c2)', area: true, v: adq }, { k: 'lidos', n: 'Lidos', cor: 'var(--c6)', area: true, v: lid }] : [],
         rodape: i => `<span>${fInt(Math.max(0, adq[i] - lid[i]))} por ler</span>`, vazio: 'Nenhum livro com data de aquisição neste recorte.' });
@@ -2796,8 +2806,8 @@ function pStatus() {
   return { id: 'status', w: 'p-4 m-6', tit: 'Situação de leitura', montar(k) {
     const g = GraficoRosca(k.corpo, { rotulo: 'Situação de leitura do acervo' });
     return c => {
-      const cont = contarPor(c.acP, b => b.leit);
-      k.sub.textContent = c.I.tudo ? 'Todo o acervo' : 'Livros adquiridos ' + c.I.rot;
+      const base = c.L.acP, cont = contarPor(base, b => b.leit);     // número de leitura: ver c.L
+      k.sub.textContent = (c.I.tudo ? 'Todo o acervo' : 'Livros adquiridos ' + c.I.rot) + comLidosOcultos(base);
       g.atualizar({ unidade: 'livros', fatias: Object.keys(LEITURAS).map(s => ({ k: s || 'nd', n: LEITURAS[s].n, cor: LEITURAS[s].cor, v: cont.get(s) || 0, filtravel: false })), vazio: 'Nenhum livro do acervo neste recorte.' });
     };
   } };
@@ -3344,7 +3354,13 @@ function Tabela(visao) {
     const fatia = filtradas.slice(st.pag * st.tam, (st.pag + 1) * st.tam);
     setHtml(tbody, fatia.map(b => `<tr data-id="${b.id}" tabindex="0"${mob.b ? ' class="tem-b"' : ''}>${vis.map(x => { const h = x.html(b, ctx); return `<td class="${x.num ? 'num ' : ''}${x.cls || ''}${x.mcls}${h === mudo ? ' vz' : ''}" data-rot="${esc(x.n)}">${h}</td>`; }).join('')}</tr>`).join(''));
     vazio.hidden = total > 0; $('table', k.corpo).style.display = total ? '' : 'none';
-    if (!total) vazio.innerHTML = vazioHtml(base.length ? 'Nenhuma linha combina com a busca ou a aba escolhida.' : cfg.vazio && !nFiltros() ? cfg.vazio : ctx.I.tudo ? 'Nenhum livro com os filtros atuais.' : 'Nada neste período com os filtros atuais. Itens sem data só aparecem em “Tudo”.');
+    if (!total) {
+      // se o que caberia aqui está oculto ("Ocultar", na barra de filtros), é isso que a lista vazia tem de dizer
+      const oc = FORA.n ? cfg.linhas(ctx.comOcultos).filter(b => oculto(b) && termos.every(t => b._busca.includes(t)) && (!aba[2] || aba[2](b, ctx))).length : 0;
+      vazio.innerHTML = vazioHtml(oc ? (oc === 1 ? 'O único livro que caberia aqui está oculto. Para vê-lo' : `Os ${fInt(oc)} livros que caberiam aqui estão ocultos. Para vê-los`) + ', use “Ocultar”, na barra de filtros.'
+        : base.length ? 'Nenhuma linha combina com a busca ou a aba escolhida.' : cfg.vazio && !nFiltros() ? cfg.vazio : ctx.I.tudo ? 'Nenhum livro com os filtros atuais.' : 'Nada neste período com os filtros atuais. Itens sem data só aparecem em “Tudo”.');
+      vazio.dataset.ocultos = oc;
+    }
     $$('th', k.corpo).forEach(th => { const on = th.dataset.c === col.id; th.setAttribute('aria-sort', on ? (st.dir > 0 ? 'ascending' : 'descending') : 'none'); th.classList.toggle('ord', on); th.classList.toggle('desc', on && st.dir < 0); });
     ordSel.value = col.id; $('[data-dir]', k.tools).classList.toggle('desc', st.dir < 0);
     $('.tb-info', k.pe).textContent = total ? `${fInt(st.pag * st.tam + 1)}–${fInt(Math.min(total, (st.pag + 1) * st.tam))} de ${plural(total, 'livro', 'livros')}${total !== base.length ? ` (de ${fInt(base.length)} no recorte)` : ''}` : 'Nenhum livro';
@@ -3726,7 +3742,7 @@ function dlgDados() {
         else if (x === 'falha-descartar') { Loja.descartarFalha(); Dlg.fechar(); toast('Cópia descartada.'); }
         else if (x === 'limpar') confirmar('Limpar dados de exemplo', 'Remover todas as datas, valores, leituras, itens da lista de compra e históricos de preço <b>simulados</b>?<br>Ficam o catálogo, a estante física, a biblioteca virtual e tudo o que você editou ou registrou.', 'Limpar', () => { removerExemplos(); S.sel = ''; S.avisoVisto = true; salvar(); fecharGaveta(); filtrosMudaram(); toast('Dados de exemplo removidos.'); });
         else if (x === 'restaurar') confirmar('Ver com dados de exemplo', 'Ligar os dados <b>simulados</b> (datas, valores, leituras e preços) nos livros que você ainda não editou? Eles saem quando você quiser, em “Limpar dados de exemplo”.', 'Ligar', () => { restaurarExemplos(); S.sel = ''; S.avisoVisto = false; salvar(); filtrosMudaram(); toast('Dados de exemplo ligados.'); });
-        else if (x === 'zerar') confirmar('Recomeçar do catálogo original', 'Apagar <b>todas</b> as suas edições, cotações, comentários, capas enviadas, arquivos anexados e livros adicionados e voltar ao estado inicial? Esta ação não pode ser desfeita.', 'Apagar tudo', () => { fecharGaveta(); Loja.limpar(); Anexos.limpar().catch(() => {}); DB.livros = livrosDoCatalogo(); DB.exemplos = false; if (PEDE_EXEMPLO) { gerarExemplos(DB.livros, DB.hoje); DB.exemplos = true; } DB.criadoEm = DB.hoje; S.sel = ''; S.avisoVisto = false; limparFiltros(true); salvar(); fecharGaveta(); filtrosMudaram(); toast('Painel reiniciado.'); }, true);
+        else if (x === 'zerar') confirmar('Recomeçar do catálogo original', 'Apagar <b>todas</b> as suas edições, cotações, comentários, capas enviadas, arquivos anexados e livros adicionados e voltar ao estado inicial? Esta ação não pode ser desfeita.', 'Apagar tudo', () => { fecharGaveta(); Loja.limpar(); Anexos.limpar().catch(() => {}); DB.livros = livrosDoCatalogo(); DB.exemplos = false; if (PEDE_EXEMPLO) { gerarExemplos(DB.livros, DB.hoje); DB.exemplos = true; } DB.criadoEm = DB.hoje; S.sel = ''; S.avisoVisto = false; limparFiltros(true); S.ui.fora = lerFora(null); refazerFora(); salvar(); fecharGaveta(); filtrosMudaram(); toast('Painel reiniciado.'); }, true);
       });
     } });
 }

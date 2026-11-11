@@ -214,8 +214,8 @@ function precoBase(b, d) {                   // melhor preço em d; antes da 1ª
 const temCotacaoPropria = b => !!b.px && Object.values(b.px).some(pts => pts.some(p => p[2]));
 
 function recorte(I, o) {
-  // comLidos: deixa passar quem só está fora por "já li" (é o recorte dos números de leitura)
-  const op = Object.assign({ semAcervo: S.visao === 'recs', sel: selTags() }, o), seg = DB.livros.filter(b => !oculto(b, op.comLidos) && passaSeg(b, op));
+  // comLidos: deixa passar quem só está fora por "já li" (é o recorte dos números de leitura) · comOcultos: não tira ninguém
+  const op = Object.assign({ semAcervo: S.visao === 'recs', sel: selTags() }, o), seg = DB.livros.filter(b => (op.comOcultos || !oculto(b, op.comLidos)) && passaSeg(b, op));
   const ac = [], des = [], rec = [];
   for (const b of seg) (b.col === 'acervo' ? ac : b.col === 'desejo' ? des : rec).push(b);
   return { seg, ac, des, rec, acP: I.tudo ? ac : ac.filter(b => dentro(adqDe(b), I)), recP: I.tudo ? rec : rec.filter(b => dentro(b.add, I)) };
@@ -226,6 +226,9 @@ function contexto() {
   // c.L: o mesmo recorte, contando quem só está fora das listas por "já li" — é dele que saem os números de leitura
   let Lr;
   Object.defineProperty(c, 'L', { get: () => Lr || (Lr = FORA.lido ? recorte(I, { comLidos: true }) : c) });
+  // c.comOcultos: o recorte como seria sem nada oculto — só para a lista vazia poder dizer que o que caberia nela está oculto
+  let CO;
+  Object.defineProperty(c, 'comOcultos', { get: () => { if (!CO) { CO = FORA.n ? recorte(I, { comOcultos: true }) : c; if (CO !== c) CO.rast = CO.seg.filter(rastreado); } return CO; } });
   c.lidos = c.L.seg.filter(b => b.leit === 'lido');
   c.lidosP = I.tudo ? c.lidos : c.lidos.filter(b => dentro(b.lidoEm, I));
   c.rast = c.seg.filter(rastreado);

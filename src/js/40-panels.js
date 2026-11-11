@@ -113,6 +113,8 @@ function pEvolucao(val) {      // val: em reais (Finanças); sem val: em livros 
     };
   } };
 }
+// para o subtítulo de um quadro de leitura: avisa quando ele está contando lidos que as listas não mostram
+const comLidosOcultos = base => (FORA.lido && base.some(b => b.leit === 'lido') ? ' · conta os lidos ocultos' : '');
 function pComposicao() {
   return { id: 'composicao', w: 'p-4 m-6', tit: 'Composição do acervo', montar(k) {
     segmento(k.tools, [['fmt', 'Formato'], ['tipo', 'Tipo'], ['leit', 'Leitura']], 'compor');
@@ -123,8 +125,9 @@ function pComposicao() {
       filtrosMudaram();
     } });
     return c => {
-      const m = S.ui.compor, mapa = m === 'fmt' ? POSSES : m === 'tipo' ? TIPOS : LEITURAS, cont = contarPor(c.acP, m === 'fmt' ? posseDe : m === 'tipo' ? b => b._tipo : b => b.leit);
-      k.sub.textContent = `${c.I.tudo ? 'Todo o acervo' : 'Adquiridos ' + c.I.rot} · por ${m === 'fmt' ? 'formato' : m === 'tipo' ? 'tipo' : 'situação de leitura'}`;
+      // por situação de leitura é número de leitura: conta os lidos que estão fora das listas (c.L), e diz que conta
+      const m = S.ui.compor, mapa = m === 'fmt' ? POSSES : m === 'tipo' ? TIPOS : LEITURAS, base = m === 'leit' ? c.L.acP : c.acP, cont = contarPor(base, m === 'fmt' ? posseDe : m === 'tipo' ? b => b._tipo : b => b.leit);
+      k.sub.textContent = `${c.I.tudo ? 'Todo o acervo' : 'Adquiridos ' + c.I.rot} · por ${m === 'fmt' ? 'formato' : m === 'tipo' ? 'tipo' : 'situação de leitura'}${m === 'leit' ? comLidosOcultos(base) : ''}`;
       g.atualizar({ unidade: 'livros', fatias: Object.keys(mapa).map(key => ({ k: key, n: mapa[key].n, cor: mapa[key].cor, v: cont.get(key) || 0, filtravel: m !== 'leit' })), vazio: 'Nenhum livro do acervo neste recorte.' });
     };
   } };
@@ -203,7 +206,7 @@ function pAdqLidos() {
       const B = baldes(c.I.de, c.I.ate, 64), x = B.lista.map(b => b.f);
       const ac = c.L.ac, adq = acumulado(B, ac, b => adqDe(b)), lid = acumulado(B, ac.filter(b => b.leit === 'lido'), b => b.lidoEm);     // número de leitura: ver c.L
       const tem = adq.length && adq[adq.length - 1] > 0;
-      k.sub.textContent = `Acumulado no acervo · a distância entre as linhas é a fila de leitura · ${c.I.rot}`;
+      k.sub.textContent = `Acumulado no acervo · a distância entre as linhas é a fila de leitura · ${c.I.rot}${comLidosOcultos(ac)}`;
       g.atualizar({ x: tem ? x : [], inteiro: true, zero: c.I.tudo, rot: i => (B.g === 'dia' || B.g === 'semana' ? fDiaMes(x[i]) : B.g === 'ano' ? String(partes(x[i]).y) : fMesAno(x[i])), tit: i => 'Até ' + fData(x[i]),
         series: tem ? [{ k: 'adq', n: 'Adquiridos', cor: 'var(--c2)', area: true, v: adq }, { k: 'lidos', n: 'Lidos', cor: 'var(--c6)', area: true, v: lid }] : [],
         rodape: i => `<span>${fInt(Math.max(0, adq[i] - lid[i]))} por ler</span>`, vazio: 'Nenhum livro com data de aquisição neste recorte.' });
@@ -214,8 +217,8 @@ function pStatus() {
   return { id: 'status', w: 'p-4 m-6', tit: 'Situação de leitura', montar(k) {
     const g = GraficoRosca(k.corpo, { rotulo: 'Situação de leitura do acervo' });
     return c => {
-      const cont = contarPor(c.acP, b => b.leit);
-      k.sub.textContent = c.I.tudo ? 'Todo o acervo' : 'Livros adquiridos ' + c.I.rot;
+      const base = c.L.acP, cont = contarPor(base, b => b.leit);     // número de leitura: ver c.L
+      k.sub.textContent = (c.I.tudo ? 'Todo o acervo' : 'Livros adquiridos ' + c.I.rot) + comLidosOcultos(base);
       g.atualizar({ unidade: 'livros', fatias: Object.keys(LEITURAS).map(s => ({ k: s || 'nd', n: LEITURAS[s].n, cor: LEITURAS[s].cor, v: cont.get(s) || 0, filtravel: false })), vazio: 'Nenhum livro do acervo neste recorte.' });
     };
   } };

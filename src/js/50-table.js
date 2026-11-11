@@ -133,7 +133,13 @@ function Tabela(visao) {
     const fatia = filtradas.slice(st.pag * st.tam, (st.pag + 1) * st.tam);
     setHtml(tbody, fatia.map(b => `<tr data-id="${b.id}" tabindex="0"${mob.b ? ' class="tem-b"' : ''}>${vis.map(x => { const h = x.html(b, ctx); return `<td class="${x.num ? 'num ' : ''}${x.cls || ''}${x.mcls}${h === mudo ? ' vz' : ''}" data-rot="${esc(x.n)}">${h}</td>`; }).join('')}</tr>`).join(''));
     vazio.hidden = total > 0; $('table', k.corpo).style.display = total ? '' : 'none';
-    if (!total) vazio.innerHTML = vazioHtml(base.length ? 'Nenhuma linha combina com a busca ou a aba escolhida.' : cfg.vazio && !nFiltros() ? cfg.vazio : ctx.I.tudo ? 'Nenhum livro com os filtros atuais.' : 'Nada neste período com os filtros atuais. Itens sem data só aparecem em “Tudo”.');
+    if (!total) {
+      // se o que caberia aqui está oculto ("Ocultar", na barra de filtros), é isso que a lista vazia tem de dizer
+      const oc = FORA.n ? cfg.linhas(ctx.comOcultos).filter(b => oculto(b) && termos.every(t => b._busca.includes(t)) && (!aba[2] || aba[2](b, ctx))).length : 0;
+      vazio.innerHTML = vazioHtml(oc ? (oc === 1 ? 'O único livro que caberia aqui está oculto. Para vê-lo' : `Os ${fInt(oc)} livros que caberiam aqui estão ocultos. Para vê-los`) + ', use “Ocultar”, na barra de filtros.'
+        : base.length ? 'Nenhuma linha combina com a busca ou a aba escolhida.' : cfg.vazio && !nFiltros() ? cfg.vazio : ctx.I.tudo ? 'Nenhum livro com os filtros atuais.' : 'Nada neste período com os filtros atuais. Itens sem data só aparecem em “Tudo”.');
+      vazio.dataset.ocultos = oc;
+    }
     $$('th', k.corpo).forEach(th => { const on = th.dataset.c === col.id; th.setAttribute('aria-sort', on ? (st.dir > 0 ? 'ascending' : 'descending') : 'none'); th.classList.toggle('ord', on); th.classList.toggle('desc', on && st.dir < 0); });
     ordSel.value = col.id; $('[data-dir]', k.tools).classList.toggle('desc', st.dir < 0);
     $('.tb-info', k.pe).textContent = total ? `${fInt(st.pag * st.tam + 1)}–${fInt(Math.min(total, (st.pag + 1) * st.tam))} de ${plural(total, 'livro', 'livros')}${total !== base.length ? ` (de ${fInt(base.length)} no recorte)` : ''}` : 'Nenhum livro';
