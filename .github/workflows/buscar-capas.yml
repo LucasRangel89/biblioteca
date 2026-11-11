@@ -1,24 +1,32 @@
-# Procura na Open Library a capa dos livros do catálogo e guarda o resultado em catalogo/capas.tsv.
+# Procura a capa dos livros do catálogo e guarda o resultado em catalogo/capas.tsv.
 #
-# Para rodar: aba Actions → "Buscar capas" → Run workflow (escolha o ramo). Só procura os livros que ainda não
-# foram procurados; marcando "refazer", tenta de novo os que não tinham sido achados.
+# Duas fontes, nesta ordem: a Open Library e, para o que ela não achou, o catálogo da Apple Books no Brasil (pela
+# busca pública do iTunes). A segunda só aceita umas 20 consultas por minuto: mil livros levam perto de uma hora.
+#
+# Para rodar: aba Actions → "Buscar capas" → Run workflow (escolha o ramo). Só procura o que falta: os livros novos
+# e os que ainda não passaram pelas duas fontes. Marcando "refazer", tenta de novo, nas duas, os que não tinham sido
+# achados. Se o tempo acabar, o que faltou fica para a execução seguinte — é só rodar de novo.
 #
 # O que este serviço muda: apenas o arquivo catalogo/capas.tsv, no ramo em que rodou. Ele não monta o painel nem
 # publica o site: isso continua sendo feito numa rodada, com os testes (tools/atualizar.py e tools/qa/tudo.py).
-# Nenhuma imagem entra no repositório — o painel mostra as capas direto da Open Library.
+# Nenhuma imagem entra no repositório — o painel mostra as capas direto da fonte.
 #
-# No fim, o serviço pede 40 das capas guardadas para conferir se as imagens abrem de verdade. Se essa conferência
-# falhar (a Open Library fora do ar, por exemplo), a execução fica marcada em vermelho, mas o resultado da busca já
-# foi guardado no passo anterior.
+# No fim, o serviço pede 40 das capas guardadas de cada fonte para conferir se as imagens abrem de verdade. Se essa
+# conferência falhar (uma das fontes fora do ar, por exemplo), a execução fica marcada em vermelho, mas o resultado
+# da busca já foi guardado no passo anterior.
 name: Buscar capas
 
 on:
   workflow_dispatch:
     inputs:
       refazer:
-        description: Procurar de novo as capas que não foram achadas
+        description: Procurar de novo, nas duas fontes, as capas que não foram achadas
         type: boolean
         default: false
+      limite:
+        description: Quantos livros procurar nesta execução (vazio = todos os que faltam)
+        type: string
+        default: ''
 
 permissions:
   contents: write   # gravar o catalogo/capas.tsv no ramo
@@ -32,7 +40,7 @@ jobs:
   buscar:
     name: Buscar
     runs-on: ubuntu-latest
-    timeout-minutes: 80
+    timeout-minutes: 200
     steps:
       - name: Baixar o repositório
         uses: actions/checkout@v7
@@ -42,7 +50,13 @@ jobs:
       - name: Procurar as capas
         env:
           REFAZER: ${{ inputs.refazer && '--refazer' || '' }}
-        run: python3 tools/capas.py --minutos 55 $REFAZER
+          LIMITE: ${{ inputs.limite }}
+        run: |
+          case "$LIMITE" in
+            ''|*[!0-9]*) limite='' ;;
+            *) limite="--limite $LIMITE" ;;
+          esac
+          python3 tools/capas.py --minutos 170 $REFAZER $limite
 
       - name: Guardar o resultado
         if: always()
@@ -54,7 +68,7 @@ jobs:
             echo "Nada mudou em catalogo/capas.tsv."
             exit 0
           fi
-          git commit -m "Capas: resultado da busca na Open Library"
+          git commit -m "Capas: resultado da busca"
           git pull --rebase origin "$GITHUB_REF_NAME"
           git push origin "HEAD:$GITHUB_REF_NAME"
           python3 tools/capas.py --conferir >> "$GITHUB_STEP_SUMMARY"
@@ -66,7 +80,7 @@ jobs:
           cat "$RUNNER_TEMP/amostra.txt"
           cat "$RUNNER_TEMP/amostra.txt" >> "$GITHUB_STEP_SUMMARY"
           # O resultado também vira um aviso da execução: aparece na página dela, sem precisar abrir o registro.
-          resumo=$(grep -m1 '^Amostra das capas' "$RUNNER_TEMP/amostra.txt" || true)
+          resumo=$(grep '^Amostra das capas' "$RUNNER_TEMP/amostra.txt" | paste -sd '|' - | sed 's/|/ · /g' || true)
           ruins=$(grep 'não abriu' "$RUNNER_TEMP/amostra.txt" | head -n 5 | sed 's/^ *//' | paste -sd ';' - || true)
           if [ "$codigo" = 0 ]; then
             echo "::notice title=Capas::${resumo}"
