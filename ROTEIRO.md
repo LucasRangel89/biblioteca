@@ -21,6 +21,7 @@ Este arquivo é atualizado ao fim de cada rodada. Para saber em que pé as coisa
 | 7 | A versão 3 do catálogo: camadas e trilhas de leitura | **Feita** (11/11/2026) |
 | 8 | Análise dos filtros, trilhas personalizadas e novas recomendações | **Feita** (11/11/2026) — das oito propostas, três viraram a etapa 9; cinco esperam a sua decisão (lista abaixo) |
 | 9 | Filtros que dizem quantos livros têm e somam dentro do grupo; grupo da psicologia; conserto das caixas que não cabiam na tela | **Feita** (11/11/2026) |
+| 10 | As suas ideias para a próxima rodada: ocultar categorias, exportar e imprimir listas, sinopses, temas visuais; gamificação, em conversa | **A fazer** — combinada em 11/11/2026; o plano e o que falta decidir estão abaixo |
 
 A ordem pode mudar: as etapas que faltam não dependem umas das outras. Se alguma interessar mais, peça por ela.
 
@@ -605,11 +606,155 @@ caixas em oito tamanhos de janela, do notebook ao celular deitado.
 1. Dizer se a soma dentro do grupo ficou natural, ou se algum grupo deveria nascer em "todos".
 2. As propostas 4 a 8 da análise continuam em aberto.
 
-**Ideias suas que ficaram para a próxima rodada:** exportar ou imprimir listas de livros; um filtro para **ocultar**
-uma categoria; uma sinopse curta na ficha de cada livro; temas visuais para a página, com modelos inspirados em
-livros e sagas.
+**As suas ideias novas** — ocultar categorias, exportar e imprimir listas, sinopses, temas visuais e gamificação —
+viraram a etapa 10, logo abaixo.
 
 **Pronta quando** os filtros novos e o conserto estiverem no painel, com teste. Estão.
+
+---
+
+## Etapa 10 — As suas ideias para a próxima rodada
+
+**A fazer.** Combinada em 11/11/2026. Nada do que está aqui entrou no painel: é o plano, guardado para não se perder
+entre uma conversa e outra. Para retomar, basta dizer "vamos para a etapa 10" — inteira, ou só uma das partes.
+
+A ordem é a sugerida, da parte mais simples para a mais trabalhosa. Pode mudar.
+
+| Parte | O que é | Em que pé está |
+| --- | --- | --- |
+| 1 | Ocultar categorias | Combinada; falta fazer |
+| 2 | Exportar e imprimir listas | Proposta feita, ainda sem a sua resposta; falta fazer |
+| 3 | Sinopse na ficha de cada livro | Combinada; falta fazer, um lote por rodada |
+| 4 | Temas visuais | Combinada em linhas gerais; falta fechar a lista de temas e fazer |
+| 5 | Gamificação da leitura | **Em conversa** — nada será feito antes de decidirmos juntos |
+
+### Parte 1 — Ocultar categorias
+
+**O que você pediu:** um filtro que **esconda** os livros de uma categoria escolhida por você. O que você tinha em
+mente: os "sem edição em PT" (hoje, 48 livros) e os que você já leu.
+
+**Combinado:** um controle "Ocultar", junto dos filtros, em que você escolhe o que não quer ver:
+
+- pela situação: já li · sem edição em PT · a verificar;
+- pelo tipo (ficção, não ficção, HQ, outros), pelo eixo ou por um marcador qualquer.
+
+O que for ocultado sai de todas as telas e de todas as contagens até você desligar. A escolha fica guardada entre
+uma visita e outra, e um aviso sempre à vista diz quantos livros estão escondidos, com um clique para trazê-los de
+volta — para os números não parecerem errados mais tarde.
+
+**A confirmar quando a rodada for apresentada:** ocultar "já li" tira os lidos das listas; a sugestão é que eles
+continuem contando nos números de leitura (o que você leu não deixa de ter sido lido).
+
+**Nota para quem for programar:** nas preferências guardadas, o nome `ocultar` já é do botão do olho ("ocultar
+valores em reais"). O controle novo precisa de outro nome.
+
+### Parte 2 — Exportar e imprimir listas
+
+**O que você pediu:** uma maneira de exportar ou imprimir listas de livros.
+
+**O que já existe:** toda tabela do painel tem o botão **CSV**, que baixa as linhas filtradas num arquivo de
+planilha.
+
+**Proposta** (você ainda não comentou; se não disser nada, é por aqui que a rodada começa):
+
+- **Imprimir:** uma folha limpa com a lista que está na tela — título, autor e um quadradinho para riscar. A caixa
+  de impressão do navegador também salva em PDF.
+- **Copiar como texto:** a mesma lista, pronta para colar numa mensagem ou num bloco de notas.
+- Os dois também nas trilhas de leitura.
+
+### Parte 3 — Sinopse na ficha de cada livro
+
+**O que você pediu:** uma breve sinopse, resumo ou descrição ao abrir a ficha do livro, com pesquisa online.
+
+**Combinado:**
+
+- **Duas ou três frases por livro, sem contar o final.** O texto é escrito para o painel; não é cópia de editora
+  nem de livraria.
+- **De onde vem o texto.** De obra conhecida, a sinopse sai do que é bem estabelecido sobre ela. Da que deixar
+  qualquer dúvida — autor pouco conhecido, título que se repete, edição obscura —, só depois de pesquisa online. O
+  que não der para confirmar **fica sem sinopse** e entra numa lista de pendências: nada de palpite.
+- **Onde fica guardado:** num arquivo novo, `catalogo/sinopses.tsv`, uma linha por livro: título, autor, sinopse, de
+  onde veio (conhecimento geral ou o endereço consultado) e a data. É o registro das buscas: mostra o que já foi
+  feito e o que falta, e evita pesquisar o mesmo livro duas vezes.
+- **No painel:** a sinopse aparece no alto da ficha. Livro sem sinopse não mostra nada no lugar.
+
+**Roteiro das buscas** — um lote por rodada, de uns 150 livros cada:
+
+| Lote | Livros | Quantos | Situação |
+| --- | --- | --- | --- |
+| 1 | Os 97 da estante e as 53 prioridades (`#top`) que não estão nela | 150 | A fazer |
+| 2 a 5 | O restante das recomendações (seções 1 a 16 do catálogo), seção por seção | 554 | A fazer |
+| 6 em diante | Os livros digitais (seção 17), um eixo de cada vez — você escolhe por onde começar | 1.910 | A fazer |
+
+Esta tabela é atualizada a cada lote. Se quiser outra ordem — um autor, um eixo, uma trilha na frente —, é só dizer.
+
+### Parte 4 — Temas visuais
+
+**O que você pediu:** um visual temático para a página, que você possa trocar, com modelos prontos baseados em
+personagens, livros e sagas — de preferência da literatura — e também em épocas e artes que simbolizem as categorias
+da biblioteca.
+
+**Temas combinados:**
+
+- de obras: **Lovecraft**, **Sherlock Holmes**, **Moby Dick**, **Duna**, **Tolkien**;
+- de épocas e artes: **clássico greco-romano** (filósofos e clássicos) e **cyberpunk** (ficção científica).
+
+**Sugestões para completar a lista, se você quiser:** Viena de 1900, o consultório de Freud (psicologia e
+psicanálise, o seu maior eixo, com 440 livros); modernismo brasileiro (Brasil e lusofonia); manuscrito medieval, com
+iluminuras (romances históricos).
+
+**Como será feito:**
+
+- Um tema troca **cores, letras e, no máximo, um ornamento discreto.** As telas, os botões e os números ficam onde
+  estão. Sem imagens de personagens e sem logotipos.
+- **Todo tema passa pelo mesmo teste de contraste** dos dois que existem hoje (claro e escuro): texto legível em
+  todos os pares de cor. Tema que não passar não entra.
+- Lovecraft, Sherlock Holmes e Moby Dick são de domínio público e podem dar nome ao tema. **Duna e Tolkien ainda são
+  obras protegidas:** o tema é inspirado nelas, mas leva um nome evocativo, a escolher com você.
+- A escolha do tema fica guardada no navegador, como já acontece com o claro e o escuro.
+- Começa com poucos temas bem acabados; os outros entram aos poucos.
+
+**A decidir com você antes de fazer:** quais sugestões entram; o nome dos temas de Duna e de Tolkien; se todo tema
+tem versão clara e escura ou se alguns (Lovecraft, cyberpunk) nascem só escuros.
+
+### Parte 5 — Gamificação da leitura (em conversa)
+
+**A sua ideia:** usar elementos de jogo para estimular a leitura e, se for adiante, dar a isso uma seção própria do
+painel. **Você pediu para debatermos antes de aplicar; nada será feito antes disso.**
+
+**A minha opinião:** vale a pena, com dois cuidados.
+
+- **A favor:** o painel já sabe o que é preciso — o que você começou, o que terminou e quando, a nota, as páginas
+  (quando você informa), as 36 trilhas, os 16 eixos, a dificuldade e a extensão de cada livro. Dá para premiar sem
+  pedir nenhuma anotação a mais: tudo sai do "Começar a ler" e do "Já li", e o que já estiver registrado conta desde
+  o primeiro dia.
+- **Cuidado 1 — não premiar só quantidade.** Contar livros e dias seguidos empurra para o livro curto e fácil, e
+  vira cobrança quando a sequência quebra. Melhor premiar variedade e fôlego: terminar uma trilha, ler um livro
+  exigente, tirar da estante um livro parado há anos.
+- **Cuidado 2 — não medir contra o acervo inteiro.** São 2.124 livros; uma barra de "lidos do total" ficaria perto
+  do zero por anos. As metas precisam ter o tamanho de um ano, não o da biblioteca.
+
+**O que eu proporia**, numa guia separada, que dê para desligar:
+
+1. **Meta do ano**, escolhida por você, em livros ou em páginas, com o ritmo ("dois livros à frente").
+2. **Conquistas** ligadas à sua biblioteca: concluir uma trilha; ler um livro de cada eixo; o primeiro "exigente" do
+   ano; um "longo"; uma prioridade; um livro parado na estante há mais de cinco anos.
+3. **Cartela do ano:** 12 ou 16 casas sorteadas das suas categorias ("um clássico russo", "uma HQ", "um de
+   psicanálise", "um de poesia"), para preencher ao longo do ano.
+
+Sequência de dias seguidos eu deixaria de fora: o painel não registra a leitura de cada dia, e passaria a exigir uma
+visita diária só para marcar presença.
+
+**Depende de uma coisa:** das suas leituras registradas (etapa 3). Sem elas, a guia abre vazia.
+
+**Perguntas para a conversa:**
+
+1. O que mais anima você: meta do ano, conquistas, cartela — ou outra coisa (níveis, pontos)?
+2. Contar por livros ou por páginas? Páginas tratam melhor o livro de 900 páginas, mas pedem o número (ou uma
+   estimativa, dita como estimativa).
+3. Tom sóbrio, como o resto do painel, ou mais brincalhão — por exemplo, conquistas com a cara do tema visual em uso?
+
+**Pronta quando** cada parte estiver no painel, com teste e com a sua aprovação. A parte 3 se completa aos poucos.
 
 ---
 
