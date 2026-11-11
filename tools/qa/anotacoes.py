@@ -133,7 +133,7 @@ with sync_playwright() as p:
     ok('salvar o formulário não tira a marca', 'analise' in g.get('tags', []) and g.get('obs') == 'Edição de bolso.' and pg.is_checked('#nt-an'), g.get('tags'))
     fechar(); pg.fill('#p-tab-geral input[type=search]', ''); pg.wait_for_timeout(400)
     pg.click('#pw-mais .pop-b'); pg.wait_for_timeout(300)
-    grupo = pg.evaluate("() => { const g = [...document.querySelectorAll('#f-tags .tg-g')].find(g => g.querySelector('.pop-r').textContent === 'Suas marcas'); return g ? [...g.querySelectorAll('.chip')].map(c => [c.dataset.v, c.textContent]) : null; }")
+    grupo = pg.evaluate("() => { const g = [...document.querySelectorAll('#f-tags .tg-g')].find(g => g.querySelector('.pop-r').textContent === 'Suas marcas'); return g ? [...g.querySelectorAll('.chip')].map(c => [c.dataset.v, c.querySelector('span').textContent]) : null; }")
     ok('"Possui análise" é um filtro, no grupo "Suas marcas"', grupo == [['analise', 'Possui análise']], grupo)
     pg.click('#f-tags .chip[data-v=analise]'); pg.wait_for_timeout(700); pg.keyboard.press('Escape'); pg.wait_for_timeout(300)
     ativos = pg.evaluate("() => [...document.querySelectorAll('#f-ativos .ativo')].map(a => a.textContent)")

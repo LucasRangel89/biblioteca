@@ -292,11 +292,13 @@ import analisar_marcadores as am
 LA = am.carregar(); GA = am.grupos_do_painel(LA); medida = am.medir()
 confere(len(LA) == len(dados) and f'CATÁLOGO: {len(LA)} linhas' in medida and all(k in medida for k in ('COBERTURA', 'ESPECÍFICO × GERAL', 'EIXOS', 'DIFICULDADE E EXTENSÃO', 'PASTA DO DONO')),
         'analisar_marcadores.py mede o catálogo inteiro: alcance dos filtros, eixos, dificuldade e extensão, pastas × eixos')
-confere(len(GA['Gêneros']) > 20 and len(GA['Temas']) > 40 and len(GA['Trilhas de leitura']) == len(tr) and all(1 <= b['eixo'] <= 16 and b['d'] and b['e'] and b['tipo'] for b in LA),
+confere(len(GA['Gêneros']) > 20 and len(GA['Temas']) > 40 and len(GA[am.GRUPO_PSI]) == 10 and len(GA['Trilhas de leitura']) == len(tr) and all(1 <= b['eixo'] <= 16 and b['d'] and b['e'] and b['tipo'] for b in LA),
         'os grupos medidos são os do painel, e toda linha do catálogo tem tipo, eixo, dificuldade e extensão')
 usados = {t for b in LA for t in b['tags']}
-sem_uso = [t for g in ('Gêneros', 'Temas', 'Época e origem', 'Afinidades') for t in GA[g] if t not in usados]
+sem_uso = [t for g in ('Gêneros', 'Temas', am.GRUPO_PSI, 'Época e origem', 'Afinidades') for t in GA[g] if t not in usados]
 confere(not sem_uso, 'todo marcador que o painel oferece nos filtros está em uso em algum livro' + (': ' + ', '.join(sem_uso[:5]) if sem_uso else ''))
+nos_grupos = [t for itens in GA.values() for t in itens]; repetidos = sorted({t for t in nos_grupos if nos_grupos.count(t) > 1})
+confere(not repetidos, 'cada marcador mora num grupo de filtros só (é o grupo que diz se dois marcadores somam ou cruzam)' + (': ' + ', '.join(repetidos[:5]) if repetidos else ''))
 
 shutil.rmtree(tmp, ignore_errors=True)
 print('ERROS:', len(erros))

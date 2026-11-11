@@ -41,6 +41,9 @@ def carregar():
     return livros
 
 
+GRUPO_PSI = 'Psicologia: abordagens e áreas'      # as dez portas da psicologia: eram temas até a rodada 8 e continuam contando como tema nas medidas
+
+
 def grupos_do_painel(livros):
     """{nome do grupo de filtros: [marcadores]}, como no painel (GRUPOS_TAG, em src/js/10-data.js), mais as camadas."""
     js = (RAIZ / 'src' / 'js' / '10-data.js').read_text(encoding='utf-8')
@@ -74,14 +77,14 @@ def medir():
         c = lambda bs: pct(sum(1 for b in bs if b['T'] & S), len(bs))
         pares = list(itertools.combinations(usados, 2))
         vazios = sum(1 for a, b in pares if not (com[a] & com[b]))
-        p(f'  {nome:22} {len(itens):3} | {c(L):5.1f}% | {c(sub("estante")):5.1f}% | {c(sub("recs")):5.1f}% | {c(sub("virtual")):5.1f}% | {pct(vazios, len(pares)):3.0f}% de {len(pares)}')
-    descr = set(G['Gêneros']) | set(G['Temas'])
+        p(f'  {nome:30} {len(itens):3} | {c(L):5.1f}% | {c(sub("estante")):5.1f}% | {c(sub("recs")):5.1f}% | {c(sub("virtual")):5.1f}% | {pct(vazios, len(pares)):3.0f}% de {len(pares)}')
+    descr = set(G['Gêneros']) | set(G['Temas']) | set(G[GRUPO_PSI])
     semnada = [b for b in L if not (b['T'] & descr)]
     p(f'  sem gênero nem tema: {len(semnada)} linhas — ' + ', '.join(f'{k or "sem tipo"} {v}' for k, v in collections.Counter(b['tipo'] for b in semnada).most_common()))
     for g in ('estante', 'recs', 'virtual'):
         p(f'  gêneros + temas por livro ({g}): média {sum(len(b["T"] & descr) for b in sub(g)) / len(sub(g)):.2f}')
 
-    todos = [t for nome in ('Gêneros', 'Temas', 'Época e origem', 'Afinidades') for t in G[nome]]
+    todos = [t for nome in ('Gêneros', 'Temas', GRUPO_PSI, 'Época e origem', 'Afinidades') for t in G[nome]]
     p('\nMARCADORES RAROS (menos de 10 livros): ' + ' · '.join(f'{t} {cont[t]}' for t in sorted(todos, key=lambda t: cont[t]) if cont[t] < 10))
     p(f'MARCADORES AMPLOS (mais de 8% do catálogo = {round(0.08 * N)} livros): ' + ' · '.join(f'{t} {cont[t]}' for t in sorted(todos, key=lambda t: -cont[t]) if cont[t] > 0.08 * N))
     fora = collections.Counter(t for b in L if b['g'] != 'virtual' for t in b['T'])

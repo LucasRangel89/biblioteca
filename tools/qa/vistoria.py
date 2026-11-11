@@ -78,7 +78,7 @@ with sync_playwright() as p:
     ok('a ficha de um livro da biblioteca virtual mostra eixo, tipo, dificuldade e extensão', chips == ['Ficção científica e fantasia', 'Ficção', 'Média', 'Média · ~250–500 p.'], chips)
     pg.keyboard.press('Escape'); pg.wait_for_timeout(300); pg.fill('#p-tab-geral input[type=search]', ''); pg.wait_for_timeout(500)
     pg.click('#pw-mais .pop-b'); pg.wait_for_timeout(300)
-    rot = pg.evaluate("() => Object.fromEntries([...document.querySelectorAll('#f-tags .chip')].map(c => [c.dataset.v, c.textContent]))")
+    rot = pg.evaluate("() => Object.fromEntries([...document.querySelectorAll('#f-tags .chip')].map(c => [c.dataset.v, c.querySelector('span').textContent]))")
     novos = {'super-herois': 'Super-heróis', 'manga': 'Mangá', 'adaptacao': 'Adaptação em quadrinhos', 'cronicas': 'Crônicas', 'policial': 'Policial', 'aventura': 'Aventura', 'faroeste': 'Faroeste', 'mitologia': 'Mitologia',
              'educacao': 'Educação', 'biologia': 'Biologia', 'matematica': 'Matemática', 'programacao': 'Programação', 'dados': 'Dados e planilhas', 'design': 'Design', 'enigmas': 'Enigmas e mistérios'}
     ok('os 15 marcadores novos da vistoria aparecem nos filtros, com nome legível', all(rot.get(t) == n for t, n in novos.items()), {t: rot.get(t) for t in novos if rot.get(t) != novos[t]})

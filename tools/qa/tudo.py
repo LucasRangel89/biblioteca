@@ -1,6 +1,6 @@
 """Roda toda a verificação do painel e diz, no fim, se passou.
 
-Uso:  python tools/qa/tudo.py                          (todos os testes, ~20 min)
+Uso:  python tools/qa/tudo.py                          (todos os testes, ~25 min)
       python tools/qa/tudo.py foco a11y                (só os citados)
       python tools/qa/tudo.py importador busca_capas   (os dois que não precisam de navegador)
 Requisitos (uma vez): pip install playwright pillow  &&  python -m playwright install chromium
@@ -13,7 +13,7 @@ Isso não é falha, mas também não é o teste completo: a linha do teste ganha
 import os, re, subprocess, sys, time
 from caminhos import QA, TMP
 
-TESTES = ['importador', 'busca_capas', 'medir3', 'limpo', 'inicio', 'posse', 'opcionais', 'leitura_de_fora', 'anotacoes', 'trilhas', 'vistoria', 'capas_painel', 'financas', 'foco', 'func3', 'func4', 'func5', 'func6', 'func7', 'func8', 'sandbox', 'site', 'run7', 'run9', 'valores', 'resto', 'a11y', 'varredura']
+TESTES = ['importador', 'busca_capas', 'medir3', 'limpo', 'inicio', 'posse', 'opcionais', 'leitura_de_fora', 'anotacoes', 'trilhas', 'filtros', 'vistoria', 'capas_painel', 'financas', 'foco', 'janela_baixa', 'func3', 'func4', 'func5', 'func6', 'func7', 'func8', 'sandbox', 'site', 'run7', 'run9', 'valores', 'resto', 'a11y', 'varredura']
 RUIM = re.compile(r'ERROS: [1-9]|erros: [1-9]|FALHAS: \[[^\]]|AVISOS: [1-9]|PROBLEMAS: \{[^}]')
 RESUMO = re.compile(r'^(ERROS|FALHAS|AVISOS|PROBLEMAS)\b|erros:')
 PULADO = re.compile(r'^\s*\(pulado:', re.M)              # como os testes anunciam uma parte que não puderam fazer

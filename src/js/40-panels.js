@@ -301,14 +301,20 @@ function pTemas() {
   return { id: 'temas', w: 'p-4 m-6', tit: 'Temas e camadas', montar(k) {
     k.tools.innerHTML = `<label class="sel-w"><span class="so-leitor">Grupo de marcadores</span><select aria-label="Grupo de marcadores">${grupos.map(([i, n]) => `<option value="${i}">${esc(n)}</option>`).join('')}</select></label>`;
     const sel = $('select', k.tools);
-    sel.addEventListener('change', () => { S.ui.temas = +sel.value; salvar(); render(); });
+    sel.addEventListener('change', () => { S.ui.temas = GRUPOS_TAG[+sel.value][0]; salvar(); render(); });       // guarda o nome: a posição muda quando entra um grupo novo
     const g = BarrasH(k.corpo, { aoClicar(t) { alternar(S.tags, t); filtrosMudaram(); } });
     return c => {
-      const i = grupos.some(x => x[0] === S.ui.temas) ? S.ui.temas : 1, lista = GRUPOS_TAG[i][1], cont = new Map();
+      const i = (grupos.find(x => x[1] === S.ui.temas) || grupos[1])[0], lista = GRUPOS_TAG[i][1], cont = new Map();
       sel.value = String(i);
-      for (const b of c.recP) if (b.leit !== 'lido') for (const t of b.tags) if (lista.includes(t)) cont.set(t, (cont.get(t) || 0) + 1);
+      // enquanto os marcadores do grupo se somam, as barras são contadas sem a escolha do próprio grupo: continuam todas à vista
+      // (as ligadas em destaque) e o número de cada uma é o que ela acrescenta; com o grupo em "todos", conta-se dentro do recorte
+      for (const b of c.semGrupo(i).recP) if (b.leit !== 'lido') for (const t of b.tags) if (lista.includes(t)) cont.set(t, (cont.get(t) || 0) + 1);
+      for (const t of lista) if (S.tags.has(t) && !cont.has(t)) cont.set(t, 0);       // marcador ligado que não acha nada: a barra fica, com zero, para poder ser desligada ali mesmo
       k.sub.textContent = 'Marcadores mais frequentes nas recomendações · clique para filtrar';
-      g.atualizar({ linhas: [...cont].sort((a, z) => z[1] - a[1]).slice(0, 9).map(([t, n]) => ({ k: t, n: maiuscula(rotCurto(t)), dica: DICA_TAG[t] || '#' + t, ativo: S.tags.has(t), segs: [{ n: 'recomendações', cor: 'var(--c2)', v: n }] })), vazio: 'Nenhum marcador deste grupo no recorte atual.' });
+      // as nove mais frequentes; uma barra ligada nunca sai de cena (entra no lugar da menos frequente)
+      const ord = [...cont].sort((a, z) => z[1] - a[1]), lig = ord.filter(([t]) => S.tags.has(t));
+      const nove = lig.concat(ord.filter(([t]) => !S.tags.has(t)).slice(0, Math.max(0, 9 - lig.length))).sort((a, z) => z[1] - a[1]);
+      g.atualizar({ linhas: nove.map(([t, n]) => ({ k: t, n: maiuscula(rotCurto(t)), dica: DICA_TAG[t] || '#' + t, ativo: S.tags.has(t), segs: [{ n: 'recomendações', cor: 'var(--c2)', v: n }] })), vazio: 'Nenhum marcador deste grupo no recorte atual.' });
     };
   } };
 }
