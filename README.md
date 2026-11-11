@@ -468,9 +468,9 @@ avisa no fim, em vez de dar o teste por completo. `git fetch --unshallow` traz o
 | `run1`, `run5` … `run13` | Capturas de tela para conferência visual (só `run7` e `run9` entram no `tudo.py`) |
 
 **Depois de mudar o catálogo, alguns testes precisam de números novos.** `func6`, `limpo`, `posse`, `inicio`,
-`opcionais`, `financas`, `capas_painel`, `trilhas` e `vistoria` comparam o painel com contagens do catálogo atual
-(2.122 livros no acervo, 430 recomendações na fila, 404 com os dados de exemplo etc.). Quando entrarem livros,
-rode-os, confira os valores impressos nas linhas `FALHA` e atualize os literais. Os dados de exemplo são sorteados a
+`opcionais`, `leitura_de_fora`, `financas`, `capas_painel`, `trilhas` e `vistoria` comparam o painel com contagens do
+catálogo atual (2.124 livros no acervo, 487 recomendações na fila, 461 com os dados de exemplo etc.). Quando entrarem
+livros, rode-os, confira os valores impressos nas linhas `FALHA` e atualize os literais. Os dados de exemplo são sorteados a
 partir do catálogo: mudar a dificuldade ou a extensão de um livro da estante muda também os valores em reais que
 `func6`, `financas`, `inicio` e `limpo` esperam.
 

@@ -328,9 +328,9 @@ listagens de uma vez; o material antigo guardado em `referencias/` é revisto.
 - **O período foi para dentro de "Mais filtros"**, e a barra de filtros ficou mais curta.
 - **Só o título é obrigatório.** Data de aquisição, loja, valor e data de leitura são opcionais em todos os
   formulários: dá para dizer "já tenho" sem dizer quanto custou, e "já li" sem dizer quando.
-- **Capas.** 761 dos 2.554 livros aparecem com a capa; os outros, com um desenho com a inicial do título. A busca só
-  aceita uma capa quando o título e o autor conferem, e o catálogo de onde elas vêm (Open Library) tem poucas
-  edições brasileiras — por isso não são mais.
+- **Capas.** Na primeira busca, 761 dos 2.554 livros ficaram com capa; os outros, com um desenho com a inicial do
+  título. A busca só aceita uma capa quando o título e o autor conferem, e o catálogo de onde elas vinham (Open
+  Library) tem poucas edições brasileiras. A segunda fonte veio na etapa 8 (mais abaixo).
 
 **Feito** (11/11/2026):
 
