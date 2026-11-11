@@ -354,12 +354,18 @@ listagens de uma vez; o material antigo guardado em `referencias/` é revisto.
 
 - **Mais capas, de uma segunda fonte.** A Open Library, de onde vinham as capas, tem poucas edições brasileiras:
   só 761 livros tinham capa. O que ela não achou passou a ser procurado também na **Apple Books**, a loja de livros
-  digitais da Apple, que vende as edições daqui. Agora **@@CAPAS@@ dos 2.614** livros têm capa (@@APPLE@@ vieram da
+  digitais da Apple, que vende as edições daqui. Agora **1.564 dos 2.614** livros têm capa (780 vieram da
   Apple). A regra não mudou: só entra a capa cujo título **e** autor conferem com os do catálogo.
-- **O que continua sem capa**, e por quê: edições antigas que não viraram livro digital, teses e apostilas, boa
-  parte dos quadrinhos, e os livros sem autor certo, que nem são procurados. Para esses, a saída é enviar a capa
-  pelo painel, na ficha do livro.
-- **A capa da Apple é a do livro digital à venda hoje.** Pode não ser a da edição que está na sua estante.
+- **Onde estão as capas:** 60 dos 97 livros da estante, 494 das 607 recomendações e 1.009 dos 1.910 livros da
+  biblioteca virtual. Das 60 recomendações novas, 58 já chegaram com capa.
+- **O que continua sem capa**, e por quê: 967 livros que não estão em nenhuma das duas fontes com o título do
+  catálogo — edições antigas que não viraram livro digital, teses e apostilas, e quase todos os quadrinhos (só 58
+  dos 245 têm capa) — e 83 livros sem autor certo, que nem são procurados. Para esses, a saída é enviar a capa pelo
+  painel, na ficha do livro.
+- **A capa da Apple é a do livro digital à venda hoje.** Pode não ser a da edição que está na sua estante, e às
+  vezes é a da edição de Portugal. Se alguma estiver errada, me diga o livro: a correção é uma linha.
+- **Para procurar de novo** quando entrarem livros: no GitHub, aba **Actions** → **Buscar capas** → **Run
+  workflow**. Leva perto de uma hora para cada mil livros. As capas novas aparecem no site na rodada seguinte.
 - **"Já li" para o livro que você não tem** — emprestado, de biblioteca, perdido. Está na ficha de qualquer
   recomendação e de qualquer item da lista de compra (detalhes na etapa 3).
 - **O que muda para a privacidade:** o painel passa a pedir imagens a dois sites em vez de um. Continua valendo o

@@ -353,14 +353,15 @@ importação faz a mesma conciliação.
 
 ### As capas
 
-O painel mostra a capa do livro nas listas, nas tabelas e na ficha. Hoje **@@CAPAS@@ dos 2.614** livros têm capa; os
-outros aparecem com um desenho com a inicial do título.
+O painel mostra a capa do livro nas listas, nas tabelas e na ficha. Hoje **1.564 dos 2.614** livros têm capa (60 dos
+97 da estante, 494 das 607 linhas de recomendações, 1.009 dos 1.910 da biblioteca virtual); os outros aparecem com um
+desenho com a inicial do título. Até 11/11/2026 eram 761, todas da primeira fonte.
 
 - **De onde vêm.** De dois catálogos de livros na internet, nesta ordem:
-  1. a [Open Library](https://openlibrary.org), um catálogo aberto (@@OL@@ capas). Tem poucas edições brasileiras;
+  1. a [Open Library](https://openlibrary.org), um catálogo aberto (784 capas). Tem poucas edições brasileiras;
   2. a **Apple Books**, a loja de livros digitais da Apple, consultada pela busca pública do iTunes na loja do Brasil
-     (@@APPLE@@ capas). Só é procurada para o que a Open Library não achou, e traz quase sempre a capa da edição
-     brasileira.
+     (780 capas). Só é procurada para o que a Open Library não achou. Traz a capa do livro digital em português que
+     está à venda: quase sempre a da edição brasileira, às vezes a da edição de Portugal.
 
   Nenhuma imagem fica no repositório: `catalogo/capas.tsv` guarda só o número da capa (Open Library) ou o endereço da
   imagem (Apple), e o navegador busca a imagem em `covers.openlibrary.org` ou em `is…-ssl.mzstatic.com` quando ela
@@ -372,7 +373,8 @@ outros aparecem com um desenho com a inicial do título.
   de teses e de quadrinhos —, o livro sem autor certo (ou de "Vários autores") e a adaptação em quadrinhos com um
   autor só: nesses dois últimos casos nem se procura, porque o resultado não seria confiável. Os volumes de uma
   série nunca ficam com a mesma capa. A capa da Apple é a do livro digital à venda hoje: pode não ser a da edição que
-  está na sua estante.
+  está na sua estante. Na busca de 11/11/2026, 967 livros não foram achados em nenhuma das duas fontes e 83 não foram
+  procurados; entre os 245 quadrinhos, só 58 têm capa.
 - **Procurar de novo** (depois de entrarem livros, por exemplo): no GitHub, aba **Actions** → **Buscar capas** →
   **Run workflow**. O serviço procura só o que falta — os livros novos, nas duas fontes, e os que só tinham passado
   pela primeira —, grava `catalogo/capas.tsv` e, no fim, pede 40 capas de cada fonte para conferir se as imagens
@@ -470,9 +472,9 @@ avisa no fim, em vez de dar o teste por completo. `git fetch --unshallow` traz o
 **Depois de mudar o catálogo, alguns testes precisam de números novos.** `func6`, `limpo`, `posse`, `inicio`,
 `opcionais`, `leitura_de_fora`, `financas`, `capas_painel`, `trilhas` e `vistoria` comparam o painel com contagens do
 catálogo atual (2.124 livros no acervo, 487 recomendações na fila, 461 com os dados de exemplo etc.). Quando entrarem
-livros, rode-os, confira os valores impressos nas linhas `FALHA` e atualize os literais. Os dados de exemplo são sorteados a
-partir do catálogo: mudar a dificuldade ou a extensão de um livro da estante muda também os valores em reais que
-`func6`, `financas`, `inicio` e `limpo` esperam.
+livros, rode-os, confira os valores impressos nas linhas `FALHA` e atualize os literais. Os dados de exemplo são
+sorteados a partir do catálogo: mudar a dificuldade ou a extensão de um livro da estante muda também os valores em
+reais que `func6`, `financas`, `inicio` e `limpo` esperam.
 
 ## O que ainda pede conferência
 
