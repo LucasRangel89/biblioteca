@@ -1,0 +1,290 @@
+titulo	autor	eixo	marcadores
+Fundação	Isaac Asimov	2	F ficcao-cientifica classico d2 e2 rel-asimov-clarke
+Os Tambores Silenciosos	Josué Guimarães	4	F BR RS regional-gaucho d2 e2
+Blecaute	Marcelo Rubens Paiva	4	F BR d1 e2
+Contos (Edgar Allan Poe)	Edgar Allan Poe	7	F horror gotico classico d1 e2
+O Aprendiz de Assassino	Robin Hobb	2	F fantasia d1 e3
+Cem Anos de Solidão	Gabriel García Márquez	4	F latam d2 e3 top
+O Andarilho (Busca do Graal, vol. 2)	Bernard Cornwell	6	F romance-historico medieval guerra d1 e3 rel-cornwell
+Herege (Busca do Graal, vol. 3)	Bernard Cornwell	6	F romance-historico medieval religiao d1 e3 rel-cornwell
+Corpo	Carlos Drummond de Andrade	8	poesia BR classico d2 e2
+Os Herdeiros	William Golding	1	F pre-historia neandertal classico d2 e1 rel-imortais
+Senhor das Moscas	William Golding	1	F politica classico d2 e2 rel-imortais
+Shaman	Kim Stanley Robinson	1	F pre-historia sem-pt d2 e3 rel-imortais
+Kindred: Neanderthal Life, Love, Death and Art	Rebecca Wragg Sykes	1	NF neandertal ciencia sem-pt d2 e3 rel-imortais
+Sapiens: Uma Breve História da Humanidade	Yuval Noah Harari	1	NF historia antropologia d1 e3 rel-imortais
+Nós	Ievguêni Zamiátin	2	F distopia classico d2 e2
+Jurassic Park	Michael Crichton	2	F ciencia thriller-medico d1 e2
+O Mestre e Margarida	Mikhail Bulgákov	3	F politica europa-leste classico d2 e3 top
+Amada	Toni Morrison	3	F raca memoria d2 e2
+O Amor nos Tempos do Cólera	Gabriel García Márquez	4	F latam d1 e2
+A Festa do Bode	Mario Vargas Llosa	4	F latam autoritarismo romance-historico d2 e3
+Lavoura Arcaica	Raduan Nassar	4	F BR d2 e1
+Livro do Desassossego	Fernando Pessoa	4	F portugal existencialismo d3 e2
+Memorial do Convento	José Saramago	4	F portugal romance-historico d3 e3
+Maus	Art Spiegelman	5	HQ guerra testemunho d1 e1
+Um Equilíbrio Delicado	Rohinton Mistry	5	F asia autoritarismo d1 e3
+O Arqueiro (Busca do Graal, vol. 1)	Bernard Cornwell	6	F romance-historico medieval guerra d1 e3 top rel-cornwell
+O Último Judeu	Noah Gordon	6	F romance-historico medieval religiao d1 e3 rel-cornwell
+A Escolha da Dra. Cole	Noah Gordon	6	F medicina d1 e3 rel-cornwell
+O Corcunda de Notre-Dame	Victor Hugo	6	F romance-historico medieval classico d2 e2
+Meu Nome é Vermelho	Orhan Pamuk	6	F romance-historico arte d3 e2
+Mestre dos Mares	Patrick O'Brian	6	F romance-historico guerra d2 e3
+Toda Luz que Não Podemos Ver	Anthony Doerr	6	F guerra d1 e2
+Revival	Stephen King	7	F horror lovecraftiano d1 e3 rel-widows-bay
+Walden	Henry David Thoreau	9	NF filosofia ecologia classico d2 e1
+A Mente Moralista	Jonathan Haidt	11	NF psicologia politica etica d1 e2 top rel-fromm
+A Anatomia do Fascismo	Robert O. Paxton	11	NF politica autoritarismo historia d3 e2 rel-fromm
+A Nova Razão do Mundo	Pierre Dardot e Christian Laval	11	NF politica economia d3 e3 rel-fromm
+As Origens da Ordem Política	Francis Fukuyama	12	NF politica historia d3 e3
+Cosmos	Carl Sagan	13	NF ciencia classico d1 e3
+De Frente para o Sol: Como Superar o Terror da Morte	Irvin D. Yalom	9	NF filosofia
+O Enigma de Espinosa	Irvin D. Yalom	14	F filosofia psicologia d1 e3 rel-yalom
+Contato	Carl Sagan	13	NF ciencia fisica
+O Livro do Silêncio (Deuses de Dois Mundos, vol. 1)	P.J. Pereira	14	NF autoconhecimento
+Walden II: Uma Sociedade do Futuro	B.F. Skinner	14	NF psicologia behaviorismo
+A Mandrágora	Nicolau Maquiavel	9	NF filosofia
+A Nascente	Ayn Rand	9	NF filosofia
+A Revolta de Atlas	Ayn Rand	2	F
+Contraponto	Aldous Huxley	5	F contemporaneo
+Duas Narrativas Fantásticas	Fiódor Dostoiévski	2	F
+Epopeia de Gilgamesh	Sin-léqi-unnínni	15	NF religiao
+Folhas Inúteis	Aldous Huxley	5	F contemporaneo
+Paraísos Artificiais	Charles Baudelaire	15	NF religiao
+70 Historinhas	Carlos Drummond de Andrade	4	F contos
+A Bagagem do Viajante	José Saramago	4	F contos
+A Hora da Estrela	Clarice Lispector	4	F contemporaneo
+Agora é que São Elas	Paulo Leminski	4	F contos
+Agosto	Rubem Fonseca	7	F thriller
+As Cem Melhores Crônicas Brasileiras	Joaquim Ferreira dos Santos (org.)	4	F contos
+Caviar é uma Ova	Gregorio Duvivier	4	F contos
+Feliz Ano Velho	Marcelo Rubens Paiva	4	F contemporaneo
+Ficções Amazônicas	Aparecida Vilaça e Francisco Vilaça Gaspar	16	NF arte
+Manual Prático do Ódio	Ferréz	11	NF politica
+O Livro dos Abraços	Eduardo Galeano	12	NF historia
+O Ouro dos Tigres	Jorge Luis Borges	4	F contos
+O Outro, o Mesmo	Jorge Luis Borges	4	F contos
+Os Conjurados	Jorge Luis Borges	4	F contos
+Pai, Pai	João Silvério Trevisan	14	NF autoconhecimento
+Percatempos: Tudo que Faço Quando Não Sei o que Fazer	Gregorio Duvivier	4	F contos
+Romance Negro	Rubem Fonseca	7	F thriller
+Um Rio Chamado Tempo, uma Casa Chamada Terra	Mia Couto	4	F contos
+Vagamundo	Eduardo Galeano	11	NF politica
+Venenos de Deus, Remédios do Diabo	Mia Couto	4	F contos
+A Dissociação	Nadia Yala Kisukidi	9	NF filosofia
+Baratas	Scholastique Mukasonga	5	F contemporaneo
+Blackbird	Pierre Maurel	5	F
+Divertida Mente: Conduzida pelas Emoções	Elise Allen	14	NF psicologia
+Uma Visita dos Espíritos	Randall Kenan	5	F contos
+M, o Homem da Providência	Antonio Scurati	12	NF historia
+Santo Guerreiro: Roma Invicta	Eduardo Spohr	2	F
+Santo Guerreiro: Ventos do Norte	Eduardo Spohr	2	F
+A Colônia	Ezekiel Boone	2	F
+Hex	Thomas Olde Heuvelt	2	F
+200 Limeriques de Edward Lear para Ler e para Ver	Edward Lear	8	poesia contos
+Carta ao Pai	Franz Kafka	8	NF filosofia
+38 Estratégias para Vencer Qualquer Debate	Arthur Schopenhauer	9	NF filosofia autoconhecimento
+A Arte de Argumentar	Antonio Suarez Abreu	9	NF filosofia autoconhecimento
+A Arte de Viver	Epicteto	9	NF filosofia autoconhecimento
+A Cabeça Bem-Feita	Edgar Morin	9	NF filosofia psicologia
+A Virtude do Egoísmo	Ayn Rand	14	NF autoconhecimento psicologia
+As Vantagens do Pessimismo e o Perigo da Falsa Esperança	Roger Scruton	14	NF autoconhecimento
+Caosmose: Um Novo Paradigma Estético	Félix Guattari	14	NF psicologia
+Estética	Kathrin H. Rosenfield	14	NF psicologia
+Ética e Pós-verdade	Christian Dunker, Cristovão Tezza e Julián Fuks	14	NF psicologia
+Grandes Pensadores	The School of Life	14	NF autoconhecimento
+Leibniz e a Linguagem	Vivianne de Castilho Moreira	14	NF psicologia
+Livro da Alma	Avicena (Ibn Sina)	15	NF religiao
+Por que Amamos	Renato Noguera	14	NF psicologia
+Teoria do Conhecimento	Alberto Oliva	11	NF politica
+Teoria do Conhecimento	Johannes Hessen	9	NF filosofia politica
+A Anatomia da Violência: As Raízes Biológicas da Criminalidade	Adrian Raine	10	NF politica ciencia psicologia
+A Arte de Esquecer: Cérebro e Memória	Iván Izquierdo	14	NF psicologia
+A Consciência: Uma Viagem pelo Cérebro	Ronald Fiuza	14	NF psicologia
+A Estranha Ordem das Coisas: As Origens Biológicas dos Sentimentos e da Cultura	António Damásio	13	NF ciencia
+A Mente Assombrada	Oliver Sacks	14	NF psicologia
+A Vantagem Humana: Como Nosso Cérebro se Tornou Superpoderoso	Suzana Herculano-Houzel	13	NF ciencia
+Cérebro e Crença	Michael Shermer	14	NF psicologia
+Cérebro: Uma Biografia	David Eagleman	14	NF psicologia
+Como Criar uma Mente: Os Segredos do Pensamento Humano	Ray Kurzweil	14	NF psicologia
+Do que é Feito o Pensamento: A Língua como Janela para a Natureza Humana	Steven Pinker	14	NF psicologia
+E o Cérebro Criou o Homem	António Damásio	14	NF psicologia
+Elástico: Como o Pensamento Flexível Pode Mudar Nossas Vidas	Leonard Mlodinow	14	NF autoconhecimento
+Em Busca de Espinosa	António Damásio	10	NF filosofia psicologia
+Emocional: A Nova Neurociência dos Afetos	Leonard Mlodinow	14	NF psicologia
+Limiar	Sidarta Ribeiro	13	NF ciencia
+Manual de Psicologia Cognitiva	Michael W. Eysenck	14	NF psicologia tcc
+Mente, Cérebro e Cognição	João de Fernandes Teixeira	14	NF psicologia
+O Cérebro Imperfeito	Dean Buonomano	14	NF psicologia
+O Cérebro Leitor	Maryanne Wolf	14	NF psicologia
+O Cérebro no Mundo Digital	Maryanne Wolf	14	NF psicologia
+O Cérebro Quântico: As Novas Descobertas da Neurociência e a Próxima Geração de Seres Humanos	Jeffrey Satinover	13	NF ciencia fisica
+O Cérebro que Não Sabia de Nada	Dean Burnett	14	NF psicologia
+O Estilo Emocional do Cérebro	Richard J. Davidson e Sharon Begley	14	NF psicologia
+O Futuro da Mente: A Busca Científica para Entender, Aprimorar e Potencializar a Mente	Michio Kaku	9	NF filosofia
+O Mistério da Consciência	António Damásio	14	NF psicologia
+O Olhar da Mente	Oliver Sacks	14	NF psicologia
+O Oráculo da Noite: A História e a Ciência do Sonho	Sidarta Ribeiro	13	NF ciencia
+O que o Cérebro Tem para Contar: Desvendando os Mistérios da Natureza Humana	V.S. Ramachandran	14	NF psicologia
+Os Dragões do Éden	Carl Sagan	13	NF ciencia fisica
+Outras Mentes: O Polvo e a Origem da Consciência	Peter Godfrey-Smith	14	NF psicologia
+Por que Guardar Segredo é Difícil e Outras Curiosidades da Neurociência do Cotidiano	Suzana Herculano-Houzel	13	NF ciencia
+Por que Nós Dormimos: A Nova Ciência do Sono e do Sonho	Matthew Walker	13	NF ciencia
+Psicologia Cognitiva	Robert J. Sternberg	14	NF psicologia tcc
+Racionalidade: O que é, por que Parece Estar em Falta, por que é Importante	Steven Pinker	9	NF filosofia
+Sentir e Saber	António Damásio	14	NF psicologia
+Sexo na Cabeça	Kayt Sukel	14	NF psicologia
+Subliminar: Como o Inconsciente Influencia Nossas Vidas	Leonard Mlodinow	14	NF psicologia
+Tipos de Mentes: Rumo a uma Compreensão da Consciência	Daniel C. Dennett	14	NF psicologia
+Viagem Extraordinária ao Centro do Cérebro	Jean-Didier Vincent	13	NF ciencia fisica
+8 Estratégias de Marketing para Crescer: Dicas Práticas para Desenvolver seu Negócio	Philip Kotler e Milton Kotler	13	NF tecnologia
+A Arte da Inteligência: Os Bastidores da CIA e do FBI	Henry A. Crumpton	14	NF autoconhecimento
+A Cidade Inteligente: Tecnologias Urbanas e Democracia	Evgeny Morozov	13	NF tecnologia
+A Jornada do Empreendedor: O Herói da Nossa Era	Edson Marqueto Rigonatti, Laura Mello Constantini e Martino Bagini	13	NF tecnologia
+A Mídia	Noam Chomsky	9	NF filosofia
+Administração de Serviços: Operações, Estratégia e Tecnologia da Informação	James A. Fitzsimmons e Mona J. Fitzsimmons	13	NF tecnologia
+Comece pelo Porquê	Simon Sinek	14	NF autoconhecimento
+Contágio: Por que as Coisas Pegam	Jonah Berger	13	NF ciencia
+Democracia Participativa e as Novas Tecnologias de Informação e Comunicação: Desafios e Perspectivas	Maurício Gentil Monteiro	13	NF tecnologia
+Einstein, Freud e Relações Internacionais: Guerra e Paz num Diálogo Interdisciplinar	Luis Henrique Beust	13	NF ciencia verificar
+Gestão de Mudanças Organizacionais na Prática	Lorena Peixoto de Sousa (org.)	13	NF
+Gestão de Processos	Fabiano Gonçalves dos Santos	13	NF tecnologia
+Gestão de Recursos Humanos: Ontem, Hoje e Amanhã	Allan Claudius Queiroz Barbosa e André Ofenhejm Mascarenhas	13	NF tecnologia
+Gestão Estratégica de Pessoas: Evolução, Teoria e Crítica	André Ofenhejm Mascarenhas	13	NF tecnologia
+Liderança: Seus Primeiros Passos para Ser o Líder	Frederico Aranha e Jefferson Lisboa Melo	14	NF autoconhecimento
+Liderar a Mudança	John P. Kotter	13	NF
+Marketing 4.0	Philip Kotler, Hermawan Kartajaya e Iwan Setiawan	13	NF tecnologia
+Marketing 5.0: Tecnologia para a Humanidade	Philip Kotler, Hermawan Kartajaya e Iwan Setiawan	13	NF tecnologia
+Neuromarketing	Darren Bridger	13	NF tecnologia
+Ponto-final	Marcos Nobre	9	NF filosofia
+Princípios de Marketing	Philip Kotler e Gary Armstrong	13	NF tecnologia
+Quem Sabe Faz a Hora!: Iniciativas Decisivas para Gestão e Liderança	Mario Sergio Cortella	14	NF autoconhecimento
+Tormenta	Thaís Oyama	14	NF psicologia
+Tudo o que Você Precisou Desaprender para Virar um Idiota	Meteoro Brasil	14	NF autoconhecimento
+100 Mistérios da Humanidade	National Geographic	13	NF ciencia
+44 Cartas do Mundo Líquido Moderno	Zygmunt Bauman	9	NF filosofia
+A Cultura do Narcisismo	Christopher Lasch	14	NF psicologia
+A Máquina de Uriel	Robert Lomas	2	F
+A Terra Dá, a Terra Quer	Antonio Bispo dos Santos	12	NF historia
+Análise de Discurso Crítica e Comunicação: Percursos Teórico e Pragmático de Discurso, Mídia e Política	Laerte Magalhães	9	NF filosofia
+Análise de Discurso: Princípios e Procedimentos	Eni Orlandi	9	NF filosofia
+As Teorias da Comunicação	Francisco Rüdiger	13	NF tecnologia
+Comunicação e Análise do Discurso	Roseli Figaro	9	NF filosofia
+Futuro Ancestral	Ailton Krenak	12	NF filosofia politica
+Grandes Mistérios da História: A Teoria da Conspiração e os Segredos por Trás dos Acontecimentos	Sérgio Pereira Couto	11	NF politica
+Introdução à Linguística, vol. 1: Domínios e Fronteiras	Fernanda Mussalim e Anna Christina Bentes (orgs.)	9	NF filosofia
+Introdução à Linguística, vol. 2: Domínios e Fronteiras	Fernanda Mussalim e Anna Christina Bentes (orgs.)	9	NF filosofia
+Introdução à Linguística, vol. 3: Fundamentos Epistemológicos	Fernanda Mussalim e Anna Christina Bentes (orgs.)	9	NF filosofia
+Linguagem: A História da Maior Invenção da Humanidade	Daniel L. Everett	9	NF filosofia
+Meu Destino é Ser Onça	Alberto Mussa	4	F contos
+Na Natureza Selvagem	Jon Krakauer	13	NF ciencia
+O Livro do Amor, vol. 1	Regina Navarro Lins	14	NF autoconhecimento
+O Nazista e o Psiquiatra	Jack El-Hai	14	NF psicologia
+O Novo Iluminismo: Em Defesa da Razão, da Ciência e do Humanismo	Steven Pinker	13	NF ciencia
+O Perigo de uma História Única	Chimamanda Ngozi Adichie	12	NF psicologia
+O Poder da Identidade	Manuel Castells	14	NF psicologia
+Onde Nascem os Gênios	Eric Weiner	14	NF autoconhecimento
+Os 100 Maiores Mistérios do Mundo: A Mais Completa Lista sobre Coisas Estranhas e Inexplicáveis	Stephen J. Spignesi	13	NF ciencia
+Para Toda a Eternidade	Caitlin Doughty	14	NF psicologia
+Sonho Manifesto: Dez Exercícios Urgentes de Otimismo Apocalíptico	Sidarta Ribeiro	14	NF autoconhecimento
+Três Vezes Brasil	Alberto da Costa e Silva	11	NF politica
+Uma Breve História da Linguagem	Steven Roger Fischer	9	NF filosofia
+60 Jogos para o Pensamento Lógico, vol. 1	Aury de Sá Leite	14	NF autoconhecimento
+A Magia da Realidade	Richard Dawkins	13	NF ciencia fisica
+Álgebra I para Leigos	Mary Jane Sterling	13	NF tecnologia
+Álgebra Linear e suas Aplicações	David C. Lay, Steven R. Lay e Judi J. McDonald	13	NF tecnologia
+Alice no País do Quantum	Robert Gilmore	2	F
+Criação Imperfeita	Marcelo Gleiser	13	NF politica
+De Onde Vêm as Boas Ideias	Steven Johnson	14	NF autoconhecimento
+Em Busca do Infinito: Uma História da Matemática dos Primeiros Números à Teoria do Caos	Ian Stewart	13	NF ciencia fisica
+Estatística: O que é, para que Serve, como Funciona	Charles Wheelan	13	NF tecnologia
+Incríveis Passatempos Matemáticos	Ian Stewart	14	NF autoconhecimento
+Manual de Medicina Legal	Delton Croce Junior	13	NF tecnologia
+Noções de Estatística para Concursos	Anderson Meneses	13	NF tecnologia
+O Andar do Bêbado: Como o Acaso Determina Nossas Vidas	Leonard Mlodinow	13	NF ciencia fisica
+O Capelão do Diabo	Richard Dawkins	13	NF ciencia fisica
+O Colapso de Tudo	John Casti	13	NF ciencia fisica
+Os Maiores Problemas Matemáticos de Todos os Tempos	Ian Stewart	14	NF autoconhecimento
+Os Simpsons e a Ciência	Paul Halpern	16	NF arte
+Você Sabia? Mais de 400 Coisas que Você Deveria Saber	Lukas Marques e Daniel Molo	14	NF autoconhecimento
+A Descoberta do Inconsciente Social: Contribuição ao Redirecionamento da Psicanálise	Erich Fromm	11	NF politica
+A Entrevista Psiquiátrica na Prática Clínica	Roger A. MacKinnon, Robert Michels e Peter J. Buckley	10	NF neurociencia
+Cada Dia Mais Perto	Irvin D. Yalom e Ginny Elkin	14	NF autoconhecimento
+Casos Clínicos do DSM-5	John W. Barnhill	10	NF neurociencia
+Como Convencer Alguém em 90 Segundos	Nicholas Boothman	14	NF introducao autoconhecimento
+Compêndio de Psiquiatria: Ciência do Comportamento e Psiquiatria Clínica	Benjamin J. Sadock, Virginia A. Sadock e Pedro Ruiz	10	NF neurociencia
+DSM-5: Manual Diagnóstico e Estatístico de Transtornos Mentais	American Psychiatric Association	10	NF neurociencia
+Essencialismo	Greg McKeown	14	NF psicologia
+Habilidades Sociais, Desenvolvimento e Aprendizagem	Almir Del Prette e Zilda A.P. Del Prette (orgs.)	14	NF autoconhecimento
+He	Robert A. Johnson	9	NF filosofia
+Introdução a Jacques Lacan	Vladimir Safatle	9	NF filosofia
+Kafka para Sobrecarregados	Allan Percy	9	NF filosofia
+Normose: A Patologia da Normalidade	Pierre Weil, Jean-Yves Leloup e Roberto Crema	11	NF politica
+O Cavaleiro Preso na Armadura	Robert Fisher	14	NF autoconhecimento
+O Conceito de Sujeito	Luciano Elia	9	NF filosofia
+Observações sobre um Planeta Nervoso	Matt Haig	14	NF ciencia
+Os Quatro Vínculos	David E. Zimerman	9	NF filosofia
+Oscar Wilde para Inquietos	Allan Percy	14	NF filosofia autoconhecimento
+Poker: A Essência do Texas Hold'em	Carlos Mavca	14	NF autoconhecimento
+She	Robert A. Johnson	9	NF filosofia
+We	Robert A. Johnson	9	NF filosofia
+A Semente de Mostarda	Osho	15	NF filosofia religiao
+Amor de Pai	Max Lucado	14	NF psicologia
+As 100 Melhores Lendas do Folclore Brasileiro	A.S. Franchini	15	NF religiao
+As Portas da Percepção e Céu e Inferno	Aldous Huxley	15	NF religiao
+Astrologia, Psicologia e os Quatro Elementos	Stephen Arroyo	14	NF psicologia
+Contos Chineses	Fernando Corrêa da Silva	15	NF religiao
+Contos Fantásticos Filipinos: Igorot, Moro, Povos de Mindanau e Cristianizados	Mabel Cook Cole	12	F contos
+Contos Indígenas Brasileiros	Daniel Munduruku	15	NF religiao
+Contos Japoneses	Antônio Nojiri e Kikuo Furuno	15	NF religiao
+Da Criação do Mundo e Outros Escritos	Fílon de Alexandria	12	NF historia
+Despertar: Um Guia para a Espiritualidade sem Religião	Sam Harris	14	NF psicologia
+Inocência, Conhecimento e Encantamento	Osho	15	NF religiao
+Lendas e Fábulas Brasileiras para Crianças	Jossi Borges	15	NF religiao
+Mentes Interligadas	Dean Radin	15	NF religiao
+Métodos de Concentração	Grigori Grabovoi	14	NF autoconhecimento
+Minha Grande Teoria de Tudo: Despertar	Thomas Campbell	9	NF filosofia
+O Livro dos Homens	Osho	15	NF filosofia religiao
+O Poder do Mito	Joseph Campbell	16	NF arte
+O Poder do Silêncio	Carlos Castaneda	14	NF autoconhecimento
+O Triângulo das Bermudas	Charles Berlitz	2	F
+Os 7 Temperamentos Humanos	Geoffrey Hodson	14	NF psicologia
+Os Quatro Compromissos	Don Miguel Ruiz	14	NF autoconhecimento
+Psicologia Quântica: Como o Software Cerebral Programa Você e o seu Mundo	Robert Anton Wilson	14	NF psicologia
+Quatro Contos de Sabedoria dos Povos Africanos	Fabrice Alodji	12	F contos
+Somos Todos Filhos dos Deuses	Erich von Däniken	15	NF religiao
+Tratado de Psicologia Revolucionária	Samael Aun Weor	14	NF psicologia
+100 Exercícios de Escrita Criativa, vol. 1: Iniciantes	Mário Falcão	14	NF autoconhecimento
+1001 Atividades para Fazer com suas Crianças	Carly Waller Krueger	14	NF autoconhecimento
+5 Lições de Storytelling	James McSill	14	NF autoconhecimento
+50 Fatos que Mudaram a História do Rock	Paolo Hewitt	12	NF historia
+Brevidade Inteligente: O Poder de Dizer Muito com Poucas Palavras	Jim VandeHei, Mike Allen e Roy Schwartz	14	NF autoconhecimento
+Brincadeiras Criativas para o seu Bebê	Christopher Clouder e Janni Nicol	14	NF autoconhecimento
+Brincar com Tradição: Jogos Tradicionais para Crianças	Patrícia Pereira Santos	14	NF autoconhecimento
+Como Criar Histórias: Um Guia Prático para Escritores	Ursula K. Le Guin	16	NF autoconhecimento
+Como Falar para seu Filho Ouvir e como Ouvir para seu Filho Falar	Adele Faber e Elaine Mazlish	14	NF autoconhecimento
+Como Ficar Sozinho	Jonathan Franzen	14	NF autoconhecimento
+Como Ler Livros: O Guia Clássico para a Leitura Inteligente	Mortimer J. Adler e Charles Van Doren	14	NF autoconhecimento
+Como Ouvir as Crianças e Responder às suas Perguntas Mais Difíceis	Claude Halmos	14	NF autoconhecimento
+Crianças Dinamarquesas: O que as Pessoas Mais Felizes do Mundo Sabem sobre Criar Filhos Confiantes e Capazes	Jessica Joelle Alexander e Iben Dissing Sandahl	14	NF autoconhecimento
+Crianças Francesas Não Fazem Manha	Pamela Druckerman	14	NF autoconhecimento
+Crianças Inteligentes: 100 Ideias de Brincadeiras Criativas para Crianças de 2 a 5 Anos	Julian Chomet e Caroline Fertleman	14	NF autoconhecimento
+Crônicas de Pai	Leo Aversa	14	NF autoconhecimento
+Guia Único das Ciências Humanas na Redação: Como Trabalhar o Repertório Sociocultural	Nelson Adrian	14	NF autoconhecimento
+Meu Pai Fala Cada uma	Justin Halpern	14	NF autoconhecimento
+O Guia Completo do Storytelling	Fernando Palacios e Martha Terenzzo	14	NF autoconhecimento
+O Livro que Você Gostaria que seus Pais Tivessem Lido	Philippa Perry	14	NF autoconhecimento
+O Papai é Pop	Marcos Piangers	14	NF autoconhecimento
+O Papai é Pop 2	Marcos Piangers	14	NF autoconhecimento
+O Poder da Arte	Simon Schama	14	NF autoconhecimento
+Questão de Ênfase	Susan Sontag	9	NF filosofia
+Storytelling: A Arte de Contar Histórias	Jéssica Milato	13	NF tecnologia
+Storytelling: Aprenda a Contar Histórias com Steve Jobs, Papa Francisco, Churchill e Outras Lendas da Liderança	Carmine Gallo	13	NF tecnologia
+Storytelling: Cativando com a Narrativa	José Antonio Ramalho	13	NF tecnologia
+Storytelling: Como Contar Histórias que Vendem	Gilson Santos	13	NF tecnologia
+Storytelling: Como Contar Histórias sobre Marcas que Não Têm uma Boa História para Contar	Umehara Parente	13	NF tecnologia
+Storytelling: Histórias que Deixam Marcas	Adilson Xavier	13	NF tecnologia
+Storytelling na Prática: 10 Regras Simples para Contar uma Boa História	Dana Norris	13	NF tecnologia
+Storytelling Revelado: Descubra os Segredos das Narrativas Mais Influentes do Mundo	Cria School	13	NF tecnologia
+Tradução, Transposição e Adaptação Intersemióticas	Daniela Aguiar e João Queiroz	9	NF filosofia
+Uma Introdução à História do Design	Rafael Cardoso	13	NF tecnologia
