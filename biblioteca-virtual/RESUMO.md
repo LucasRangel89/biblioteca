@@ -5,10 +5,10 @@ Gerado por `tools/importar_digital.py`. Não edite: é refeito a cada execução
 ## Números
 
 - **2382 arquivos** no inventário (1161 pdf, 1065 epub, 84 cbr, 44 cbz, 13 rar, 5 mobi, 5 zip, 4 azw3, 1 txt) e **104 pastas de séries** de quadrinhos (cada uma guarda as edições de uma série), em 38 pastas.
-- **2052 obras** diferentes: **1809 livros** e **243 quadrinhos**. O mesmo livro em dois formatos, ou em duas pastas, conta uma vez; uma série de quadrinhos conta uma vez, sejam quantas forem as edições.
+- **2049 obras** diferentes: **1805 livros** e **244 quadrinhos**. O mesmo livro em dois formatos, ou em duas pastas, conta uma vez; uma série de quadrinhos conta uma vez, sejam quantas forem as edições.
 - **24** delas também estão na estante física (`#tenho-fisico #tenho-digital`).
-- **112** estavam entre as recomendações do catálogo e agora aparecem como `#tenho-digital`.
-- **1916** são novas no catálogo: entraram na seção 17.
+- **115** estavam entre as recomendações do catálogo e agora aparecem como `#tenho-digital`.
+- **1910** são novas no catálogo: entraram na seção 17.
 - Ficaram só no inventário, fora do catálogo: 12 apostila, 3 artigo, 8 outro, 13 periodico (linhas do inventário).
 - A subpasta `novas`, de `novashqs`, tem listagem própria, `novasHQSS`: o que há nela está contado nessa pasta.
 
@@ -16,21 +16,21 @@ Gerado por `tools/importar_digital.py`. Não edite: é refeito a cada execução
 
 | Eixo | Livros | Quadrinhos |
 |---|---|---|
-| 2. Ficção científica, fantasia e distopia | 163 | 150 |
-| 3. Clássicos universais e romances de ideias | 22 | 11 |
-| 4. América Latina, Brasil e lusofonia (ficção) | 72 | 11 |
-| 5. Ficção contemporânea e mundial | 37 | 13 |
-| 6. Romances históricos | 21 | 8 |
-| 7. Horror, weird fiction e mistério | 79 | 40 |
+| 2. Ficção científica, fantasia e distopia | 157 | 150 |
+| 3. Clássicos universais e romances de ideias | 30 | 11 |
+| 4. América Latina, Brasil e lusofonia (ficção) | 78 | 11 |
+| 5. Ficção contemporânea e mundial | 35 | 14 |
+| 6. Romances históricos | 24 | 8 |
+| 7. Horror, weird fiction e mistério | 77 | 40 |
 | 8. Poesia e cartas | 9 | 0 |
-| 9. Filosofia, ética e existência (não ficção) | 196 | 1 |
-| 10. Mente, consciência e neurociência | 32 | 0 |
-| 11. Política, poder, autoritarismo e economia | 137 | 3 |
-| 12. Sociedade, antropologia, cultura e história | 80 | 2 |
-| 13. Ciência, tecnologia e futuro | 257 | 1 |
-| 14. Psicologia, psicanálise e comportamento | 473 | 0 |
-| 15. Espiritualidade, espiritismo e mistérios da consciência | 70 | 1 |
-| 16. Artes, escrita, cinema e parentalidade | 27 | 0 |
+| 9. Filosofia, ética e existência (não ficção) | 179 | 1 |
+| 10. Mente, consciência e neurociência | 65 | 0 |
+| 11. Política, poder, autoritarismo e economia | 154 | 3 |
+| 12. Sociedade, antropologia, cultura e história | 99 | 2 |
+| 13. Ciência, tecnologia e futuro | 223 | 1 |
+| 14. Psicologia, psicanálise e comportamento | 399 | 0 |
+| 15. Espiritualidade, espiritismo e mistérios da consciência | 82 | 1 |
+| 16. Artes, escrita, cinema e parentalidade | 57 | 0 |
 
 ## Tenho nos dois formatos
 
@@ -131,6 +131,8 @@ Estavam no catálogo como recomendação; continuam na seção de origem, agora 
 - Série Sharpe — Bernard Cornwell (seção 6)
 - Aniquilação (trilogia: Aniquilação · Autoridade · Aceitação) — Jeff VanderMeer (seção 7)
 - O Caso de Charles Dexter Ward — H.P. Lovecraft (seção 7)
+- O Chamado de Cthulhu — H.P. Lovecraft (seção 7)
+- O Pescador — John Langan (seção 7)
 - O Rei de Amarelo — Robert W. Chambers (seção 7)
 - A Paisagem Moral — Sam Harris (seção 9)
 - Apologia de Sócrates — Platão (seção 9)
@@ -168,6 +170,7 @@ Estavam no catálogo como recomendação; continuam na seção de origem, agora 
 - Vida 3.0 — Max Tegmark (seção 13)
 - A Arte de Amar — Erich Fromm (seção 14)
 - As Armas da Persuasão — Robert Cialdini (seção 14)
+- De Frente para o Sol: Como Superar o Terror da Morte — Irvin D. Yalom (seção 14)
 - O Enigma de Espinosa — Irvin D. Yalom (seção 14)
 - O Mal-Estar na Civilização — Sigmund Freud (seção 14)
 - Rápido e Devagar: Duas Formas de Pensar — Daniel Kahneman (seção 14)
@@ -183,6 +186,7 @@ Estavam no catálogo como recomendação; continuam na seção de origem, agora 
 O arquivo tem um título; a linha do catálogo, outro. Confira se é mesmo o mesmo livro (se não for, apague a coluna `catalogo` da linha no inventário).
 
 - “Trilogia Kingsbridge (box)” → catálogo: **A Coluna de Fogo**
+- “A Próxima Onda: Tecnologia, Poder e o Maior Dilema do Século XXI” → catálogo: **A Próxima Onda: Inteligência Artificial, Poder e o Maior Dilema do Século XXI**
 - “Trilogia Comando Sul (box)” → catálogo: **Aniquilação (trilogia: Aniquilação · Autoridade · Aceitação)**
 - “Assim Falava Zaratustra” → catálogo: **Assim Falou Zaratustra**
 - “Cartas do Inferno” → catálogo: **Cartas de um Diabo a seu Aprendiz**
@@ -205,6 +209,8 @@ O arquivo tem um título; a linha do catálogo, outro. Confira se é mesmo o mes
 - “Terra em Chamas (Crônicas Saxônicas, vol. 5)” → catálogo: **Crônicas Saxônicas (começa em O Último Reino)**
 - “Trilogia Kingsbridge (box)” → catálogo: **Mundo sem Fim**
 - “Memórias do Subsolo” → catálogo: **Notas do Subsolo (Memórias do Subsolo)**
+- “Biblioteca Lovecraft, vol. 1: O Chamado de Cthulhu e Outras Histórias” → catálogo: **O Chamado de Cthulhu**
+- “El Perfil Emocional de tu Cerebro” → catálogo: **O Estilo Emocional do Cérebro**
 - “O Feiticeiro e a Sombra (Ciclo Terramar, vol. 1)” → catálogo: **O Feiticeiro de Terramar (Ciclo Terramar, vol. 1)**
 - “O Lobo das Planícies (série Gêngis Khan, vol. 1)” → catálogo: **O Lobo das Planícies (série Gêngis Khan)**
 - “Os Ossos das Colinas (série Gêngis Khan, vol. 3)” → catálogo: **O Lobo das Planícies (série Gêngis Khan)**
@@ -222,38 +228,41 @@ O arquivo tem um título; a linha do catálogo, outro. Confira se é mesmo o mes
 - “O Tigre de Sharpe (Série Sharpe)” → catálogo: **Série Sharpe**
 - “O Triunfo de Sharpe (Série Sharpe)” → catálogo: **Série Sharpe**
 - “Sharpe em Trafalgar (Série Sharpe)” → catálogo: **Série Sharpe**
+- “Vidas Seguintes” → catálogo: **Sobrevidas**
 - “Solomon Kane: Edição Completa e Definitiva” → catálogo: **Solomon Kane**
 - “Walden ou A Vida nos Bosques” → catálogo: **Walden**
 
 ## A verificar
 
-Título, autor ou identificação incertos (coluna `obs` = `verificar`). Os que estão no catálogo levam `#verificar`.
+Título, autor ou identificação incertos (coluna `obs` = `verificar`). Os que estão no catálogo levam `#verificar`. Depois de cada um, onde ele está na biblioteca virtual: a pasta e o nome exato do arquivo (ou da subpasta).
 
-- A Vida — sem autor · pasta `HQs`
-- Análise e Projeto de Sistemas — sem autor · pasta `tecnologia e informacao`
-- BTN - Si______ra — sem autor · pasta `HQs` · fora do catálogo
-- Caminhos Misteriosos — Jason Rubin e Tyler Kirkham · pasta `HQs`
-- Ciclo Antarktos (The Antarktos Cycle) — Robert M. Price (org.) · pasta `Terror e horror`
-- Contágio — Vários autores · pasta `HQs`
-- Cripta — Vários autores · pasta `HQs`
-- Einstein, Freud e Relações Internacionais: Guerra e Paz num Diálogo Interdisciplinar — Luis Henrique Beust · pasta `ciencias`
-- El Proceso de Envejecimiento — sem autor · pasta `psicologia`
-- Engenharia Social — sem autor · pasta `Sociedade e politica`
-- Especial: As Espadas — sem autor · pasta `HQs`
-- Habitat — Simon Roy · pasta `HQs`
-- Introdução à Psicologia (6ª ed.) — sem autor · pasta `historia fundamentos e introducoes psico`
-- Linguagem e Cognição — sem autor · pasta `Filosofia`
-- Linguagem: Os Segredos da Sedução pela Poderosa Força das Palavras — sem autor · pasta `autoconhecimento e desenvolvimento pessoal`
-- Lo_____d - Mo_____no — sem autor · pasta `HQs` · fora do catálogo
-- Lovecraft — Hans Rodionoff, Keith Giffen e Enrique Breccia · pasta `HQs`
-- Manipulação — sem autor · pasta `autoconhecimento e desenvolvimento pessoal`
-- Manual do Xaveco: Como Conquistar uma Mulher — sem autor · pasta `autoconhecimento e desenvolvimento pessoal`
-- Os Impostos — sem autor · pasta `HQs`
-- Psicologia e Sociologia — sem autor · pasta `psicologia social e cultural`
-- Rashomon — Victor Santos · pasta `HQs`
-- Ruído — sem autor · pasta `HQs`
-- Tesouros Medievais — sem autor · pasta `historia`
-- Trilogia Lovecraft — sem autor · pasta `HQs`
+- A Vida — sem autor · arquivo `HQs\A Vida.pdf`
+- Análise e Projeto de Sistemas — sem autor · arquivo `tecnologia e informacao\Análise e projeto de sistemas ( etc.) (Z-Library).epub`
+- BTN - Si______ra — sem autor · arquivo `HQs\BTN - Si______ra - 01 de 03.rar` · fora do catálogo
+- BTN - Si______ra — sem autor · arquivo `HQs\BTN - Si______ra - 02 de 03.rar` · fora do catálogo
+- BTN - Si______ra — sem autor · arquivo `HQs\BTN - Si______ra - 03 de 03.rar` · fora do catálogo
+- Caminhos Misteriosos — Jason Rubin e Tyler Kirkham · subpasta `HQs\Caminhos Misteriosos`
+- Ciclo Antarktos (The Antarktos Cycle) — Robert M. Price (org.) · arquivo `Terror e horror\Antarktos Ciclo - Edgar Allan Poe.pdf`
+- Contágio — Vários autores · subpasta `HQs\Contágio`
+- Cripta — Vários autores · subpasta `HQs\Cripta`
+- Einstein, Freud e Relações Internacionais: Guerra e Paz num Diálogo Interdisciplinar — Luis Henrique Beust · arquivo `ciencias\Einstein, Freud e Relações Internacionais ( PDFDrive ).pdf`
+- El Proceso de Envejecimiento — sem autor · arquivo `psicologia\El proceso de envejecimiento.pdf`
+- Engenharia Social — sem autor · arquivo `Sociedade e politica\engenhariasocial.pdf`
+- Especial: As Espadas — sem autor · arquivo `HQs\Especial - As Espadas.cbr`
+- Habitat — Simon Roy · arquivo `HQs\Habitat.cbr`
+- Introdução à Psicologia (6ª ed.) — sem autor · arquivo `historia fundamentos e introducoes psico\Introdução à Psicologia 6ª Edição.pdf`
+- Linguagem e Cognição — sem autor · arquivo `Filosofia\LINGUAGEM E COGNIÇÃO.pdf`
+- Linguagem: Os Segredos da Sedução pela Poderosa Força das Palavras — sem autor · arquivo `autoconhecimento e desenvolvimento pessoal\linguagem-ossegredosdaseduopelaforadaspalavras.pdf`
+- Lo_____d - Mo_____no — sem autor · arquivo `HQs\Lo_____d - Mo_____no.rar` · fora do catálogo
+- Lovecraft — Hans Rodionoff, Keith Giffen e Enrique Breccia · subpasta `HQs\Lovecraft`
+- Manipulação — sem autor · arquivo `autoconhecimento e desenvolvimento pessoal\manipulacao.pdf`
+- Manual do Xaveco: Como Conquistar uma Mulher — sem autor · arquivo `autoconhecimento e desenvolvimento pessoal\manualdoxaveco-comoconquistarumamulher.pdf`
+- Os Impostos — sem autor · arquivo `HQs\Os Impostos.cbr`
+- Psicologia e Sociologia — sem autor · arquivo `psicologia social e cultural\psicologia e sociologia.pdf`
+- Rashomon — Victor Santos · arquivo `HQs\Rashomon.rar`
+- Ruído — sem autor · arquivo `HQs\Ruído ( etc.) (Z-Library).epub`
+- Tesouros Medievais — sem autor · arquivo `historia\tesouros medievais.pdf`
+- Trilogia Lovecraft — sem autor · subpasta `HQs\Trilogia Lovecraft`
 
 ## Itens que não são livros
 
