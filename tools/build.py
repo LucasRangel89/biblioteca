@@ -49,11 +49,17 @@ arq_sinopses = SRC / 'sinopses.json'                    # sinopses: [posição n
 sinopses = json.loads(arq_sinopses.read_text(encoding='utf-8')) if arq_sinopses.exists() else []
 assert all(len(x) == 2 and isinstance(x[0], int) and 0 <= x[0] < len(catalogo) and isinstance(x[1], str) and x[1] for x in sinopses), 'src/sinopses.json não acompanha src/catalog.json: rode tools/build_catalog.py'
 assert len({x[0] for x in sinopses}) == len(sinopses), 'src/sinopses.json tem duas sinopses para a mesma linha'
+arq_arquivos = SRC / 'arquivos.json'                    # nomes dos arquivos, para a pasta conectada: ver build_catalog.arquivos_do_painel
+arquivos = json.loads(arq_arquivos.read_text(encoding='utf-8')) if arq_arquivos.exists() else {'pastas': [], 'arquivos': [], 'fora': [], 'ext': []}
+assert all(isinstance(x[0], str) and x[0] and all(0 <= p < len(arquivos['pastas']) for p in x[1]) and x[2] and all(0 <= i < len(catalogo) and len(catalogo[i]) > 6 and catalogo[i][6] for i in x[2]) for x in arquivos['arquivos']), 'src/arquivos.json não acompanha src/catalog.json: rode tools/build_catalog.py'
+assert len({x[0] for x in arquivos['arquivos']}) == len(arquivos['arquivos']), 'src/arquivos.json tem o mesmo nome de arquivo duas vezes'
+assert sum(len(x[1]) for x in arquivos['arquivos']) >= sum(1 for r in catalogo if len(r) > 6 and r[6] and r[6][1]), 'src/arquivos.json tem menos arquivos do que o catálogo diz: rode tools/build_catalog.py'
 dados = ('const CATALOGO = ' + json.dumps(catalogo, ensure_ascii=False, separators=(',', ':')) + ';\n'
          + 'const CAPAS = ' + json.dumps(capas, ensure_ascii=False, separators=(',', ':')) + ';\n'
          + 'const TRILHAS_DADOS = ' + json.dumps(trilhas, ensure_ascii=False, separators=(',', ':')) + ';\n'
          + 'const CLASSE_ANTES = ' + json.dumps(antes, ensure_ascii=False, separators=(',', ':')) + ';\n'
-         + 'const SINOPSES = ' + json.dumps(sinopses, ensure_ascii=False, separators=(',', ':')) + ';')
+         + 'const SINOPSES = ' + json.dumps(sinopses, ensure_ascii=False, separators=(',', ':')) + ';\n'
+         + 'const ARQUIVOS = ' + json.dumps(arquivos, ensure_ascii=False, separators=(',', ':')) + ';')
 pacote = '(function () {\n"use strict";\n' + dados + '\n' + js + '\n})();'
 for proibido in ('</script', '<!--'):
     assert proibido not in pacote.lower(), f'sequência insegura em script embutido: {proibido}'
@@ -66,4 +72,4 @@ html = html.replace('/*__CSS__*/', css.strip()).replace('/*__JS__*/', pacote)
 externos = [u for u in re.findall(r'(?:src|href)=["\'](https?://[^"\']+)', html)]
 assert not externos, f'recursos externos no HTML estático: {externos}'
 with open(SAIDA, 'w', encoding='utf-8', newline='\n') as f: f.write(html)   # sempre com \n: o arquivo sai igual em qualquer sistema
-print(f'{SAIDA.name}  {SAIDA.stat().st_size/1024:.0f} KB  ({len(catalogo)} livros, {sum(1 for c in capas if c)} capas, {len(trilhas)} trilhas, {len(sinopses)} sinopses, {len(letras)} letras, {len(fontes)} módulos JS)')
+print(f'{SAIDA.name}  {SAIDA.stat().st_size/1024:.0f} KB  ({len(catalogo)} livros, {sum(1 for c in capas if c)} capas, {len(trilhas)} trilhas, {len(sinopses)} sinopses, {len(arquivos["arquivos"])} nomes de arquivo, {len(letras)} letras, {len(fontes)} módulos JS)')

@@ -17,7 +17,9 @@ Também gera:
   [marcador, nome, descrição, [posições das linhas do catálogo, na ordem da trilha]];
 - src/antes.json (catalogo/antes-da-vistoria.tsv): [posição da linha, eixo, "marcadores"] que a linha tinha no painel
   publicado antes da vistoria de 10/11/2026 — só nas linhas em que a vistoria trocou ou tirou alguma coisa;
-- src/sinopses.json (catalogo/sinopses.tsv): [posição da linha, "sinopse"] dos livros que já têm sinopse.
+- src/sinopses.json (catalogo/sinopses.tsv): [posição da linha, "sinopse"] dos livros que já têm sinopse;
+- src/arquivos.json (biblioteca-virtual/inventario.tsv): os nomes dos arquivos, para o painel achar cada livro na pasta
+  conectada (Etapa 11) — ver `arquivos_do_painel`.
 """
 import csv, hashlib, json, pathlib, re, sys, unicodedata
 sys.path.insert(0, str(pathlib.Path(__file__).parent))
@@ -36,6 +38,7 @@ ANTES = RAIZ / 'catalogo' / 'antes-da-vistoria.tsv'
 DEST_ANTES = RAIZ / 'src' / 'antes.json'
 SINOPSES = RAIZ / 'catalogo' / 'sinopses.tsv'
 DEST_SINOPSES = RAIZ / 'src' / 'sinopses.json'
+DEST_ARQUIVOS = RAIZ / 'src' / 'arquivos.json'
 SINOPSE_MIN, SINOPSE_MAX = 140, 400          # caracteres: as duas amostras aprovadas têm 251 e 281
 _ABREV = {'dr', 'dra', 'sr', 'sra', 'prof', 'st', 'vol', 'séc', 'cap', 'ed', 'p', 'pe'}
 AUTOR_FIX = {
@@ -98,6 +101,87 @@ def dados_digitais(books, avisos):
     if sem_marca:
         avisos.append(f'{len(sem_marca)} livro(s) do inventário cuja linha não tem #tenho-digital (rode tools/importar_digital.py): ' + '; '.join(sem_marca[:5]) + ('…' if len(sem_marca) > 5 else ''))
     return out
+
+
+# ───────────────────────── os arquivos, para a pasta conectada (Etapa 11) ─────────────────────────
+# O painel acha cada livro na pasta do usuário PELO NOME DO ARQUIVO. Os nomes do inventário vieram de listagens feitas
+# pelo `dir` do Windows, que troca o que a página de código dele não tem (travessão por hífen, aspas curvas por retas,
+# acento "solto" no lugar do acento combinado…). Por isso, quando o nome exato não aparece na pasta, vale a "chave":
+# só letras e algarismos, sem acento e em minúsculas, mais a extensão. É A MESMA CONTA de `miolo` e `chaveArquivo`, em
+# src/js/57-pasta.js — tools/qa/pasta.py confere que as duas dão o mesmo resultado em todos os nomes do inventário.
+_SEM_DECOMPOSICAO = {'ß': 'ss', 'æ': 'ae', 'œ': 'oe', 'ø': 'o', 'đ': 'd', 'ð': 'd', 'þ': 'th', 'ł': 'l', 'ı': 'i'}
+
+
+def miolo(s):
+    """O nome reduzido a letras e algarismos, sem acento e em minúsculas ("Fábulas (Faltam 20 a 22)" → "fabulasfaltam20a22")."""
+    s = unicodedata.normalize('NFKD', s or '').lower()
+    return ''.join(_SEM_DECOMPOSICAO.get(c, c) for c in s if unicodedata.category(c)[0] in 'LN')
+
+
+def extensao_de(nome):
+    """A extensão do nome, em minúsculas e sem o ponto ('' se não houver). A forma é a de importar_digital.extensao."""
+    m = re.search(r'\.([A-Za-z0-9]{2,5})$', nome or '')
+    return m.group(1).lower() if m else ''
+
+
+def chave_arquivo(nome):
+    """A chave de um nome de arquivo: o miolo do nome e a extensão ("A Ilha — Huxley.PDF" → "ailhahuxley.pdf")."""
+    ext = extensao_de(nome)
+    k = miolo(nome[:-len(ext) - 1] if ext else nome)
+    return f'{k}.{ext}' if k else ''
+
+
+def arquivos_do_painel(books, avisos):
+    """O que o painel precisa saber dos arquivos para achá-los na pasta conectada:
+
+        {'pastas':   [apelido de cada listagem],
+         'arquivos': [[nome do arquivo, [pastas em que as listagens o mostram], [linhas do catálogo a que pertence]], …],
+         'fora':     [[nome do arquivo, [pastas], tipo], …]      # apostilas, periódicos, artigos: só no inventário
+         'ext':      [extensões de arquivo de livro]}
+
+    Um nome aparece uma vez só, mesmo que esteja em duas pastas (são cópias) ou que sirva a dois livros (um volume
+    único com dois títulos do catálogo). As subpastas de séries de quadrinhos não entram aqui: já estão em catalog.json.
+    Avisa quando dois livros diferentes têm arquivos que o painel não tem como distinguir (mesmo nome, ou a mesma chave)."""
+    if not digital.INVENTARIO.exists():
+        return {'pastas': [], 'arquivos': [], 'fora': [], 'ext': sorted(digital.EXT_ARQUIVO)}
+    inventario = digital.ler_inventario(digital.INVENTARIO)
+    ligadas, _ = digital.casar(digital.obras_do_inventario(inventario), books)
+    pastas = list(dict.fromkeys(r['pasta'] for r in inventario))
+    n_pasta = {p: i for i, p in enumerate(pastas)}
+    do_catalogo = {}                                           # nome → [pastas], [linhas]
+    for i, lista in sorted(ligadas.items()):
+        for o in lista:
+            for r in o['linhas']:
+                if r['formato'] == digital.FORMATO_PASTA:
+                    continue
+                ps, linhas = do_catalogo.setdefault(r['arquivo'], ([], []))
+                if n_pasta[r['pasta']] not in ps:
+                    ps.append(n_pasta[r['pasta']])
+                if i not in linhas:
+                    linhas.append(i)
+    fora = {}
+    for r in inventario:
+        if r['tipo'] not in digital.TIPOS_CATALOGO and r['formato'] != digital.FORMATO_PASTA and not digital.tem_obs(r, 'ausente'):
+            ps = fora.setdefault(r['arquivo'], ([], r['tipo']))[0]
+            if n_pasta[r['pasta']] not in ps:
+                ps.append(n_pasta[r['pasta']])
+    ordem = lambda nome: (nome.casefold(), nome)
+    # o que o painel não distingue: a mesma chave em arquivos de livros diferentes
+    por_chave = {}
+    for nome, (_, linhas) in do_catalogo.items():
+        por_chave.setdefault(chave_arquivo(nome), []).append((nome, tuple(sorted(linhas))))
+    for k, lista in sorted(por_chave.items()):
+        if len({linhas for _, linhas in lista}) > 1:
+            avisos.append('arquivos de livros diferentes com nomes que a pasta conectada não distingue: ' + ' / '.join(sorted(n for n, _ in lista)))
+        if not k:
+            avisos.append('arquivo cujo nome não tem letra nem algarismo (a pasta conectada não o acha): ' + ' / '.join(sorted(n for n, _ in lista)))
+    for nome in sorted(fora):
+        if chave_arquivo(nome) in por_chave:
+            avisos.append(f'o arquivo "{nome}", que fica só no inventário, tem o mesmo nome de um arquivo do catálogo')
+    return {'pastas': pastas,
+            'arquivos': [[nome, sorted(do_catalogo[nome][0]), sorted(do_catalogo[nome][1])] for nome in sorted(do_catalogo, key=ordem)],
+            'fora': [[nome, sorted(fora[nome][0]), fora[nome][1]] for nome in sorted(fora, key=ordem)],
+            'ext': sorted(digital.EXT_ARQUIVO)}
 
 
 def _norm(s):
@@ -331,5 +415,9 @@ if __name__ == '__main__':
     with open(DEST_SINOPSES, 'w', encoding='utf-8', newline='\n') as f:
         f.write(json.dumps(sinopses, ensure_ascii=False, separators=(',', ':')))
     print(len(sinopses), 'sinopses ->', DEST_SINOPSES, DEST_SINOPSES.stat().st_size, 'bytes')
+    arquivos = arquivos_do_painel(parse(SRC.read_text(encoding='utf-8')), avisos)
+    with open(DEST_ARQUIVOS, 'w', encoding='utf-8', newline='\n') as f:
+        f.write(json.dumps(arquivos, ensure_ascii=False, separators=(',', ':')))
+    print(len(arquivos['arquivos']), 'nomes de arquivo (e', len(arquivos['fora']), 'fora do catálogo) ->', DEST_ARQUIVOS, DEST_ARQUIVOS.stat().st_size, 'bytes')
     for a in avisos:
         print('AVISO:', a)

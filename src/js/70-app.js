@@ -343,7 +343,7 @@ function montarCasca() {
   });
   montarTemas();
   $('#b-olho').addEventListener('click', () => { S.ocultar = !S.ocultar; aplicarOlho(); salvar(); render(); if (Gaveta.id) desenharGaveta(); });
-  $('#b-dados').addEventListener('click', dlgDados); $('#st-dados').addEventListener('click', dlgDados); $('#b-exemplo').addEventListener('click', dlgDados);
+  $('#b-dados').addEventListener('click', dlgDados); $('#st-dados').addEventListener('click', dlgDados); $('#st-pasta').addEventListener('click', dlgPasta); $('#b-exemplo').addEventListener('click', dlgDados);
   $('#b-novo').addEventListener('click', () => dlgLivro(null));
   $('#arq').addEventListener('change', e => { const f = e.target.files && e.target.files[0]; if (f) importarBackup(f); e.target.value = ''; });
   $('#dlg').addEventListener('click', e => { if (e.target.closest('[data-fechar]')) { Dlg.fechar(); return; } const b = e.target.closest('footer [data-b]'); if (b) Dlg.acionar(+b.dataset.b); });
@@ -411,6 +411,7 @@ function iniciar() {
   irPara(S.visao, true);
   document.documentElement.classList.add('pronto');
   carregarCapas();                                  // capas enviadas pelo usuário: chegam do banco do navegador e a tela é redesenhada
+  pintarPasta(); carregarPasta();                   // a pasta dos livros que este navegador lembra (57-pasta.js)
   // a página vai sair de cena (aba fechada, outro aplicativo no telefone): grava o comentário em edição e o que estiver pendente
   const fechando = () => { Notas.guardar(); if (SUJO) gravarJa(); };
   window.addEventListener('pagehide', fechando);

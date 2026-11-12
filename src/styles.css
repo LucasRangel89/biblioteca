@@ -756,6 +756,54 @@ td.c-spark svg { margin-left: auto; margin-right: auto; }
 .dd-n > div { border: 1px solid var(--line); border-radius: 10px; padding: 9px 12px; }
 .dd-n dt { font-size: 11.5px; color: var(--ink-3); }
 .dd-n dd { font-size: 19px; font-weight: 680; font-variant-numeric: tabular-nums; }
+
+/* a pasta dos livros (Etapa 11): o botão da barra lateral, os arquivos na ficha e o diálogo com o que foi achado */
+.lat-pe { display: flex; flex-direction: column; gap: 8px; }
+.st.pasta .ic { flex: none; color: var(--ink-3); }
+.st.pasta.ok .ic { color: var(--good); }
+.st.pasta span { flex: 1; text-align: left; }
+.st.pasta b, .st.pasta em { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.ga-l { list-style: none; margin: 0; padding: 0; border: 1px solid var(--line); border-radius: 10px; }
+.ga { display: flex; align-items: center; justify-content: space-between; gap: 6px 12px; flex-wrap: wrap; padding: 8px 11px; }
+.ga + .ga { border-top: 1px solid var(--line); }
+.ga-n { display: flex; align-items: flex-start; gap: 8px; min-width: 0; flex: 1 1 200px; }
+.ga-n .ic { flex: none; margin-top: 3px; color: var(--ink-3); }
+.ga.ok .ga-n .ic { color: var(--good); }
+.ga.falta .ga-n .ic, .ga-s.falta .ic { color: var(--warn); }
+.ga-n > span { display: flex; flex-direction: column; gap: 1px; min-width: 0; }
+.ga-n b { font-weight: 550; font-size: 13px; line-height: 1.35; overflow-wrap: anywhere; }
+.ga-n small, .ga-s summary small { color: var(--ink-3); font-size: 12px; line-height: 1.35; overflow-wrap: anywhere; }
+.ga-x { flex: none; font-size: 12px; color: var(--ink-3); }
+.ga-b { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 10px; }
+.ga-l + .ga-s, .ga-s + .ga-s, .ga-s + .ga-l { margin-top: 8px; }
+p.ga-s { display: flex; align-items: flex-start; gap: 7px; font-size: 13px; line-height: 1.45; color: var(--ink-2); }
+p.ga-s .ic { flex: none; margin-top: 2px; }
+details.ga-s > summary, .pd-l > summary { display: flex; align-items: center; gap: 4px 10px; flex-wrap: wrap; min-height: 34px; padding: 6px 11px; border: 1px solid var(--line); border-radius: 10px; cursor: pointer; font-size: 13px; list-style: none; }
+details.ga-s > summary::-webkit-details-marker, .pd-l > summary::-webkit-details-marker { display: none; }
+details.ga-s > summary::before, .pd-l > summary::before { content: ""; flex: none; width: 6px; height: 6px; margin: 0 3px 0 1px; border-right: 1.6px solid var(--ink-3); border-bottom: 1.6px solid var(--ink-3); transform: rotate(-45deg); transition: transform .15s; }
+details.ga-s[open] > summary::before, .pd-l[open] > summary::before { transform: rotate(45deg); }
+details.ga-s > summary:hover, .pd-l > summary:hover { border-color: var(--line-2); background: var(--surface-2); }
+details.ga-s > summary > span, .pd-l > summary > span { flex: 1 1 auto; min-width: 0; }
+details.ga-s > summary small { flex: 1 1 100%; padding-left: 18px; }
+details.ga-s[open] > .ga-l { margin-top: 6px; }
+.pasta-d .pd-p { margin-top: 12px; }
+.pasta-d > .pd-p:first-child { margin-top: 0; }
+.pd-reg { list-style: disc; margin: 10px 0 0; padding-left: 20px; color: var(--ink-2); font-size: 13px; line-height: 1.5; }
+.pd-reg li + li { margin-top: 3px; }
+.pd-n dd small { font-size: 12px; font-weight: 500; color: var(--ink-3); }
+.pd-lendo { display: flex; align-items: center; gap: 11px; padding: 14px; border-radius: 11px; background: var(--surface-2); border: 1px solid var(--line); color: var(--ink-2); font-size: 13.5px; }
+.pd-lendo i { flex: none; width: 16px; height: 16px; border-radius: 50%; border: 2px solid var(--line-2); border-top-color: var(--accent); animation: gira .8s linear infinite; }
+.pd-lendo b { color: var(--ink); }
+.pd-l { margin-top: 8px; }
+.pd-l > summary b { flex: none; font-weight: 650; }
+.pd-l > .nota { margin: 8px 2px 0; }
+.pd-l ul { list-style: none; margin: 8px 0 0; padding: 0; border: 1px solid var(--line); border-radius: 10px; max-height: 300px; overflow: auto; overscroll-behavior: contain; }
+.pd-l li { display: flex; flex-direction: column; gap: 1px; padding: 7px 11px; font-size: 12.5px; line-height: 1.4; }
+.pd-l li + li { border-top: 1px solid var(--line); }
+.pd-l li b { font-weight: 550; overflow-wrap: anywhere; }
+.pd-l li small { color: var(--ink-3); font-size: 12px; overflow-wrap: anywhere; }
+@keyframes gira { to { transform: rotate(360deg); } }
+@media (prefers-reduced-motion: reduce) { .pd-lendo i { animation: none; } }
 .toasts { position: fixed; left: 50%; bottom: 22px; transform: translateX(-50%); z-index: 130; display: flex; flex-direction: column; align-items: center; gap: 8px; pointer-events: none; width: max-content; max-width: calc(100vw - 24px); }
 .toast { display: flex; align-items: center; gap: 8px; padding: 10px 14px; border-radius: 11px; background: var(--ink); color: var(--bg); font-size: 13px; font-weight: 500; box-shadow: var(--sombra-2); animation: sobe .22s ease-out; transition: opacity .3s, transform .3s; max-width: 100%; }
 .toast.sai { opacity: 0; transform: translateY(6px); }
@@ -824,6 +872,7 @@ html[data-tema="moby"] .topo::after { content: ""; position: absolute; left: var
   .nav button { justify-content: center; padding: 11px 0; }
   .nav button[aria-current]::before { left: -9px; }
   .st { justify-content: center; padding: 12px 0; width: 44px; margin: 0 auto; }
+  .st.pasta { padding: 11px 0; }
 }
 @media (max-width: 1120px) {
   .grade > .card { grid-column: span 12; }
