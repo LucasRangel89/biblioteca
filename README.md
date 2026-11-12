@@ -480,8 +480,9 @@ desenho com a inicial do título. Até 11/11/2026 eram 761, todas da primeira fo
   variáveis em `src/styles.css`, sob `[data-tema="id"]`, mais uma linha em `TEMAS` (`src/js/30-state.js`: nome, frase,
   clima e a cor do fundo) e o id na lista do começo de `src/index.html`, que aplica o tema guardado **antes** de a
   página aparecer — sem piscar no tema errado. Os três lugares têm de dizer o mesmo; o teste `temas` confere.
-- **A letra** só troca nos títulos e na sinopse (`--serif`, com o peso e a escala em `--tit-peso` e `--tit-esc`). O
-  texto corrido, os botões e os números continuam na letra de sempre: as larguras medidas pelos testes não mudam.
+- **A letra** só troca nos títulos e na sinopse: `--serif`, com o peso (`--tit-peso`), a escala (`--tit-esc`), o
+  aperto entre as letras (`--tit-esp`) e a altura da linha do título da página (`--tit-alt`). O texto corrido, os
+  botões e os números continuam na letra de sempre: as larguras medidas pelos testes não mudam.
 - **As letras vão dentro do painel.** São três fontes livres (SIL Open Font License), guardadas em `src/letras` com
   as licenças; `tools/build.py` as embute. O tema fica igual em qualquer aparelho e nada é buscado na internet. Custo:
   uns 200 KB a mais no arquivo. Só o alfabeto latino foi incluído; um sinal que a letra não tenha sai na letra

@@ -55,7 +55,7 @@ for sel, corpo in re.findall(r'(?m)^((?::root|\[data-tema="\w+"\])(?:, (?::root|
         BLOCOS.setdefault(tid, {}).update({k: v.strip() for k, v in re.findall(r'(--[\w-]+):\s*([^;]+);', corpo)})
 ok('src/styles.css tem um bloco de variáveis para cada tema, e só para eles', sorted(BLOCOS) == sorted(IDS), sorted(BLOCOS))
 base = set(BLOCOS.get('claro', {}))
-ok('o tema padrão define as cores, a letra dos títulos e a força do mapa de calor', len(base) >= 40 and {'--bg', '--ink', '--accent', '--serif', '--tit-peso', '--tit-esc', '--mz-k', '--veu', '--sombra'} <= base, len(base))
+ok('o tema padrão define as cores, a letra dos títulos e a força do mapa de calor', len(base) >= 40 and {'--bg', '--ink', '--accent', '--serif', '--tit-peso', '--tit-esc', '--tit-esp', '--tit-alt', '--mz-k', '--veu', '--sombra'} <= base, len(base))
 ok('todo tema define as mesmas variáveis do padrão — nem a mais, nem a menos', all(set(BLOCOS.get(t, {})) == base for t in IDS), {t: sorted(set(BLOCOS.get(t, {})) ^ base) for t in IDS if set(BLOCOS.get(t, {})) != base})
 ok('a cor de fundo de cada tema é a que TEMAS manda para a barra do navegador', all(BLOCOS[t['id']]['--bg'].upper() == t['cor'] for t in TEMAS), [(t['id'], BLOCOS[t['id']]['--bg'], t['cor']) for t in TEMAS if BLOCOS[t['id']]['--bg'].upper() != t['cor']])
 ok('cada bloco diz se o tema é claro ou escuro (color-scheme), como em TEMAS', all(re.search(r'\[data-tema="%s"\][^{]*\{[^}]*color-scheme: %s;' % (t['id'], 'dark' if t['clima'] == 'escuro' else 'light'), css) or (t['id'] == 'claro' and 'color-scheme: light;' in css) for t in TEMAS))
@@ -107,7 +107,7 @@ ok('nada é buscado fora: nenhum endereço da internet nas folhas de estilo', no
 
 # ───────────── no navegador ─────────────
 ESTADO = """() => { const h = document.documentElement, b = document.querySelector('#b-tema'), w = document.querySelector('#pw-tema'), cs = e => getComputedStyle(e);
-  const h1 = document.querySelector('.topo h1'), h3 = document.querySelector('.visao:not([hidden]) .card h3');
+  const h1 = document.querySelector('.topo h1'), h3 = document.querySelector('.visao:not([hidden]) .card h3');      // o título da página e o de um cartão
   return { tema: h.dataset.tema, aberto: w.classList.contains('aberto'), expandido: b.getAttribute('aria-expanded'), rotulo: b.getAttribute('aria-label'), dica: b.title,
     meta: document.querySelector('meta[name="theme-color"]').content, fundo: cs(document.body).backgroundColor, fundoImg: cs(document.body).backgroundImage, tinta: cs(document.body).color,
     h1: { letra: cs(h1).fontFamily.split(',')[0].trim(), peso: cs(h1).fontWeight, tam: parseFloat(cs(h1).fontSize), esp: cs(h1).letterSpacing }, h3: { letra: cs(h3).fontFamily.split(',')[0].trim(), peso: cs(h3).fontWeight, tam: parseFloat(cs(h3).fontSize) },
@@ -167,7 +167,7 @@ with sync_playwright() as p:
         o = pg.evaluate(ORNAMENTO)
         ok('…e sem ornamento nenhum', not o['ceu']['tem'] and not o['fio']['tem'] and e['fundoImg'] == 'none', o)
         if esquema == 'light':
-            ok('o botão da paleta diz qual é o tema e o que ele faz', e['rotulo'] == 'Aparência: tema Claro. Trocar o tema' and e['dica'] == 'Trocar o tema do painel' and e['expandido'] == 'false' and not e['aberto'], (e['rotulo'], e['dica']))
+            ok('o botão da paleta diz qual é o tema e o que ele faz', e['rotulo'] == 'Aparência: tema Claro. Trocar o tema' and e['dica'] == 'Trocar o tema do painel' and e['expandido'] == 'false' and not e['aberto'] and pg.get_attribute('#b-tema', 'aria-controls') == 'pop-tema' and pg.get_attribute('#b-tema', 'aria-haspopup') is None, (e['rotulo'], e['dica']))
         pg.context.close()
 
     print('E. O quadro dos temas')

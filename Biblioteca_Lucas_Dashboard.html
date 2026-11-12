@@ -23,13 +23,14 @@
   --sans: Inter, "Segoe UI", system-ui, -apple-system, BlinkMacSystemFont, Roboto, "Helvetica Neue", Arial, sans-serif;
   --r: 14px; --r-s: 9px; --lat: 232px; --pad: 28px;
 }
-/* O tema padrão: a letra dos títulos (--serif, com o peso e a escala dela) é a mesma no claro e no escuro; depois vêm
-   as cores e a força do mapa de calor (--mz-k) de cada um. Um tema é um bloco destes.
+/* O tema padrão: a letra dos títulos é a mesma no claro e no escuro — --serif, com o peso (--tit-peso), a escala
+   (--tit-esc), o aperto entre as letras (--tit-esp: 1 = o de sempre, 0 = nenhum) e a altura da linha do título da
+   página (--tit-alt). Depois vêm as cores e a força do mapa de calor (--mz-k) de cada um. Um tema é um bloco destes.
    Os seletores [data-tema="claro"] e [data-tema="escuro"] repetem os valores para quem precisa deles dentro de outro
    tema: as amostras do seletor de temas e a folha de impressão. */
 :root, [data-tema="claro"], [data-tema="escuro"] {
   --serif: "Iowan Old Style", "Palatino Linotype", Palatino, "Book Antiqua", "URW Palladio L", P052, Georgia, serif;
-  --tit-peso: 600; --tit-esc: 1;
+  --tit-peso: 600; --tit-esc: 1; --tit-esp: 1; --tit-alt: 1.15;
 }
 :root, [data-tema="claro"] {
   --mz-k: 62%;
@@ -63,12 +64,13 @@
    ficam onde estão. Cada tema tem um clima só (claro ou escuro) e passa pelo mesmo teste de contraste do tema padrão
    (tools/qa/a11y.py e tools/qa/temas.py). As letras são fontes livres, postas dentro do painel por tools/build.py a
    partir de src/letras; depois delas vêm letras do sistema, para os sinais que elas não têm.
-   Para criar outro: um bloco como estes, uma linha em TEMAS (src/js/30-state.js) e o id no começo de src/index.html. */
+   Para criar outro: um bloco como estes, uma linha em TEMAS (src/js/30-state.js) e o id no começo de src/index.html.
+   O ornamento, se houver, fica mais abaixo, com o seletor de temas. */
 
 /* Lovecraft — noite funda: verde-abissal, osso e violeta; os títulos em letra de livro antigo */
 [data-tema="lovecraft"] {
   --serif: "IM Fell English", "Iowan Old Style", "Palatino Linotype", Palatino, "Book Antiqua", Georgia, serif;
-  --tit-peso: 400; --tit-esc: 1.1; --mz-k: 42%;
+  --tit-peso: 400; --tit-esc: 1.1; --tit-esp: 0; --tit-alt: 1.3; --mz-k: 42%;      /* hastes altas: o título da página pede mais linha */
   --bg: #0A100F; --surface: #111917; --surface-2: #151F1C; --surface-3: #1D2926;
   --ink: #E3E8DD; --ink-2: #AAB6AB; --ink-3: #8D9A8F; --line: #22302B; --line-2: #33453E;
   --accent: #B79DEA; --accent-ink: #170F28; --accent-soft: #2A2342; --accent-forte: #CFBBF6;
@@ -83,7 +85,7 @@
 /* Sherlock Holmes — papel de jornal, tinta, vinho e latão; os títulos em Baskerville */
 [data-tema="holmes"] {
   --serif: "Libre Baskerville", Baskerville, "Bookman Old Style", "Palatino Linotype", Palatino, Georgia, serif;
-  --tit-peso: 600; --tit-esc: .95; --mz-k: 50%;
+  --tit-peso: 600; --tit-esc: .95; --tit-esp: 0; --tit-alt: 1.15; --mz-k: 50%;
   --bg: #EEE8DA; --surface: #FCF9F1; --surface-2: #F6F1E4; --surface-3: #E9E1CF;
   --ink: #221B13; --ink-2: #54493A; --ink-3: #685C4B; --line: #E0D7C3; --line-2: #CDC1A8;
   --accent: #782A30; --accent-ink: #FFF9F0; --accent-soft: #F2E0DB; --accent-forte: #63212A;
@@ -98,7 +100,7 @@
 /* Moby Dick — névoa do mar, azul-profundo, cobre e corda; os títulos na letra dos livros do século XIX */
 [data-tema="moby"] {
   --serif: "Old Standard TT", "Century Schoolbook", "Sitka Text", Charter, Cambria, Georgia, serif;
-  --tit-peso: 700; --tit-esc: 1.06; --mz-k: 55%;
+  --tit-peso: 700; --tit-esc: 1.06; --tit-esp: 0; --tit-alt: 1.15; --mz-k: 55%;
   --bg: #E8EEEE; --surface: #FAFCFB; --surface-2: #F1F5F4; --surface-3: #E0E8E8;
   --ink: #13212B; --ink-2: #3F515D; --ink-3: #566873; --line: #D6DFDF; --line-2: #BFCCCD;
   --accent: #1C5874; --accent-ink: #FFFFFF; --accent-soft: #DCEAF0; --accent-forte: #154860;
@@ -137,7 +139,7 @@ a { color: var(--accent); }
 .marca { display: flex; align-items: center; gap: 11px; padding: 2px 8px; }
 .marca-i { flex: none; width: 36px; height: 36px; border-radius: 11px; display: grid; place-items: center; background: var(--accent); color: var(--accent-ink); box-shadow: inset 0 -2px 0 rgba(0, 0, 0, .14); }
 .marca-t { display: flex; flex-direction: column; line-height: 1.12; min-width: 0; }
-.marca-t b { font: var(--tit-peso) calc(18px * var(--tit-esc))/1.1 var(--serif); letter-spacing: -.01em; }
+.marca-t b { font: var(--tit-peso) calc(18px * var(--tit-esc))/1.1 var(--serif); letter-spacing: calc(-.01em * var(--tit-esp)); }
 .marca-t em { font-style: normal; font-size: 12px; color: var(--ink-3); }
 .nav { display: flex; flex-direction: column; gap: 3px; }
 .nav button { display: flex; align-items: center; gap: 11px; padding: 9px 11px; border-radius: 10px; color: var(--ink-2); font-weight: 500; position: relative; transition: background .16s, color .16s; }
@@ -159,7 +161,7 @@ a { color: var(--accent); }
 .topo { display: flex; align-items: flex-end; justify-content: space-between; gap: 20px; padding: 24px var(--pad) 8px; }
 .topo-t { display: flex; align-items: center; gap: 12px; min-width: 0; }
 .topo-t .so-m { display: none; }
-.topo h1 { font: var(--tit-peso) calc(27px * var(--tit-esc))/1.15 var(--serif); letter-spacing: -.015em; }
+.topo h1 { font: var(--tit-peso) calc(27px * var(--tit-esc))/var(--tit-alt) var(--serif); letter-spacing: calc(-.015em * var(--tit-esp)); }
 .topo-t p { color: var(--ink-2); margin-top: 3px; font-size: 13.5px; }
 .t-c { display: none; }
 .topo-a { display: flex; align-items: center; gap: 8px; flex: none; }
@@ -324,7 +326,7 @@ main { padding: 18px var(--pad) 28px; flex: 1; outline: 0; }
 .card { background: var(--surface); border: 1px solid var(--line); border-radius: var(--r); box-shadow: var(--sombra); padding: 16px 18px 14px; min-width: 0; display: flex; flex-direction: column; container-type: inline-size; }
 .card-h { display: flex; align-items: flex-start; justify-content: space-between; flex-wrap: wrap; gap: 8px 12px; margin-bottom: 12px; }
 .card-tt { min-width: 0; flex: 1 1 190px; }
-.card h3 { font: var(--tit-peso) calc(16.5px * var(--tit-esc))/1.25 var(--serif); letter-spacing: -.005em; }
+.card h3 { font: var(--tit-peso) calc(16.5px * var(--tit-esc))/1.25 var(--serif); letter-spacing: calc(-.005em * var(--tit-esp)); }
 .card-s { color: var(--ink-3); font-size: 12.5px; margin-top: 3px; line-height: 1.35; }
 .card-t { display: flex; align-items: center; gap: 8px; flex: none; }
 .card-b { flex: 1; min-width: 0; position: relative; container-type: inline-size; }
@@ -697,7 +699,7 @@ td.c-spark svg { margin-left: auto; margin-right: auto; }
 .gv-h { display: flex; align-items: center; justify-content: space-between; gap: 10px; padding: 14px 16px 12px 22px; border-bottom: 1px solid var(--line); }
 .gv-k { display: flex; gap: 6px; flex-wrap: wrap; }
 .gv-c { flex: 1; overflow: auto; padding: 18px 22px 22px; overscroll-behavior: contain; }
-.gv-c h2 { font: var(--tit-peso) calc(23px * var(--tit-esc))/1.2 var(--serif); letter-spacing: -.012em; }
+.gv-c h2 { font: var(--tit-peso) calc(23px * var(--tit-esc))/1.2 var(--serif); letter-spacing: calc(-.012em * var(--tit-esp)); }
 .gv-a2 { color: var(--ink-2); margin-top: 4px; font-size: 14.5px; }
 .gv-ch, .gv-tags { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 12px; }
 .gv-tags { margin-top: 0; }
@@ -798,10 +800,6 @@ td.c-spark svg { margin-left: auto; margin-right: auto; }
 
 /* ───────────── responsivo ───────────── */
 /* ───────────── temas: o ornamento de cada um e o seletor ───────────── */
-/* As letras dos temas foram desenhadas sem o aperto que a letra padrão dos títulos pede */
-html:is([data-tema="lovecraft"], [data-tema="holmes"], [data-tema="moby"]) :is(.marca-t b, .topo h1, .card h3, .gv-c h2, .dlg-cx h2) { letter-spacing: 0; }
-/* a letra do Lovecraft tem hastes altas: o título da página ganha um pouco mais de linha, para não perder a ponta delas no celular */
-html[data-tema="lovecraft"] .topo h1 { line-height: 1.3; }
 /* Lovecraft: um céu de poucas estrelas atrás da página. Fica só no fundo — os cartões continuam lisos — e num
    elemento à parte, para o fundo da página seguir sendo uma cor só (é contra ela que o contraste é medido). */
 html[data-tema="lovecraft"] body::before { content: ""; position: fixed; inset: 0; z-index: -1; pointer-events: none;
@@ -1059,7 +1057,7 @@ html[data-tema="moby"] .topo::after { content: ""; position: absolute; left: var
         </div>
         <button type="button" class="pill-ex" id="b-exemplo" hidden title="Parte dos dados é simulada. Clique para gerenciar.">Dados de exemplo</button>
         <button type="button" class="ib" id="b-olho"></button>
-        <span class="pop-w tema-w" id="pw-tema"><button type="button" class="ib pop-b" id="b-tema" aria-haspopup="true" aria-expanded="false" aria-controls="pop-tema"></button><div class="pop tema-pop" id="pop-tema" role="group" aria-label="Aparência"></div></span>
+        <span class="pop-w tema-w" id="pw-tema"><button type="button" class="ib pop-b" id="b-tema" aria-expanded="false" aria-controls="pop-tema"></button><div class="pop tema-pop" id="pop-tema" role="group" aria-label="Aparência"></div></span>
         <button type="button" class="ib" id="b-dados" aria-label="Seus dados: backup e dados de exemplo" title="Seus dados: backup e dados de exemplo"></button>
         <button type="button" class="btn pri" id="b-novo" aria-label="Novo livro"></button>
       </div>
@@ -2365,8 +2363,6 @@ const IC = {
   sacola: '<path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"/><path d="M3 6h18"/><path d="M16 10a4 4 0 0 1-8 0"/>',
   etiqueta: '<path d="M12.6 2.6A2 2 0 0 0 11.2 2H4a2 2 0 0 0-2 2v7.2a2 2 0 0 0 .6 1.4l8.7 8.7a2.4 2.4 0 0 0 3.4 0l6.6-6.6a2.4 2.4 0 0 0 0-3.4z"/><circle cx="7.5" cy="7.5" r=".6" fill="currentColor"/>',
   busca: '<circle cx="11" cy="11" r="7.5"/><path d="m21 21-4.3-4.3"/>',
-  sol: '<circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M6.3 17.7l-1.4 1.4M19.1 4.9l-1.4 1.4"/>',
-  lua: '<path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9z"/>',
   paleta: '<path d="M12 22a1 1 0 0 1 0-20 10 9 0 0 1 10 9 5 5 0 0 1-5 5h-2.25a1.75 1.75 0 0 0-1.4 2.8l.3.4a1.75 1.75 0 0 1-1.4 2.8z"/><circle cx="13.5" cy="6.5" r=".6" fill="currentColor"/><circle cx="17.5" cy="10.5" r=".6" fill="currentColor"/><circle cx="6.5" cy="12.5" r=".6" fill="currentColor"/><circle cx="8.5" cy="7.5" r=".6" fill="currentColor"/>',
   olho: '<path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7-10-7-10-7z"/><circle cx="12" cy="12" r="3"/>',
   olhoOff: '<path d="M9.9 9.9a3 3 0 1 0 4.2 4.2"/><path d="M10.7 5.1A10.4 10.4 0 0 1 12 5c6.5 0 10 7 10 7a13.2 13.2 0 0 1-1.7 2.7"/><path d="M6.6 6.6A13.5 13.5 0 0 0 2 12s3.5 7 10 7a9.7 9.7 0 0 0 5.4-1.6"/><path d="m2 2 20 20"/>',
