@@ -14,8 +14,9 @@
 #   4. refaz a auditoria (catalogo/capas-revisao.md), pede mais 40 imagens e roda os testes (tools/qa/tudo.py);
 #   5. põe tudo num ramo próprio (capas/…) e abre um Pull Request com o resumo, o retrato das capas e os testes.
 #
-# Nada é publicado: o site só muda quando o PR é aprovado e entra em `main`. Se os testes falharem, o PR é aberto
-# como rascunho e a execução fica vermelha — o trabalho da busca não se perde, mas nada é proposto para merge.
+# Nada é publicado: o site só muda quando o PR é aprovado e entra em `main`. Se uma fonte ou os testes falharem,
+# o PR (se houver mudança) é aberto como rascunho e a execução fica vermelha — o trabalho da busca não se perde.
+# Mesmo sem mudança no capas.tsv, uma fonte que não respondeu deixa a execução vermelha e o motivo no resumo.
 # Nenhuma imagem entra no repositório: o painel mostra as capas direto da fonte.
 name: Buscar capas
 
@@ -78,9 +79,25 @@ jobs:
           python3 tools/capas.py --minutos 170 $REFAZER $SEM_GOOGLE $limite > "$RUNNER_TEMP/busca.txt" || codigo=$?
           cat "$RUNNER_TEMP/busca.txt"
           resultado=$(grep -m1 '^Resultado:' "$RUNNER_TEMP/busca.txt" || true)
-          if [ -n "$resultado" ]; then echo "::notice title=Busca::${resultado}"; fi
+          {
+            echo '## Busca de capas'
+            echo
+            echo '```text'
+            cat "$RUNNER_TEMP/busca.txt"
+            echo '```'
+            echo
+            if [ "$codigo" = 0 ]; then
+              echo 'A busca terminou sem erro de fonte. Isso não garante capas novas: veja o resultado acima.'
+            else
+              echo '**A busca não terminou bem.** Veja as falhas acima; o que não foi respondido fica para a próxima execução.'
+            fi
+          } >> "$GITHUB_STEP_SUMMARY"
+          if [ -n "$resultado" ]; then
+            if [ "$codigo" = 0 ]; then echo "::notice title=Busca::${resultado}";
+            else echo "::warning title=Busca incompleta::${resultado}"; fi
+          fi
           echo "codigo=$codigo" >> "$GITHUB_OUTPUT"
-          # Uma fonte fora do ar não interrompe a rodada: o que ela não respondeu fica para a próxima execução.
+          # Não interrompe aqui: ainda pode haver capas parciais para propor em PR. O passo final confere o código.
           exit 0
 
       - name: Ver se há alguma mudança
@@ -89,7 +106,7 @@ jobs:
           if git diff --quiet -- catalogo/capas.tsv; then
             echo "Nada mudou em catalogo/capas.tsv: nenhum PR será aberto."
             echo "mudou=nao" >> "$GITHUB_OUTPUT"
-            grep -E '^Catálogo:|^Resultado:' "$RUNNER_TEMP/busca.txt" >> "$GITHUB_STEP_SUMMARY" || true
+            echo 'Nenhuma mudança no arquivo de capas: nenhum PR será aberto. O resultado da busca está no resumo acima.' >> "$GITHUB_STEP_SUMMARY"
           else
             echo "mudou=sim" >> "$GITHUB_OUTPUT"
             git diff --stat -- catalogo/capas.tsv
@@ -180,7 +197,10 @@ jobs:
           if [ "$saldo" -ge 0 ]; then saldo="+${saldo}"; fi
           rascunho=''
           estado='prontos para revisar'
-          if [ "$CODIGO_TESTES" != 0 ]; then rascunho='--draft'; estado='COM TESTES FALHANDO — não aprovar antes de corrigir'; fi
+          if [ "$CODIGO_TESTES" != 0 ] || [ "$CODIGO_BUSCA" != 0 ] || [ "$CODIGO_AMOSTRA" != 0 ] || [ "$CODIGO_AUDITORIA" != 0 ]; then
+            rascunho='--draft'
+            estado='COM CONFERÊNCIAS FALHANDO — não aprovar antes de corrigir'
+          fi
 
           corpo="$RUNNER_TEMP/corpo.md"
           {
@@ -236,6 +256,30 @@ jobs:
             exit 1
           fi
           if [ "$CODIGO_TESTES" != 0 ] || [ "$CODIGO_BUSCA" != 0 ] || [ "$CODIGO_AMOSTRA" != 0 ] || [ "$CODIGO_AUDITORIA" != 0 ]; then
-            echo "::error title=Capas::Alguma conferência falhou (busca=${CODIGO_BUSCA}, amostra=${CODIGO_AMOSTRA}, auditoria=${CODIGO_AUDITORIA}, testes=${CODIGO_TESTES}). O PR fica para revisão: não faça merge antes de corrigir."
+            echo "::error title=Capas::Alguma conferência falhou (busca=${CODIGO_BUSCA}, amostra=${CODIGO_AMOSTRA}, auditoria=${CODIGO_AUDITORIA}, testes=${CODIGO_TESTES}). O PR fica em rascunho: não faça merge antes de corrigir."
             exit 1
           fi
+
+      - name: Conferir o resultado da execução
+        if: always()
+        env:
+          CODIGO_BUSCA: ${{ steps.busca.outputs.codigo }}
+          MUDOU: ${{ steps.mudou.outputs.mudou }}
+          CODIGO_AMOSTRA: ${{ steps.amostra.outputs.codigo }}
+          CODIGO_AUDITORIA: ${{ steps.auditoria.outputs.codigo }}
+          CODIGO_TESTES: ${{ steps.testes.outputs.codigo }}
+        run: |
+          # Passos pulados por não haver mudança deixam código vazio; isso não é falha.
+          # Ausência do código da busca, ou código não numérico, é falha: não se sabe se ela terminou.
+          falha=0
+          case "$CODIGO_BUSCA" in ''|*[!0-9]*) falha=1 ;; *) if [ "$CODIGO_BUSCA" != 0 ]; then falha=1; fi ;; esac
+          if [ "$MUDOU" = sim ]; then
+            for codigo in "$CODIGO_AMOSTRA" "$CODIGO_AUDITORIA" "$CODIGO_TESTES"; do
+              case "$codigo" in ''|*[!0-9]*) falha=1 ;; *) if [ "$codigo" != 0 ]; then falha=1; fi ;; esac
+            done
+          fi
+          if [ "$falha" != 0 ]; then
+            echo "::error title=Capas::A execução não terminou bem (busca=${CODIGO_BUSCA:-sem código}; mudança=${MUDOU:-não conferida}; amostra=${CODIGO_AMOSTRA:-pulada}; auditoria=${CODIGO_AUDITORIA:-pulada}; testes=${CODIGO_TESTES:-pulados}). Leia o resumo e os passos vermelhos; não repita às cegas."
+            exit 1
+          fi
+          echo "Busca=${CODIGO_BUSCA}; mudança=${MUDOU:-não conferida}. Resultado conferido."

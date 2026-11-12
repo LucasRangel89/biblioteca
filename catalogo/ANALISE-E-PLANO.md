@@ -1,6 +1,7 @@
 # Análise independente e plano de próximos passos
 
-Data: 12/11/2026. Branch de trabalho: `arena/aedc78d9-biblioteca`.
+Data: 12/11/2026. Análise escrita na branch `arena/aedc78d9-biblioteca`; registro operacional atualizado na
+`arena/a44e06f7-biblioteca`.
 
 Este arquivo tem duas partes. A **Parte A** foi escrita antes de ler a especificação enviada
 (`Especificação tecnica - biblioteca.md`), a partir do repositório, dos scripts, dos testes e dos relatórios já
@@ -242,3 +243,32 @@ mudar; vários achados já estavam endereçados ou precisam ser reinterpretados 
 - A leitura da proteção de `main` também retornou 403. Não foi possível conferir ou ligar verificações obrigatórias;
   isso fica explícito no README e no ROTEIRO, em vez de prometer um bloqueio de merge que ainda não foi configurado.
 - O PR desta mudança fica aberto para aprovação. **Não foi mesclado e não publicou o site.**
+
+### Registro operacional posterior — PR #14 e primeiras buscas manuais
+
+Esta seção atualiza o estado sem apagar o retrato anterior.
+
+- **PR #14:** mesclada em `main` (`d7d0c20`) após aprovação explícita. A publicação passou pelo job `conferir` e
+  publicou o mesmo HTML versionado; o CI rápido ficou verde nos gatilhos de push e de PR.
+- **Disparo manual:** o usuário conseguiu acionar `Buscar capas` pela interface do GitHub. As execuções
+  [#9](https://github.com/LucasRangel89/biblioteca/actions/runs/43303124412) e
+  [#10](https://github.com/LucasRangel89/biblioteca/actions/runs/43305090974) rodaram em `main`, por
+  `workflow_dispatch`, e terminaram com conclusão `success` do GitHub.
+- **O que o sucesso não dizia:** as anotações das duas execuções registram o mesmo resultado:
+  `780 apple · 752 edicao · 967 nao-achei-2 · 32 obra · 83 sem-autor · 7 consulta(s) falharam · 33 ficaram para a
+  próxima execução (o Google Books não respondeu)`. Os passos de amostra, montagem, auditoria, testes e PR foram
+  pulados porque `catalogo/capas.tsv` não mudou. Não houve PR de capas nem capa nova.
+- **Conferência do arquivo:** o blob de `catalogo/capas.tsv` em `main` continua `0d87a03b5076f2cc6e6e79b7bcf00111c20a6c30`;
+  o catálogo segue com 2.614 livros e 1.564 capas. O Google Books ainda não teve uma consulta bem-sucedida em produção.
+- **Causa raiz do verde enganoso:** `capas.py` já devolvia código 1 quando o Google desistia, mas o passo da busca no
+  workflow guardava esse código e terminava com `exit 0` para preservar capas parciais. A conferência desse código só
+  acontecia dentro do passo de abrir PR; sem mudança, esse passo nem rodava.
+- **Correção proposta nesta rodada:** a saída inteira da busca vai para o resumo da execução; fonte com falha gera
+  aviso; um passo final `if: always()` confere o código da busca mesmo sem mudança; se houver mudança, qualquer falha
+  de busca, amostra, auditoria ou testes deixa o PR em rascunho e a execução vermelha. O teste `fluxo_capas` cobre o
+  desenho, e a conferência local exercitou o passo final com códigos de sucesso, falha, ausência e valor inválido.
+- **Próximo passo seguro:** depois de aprovado e mesclado, repetir uma busca curta (limite 40) em `main` para ler o
+  motivo concreto da recusa do Google no resumo. Não repetir às cegas nem marcar os 967 livros como procurados no
+  Google enquanto a fonte não responder.
+- **Proteção de `main`:** continua pendente de configuração no GitHub; o workflow não liga verificação obrigatória
+  sozinho.
