@@ -25,7 +25,7 @@ function render() {
   REG[v].kpis(VIS[v].valores(c));
   for (const f of REG[v].at) f(c);
   pintarFora(); pintarCasca(c); pintarContagens(c);
-  const aberto = $('.pop-w.aberto'); if (aberto) posicionarPop(aberto);      // um número novo num botão pode ter empurrado a barra
+  const aberto = $('.pop-w.aberto'); if (aberto) (aberto.id === 'pw-tema' ? posicionarTema : posicionarPop)(aberto);      // um número novo num botão pode ter empurrado a barra
   $$('.rolavel', $('#v-' + v)).forEach(marcarRolagem);
 }
 // listas com rolagem interna: esmaece a base enquanto houver mais itens abaixo
@@ -279,11 +279,49 @@ function pintarCasca(c) {
   if (mostrar && DB.exemplos) setHtml(av, `<span class="av-i">${icone('info', 18)}</span><div><b>Seu catálogo é real; o movimento é de exemplo.</b><p>Os ${fInt(DB.livros.filter(b => b.sec >= 0).length)} títulos, autores, marcadores, eixos, a estante física e a biblioteca virtual vieram do seu catálogo. Datas e valores pagos, leituras, a lista de próximas aquisições e os históricos de preço são <b>simulados</b> para dar vida aos gráficos, e os preços não vêm das lojas: entram por cotações que você registra.</p></div><div class="av-a"><button type="button" class="btn sm" data-av="dados">Gerenciar dados</button><button type="button" class="btn sm pri" data-av="ok">Entendi</button></div>`);
   $('#rodape-n').textContent = `${plural(DB.livros.length, 'livro', 'livros')}${FORA.livros ? ' · ' + plural(FORA.livros, 'oculto', 'ocultos') : ''} · ${c.I.tudo ? 'todo o histórico' : c.I.rot}${nFiltros() ? ' · ' + plural(nFiltros(), 'filtro ativo', 'filtros ativos') : ''}`;
 }
+/* ───────── temas ───────── */
+// o tema em uso: o escolhido ou, sem escolha, o padrão que acompanha o sistema (claro ou escuro)
+const temaAtual = () => TEMAS.find(t => t.id === (S.tema || (window.matchMedia && matchMedia('(prefers-color-scheme: dark)').matches ? 'escuro' : 'claro'))) || TEMAS[0];
 function aplicarTema() {
-  const t = S.tema || (window.matchMedia && matchMedia('(prefers-color-scheme: dark)').matches ? 'escuro' : 'claro');
-  document.documentElement.dataset.tema = t;
-  const b = $('#b-tema'); b.innerHTML = icone(t === 'escuro' ? 'sol' : 'lua'); b.setAttribute('aria-label', t === 'escuro' ? 'Usar tema claro' : 'Usar tema escuro'); b.title = b.getAttribute('aria-label');
-  const m = $('meta[name="theme-color"]'); if (m) m.content = t === 'escuro' ? '#141310' : '#F5F3EE';
+  const t = temaAtual();
+  document.documentElement.dataset.tema = t.id;
+  const b = $('#b-tema'); b.setAttribute('aria-label', `Aparência: tema ${t.n}. Trocar o tema`); b.title = 'Trocar o tema do painel';
+  const m = $('meta[name="theme-color"]'); if (m) m.content = t.cor;
+  for (const o of $$('#pop-tema [data-tema-id]')) { const on = o.dataset.temaId === t.id; o.setAttribute('aria-checked', String(on)); o.tabIndex = on ? 0 : -1; }
+}
+// o quadro dos temas abre para a esquerda do botão; em tela estreita, não pode sair pela borda esquerda
+function posicionarTema() {
+  const pop = $('#pop-tema'); pop.style.right = '';
+  const r = pop.getBoundingClientRect(); if (r.left < 12) pop.style.right = Math.round(r.left - 12) + 'px';
+}
+function montarTemas() {
+  const w = $('#pw-tema'), b = $('#b-tema'), pop = $('#pop-tema');
+  b.innerHTML = icone('paleta');
+  // a amostra e o nome de cada tema levam [data-tema]: dentro deles valem as cores e a letra do próprio tema
+  pop.innerHTML = `<div class="pop-h"><b id="tema-t">Aparência</b></div>
+    <div class="temas" role="radiogroup" aria-labelledby="tema-t">${TEMAS.map(t => `<button type="button" class="tema-o" role="radio" aria-checked="false" tabindex="-1" data-tema-id="${t.id}">
+      <span class="tema-am" data-tema="${t.id}" aria-hidden="true"><i></i><i></i><i></i><i></i></span>
+      <span class="tema-tx"><b class="tema-n" data-tema="${t.id}">${t.n}</b><em>${t.d}</em></span>${icone('check', 16)}</button>`).join('')}</div>
+    <p class="pop-n">Troca as cores e a letra dos títulos. A escolha fica guardada neste navegador.</p>`;
+  const escolher = id => { S.tema = id; aplicarTema(); salvar(); };
+  b.addEventListener('click', () => {
+    const abrir = !w.classList.contains('aberto'); fecharPops(); if (!abrir) return;
+    w.classList.add('aberto'); b.setAttribute('aria-expanded', 'true'); posicionarTema();
+    const o = $('[aria-checked="true"]', pop); if (o) o.focus({ preventScroll: true });
+  });
+  pop.addEventListener('click', e => { const o = e.target.closest('[data-tema-id]'); if (o) escolher(o.dataset.temaId); });
+  // como num grupo de opções: as setas andam e já escolhem (a página muda na hora); Esc fecha e devolve o foco ao botão
+  pop.addEventListener('keydown', e => {
+    if (e.key === 'Escape') { e.stopPropagation(); fecharPops(); b.focus(); return; }
+    const os = $$('[data-tema-id]', pop), i = os.indexOf(document.activeElement); if (i < 0) return;
+    const j = e.key === 'ArrowDown' || e.key === 'ArrowRight' ? (i + 1) % os.length : e.key === 'ArrowUp' || e.key === 'ArrowLeft' ? (i + os.length - 1) % os.length : e.key === 'Home' ? 0 : e.key === 'End' ? os.length - 1 : -1;
+    if (j < 0) return;
+    e.preventDefault(); escolher(os[j].dataset.temaId); os[j].focus();
+  });
+  w.addEventListener('focusout', e => { if (w.classList.contains('aberto') && e.relatedTarget && !w.contains(e.relatedTarget)) fecharPops(); });
+  // imprimir a página (Ctrl+P) num tema escuro sairia com letra clara em papel branco: no papel vale o padrão claro
+  window.addEventListener('beforeprint', () => { if (temaAtual().clima === 'escuro') document.documentElement.dataset.tema = 'claro'; });
+  window.addEventListener('afterprint', aplicarTema);
 }
 function aplicarOlho() {
   OCULTAR_VALORES = S.ocultar;
@@ -303,7 +341,7 @@ function montarCasca() {
       else dlgDados();
     }
   });
-  $('#b-tema').addEventListener('click', () => { S.tema = document.documentElement.dataset.tema === 'escuro' ? 'claro' : 'escuro'; aplicarTema(); salvar(); });
+  montarTemas();
   $('#b-olho').addEventListener('click', () => { S.ocultar = !S.ocultar; aplicarOlho(); salvar(); render(); if (Gaveta.id) desenharGaveta(); });
   $('#b-dados').addEventListener('click', dlgDados); $('#st-dados').addEventListener('click', dlgDados); $('#b-exemplo').addEventListener('click', dlgDados);
   $('#b-novo').addEventListener('click', () => dlgLivro(null));
@@ -352,7 +390,7 @@ function iniciar() {
   const cfg = carregarDB();
   // enquanto nada foi editado, os exemplos acompanham a data de hoje (assim os gráficos nunca "envelhecem")
   if (DB.exemplos && DB.criadoEm !== DB.hoje && !DB.livros.some(b => b.u || temCotacaoPropria(b))) { DB.livros = gerarExemplos(livrosDoCatalogo(), DB.hoje); DB.criadoEm = DB.hoje; }
-  S.tema = cfg.tema === 'claro' || cfg.tema === 'escuro' ? cfg.tema : ''; S.ocultar = !!cfg.ocultar; S.avisoVisto = !!cfg.avisoVisto;
+  S.tema = TEMAS.some(t => t.id === cfg.tema) ? cfg.tema : ''; S.ocultar = !!cfg.ocultar; S.avisoVisto = !!cfg.avisoVisto;
   S.capas = cfg.capas !== false; MOSTRAR_CAPAS = S.capas;
   // os exemplos de um painel antigo acabaram de sair: o recado inicial volta, agora contando isso, e fica até o "Entendi"
   S.saiu = DB.saiuExemplo || (cfg.saiu > 0 && !DB.exemplos ? Math.round(+cfg.saiu) || 0 : 0);
