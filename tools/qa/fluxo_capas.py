@@ -5,7 +5,8 @@ justamente onde um erro seria caro:
   · o robô só roda quando alguém manda (nada de gatilho por push ou por relógio);
   · ele NUNCA grava no ramo em que rodou: cria um ramo capas/… e abre um Pull Request para revisão;
   · a ordem é buscar → ver se mudou → conferir e amostrar → montar o painel → auditar → testar → abrir o PR;
-  · os testes rodam antes do PR, e um teste falhando deixa o PR como rascunho (e a execução, vermelha);
+  · os testes rodam antes do PR; uma fonte ou teste falhando deixa o PR como rascunho e a execução vermelha;
+  · mesmo sem mudança no capas.tsv, uma fonte que falhou não passa por sucesso: o resumo guarda a saída e o passo final falha;
   · nada de merge automático, em lugar nenhum;
   · o site continua sendo publicado só a partir de `main`, pelo outro serviço;
   · o tempo da busca cabe no tempo da execução, e uma busca por vez.
@@ -53,9 +54,10 @@ confere('pull-requests: write' not in SITE.read_text(encoding='utf-8'), 'o servi
 
 print('A ORDEM DOS PASSOS')
 esperado = ['Baixar o repositório', 'Procurar as capas', 'Ver se há alguma mudança', 'Conferir o arquivo e as imagens (amostra)',
-            'Montar o painel com as capas novas', 'Refazer a auditoria das capas', 'Preparar os testes', 'Rodar os testes', 'Abrir o Pull Request']
-confere(nomes == esperado, 'buscar → ver se mudou → conferir e amostrar → montar → auditar → testar → abrir o PR', nomes)
-confere(all("steps.mudou.outputs.mudou == 'sim'" in corpo[n] for n in nomes[3:]), 'sem mudança no capas.tsv, nada disso roda: nenhum PR vazio')
+            'Montar o painel com as capas novas', 'Refazer a auditoria das capas', 'Preparar os testes', 'Rodar os testes', 'Abrir o Pull Request',
+            'Conferir o resultado da execução']
+confere(nomes == esperado, 'buscar → ver se mudou → conferir e amostrar → montar → auditar → testar → abrir o PR → conferir o resultado', nomes)
+confere(all("steps.mudou.outputs.mudou == 'sim'" in corpo[n] for n in nomes[3:-1]), 'sem mudança no capas.tsv, nenhum PR vazio; só a conferência final ainda roda')
 confere('git diff --quiet -- catalogo/capas.tsv' in corpo['Ver se há alguma mudança'], 'a decisão de abrir PR sai da diferença no capas.tsv')
 
 print('O QUE CADA PASSO RODA')
@@ -73,10 +75,22 @@ testes = corpo['Rodar os testes']
 confere('tools/qa/tudo.py' in testes and all(t in testes for t in ('importador', 'busca_capas', 'auditoria_capas', 'capas_painel')),
         'os testes das capas e do painel rodam de verdade (e a suíte inteira é uma opção)', testes.strip().splitlines()[:3])
 confere('BIBLIOTECA_QA_TMP: ${{ runner.temp }}/biblioteca-qa' in testes, 'os registros dos testes ficam fora do repositório')
+busca = corpo['Procurar as capas']
+confere('cat "$RUNNER_TEMP/busca.txt"' in busca and 'GITHUB_STEP_SUMMARY' in busca,
+        'a saída inteira da busca vai para o resumo, inclusive os motivos das consultas que falharam')
+confere('::warning title=Busca incompleta::' in busca, 'fonte que falha aparece como aviso, não como resultado normal')
+final = corpo['Conferir o resultado da execução']
+confere('if: always()' in final and 'CODIGO_BUSCA: ${{ steps.busca.outputs.codigo }}' in final,
+        'a conferência final roda mesmo sem mudança e lê o código da busca')
+confere('case "$CODIGO_BUSCA" in' in final and 'exit 1' in final,
+        'busca sem código ou com erro deixa a execução vermelha, mesmo quando nenhum PR seria aberto')
+confere('if [ "$MUDOU" = sim ]; then' in final and all(x in final for x in ('CODIGO_AMOSTRA', 'CODIGO_AUDITORIA', 'CODIGO_TESTES')),
+        'quando há mudança, amostra, auditoria e testes também são conferidos no fim')
 confere(not re.search(r'^    env:\n(?:      [^\n]*\n)*?      BIBLIOTECA_QA_TMP:.*runner\.', txt, flags=re.M),
         'runner.temp não aparece no env do job: esse contexto só existe dentro dos passos; no job, o GitHub rejeita o arquivo inteiro')
 pr = corpo['Abrir o Pull Request']
-confere("if [ \"$CODIGO_TESTES\" != 0 ]; then rascunho='--draft'" in pr, 'teste falhando: o PR nasce como rascunho, para ninguém aprovar por engano')
+confere('if [ "$CODIGO_TESTES" != 0 ] || [ "$CODIGO_BUSCA" != 0 ] || [ "$CODIGO_AMOSTRA" != 0 ] || [ "$CODIGO_AUDITORIA" != 0 ]; then' in pr
+        and "rascunho='--draft'" in pr, 'fonte ou teste falhando: o PR nasce como rascunho, para ninguém aprovar por engano')
 confere('$rascunho' in pr and 'exit 1' in pr, 'e a execução termina em vermelho')
 confere('Nada foi publicado' in pr and 'catalogo/capas-revisao.md' in pr and 'git diff --stat' in pr, 'o corpo do PR diz o que mudou, traz o retrato das capas e lembra que nada foi publicado')
 confere('Allow GitHub Actions to create and approve pull requests' in pr and '/compare/' in pr, 'se o GitHub não deixar abrir o PR, o aviso diz como resolver e onde abrir à mão')
