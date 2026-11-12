@@ -462,6 +462,29 @@ button.hb:hover { background: var(--surface-3); }
 .capa img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }   /* sem fundo: enquanto a imagem não chega, vê-se o desenho */
 .capa.g { width: 104px; border-radius: 6px; box-shadow: var(--sombra-2), 0 0 0 1px var(--line); }
 .capa.g::before { font-size: 40px; }
+.capa.m { width: 76px; border-radius: 5px; box-shadow: var(--sombra), 0 0 0 1px var(--line); }   /* a capa na grade de livros */
+.capa.m::before { font-size: 28px; }
+/* a capa da ficha abre maior num clique (a imagem grande só é pedida então) */
+.capa-zoom { flex: none; padding: 0; border: 0; background: none; border-radius: 6px; cursor: zoom-in; line-height: 0; }
+.capa-zoom:hover .capa, .capa-zoom:focus-visible .capa { box-shadow: var(--sombra-2), 0 0 0 2px var(--accent); }
+.gv-capa-f { display: flex; align-items: flex-start; gap: 6px; margin: 8px 0 0; font-size: 12px; line-height: 1.45; color: var(--ink-3); }
+.gv-capa-f .ic { flex: none; margin-top: 1px; }
+.gv-capa-f.av { color: var(--ink-2); }
+.capa-grande { display: grid; place-items: center; padding: 4px 0 10px; }
+.capa-grande img { display: block; width: auto; max-width: 100%; height: min(62vh, 520px); object-fit: contain; border-radius: 8px; box-shadow: var(--sombra-2); }
+.capa-grande-f { margin: 0; text-align: center; }
+/* a mesma lista como estante: uma capa por cartão, com título, autor e a etiqueta da lista ou da leitura */
+.tb-modo { display: inline-flex; gap: 2px; flex: none; padding: 2px; border: 1px solid var(--line); border-radius: 9px; background: var(--surface-2); }
+.tb-modo .ib { width: 30px; height: 28px; border-radius: 7px; color: var(--ink-3); }
+.tb-modo .ib[aria-pressed="true"] { background: var(--surface); color: var(--ink); box-shadow: var(--sombra); }
+.tb-grade { display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 12px; padding: 12px 0 2px; }
+.gc { display: flex; flex-direction: column; align-items: flex-start; gap: 8px; padding: 12px; text-align: left; border: 1px solid var(--line); border-radius: 12px; background: var(--surface-2); color: var(--ink); cursor: pointer; }
+.gc:hover { border-color: var(--accent); background: var(--surface-3); }
+.gc-t { display: block; min-width: 0; width: 100%; }
+.gc-t b { display: block; font: 650 13.5px/1.35 var(--sans); color: var(--ink); }
+.gc-t > span { display: block; margin-top: 2px; font-size: 12px; color: var(--ink-3); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.gc-m { display: flex; align-items: center; gap: 6px; margin-top: auto; }
+@media (max-width: 700px) { .tb-grade { grid-template-columns: repeat(auto-fill, minmax(130px, 1fr)); gap: 10px; } .gc { padding: 10px; } .capa.m { width: 64px; } }
 .tt-c { display: flex; align-items: center; gap: 10px; min-width: 0; }
 #gv-topo { display: flex; align-items: flex-start; gap: 16px; }
 .gv-tx { flex: 1; min-width: 0; }

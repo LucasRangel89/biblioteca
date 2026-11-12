@@ -1,35 +1,47 @@
-# Procura a capa dos livros do catálogo e guarda o resultado em catalogo/capas.tsv.
+# Procura a capa dos livros do catálogo e abre um Pull Request com o resultado — nunca publica nada sozinho.
 #
-# Duas fontes, nesta ordem: a Open Library e, para o que ela não achou, o catálogo da Apple Books no Brasil (pela
-# busca pública do iTunes). A segunda só aceita umas 20 consultas por minuto: mil livros levam perto de uma hora.
+# Três fontes, nesta ordem: Open Library; Apple Books (busca pública do iTunes, loja do Brasil, ~20 consultas por
+# minuto); e Google Books, só para o que as duas primeiras não acharam e só entre livros em português.
 #
 # Para rodar: aba Actions → "Buscar capas" → Run workflow (escolha o ramo). Só procura o que falta: os livros novos
-# e os que ainda não passaram pelas duas fontes. Marcando "refazer", tenta de novo, nas duas, os que não tinham sido
-# achados. Se o tempo acabar, o que faltou fica para a execução seguinte — é só rodar de novo.
+# e os que ainda não passaram por todas as fontes. Marcando "refazer", tenta de novo os que não tinham sido achados.
+# Se o tempo acabar, o que faltou fica para a execução seguinte — é só rodar de novo.
 #
-# O que este serviço muda: apenas o arquivo catalogo/capas.tsv, no ramo em que rodou. Ele não monta o painel nem
-# publica o site: isso continua sendo feito numa rodada, com os testes (tools/atualizar.py e tools/qa/tudo.py).
-# Nenhuma imagem entra no repositório — o painel mostra as capas direto da fonte.
+# O que o serviço faz, em ordem:
+#   1. procura as capas e grava catalogo/capas.tsv (na máquina da execução, ainda não no repositório);
+#   2. confere o arquivo e pede 40 imagens de cada fonte para ver se abrem;
+#   3. monta o painel (tools/atualizar.py);
+#   4. refaz a auditoria (catalogo/capas-revisao.md), pede mais 40 imagens e roda os testes (tools/qa/tudo.py);
+#   5. põe tudo num ramo próprio (capas/…) e abre um Pull Request com o resumo, o retrato das capas e os testes.
 #
-# No fim, o serviço pede 40 das capas guardadas de cada fonte para conferir se as imagens abrem de verdade. Se essa
-# conferência falhar (uma das fontes fora do ar, por exemplo), a execução fica marcada em vermelho, mas o resultado
-# da busca já foi guardado no passo anterior.
+# Nada é publicado: o site só muda quando o PR é aprovado e entra em `main`. Se os testes falharem, o PR é aberto
+# como rascunho e a execução fica vermelha — o trabalho da busca não se perde, mas nada é proposto para merge.
+# Nenhuma imagem entra no repositório: o painel mostra as capas direto da fonte.
 name: Buscar capas
 
 on:
   workflow_dispatch:
     inputs:
       refazer:
-        description: Procurar de novo, nas duas fontes, as capas que não foram achadas
+        description: Procurar de novo, em todas as fontes, as capas que não foram achadas
         type: boolean
         default: false
+      google:
+        description: Usar também o Google Books (terceira fonte)
+        type: boolean
+        default: true
       limite:
         description: Quantos livros procurar nesta execução (vazio = todos os que faltam)
         type: string
         default: ''
+      suite_completa:
+        description: Rodar a suíte inteira de testes (leva mais uns 35 minutos)
+        type: boolean
+        default: false
 
 permissions:
-  contents: write   # gravar o catalogo/capas.tsv no ramo
+  contents: write        # gravar o ramo capas/…
+  pull-requests: write   # abrir o Pull Request
 
 # Uma busca por vez em cada ramo.
 concurrency:
@@ -38,9 +50,12 @@ concurrency:
 
 jobs:
   buscar:
-    name: Buscar
+    name: Buscar e propor
     runs-on: ubuntu-latest
-    timeout-minutes: 200
+    timeout-minutes: 260
+    env:
+      BIBLIOTECA_QA_TMP: ${{ runner.temp }}/biblioteca-qa
+      GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
     steps:
       - name: Baixar o repositório
         uses: actions/checkout@v7
@@ -48,49 +63,179 @@ jobs:
           fetch-depth: 0
 
       - name: Procurar as capas
+        id: busca
         env:
           REFAZER: ${{ inputs.refazer && '--refazer' || '' }}
+          SEM_GOOGLE: ${{ !inputs.google && '--sem-google' || '' }}
           LIMITE: ${{ inputs.limite }}
         run: |
           case "$LIMITE" in
             ''|*[!0-9]*) limite='' ;;
             *) limite="--limite $LIMITE" ;;
           esac
+          antes=$(python3 tools/capas.py --conferir | sed -n 's/.* · \([0-9]*\) com capa.*/\1/p')
+          echo "antes=${antes:-0}" >> "$GITHUB_OUTPUT"
           codigo=0
-          python3 tools/capas.py --minutos 170 $REFAZER $limite > "$RUNNER_TEMP/busca.txt" || codigo=$?
+          python3 tools/capas.py --minutos 170 $REFAZER $SEM_GOOGLE $limite > "$RUNNER_TEMP/busca.txt" || codigo=$?
           cat "$RUNNER_TEMP/busca.txt"
-          # O resumo da busca vira um aviso da execução: aparece na página dela, sem precisar abrir o registro.
           resultado=$(grep -m1 '^Resultado:' "$RUNNER_TEMP/busca.txt" || true)
           if [ -n "$resultado" ]; then echo "::notice title=Busca::${resultado}"; fi
-          exit $codigo
+          echo "codigo=$codigo" >> "$GITHUB_OUTPUT"
+          # Uma fonte fora do ar não interrompe a rodada: o que ela não respondeu fica para a próxima execução.
+          exit 0
 
-      - name: Guardar o resultado
-        if: always()
+      - name: Ver se há alguma mudança
+        id: mudou
         run: |
-          git config user.name "github-actions[bot]"
-          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add catalogo/capas.tsv
-          if git diff --cached --quiet; then
-            echo "Nada mudou em catalogo/capas.tsv."
-            exit 0
+          if git diff --quiet -- catalogo/capas.tsv; then
+            echo "Nada mudou em catalogo/capas.tsv: nenhum PR será aberto."
+            echo "mudou=nao" >> "$GITHUB_OUTPUT"
+            grep -E '^Catálogo:|^Resultado:' "$RUNNER_TEMP/busca.txt" >> "$GITHUB_STEP_SUMMARY" || true
+          else
+            echo "mudou=sim" >> "$GITHUB_OUTPUT"
+            git diff --stat -- catalogo/capas.tsv
           fi
-          git commit -m "Capas: resultado da busca"
-          git pull --rebase origin "$GITHUB_REF_NAME"
-          git push origin "HEAD:$GITHUB_REF_NAME"
-          python3 tools/capas.py --conferir >> "$GITHUB_STEP_SUMMARY"
 
-      - name: Conferir se as imagens abrem (amostra)
+      - name: Conferir o arquivo e as imagens (amostra)
+        id: amostra
+        if: steps.mudou.outputs.mudou == 'sim'
         run: |
           codigo=0
+          python3 tools/capas.py --conferir > "$RUNNER_TEMP/conferencia.txt" || codigo=$?
           python3 tools/capas.py --testar 40 > "$RUNNER_TEMP/amostra.txt" || codigo=$?
-          cat "$RUNNER_TEMP/amostra.txt"
+          cat "$RUNNER_TEMP/conferencia.txt" "$RUNNER_TEMP/amostra.txt"
           cat "$RUNNER_TEMP/amostra.txt" >> "$GITHUB_STEP_SUMMARY"
-          # O resultado também vira um aviso da execução: aparece na página dela, sem precisar abrir o registro.
+          echo "codigo=$codigo" >> "$GITHUB_OUTPUT"
           resumo=$(grep '^Amostra das capas' "$RUNNER_TEMP/amostra.txt" | paste -sd '|' - | sed 's/|/ · /g' || true)
-          ruins=$(grep 'não abriu' "$RUNNER_TEMP/amostra.txt" | head -n 5 | sed 's/^ *//' | paste -sd ';' - || true)
           if [ "$codigo" = 0 ]; then
             echo "::notice title=Capas::${resumo}"
           else
-            echo "::error title=Capas::${resumo:-a conferência não chegou ao fim} ${ruins}"
+            echo "::warning title=Capas::${resumo:-a conferência não chegou ao fim}"
           fi
-          exit $codigo
+          exit 0
+
+      - name: Montar o painel com as capas novas
+        if: steps.mudou.outputs.mudou == 'sim'
+        run: python3 tools/atualizar.py
+
+      - name: Refazer a auditoria das capas
+        id: auditoria
+        if: steps.mudou.outputs.mudou == 'sim'
+        run: |
+          python3 tools/auditar_capas.py > "$RUNNER_TEMP/auditoria.txt"
+          python3 tools/auditar_capas.py --conferir
+          codigo=0
+          python3 tools/auditar_capas.py --rede 40 > "$RUNNER_TEMP/auditoria-rede.txt" || codigo=$?
+          cat "$RUNNER_TEMP/auditoria.txt" "$RUNNER_TEMP/auditoria-rede.txt"
+          echo "codigo=$codigo" >> "$GITHUB_OUTPUT"
+          exit 0
+
+      - name: Preparar os testes
+        if: steps.mudou.outputs.mudou == 'sim'
+        run: |
+          python3 -m pip install --quiet playwright pillow
+          python3 -m playwright install --with-deps chromium
+
+      - name: Rodar os testes
+        id: testes
+        if: steps.mudou.outputs.mudou == 'sim'
+        env:
+          SUITE: ${{ !inputs.suite_completa && 'importador busca_capas auditoria_capas capas_painel site' || '' }}
+        run: |
+          codigo=0
+          python3 tools/qa/tudo.py $SUITE > "$RUNNER_TEMP/testes.txt" || codigo=$?
+          cat "$RUNNER_TEMP/testes.txt"
+          {
+            echo '## Testes'
+            echo
+            echo '```'
+            cat "$RUNNER_TEMP/testes.txt"
+            echo '```'
+          } >> "$GITHUB_STEP_SUMMARY"
+          echo "codigo=$codigo" >> "$GITHUB_OUTPUT"
+          tail -n 3 "$RUNNER_TEMP/testes.txt"
+          exit 0
+
+      - name: Abrir o Pull Request
+        if: steps.mudou.outputs.mudou == 'sim'
+        env:
+          BASE: ${{ github.ref_name }}
+          CODIGO_BUSCA: ${{ steps.busca.outputs.codigo }}
+          CODIGO_AMOSTRA: ${{ steps.amostra.outputs.codigo }}
+          CODIGO_AUDITORIA: ${{ steps.auditoria.outputs.codigo }}
+          CODIGO_TESTES: ${{ steps.testes.outputs.codigo }}
+          CAPAS_ANTES: ${{ steps.busca.outputs.antes }}
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          RAMO="capas/$(date -u +%Y-%m-%d)-${GITHUB_RUN_ID}"
+          git switch -c "$RAMO"
+          git add -A
+          git commit -m "Capas: resultado da busca de $(date -u +%d/%m/%Y)"
+          git push origin "$RAMO"
+
+          depois=$(python3 tools/capas.py --conferir | sed -n 's/.* · \([0-9]*\) com capa.*/\1/p')
+          depois=${depois:-0}
+          saldo=$((depois - CAPAS_ANTES))
+          if [ "$saldo" -ge 0 ]; then saldo="+${saldo}"; fi
+          rascunho=''
+          estado='prontos para revisar'
+          if [ "$CODIGO_TESTES" != 0 ]; then rascunho='--draft'; estado='COM TESTES FALHANDO — não aprovar antes de corrigir'; fi
+
+          corpo="$RUNNER_TEMP/corpo.md"
+          {
+            echo "Busca automática de capas, rodada ${GITHUB_RUN_ID}. **Nada foi publicado:** o site só muda se este PR for aprovado."
+            echo
+            echo "- Capas no catálogo: **${CAPAS_ANTES} → ${depois}** (${saldo})"
+            echo "- Testes: ${estado}"
+            echo "- Fontes: Open Library → Apple Books (Brasil) → Google Books (em português)"
+            echo
+            echo '## O que a busca disse'
+            echo
+            echo '```'
+            cat "$RUNNER_TEMP/busca.txt"
+            echo '```'
+            echo
+            echo '## As imagens abriram? (amostra de 40 por fonte)'
+            echo
+            echo '```'
+            cat "$RUNNER_TEMP/amostra.txt"
+            echo '```'
+            echo
+            echo '## Retrato das capas depois da busca'
+            echo
+            echo '```'
+            cat "$RUNNER_TEMP/auditoria.txt"
+            cat "$RUNNER_TEMP/auditoria-rede.txt"
+            echo '```'
+            echo
+            echo 'O retrato completo, com a fila de revisão, está em `catalogo/capas-revisao.md` neste PR.'
+            echo
+            echo '## Testes'
+            echo
+            echo '```'
+            cat "$RUNNER_TEMP/testes.txt"
+            echo '```'
+            echo
+            echo '## O que mudou'
+            echo
+            echo '```'
+            git diff --stat "origin/${BASE}" HEAD
+            echo '```'
+            echo
+            echo 'Para aprovar: confira os números, olhe algumas capas novas no painel deste ramo e, se estiver tudo bem,'
+            echo 'faça o merge. Para recusar uma capa só, apague a linha dela em `catalogo/capas.tsv` (ou ponha a certa'
+            echo 'com origem `manual`) antes do merge.'
+          } > "$corpo"
+          cat "$corpo" >> "$GITHUB_STEP_SUMMARY"
+
+          if gh pr create --base "$BASE" --head "$RAMO" --title "Capas: ${depois} capas no catálogo (${saldo})" --body-file "$corpo" $rascunho; then
+            echo "::notice title=Capas::Pull Request aberto para revisão. Nada foi publicado."
+          else
+            echo "::error title=Capas::O ramo ${RAMO} foi gravado, mas o GitHub não deixou abrir o PR. Em Settings → Actions → General, marque 'Allow GitHub Actions to create and approve pull requests' e abra o PR em https://github.com/${GITHUB_REPOSITORY}/compare/${BASE}...${RAMO}"
+            exit 1
+          fi
+          if [ "$CODIGO_TESTES" != 0 ] || [ "$CODIGO_BUSCA" != 0 ] || [ "$CODIGO_AMOSTRA" != 0 ] || [ "$CODIGO_AUDITORIA" != 0 ]; then
+            echo "::error title=Capas::Alguma conferência falhou (busca=${CODIGO_BUSCA}, amostra=${CODIGO_AMOSTRA}, auditoria=${CODIGO_AUDITORIA}, testes=${CODIGO_TESTES}). O PR fica para revisão: não faça merge antes de corrigir."
+            exit 1
+          fi

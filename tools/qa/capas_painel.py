@@ -1,15 +1,18 @@
 """As capas no painel: onde aparecem, o que acontece quando a imagem falta e o que o navegador pede à internet.
 
 Para não depender das capas que estiverem em catalogo/capas.tsv no dia, o teste usa uma cópia do painel com uma
-lista de capas conhecida (quatro livros com capa, o resto sem). Nada sai para a internet: os pedidos de imagem são
+lista de capas conhecida (alguns livros com capa, o resto sem). Nada sai para a internet: os pedidos de imagem são
 respondidos aqui (ver relogio.py). Confere que:
-  · a capa aparece na tabela, nas listas e na ficha; livro sem capa mostra o desenho com a inicial do título;
-  · imagem que não existe (404) some sem deixar buraco, e a ficha fica sem o quadro da capa;
+  · a capa aparece na tabela, nas listas, na grade e na ficha; livro sem capa mostra o desenho com a inicial do título;
+  · imagem que não existe (404) deixa o desenho com a inicial; na ficha, acrescenta o recado e tira o botão de ampliar;
   · os pedidos levam só o número da capa, e só são feitos para o que está na tela;
   · com as capas desligadas em "Seus dados", nenhuma imagem é pedida — nem depois de recarregar;
   · a capa não é guardada: nem no navegador, nem no backup; e um backup não consegue trocar a capa de um livro;
   · endereço de capa que não seja https é ignorado, e aspas no endereço não escapam do atributo;
-  · no celular, a capa cabe no cartão do livro.
+  · no celular, a capa cabe no cartão do livro;
+  · de onde vem a capa (Open Library, Apple, à mão) e o aviso de que pode ser outra edição;
+  · a capa maior só é pedida quando o usuário clica, e no tamanho certo de cada fonte;
+  · a mesma lista como grade de capas: a escolha fica guardada, o cartão abre o livro e nada é pedido a mais.
 """
 from caminhos import PAINEL, TMP
 from relogio import fixa, capas_de_mentira, png
@@ -44,9 +47,13 @@ CONHECIDAS = {
     'O Vento Solar': 'javascript:alert(1)',                         # não é https: tem de ser ignorado
     'A Ilha': 'https://exemplo.org/x.jpg" onerror="window.__furo=1',  # aspas no endereço: não podem virar atributo
 }
+FONTES = {'Fundação': 'e', 'As Cavernas de Aço': 'o', 'A Peste': 'e', 'Guerra e Paz': 'm', 'Contos da Taberna': 'a', '1984': 'a'}
 lista = [0] * len(catalogo)
 for titulo, capa in CONHECIDAS.items(): lista[linha(titulo)] = capa
+fontes = ['0'] * len(catalogo)
+for titulo, f in FONTES.items(): fontes[linha(titulo)] = f
 copia, n = re.subn(r'^const CAPAS = \[.*\];$', lambda _: 'const CAPAS = ' + json.dumps(lista, ensure_ascii=False) + ';', html, count=1, flags=re.M)
+copia, nf = re.subn(r'^const CAPAS_FONTES = ".*";$', lambda _: 'const CAPAS_FONTES = ' + json.dumps(''.join(fontes)) + ';', copia, count=1, flags=re.M)
 arq = TMP / 'painel-capas.html'; arq.write_text(copia, encoding='utf-8')
 URL = arq.as_uri()
 print('PREPARO')
@@ -104,14 +111,60 @@ with sync_playwright() as p:
     ok('aspas no endereço não escapam: a imagem só tem os atributos de sempre', atributos == ['alt', 'decoding', 'loading', 'src'] and pg.evaluate('() => window.__furo') is None, atributos)
 
     print('NA FICHA DO LIVRO')
-    TOPO = "() => { const t = document.querySelector('#gaveta.on #gv-topo'); if (!t) return null; const c = t.querySelector('.capa'), im = c && c.querySelector('img'); return { quadro: !!c, grande: !!c && c.classList.contains('g'), src: im ? im.getAttribute('src') : '', carregou: !!im && im.complete && im.naturalWidth > 0, larg: c ? Math.round(c.getBoundingClientRect().width) : 0, titulo: t.querySelector('h2').textContent }; }"
+    TOPO = "() => { const t = document.querySelector('#gaveta.on #gv-topo'); if (!t) return null; const c = t.querySelector('.capa'), im = c && c.querySelector('img'), f = t.querySelector('#gv-capa-f'); return { quadro: !!c, grande: !!c && c.classList.contains('g'), src: im ? im.getAttribute('src') : '', carregou: !!im && im.complete && im.naturalWidth > 0, larg: c ? Math.round(c.getBoundingClientRect().width) : 0, titulo: t.querySelector('h2').textContent, letra: c ? c.dataset.l : '', zoom: !!t.querySelector('[data-capa-zoom]'), fonte: f ? f.textContent : '', aviso: !!f && f.classList.contains('av') }; }"
     busca(pg, 'Fundação Asimov'); abre(pg); t = pg.evaluate(TOPO)
     ok('livro com capa: a ficha abre com a capa grande ao lado do título', t and t['grande'] and t['src'] == OL + '111-M.jpg?default=false' and t['carregou'] and t['larg'] == 104 and t['titulo'] == 'Fundação', t)
     busca(pg, 'Duna Herbert'); abre(pg); t = pg.evaluate(TOPO)
     ok('livro sem capa: a ficha não reserva espaço para ela', t and not t['quadro'] and t['titulo'].startswith('Duna'), t)
     busca(pg, 'Peste Camus'); abre(pg); pg.wait_for_timeout(500); t = pg.evaluate(TOPO)
-    ok('capa que não existe: o quadro some da ficha', t and not t['quadro'] and t['titulo'] == 'A Peste', t)
+    ok('capa que não existe: fica o desenho com a inicial, o recado e nenhum botão de ampliar', t and t['quadro'] and not t['src'] and t['letra'] == 'A' and not t['zoom'] and 'não carregou' in t['fonte'] and t['aviso'], t)
     pg.keyboard.press('Escape'); pg.wait_for_timeout(300)
+
+    print('DE ONDE VEM A CAPA')
+    for termo, titulo, trecho, aviso in [('Fundação Asimov', 'Fundação', 'Capa da Open Library, da edição com este título.', False),
+                                         ('Cavernas de Aço', 'As Cavernas de Aço', 'pode ser de outra edição ou língua', True),
+                                         ('Contos da Taberna', 'Contos da Taberna', 'Capa da Apple Books', False),
+                                         ('Guerra e Paz Tolstói', 'Guerra e Paz', 'escolhida à mão', False)]:
+        busca(pg, termo); abre(pg); pg.wait_for_timeout(300); t = pg.evaluate(TOPO)
+        ok(f'{titulo}: a ficha diz de onde vem a capa' + (' e avisa que pode ser outra edição' if aviso else ''), t and t['titulo'] == titulo and trecho in t['fonte'] and t['aviso'] == aviso, t and (t['fonte'], t['aviso']))
+        pg.keyboard.press('Escape'); pg.wait_for_timeout(200)
+    busca(pg, 'Duna Herbert'); abre(pg); t = pg.evaluate(TOPO)
+    ok('livro sem capa: nenhuma frase sobre origem', t and not t['fonte'], t and t['fonte'])
+    pg.keyboard.press('Escape'); pg.wait_for_timeout(200)
+
+    print('A CAPA MAIOR')
+    busca(pg, 'Fundação Asimov'); pg.wait_for_timeout(400)
+    ok('antes do clique, nenhuma imagem grande foi pedida', not any('-L.jpg' in u for u in pedidos), [u for u in pedidos if '-L.jpg' in u])
+    abre(pg); pg.wait_for_timeout(300); pg.click('#gv-topo [data-capa-zoom]'); pg.wait_for_timeout(600)
+    z = pg.evaluate("() => { const d = document.querySelector('#dlg.on'); if (!d) return null; const im = d.querySelector('.capa-grande img'); return { titulo: d.querySelector('#dlg-t').textContent, src: im ? im.getAttribute('src') : '', alt: im ? im.getAttribute('alt') : '', carregou: !!im && im.complete && im.naturalWidth > 0, larg: im ? Math.round(im.getBoundingClientRect().width) : 0, fonte: d.querySelector('.capa-grande-f').textContent }; }")
+    ok('clique na capa da ficha: abre a imagem grande da Open Library (tamanho L)', z and z['titulo'] == 'Fundação' and z['src'] == OL + '111-L.jpg?default=false' and z['carregou'] and z['larg'] > 104, z)
+    ok('a imagem grande tem descrição para leitor de tela e diz a fonte', z and z['alt'] == 'Capa de Fundação, de Isaac Asimov' and 'Open Library' in z['fonte'], z and (z['alt'], z['fonte']))
+    ok('a ficha continua aberta por baixo', pg.evaluate("() => !!document.querySelector('#gaveta.on')"))
+    pg.keyboard.press('Escape'); pg.wait_for_timeout(300)
+    ok('Esc fecha a capa maior e volta para a ficha', not pg.evaluate("() => !!document.querySelector('#dlg.on')") and pg.evaluate("() => !!document.querySelector('#gaveta.on')"))
+    pg.keyboard.press('Escape'); pg.wait_for_timeout(200)
+    busca(pg, 'Contos da Taberna'); abre(pg); pg.wait_for_timeout(300); pg.click('#gv-topo [data-capa-zoom]'); pg.wait_for_timeout(600)
+    z = pg.evaluate("() => { const im = document.querySelector('#dlg.on .capa-grande img'); return im ? { src: im.getAttribute('src'), carregou: im.complete && im.naturalWidth > 0 } : null; }")
+    ok('capa da Apple: a maior é pedida no tamanho 600 × 900, no mesmo endereço', z and z['src'] == APPLE.replace('200x300bb', '600x900bb') and z['carregou'], z)
+    for _ in range(2): pg.keyboard.press('Escape'); pg.wait_for_timeout(200)
+
+    print('A LISTA COMO GRADE DE CAPAS')
+    busca(pg, 'Asimov'); pg.wait_for_timeout(400)
+    ok('a tabela começa como tabela', pg.evaluate("() => { const t = document.querySelector('#p-tab-geral'); return !t.querySelector('.tb-grade').hidden === false && t.querySelector('table').style.display !== 'none' && t.querySelector('[data-modo=tabela]').getAttribute('aria-pressed') === 'true'; }"))
+    pg.click('#p-tab-geral [data-modo=grade]'); pg.wait_for_timeout(500)
+    g = pg.evaluate("() => { const t = document.querySelector('#p-tab-geral'), cs = [...t.querySelectorAll('.tb-grade .gc')]; return { n: cs.length, tabela: t.querySelector('table').style.display, escondido: t.querySelector('.tb-grade').hidden, comCapa: cs.filter(c => c.querySelector('.capa.m')).length, comImg: cs.filter(c => c.querySelector('.capa img')).length, botao: t.querySelector('[data-modo=grade]').getAttribute('aria-pressed'), primeiro: cs[0] ? cs[0].querySelector('.gc-t b').textContent : '', larg: cs[0] ? Math.round(cs[0].querySelector('.capa').getBoundingClientRect().width) : 0 }; }")
+    ok('o botão de grade troca a lista por cartões com capa, título e autor', g['n'] >= 3 and g['tabela'] == 'none' and not g['escondido'] and g['comCapa'] == g['n'] and g['botao'] == 'true' and g['larg'] == 76, g)
+    ok('a grade mostra as capas dos livros que estão na tela', g['comImg'] >= 2, g)
+    pg.click('#p-tab-geral .tb-grade .gc'); pg.wait_for_timeout(600)
+    ok('clique num cartão abre a ficha do livro', pg.evaluate("() => !!document.querySelector('#gaveta.on #gv-topo h2')"))
+    pg.keyboard.press('Escape'); pg.wait_for_timeout(300)
+    pg.reload(); pg.wait_for_timeout(1400)
+    ok('a escolha entre tabela e grade fica guardada', pg.evaluate("() => !document.querySelector('#p-tab-geral .tb-grade').hidden"))
+    ok('e o que fica salvo é só a escolha, nunca a capa', '_img' not in (pg.evaluate("() => localStorage.getItem('%s')" % CHAVE) or '') and 'openlibrary' not in (pg.evaluate("() => localStorage.getItem('%s')" % CHAVE) or ''))
+    pg.click('#p-tab-geral [data-modo=tabela]'); pg.wait_for_timeout(400)
+    ok('dá para voltar à tabela', pg.evaluate("() => { const t = document.querySelector('#p-tab-geral'); return t.querySelector('.tb-grade').hidden && t.querySelector('table').style.display !== 'none' && t.querySelectorAll('tbody tr[data-id]').length > 0; }"))
+    ok('as outras listas não ganharam botão de grade', pg.evaluate("() => { document.querySelector('#nav [data-ir=financas]').click(); return true; }") and (pg.wait_for_timeout(600) or pg.evaluate("() => !document.querySelector('#p-tab-financas .tb-modo')")))
+    pg.click('#nav [data-ir=geral]'); pg.wait_for_timeout(500)
 
     print('NAS LISTAS')
     busca(pg, ''); pg.evaluate('() => window.scrollTo(0, 0)'); pg.wait_for_timeout(500)
@@ -120,10 +173,10 @@ with sync_playwright() as p:
 
     print('O QUE O NAVEGADOR PEDIU')
     de_fora = sorted(set(pedidos))
-    ruins = [u for u in de_fora if not re.fullmatch(re.escape(OL) + r'\d+-M\.jpg\?default=false', u) and u not in ('https://exemplo.org/capas/guerra-e-paz.jpg', APPLE, APPLE_SUMIU) and not u.startswith('https://exemplo.org/x.jpg')]
-    ok('só imagens de capa: pelo número (Open Library), pelo endereço da Apple ou pelo posto à mão', bool(de_fora) and not ruins, ruins[:3] or de_fora)
-    numeros = sorted({re.search(r'/(\d+)-M', u).group(1) for u in de_fora if u.startswith(OL)})
-    ok('e só das capas que apareceram na tela (111 e 404404; a 222 não foi vista)', numeros == ['111', '404404'], numeros)
+    ruins = [u for u in de_fora if not re.fullmatch(re.escape(OL) + r'\d+-[ML]\.jpg\?default=false', u) and u not in ('https://exemplo.org/capas/guerra-e-paz.jpg', APPLE, APPLE_SUMIU, APPLE.replace('200x300bb', '600x900bb')) and not u.startswith('https://exemplo.org/x.jpg')]
+    ok('só imagens de capa: pelo número (Open Library), pelo endereço da Apple ou pelo posto à mão — e as maiores, só onde houve clique', bool(de_fora) and not ruins, ruins[:3] or de_fora)
+    numeros = sorted({re.search(r'/(\d+)-[ML]', u).group(1) for u in de_fora if u.startswith(OL)})
+    ok('e só das capas que apareceram na tela (111, 404404 e a 222, que foi vista na grade)', numeros == ['111', '222', '404404'], numeros)
     ok('nenhum pedido de capa para "javascript:" nem para livro sem capa', not any('javascript' in u for u in de_fora))
 
     print('CAPAS DESLIGADAS')
@@ -141,6 +194,9 @@ with sync_playwright() as p:
     for v in ('biblioteca', 'recs', 'financas', 'desejos', 'precos', 'geral'):
         pg.click(f'#nav [data-ir={v}]'); pg.wait_for_timeout(500)
     ok('em nenhuma visão sobra imagem de capa', pg.evaluate("() => document.querySelectorAll('.capa img').length") == 0)
+    pg.click('#p-tab-geral [data-modo=grade]'); pg.wait_for_timeout(500)
+    ok('na grade, com as capas desligadas, ficam os desenhos com as iniciais', pg.evaluate("() => { const cs = [...document.querySelectorAll('#p-tab-geral .tb-grade .gc')]; return cs.length > 0 && cs.every(c => c.querySelector('.capa') && !c.querySelector('img')); }"))
+    pg.click('#p-tab-geral [data-modo=tabela]'); pg.wait_for_timeout(300)
     pg.wait_for_timeout(700); pg.reload(); pg.wait_for_timeout(1300)
     busca(pg, 'Cavernas de Aço'); abre(pg); pg.keyboard.press('Escape'); pg.wait_for_timeout(200)
     ok('nem depois de recarregar: nenhum pedido de imagem foi feito', pedidos == [] and pg.evaluate("() => document.querySelectorAll('.capa img').length") == 0, pedidos[:3])
@@ -196,6 +252,13 @@ with sync_playwright() as p:
             const q = c.getBoundingClientRect(), tx = x.getBoundingClientRect(), gq = g.getBoundingClientRect();
             return { capa: Math.round(q.width), texto: Math.round(tx.width), dentro: q.left >= gq.left && tx.right <= gq.right + 1, corta: h.scrollWidth > h.clientWidth + 1 }; }""")
         ok(f'{largura} px: na ficha, a capa e o título cabem lado a lado', r['capa'] >= 72 and r['texto'] >= 120 and r['dentro'] and not r['corta'], r)
+        pg.click('#gv-topo [data-capa-zoom]'); pg.wait_for_timeout(600)
+        r = pg.evaluate("() => { const d = document.querySelector('#dlg.on'), im = d && d.querySelector('.capa-grande img'); if (!im) return null; const q = im.getBoundingClientRect(); return { larg: Math.round(q.width), dentro: q.left >= 0 && q.right <= innerWidth + 1, carregou: im.complete && im.naturalWidth > 0 }; }")
+        ok(f'{largura} px: a capa maior cabe na tela do celular', r and r['dentro'] and r['larg'] > 100 and r['carregou'], r)
+        pg.keyboard.press('Escape'); pg.wait_for_timeout(200); pg.keyboard.press('Escape'); pg.wait_for_timeout(200)
+        pg.click('#p-tab-biblioteca [data-modo=grade]'); pg.wait_for_timeout(500)
+        r = pg.evaluate("() => { const cs = [...document.querySelectorAll('#p-tab-biblioteca .tb-grade .gc')]; return { n: cs.length, pagina: document.documentElement.scrollWidth - document.documentElement.clientWidth, fora: cs.filter(c => { const q = c.getBoundingClientRect(); return q.left < 0 || q.right > innerWidth + 1; }).length }; }")
+        ok(f'{largura} px: a grade de capas cabe na tela, sem estourar para os lados', r['n'] >= 3 and r['fora'] == 0 and r['pagina'] <= 0, r)
         pg.context.close()
     b.close()
 print('FALHAS:', falhas); print('ERROS:', len(errs) + len(falhas)); [print('  ', x[:300]) for x in errs[:10]]

@@ -22,6 +22,7 @@ Este arquivo é atualizado ao fim de cada rodada. Para saber em que pé as coisa
 | 8 | Análise dos filtros, trilhas personalizadas e novas recomendações | **Feita** (11/11/2026) — das oito propostas, três viraram a etapa 9; cinco esperam a sua decisão (lista abaixo) |
 | 9 | Filtros que dizem quantos livros têm e somam dentro do grupo; grupo da psicologia; conserto das caixas que não cabiam na tela | **Feita** (11/11/2026) |
 | 10 | As suas ideias: ocultar categorias, imprimir e copiar listas, sinopses, temas visuais, estímulo à leitura | **Em parte** (12/11/2026) — ocultar e imprimir estão prontos; sinopses dos lotes 1 e 2 (292 livros); seis temas prontos (Lovecraft, Sherlock Holmes, Moby Dick, Deserto, Terras antigas, Clássico greco-romano); a guia de leitura continua aguardando a aprovação do desenho abaixo |
+| 11 | Mais capas: auditoria, casamento e fontes, robô que abre PR e capas no painel | **Feita** (12/11/2026) — as quatro partes estão no painel e nos testes; falta você aprovar e rodar a primeira busca |
 
 A ordem pode mudar: as etapas que faltam não dependem umas das outras. Se alguma interessar mais, peça por ela.
 
@@ -358,7 +359,7 @@ listagens de uma vez; o material antigo guardado em `referencias/` é revisto.
   só 761 livros tinham capa. O que ela não achou passou a ser procurado também na **Apple Books**, a loja de livros
   digitais da Apple, que vende as edições daqui. Agora **1.564 dos 2.614** livros têm capa (780 vieram da
   Apple). A regra não mudou: só entra a capa cujo título **e** autor conferem com os do catálogo.
-- **Onde estão as capas:** 60 dos 97 livros da estante, 494 das 607 recomendações e 1.009 dos 1.910 livros da
+- **Onde estão as capas:** 61 dos 97 livros da estante, 494 das 607 recomendações e 1.009 dos 1.910 livros da
   biblioteca virtual. Das 60 recomendações novas, 58 já chegaram com capa.
 - **O que continua sem capa**, e por quê: 967 livros que não estão em nenhuma das duas fontes com o título do
   catálogo — edições antigas que não viraram livro digital, teses e apostilas, e quase todos os quadrinhos (só 58
@@ -945,6 +946,101 @@ visita diária só para marcar presença.
 respondidas acima.
 
 **Pronta quando** cada parte estiver no painel, com teste e com a sua aprovação. A parte 3 se completa aos poucos.
+
+---
+
+## Etapa 11 — Mais capas
+
+**Pedida em 12/11/2026.** Dos 2.614 livros, 1.564 têm capa. A ideia não é sair procurando às cegas: primeiro saber
+o que está errado e o que falta, depois procurar melhor, depois deixar a procura automática (mas sempre com revisão),
+e por último melhorar como as capas aparecem no painel. Quatro partes, nesta ordem:
+
+| Parte | O que é | Em que pé está |
+| --- | --- | --- |
+| 1 | Auditoria e fila de revisão | **Feita** (12/11/2026) |
+| 2 | Casamento mais seguro e uma fonte nova | **Feita** (12/11/2026) — falta a primeira execução real, que é a parte 3 |
+| 3 | O robô das capas abrindo um PR para revisão | **Feita** (12/11/2026) — falta você rodar a primeira busca |
+| 4 | As capas no painel: capa maior, aviso de outra edição, grade | **Feita** (12/11/2026) |
+
+### Parte 4 — As capas no painel
+
+- **Capa maior num clique.** Na ficha do livro, clicar na capa abre a imagem grande num quadro por cima (Esc fecha).
+  A imagem maior só é pedida nesse clique: nada a mais sai do navegador enquanto você só olha as listas.
+- **De onde vem a capa**, numa linha discreta na ficha: Open Library (edição ou obra), Apple Books, Google Books,
+  escolhida à mão no catálogo ou enviada por você. Quando é a capa da **obra**, vem o aviso de que pode ser de outra
+  edição ou língua — os 32 casos estão na fila de revisão.
+- **Ver como estante.** As tabelas "Todos os livros", "Livros do acervo" e "Lista de recomendações" ganharam dois
+  botões: lista e grade. Na grade, cada livro é um cartão com a capa, o título, o autor e a etiqueta da lista ou da
+  leitura; a busca, as abas, a ordem e as páginas continuam as mesmas, e clicar no cartão abre a ficha. A escolha
+  fica guardada no navegador.
+- **Quando a imagem não vem**, o desenho com a inicial fica no lugar, com o recado de que a capa não carregou —
+  antes, o quadro inteiro desaparecia da ficha.
+- **A privacidade continua a mesma.** As imagens seguem sendo a única coisa que o painel busca fora; a capa maior
+  só é pedida quando você clica; a chave "Mostrar as capas" desliga tudo (na grade também); e nada disso é guardado
+  no navegador nem vai no backup — a origem de cada capa vai no painel como uma letra por livro.
+
+### Parte 3 — O robô das capas abrindo um PR
+
+Antes, o serviço "Buscar capas" gravava o resultado direto no ramo e não montava o painel: as capas só chegavam ao
+site numa rodada seguinte, à mão. Agora ele faz o caminho inteiro e **para num Pull Request**:
+
+1. procura o que falta (com as escolhas da tela: refazer, limite, com ou sem Google Books);
+2. vê se alguma capa mudou — se não mudou nada, encerra sem abrir PR;
+3. confere o arquivo e pede 40 imagens de cada fonte para ver se abrem;
+4. monta o painel (`tools/atualizar.py`);
+5. refaz a auditoria e pede mais 40 imagens, espalhadas por todo o arquivo;
+6. roda os testes (`importador`, `busca_capas`, `auditoria_capas`, `capas_painel`, `site`; a suíte inteira é uma opção);
+7. põe tudo num ramo `capas/…` e abre o PR com o resumo, a amostra, o retrato das capas e os testes.
+
+- **Nada é publicado.** O site só muda quando o PR entra em `main`, e isso depende de aprovação. Se um teste falhar,
+  o PR nasce como rascunho e a execução fica vermelha — o trabalho da busca não se perde, mas nada é proposto como
+  pronto.
+- **Uma coisa para ligar no GitHub** (uma vez só): **Settings → Actions → General → Allow GitHub Actions to create
+  and approve pull requests**. Sem isso, o ramo é gravado e o aviso diz como abrir o PR à mão.
+- **Teste novo:** `tools/qa/fluxo_capas.py` confere o desenho do serviço lendo o arquivo (gatilho, permissões, ordem
+  dos passos, PR em rascunho quando os testes falham, nenhum merge automático, site publicando só de `main`). Ele
+  não executa o GitHub Actions — isso só acontece quando você mandar rodar.
+
+### Parte 2 — Casamento mais seguro e uma fonte nova
+
+- **O volume tem de ser o mesmo.** Era daqui que vinham capas trocadas em séries: "A Saga de Elric, Livro 2" recebia
+  a capa de "A Saga de Elric". Agora o número entra na comparação, escrito de qualquer forma ("Livro 2", "Vol. 2",
+  "#2"). A anotação de série entre parênteses continua não atrapalhando.
+- **Uma terceira fonte: o Google Books**, consultada só depois da Open Library e da Apple, e só entre livros em
+  português. Entra na busca automática e no `--candidatos`. Quem já estava marcado `nao-achei-2` (os 967 que não
+  foram achados nas duas primeiras) vai a ela na próxima execução, sem repetir as duas primeiras; se também não
+  achar, fica `nao-achei-3`.
+- **Ainda não houve execução real.** As três fontes foram testadas com respostas gravadas, no formato das respostas
+  verdadeiras, mas desta máquina não se chega à internet desses catálogos. A primeira execução de verdade é a
+  parte 3 (o robô), que abre um PR para você revisar antes de qualquer coisa entrar.
+- **Escolher à mão ficou fácil:** `python tools/capas.py --candidatos "Título" --autor "Nome"` (ou `--isbn 978…`)
+  mostra o que cada fonte tem, com o ISBN quando existe, se a busca aceitaria e por que não aceitaria — e a linha
+  pronta para colar no `capas.tsv` com origem `manual`. Nada é gravado.
+- **Cada fonte tem o seu freio.** A Apple já esperava 3 segundos entre consultas; o Google espera 1,5 e, se recusar
+  cinco vezes seguidas, o robô para de procurar nele e segue com o resto. `--sem-google` volta às duas primeiras.
+
+### Parte 1 — Auditoria e fila de revisão
+
+`python tools/auditar_capas.py` (ou `python tools/capas.py --auditar`) gera
+[`catalogo/capas-revisao.md`](catalogo/capas-revisao.md). O arquivo tem o retrato das capas — por parte da biblioteca,
+por eixo temático, por tipo de livro e por origem — e a fila de revisão, com o motivo e o que fazer em cada caso.
+
+- **Os números são os do painel.** A auditoria usa o mesmo cruzamento do catálogo com o `capas.tsv` que gera
+  `src/capas.json`; não há uma contagem paralela que possa divergir. (Foi assim que se descobriu que a estante tem
+  61 capas, e não 60 como estava escrito aqui e no README.)
+- **Onde estão as capas:** estante 61 de 97 (63%), recomendações 494 de 607 (81%), biblioteca virtual 1.009 de 1.910
+  (53%). Por tipo: ficção 80%, não ficção 56%, poesia 73%, antologias 39% e **quadrinhos 24% (58 de 245)** — o pior
+  grupo. Por eixo, os piores são psicologia (48%), ficção científica (51%) e espiritualidade (53%).
+- **191 livros na fila de revisão:** 32 com capa da obra na Open Library (podem ser de outra edição ou língua),
+  149 com autoria a conferir (sem autor, "Vários autores" ou anotação entre parênteses) e 30 com título a conferir
+  (cortado, sem número de volume ou já marcado `#verificar`). Nenhuma capa repetida e nenhum endereço inválido hoje.
+- **1.050 sem capa:** 967 já procurados nas duas fontes e 83 que nem foram procurados, por não terem autor certo.
+  O relatório lista os 83: neles, o conserto é no catálogo, não na busca.
+- **Não mexe em nada.** Não consulta a internet, não grava no `capas.tsv`. `--conferir` diz se o relatório guardado
+  está em dia (é o que o teste confere); `--rede 40` pede 40 das imagens e diz quais não abrem — essa parte vai para
+  a tela, nunca para o arquivo, para o relatório ser sempre o mesmo e dar para comparar de uma vez para outra.
+- **Teste novo:** `tools/qa/auditoria_capas.py`, sem navegador e sem internet (cada tipo de problema, a amostra das
+  imagens, o relatório e os comandos).
 
 ---
 

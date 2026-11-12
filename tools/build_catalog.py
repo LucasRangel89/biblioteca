@@ -12,7 +12,7 @@ Saída: lista de [titulo, autor, "tags separadas por espaço", secao, eixo, obse
            [[título antigo, autor antigo], …]. Com eles o painel reencontra o que o usuário já tinha anotado naquele livro.
 
 Também gera:
-- src/capas.json (catalogo/capas.tsv);
+- src/capas.json (catalogo/capas.tsv) e src/capas-fontes.json (uma letra por livro: de onde veio cada capa);
 - src/trilhas.json (catalogo/trilhas.md): as trilhas de leitura, cada uma como
   [marcador, nome, descrição, [posições das linhas do catálogo, na ordem da trilha]];
 - src/antes.json (catalogo/antes-da-vistoria.tsv): [posição da linha, eixo, "marcadores"] que a linha tinha no painel
@@ -29,6 +29,7 @@ import capas
 RAIZ = pathlib.Path(__file__).resolve().parent.parent
 DEST = RAIZ / 'src' / 'catalog.json'
 DEST_CAPAS = RAIZ / 'src' / 'capas.json'
+DEST_FONTES = RAIZ / 'src' / 'capas-fontes.json'
 DEST_TRILHAS = RAIZ / 'src' / 'trilhas.json'
 RENOMEADOS = RAIZ / 'catalogo' / 'renomeados.tsv'
 TRILHAS = RAIZ / 'catalogo' / 'trilhas.md'
@@ -319,6 +320,11 @@ if __name__ == '__main__':
     with open(DEST_CAPAS, 'w', encoding='utf-8', newline='\n') as f:
         f.write(json.dumps(lista, ensure_ascii=False, separators=(',', ':')))
     print(sum(1 for c in lista if c), 'capas ->', DEST_CAPAS, DEST_CAPAS.stat().st_size, 'bytes')
+    fontes = capas.para_as_fontes(parse(SRC.read_text(encoding='utf-8')))
+    assert len(fontes) == len(lista) and fontes.count('0') == sum(1 for c in lista if not c)
+    with open(DEST_FONTES, 'w', encoding='utf-8', newline='\n') as f:
+        f.write(json.dumps(fontes, ensure_ascii=False))
+    print(len(fontes), 'origens de capa ->', DEST_FONTES, DEST_FONTES.stat().st_size, 'bytes')
     trilhas = ler_trilhas(parse(SRC.read_text(encoding='utf-8')), avisos)
     with open(DEST_TRILHAS, 'w', encoding='utf-8', newline='\n') as f:
         f.write(json.dumps(trilhas, ensure_ascii=False, separators=(',', ':')))

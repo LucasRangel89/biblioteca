@@ -158,6 +158,20 @@ class Apple:
 apple = Apple()                                                    # nesta parte, a Apple não tem nenhum dos livros
 procurar_apple_real = C.procurar_apple
 C.procurar_apple = lambda t, a, hq, lim, buscar=None: procurar_apple_real(t, a, hq, lim, apple)
+class Google:
+    """Faz o papel do Google Books: responde pelo que foi perguntado e anota a consulta."""
+    def __init__(self, respostas=None): self.respostas, self.feitas = respostas or {}, []
+    def __call__(self, params, limite):
+        self.feitas.append(params['q'])
+        r = self.respostas.get(params['q'])
+        if isinstance(r, Exception): raise r
+        return {'items': r or []}
+google = Google()                                                  # e aqui o Google não tem nenhum deles
+procurar_google_real = C.procurar_google
+buscar_google_real, buscar_apple_real = C.buscar_google, C.buscar_apple
+def usa_google():
+    C.procurar_google = lambda t, a, hq, lim, buscar=None: procurar_google_real(t, a, hq, lim, google)
+usa_google()
 
 def roda(*args):
     s = io.StringIO()
@@ -169,8 +183,9 @@ confere(codigo == 0 and '5 a procurar' in saida and rede.feitas == [] and 'Livro
 codigo, saida = roda()
 linhas = {l.split('\t')[0]: l.split('\t')[2:] for l in tsv.read_text(encoding='utf-8').splitlines()[1:]}
 confere(linhas.get('As Cavernas de Aço') == ['15138088', 'edicao'] and linhas.get('Guerra e Paz') == ['12369940', 'obra'], 'capas achadas: número e origem gravados', linhas)
-confere(linhas.get('Livro Que Não Existe') == ['', 'nao-achei-2'] and linhas.get('Antologia de Contos') == ['', 'sem-autor'], 'sem capa: a linha fica, com o motivo ("nao-achei-2" = procurado nas duas fontes)', linhas)
+confere(linhas.get('Livro Que Não Existe') == ['', 'nao-achei-3'] and linhas.get('Antologia de Contos') == ['', 'sem-autor'], 'sem capa: a linha fica, com o motivo ("nao-achei-3" = procurado nas três fontes)', linhas)
 confere(apple.feitas == ['Livro Que Não Existe tal'], 'só o que a Open Library não achou é procurado na Apple (o livro sem autor e o de capa posta à mão, não)', apple.feitas)
+confere(google.feitas == ['intitle:"Livro Que Não Existe" inauthor:"tal"'], 'e só o que a Apple também não achou chega ao Google', google.feitas)
 confere(linhas.get('Capa Posta à Mão') == ['https://exemplo.org/capa.jpg', 'manual'], 'capa posta à mão não é procurada nem trocada')
 confere('Fundação' not in linhas and '1 consulta(s) falharam' in saida, 'consulta que falhou: o livro fica fora do arquivo, para a próxima execução', saida.strip().splitlines()[-2:])
 confere(linhas.get('Livro Que Saiu') == ['999', 'manual'] and 'Outro Que Saiu' not in linhas, 'livro que saiu do catálogo: a linha só fica se foi posta à mão')
@@ -192,7 +207,7 @@ rede.feitas.clear()
 apple.feitas.clear()
 codigo, saida = roda('--refazer')
 confere(rede.feitas == ['title:"Livro Que Não Existe" author:tal', 'title:"Livro Que Não Existe"'] and apple.feitas == ['Livro Que Não Existe tal'] and tsv.read_text(encoding='utf-8') == texto2,
-        '--refazer procura de novo, nas duas fontes, só os que não foram achados', (rede.feitas, apple.feitas))
+        '--refazer procura de novo, nas três fontes, só os que não foram achados', (rede.feitas, apple.feitas))
 
 # capa tirada à mão: a linha fica sem número e marcada "manual" — nunca mais é procurada, nem com --refazer
 tsv.write_text(texto2.replace('Guerra e Paz\tLiev Tolstói\t12369940\tobra', 'Guerra e Paz\tLiev Tolstói\t\tmanual'), encoding='utf-8')
@@ -221,6 +236,7 @@ confere(codigo == 1 and 'parei de procurar' in saida and 30 <= Fora.feitas <= 32
 confere('a Open Library não respondeu' in saida, 'e diz que o resto ficou para a próxima execução', saida.strip().splitlines()[-1:])
 confere(tsv.read_text(encoding='utf-8').strip() == 'titulo\tautor\tcapa\torigem' and apple.feitas == [], 'e nenhum livro é dado como "não achei", nem levado à Apple')
 C.procurar, C.procurar_apple, C.buscar_json = procurar_real, procurar_apple_real, real
+usa_google()
 
 # uma capa não serve a dois livros (volumes de uma série que casaram com a mesma edição)
 serie = {('transurfing', 'z'): {'titulo': 'Transurfing', 'autor': 'Z', 'capa': '8729438', 'origem': 'edicao'},
@@ -313,8 +329,8 @@ try:
 finally:
     C.urllib.request.urlopen = abrir_url_real
 
-# as duas fontes, em ordem, com o arquivo
-print('AS DUAS FONTES, EM ORDEM')
+# as três fontes, em ordem, com o arquivo
+print('AS TRÊS FONTES, EM ORDEM')
 def catalogo_de(linhas):
     cat.write_text('\n'.join(['# Catálogo de teste', '', '## 1. Ficção', '', '| Título | Autor | Tags |', '| --- | --- | --- |'] + [f'| {t} | {a} | #F |' for t, a in linhas] + ['']), encoding='utf-8')
 def linhas_do_tsv(): return {l.split('\t')[0]: l.split('\t')[2:] for l in tsv.read_text(encoding='utf-8').splitlines()[1:]}
@@ -323,27 +339,30 @@ catalogo_de([('Mamãe e o Sentido da Vida', 'Irvin D. Yalom'), ('Livro Só da Op
 tsv.write_text('titulo\tautor\tcapa\torigem\nMamãe e o Sentido da Vida\tIrvin D. Yalom\t\tnao-achei\nOutro Sem Capa\tAutor Quatro\t\tnao-achei\nJá Procurado nas Duas\tAutora Cinco\t\tnao-achei-2\nAntologia\tVários autores\t\tsem-autor\n', encoding='utf-8')
 rede = Rede({'title:"Livro Só da Open Library" author:um': [doc('Livro Só da Open Library', 'Autora Um', 501, ('Livro Só da Open Library', 502, 'por'))]})
 apple = Apple({'Mamãe e o Sentido da Vida yalom': YALOM, 'Livro Só da Apple dois': [ap('Livro só da Apple', 'Autor Dois', ARTE(20))]})
+google = Google()                                                  # nesta parte, o Google não tem nenhum deles
 C.procurar = lambda t, a, hq, lim, buscar=None: procurar_real(t, a, hq, lim, rede)
 C.procurar_apple = lambda t, a, hq, lim, buscar=None: procurar_apple_real(t, a, hq, lim, apple)
 codigo, saida = roda('--conferir')
-confere('5 a procurar (2 só na Apple' in saida and rede.feitas == [] and apple.feitas == [], '--conferir: três livros novos e dois que só tinham passado pela Open Library', saida.strip())
+confere('6 a procurar (2 só na Apple: já passaram pela Open Library · 1 só no Google' in saida and rede.feitas == [] and apple.feitas == [] and google.feitas == [],
+        '--conferir: três livros novos, dois que só tinham passado pela Open Library e um que já tinha passado pelas duas', saida.strip())
 codigo, saida = roda()
 L = linhas_do_tsv()
 confere(L.get('Mamãe e o Sentido da Vida') == [NO_PAINEL(115), 'apple'] and not any('Mamãe' in q or 'Outro Sem Capa' in q for q in rede.feitas),
         'livro que já tinha passado pela Open Library ("nao-achei"): vai só à Apple, e a capa entra com a origem "apple"', (L.get('Mamãe e o Sentido da Vida'), rede.feitas))
 confere(L.get('Livro Só da Open Library') == ['502', 'edicao'] and 'Livro Só da Open Library um' not in apple.feitas, 'livro novo achado na Open Library: a Apple nem é consultada')
 confere(L.get('Livro Só da Apple') == [NO_PAINEL(20), 'apple'] and 'title:"Livro Só da Apple" author:dois' in rede.feitas, 'livro novo que a Open Library não tem: a capa vem da Apple')
-confere(L.get('Livro de Lugar Nenhum') == ['', 'nao-achei-2'] and L.get('Outro Sem Capa') == ['', 'nao-achei-2'], 'quem não está em nenhuma das duas fica "nao-achei-2"', (L.get('Livro de Lugar Nenhum'), L.get('Outro Sem Capa')))
-confere(L.get('Já Procurado nas Duas') == ['', 'nao-achei-2'] and L.get('Antologia') == ['', 'sem-autor'] and not any('Procurado' in q or 'Antologia' in q for q in rede.feitas + apple.feitas),
-        'quem já tinha passado pelas duas, ou não tem autor, não é procurado')
+confere(L.get('Livro de Lugar Nenhum') == ['', 'nao-achei-3'] and L.get('Outro Sem Capa') == ['', 'nao-achei-3'], 'quem não está em nenhuma das três fica "nao-achei-3"', (L.get('Livro de Lugar Nenhum'), L.get('Outro Sem Capa')))
+confere(L.get('Já Procurado nas Duas') == ['', 'nao-achei-3'] and not any('Procurado' in q for q in rede.feitas + apple.feitas) and 'intitle:"Já Procurado nas Duas" inauthor:"cinco"' in google.feitas,
+        'quem já tinha passado pelas duas vai direto ao Google, sem repetir as duas primeiras', google.feitas)
+confere(L.get('Antologia') == ['', 'sem-autor'] and not any('Antologia' in q for q in rede.feitas + apple.feitas + google.feitas), 'quem não tem autor certo não é procurado em fonte nenhuma')
 confere(sorted(apple.feitas) == ['Livro Só da Apple dois', 'Livro de Lugar Nenhum tres', 'Mamãe e o Sentido da Vida yalom', 'Outro Sem Capa quatro'] and codigo == 0, 'quatro consultas à Apple, uma por livro', sorted(apple.feitas))
-confere('Resultado: 2 apple · 1 edicao · 3 nao-achei-2 · 1 sem-autor · 0 consulta(s) falharam' in saida, 'o resumo conta cada origem', saida.strip().splitlines()[-1:])
-rede.feitas.clear(); apple.feitas.clear(); texto3 = tsv.read_text(encoding='utf-8')
+confere('Resultado: 2 apple · 1 edicao · 3 nao-achei-3 · 1 sem-autor · 0 consulta(s) falharam' in saida, 'o resumo conta cada origem', saida.strip().splitlines()[-1:])
+rede.feitas.clear(); apple.feitas.clear(); google.feitas.clear(); texto3 = tsv.read_text(encoding='utf-8')
 codigo, saida = roda()
-confere('0 a procurar' in saida and rede.feitas == [] and apple.feitas == [] and tsv.read_text(encoding='utf-8') == texto3, 'segunda execução: nada a procurar, nada muda')
+confere('0 a procurar' in saida and rede.feitas == [] and apple.feitas == [] and google.feitas == [] and tsv.read_text(encoding='utf-8') == texto3, 'segunda execução: nada a procurar, nada muda')
 codigo, saida = roda('--refazer')
-confere(len(rede.feitas) == 6 and sorted(apple.feitas) == ['Já Procurado nas Duas cinco', 'Livro de Lugar Nenhum tres', 'Outro Sem Capa quatro'] and tsv.read_text(encoding='utf-8') == texto3,
-        '--refazer: os três "nao-achei-2" voltam às duas fontes', (rede.feitas, apple.feitas))
+confere(len(rede.feitas) == 6 and sorted(apple.feitas) == ['Já Procurado nas Duas cinco', 'Livro de Lugar Nenhum tres', 'Outro Sem Capa quatro'] and len(google.feitas) == 3 and tsv.read_text(encoding='utf-8') == texto3,
+        '--refazer: os três "nao-achei-3" voltam às três fontes', (rede.feitas, apple.feitas, google.feitas))
 confere(C.para_o_painel(parse(cat.read_text(encoding='utf-8')), C.ler_capas(tsv))[:3] == [NO_PAINEL(115), 502, NO_PAINEL(20)], 'para o painel: o número da Open Library ou o endereço da Apple')
 
 # uma consulta à Apple falha no meio: só aquele livro fica para depois
@@ -368,12 +387,187 @@ confere(codigo == 1 and 'A Apple não respondeu a 5 consultas seguidas' in saida
 confere(all(L.get(t) == ['', 'nao-achei'] for t, _ in antigos) and 'ficaram para a próxima execução (a Apple não respondeu)' in saida, 'os livros que só faltavam na Apple continuam como estavam, para a próxima execução', saida.strip().splitlines()[-1:])
 confere(L.get('Livro Só da Open Library') == ['502', 'edicao'] and L.get('Livro Novo Sem Capa') == ['', 'nao-achei'], 'os livros novos passam pela Open Library do mesmo jeito; o que ela não achou fica "nao-achei", à espera da Apple', (L.get('Livro Só da Open Library'), L.get('Livro Novo Sem Capa')))
 C.procurar, C.procurar_apple = procurar_real, procurar_apple_real
+usa_google()
 
 # a mesma capa da Apple em volumes de uma série
 serie_a = {('saga', 'z'): {'titulo': 'Saga', 'autor': 'Z', 'capa': NO_PAINEL(30), 'origem': 'apple'},
            ('saga volume um', 'z'): {'titulo': 'Saga: Volume Um', 'autor': 'Z', 'capa': NO_PAINEL(30), 'origem': 'apple'}}
 confere(C.sem_repetidas(serie_a) == 1 and serie_a[('saga', 'z')]['capa'] == NO_PAINEL(30) and serie_a[('saga volume um', 'z')] == {'titulo': 'Saga: Volume Um', 'autor': 'Z', 'capa': '', 'origem': 'nao-achei-2'},
         'capa da Apple repetida em volumes de uma série: sai do volume, que fica "nao-achei-2" (já passou pelas duas fontes)', serie_a)
+
+# ───────── 6b ▸ o volume tem de ser o mesmo ─────────
+print('O VOLUME TEM DE SER O MESMO')
+confere(C.volume_de('A Saga de Elric, Livro 2') == 2 and C.volume_de('Conan, o Cimério: Edição Definitiva, vol. 1') == 1 and C.volume_de('Saga #4') == 4 and C.volume_de('Parte 3') == 3,
+        'o número do volume sai do próprio título, escrito de qualquer das formas', [C.volume_de(t) for t in ('A Saga de Elric, Livro 2', 'Conan, vol. 1', 'Saga #4', 'Parte 3')])
+confere(C.volume_de('O Império Final (Mistborn, vol. 1)') is None, 'o que está entre parênteses é a série, não o título: não conta como volume')
+confere(C.volume_de('Dom Casmurro') is None and C.volume_de('1984') is None, 'título sem volume (e título que é um número) não inventam volume')
+confere(C.sem_volume('A Saga de Elric, Livro 2') == 'A Saga de Elric' and C.sem_volume('Saga #4') == 'Saga', 'o título sem a indicação de volume')
+confere(not C.titulo_confere('A Saga de Elric, Livro 2', 'A Saga de Elric, Livro 1'), 'volumes diferentes nunca casam')
+confere(not C.titulo_confere('A Saga de Elric, Livro 2', 'A Saga de Elric'), 'o nosso título diz o volume e o da fonte não: não casa (a capa seria a de outro volume)')
+confere(not C.titulo_confere('Fundação', 'Fundação - Volume 2'), 'e o contrário também não: a capa do volume 2 não serve ao livro sem número')
+confere(C.titulo_confere('A Saga de Elric, Livro 2', 'A Saga de Elric, Vol. 2') and C.titulo_confere('A Saga de Elric, Livro 2', 'A saga de elric #2'), '"Livro 2", "Vol. 2" e "#2" são o mesmo volume')
+confere(C.titulo_confere('O Império Final (Mistborn, vol. 1)', 'O Império Final'), 'a série anotada entre parênteses não impede o casamento: o título do livro é único')
+confere(C.escolher('A Saga de Elric, Livro 2', [doc('A Saga de Elric, Livro 1', 'Michael Moorcock', 11, ('A Saga de Elric, Livro 1', 11, 'por')),
+                                              doc('A Saga de Elric, Livro 2', 'Michael Moorcock', 22, ('A Saga de Elric, Livro 2', 22, 'por'))]) == (22, 'edicao'),
+        'na Open Library, a capa escolhida é a do volume certo')
+confere(C.escolher_apple('A Saga de Elric, Livro 2', 'moorcock', [ap('A Saga de Elric - Livro 1', 'Michael Moorcock', ARTE(41)), ap('A Saga de Elric - Livro 2', 'Michael Moorcock', ARTE(42))]) == NO_PAINEL(42),
+        'na Apple, idem')
+
+# ───────── 6c ▸ o ISBN ─────────
+print('O ISBN')
+confere(C.isbn_valido('978-85-359-0277-8') and C.isbn_valido('9788535902778') and C.isbn_valido('0306406152') and C.isbn_valido('0-8044-2957-X'),
+        'ISBN de 10 e de 13 dígitos, com ou sem hífen: a conta de conferência fecha')
+confere(not C.isbn_valido('9788535902779') and not C.isbn_valido('0306406153') and not C.isbn_valido('123') and not C.isbn_valido('') and not C.isbn_valido('978853590277X'),
+        'número que não fecha, curto demais ou vazio: não é ISBN')
+confere(C.isbn_limpo(' 978-85-359-0277-8 ') == '9788535902778' and C.isbn_limpo('0-8044-2957-x') == '080442957X', 'o ISBN sai limpo, com o X maiúsculo')
+confere(C.isbn_de('edição brasileira, ISBN 978-85-359-0277-8, brochura') == '9788535902778' and C.isbn_de('volume 2, 2019, 320 páginas') == '',
+        'acha o ISBN no meio de uma anotação, e não confunde ano com ISBN')
+confere(C.consulta_isbn('978-85-359-0277-8')['q'] == 'isbn:9788535902778' and C.consulta_isbn('123') is None, 'a consulta por ISBN só vai com um ISBN que fecha')
+
+# ───────── 6d ▸ a terceira fonte: Google Books ─────────
+print('A TERCEIRA FONTE: GOOGLE BOOKS')
+ARTE_G = lambda n: f'http://books.google.com/books/content?id=vol{n}&printsec=frontcover&img=1&zoom=1&edge=curl&source=gbs_api'
+NO_PAINEL_G = lambda n: f'https://books.google.com/books/content?id=vol{n}&printsec=frontcover&img=1&zoom=1&source=gbs_api'
+def gb(titulo, autor, n, lingua='pt', sub='', tipo='BOOK', ids=None, links=None):
+    v = {'title': titulo, 'authors': [autor] if isinstance(autor, str) else autor, 'language': lingua, 'printType': tipo,
+         'imageLinks': links if links is not None else {'thumbnail': ARTE_G(n)}}
+    if sub: v['subtitle'] = sub
+    if ids: v['industryIdentifiers'] = [{'type': 'ISBN_13', 'identifier': ids}]
+    return {'kind': 'books#volume', 'id': f'vol{n}', 'volumeInfo': v}
+qg = lambda t, a: (C.consulta_google(t, a) or {}).get('q')
+confere(qg('Sapiens: Uma Breve História da Humanidade', 'Yuval Noah Harari') == 'intitle:"Sapiens" inauthor:"harari"', 'a consulta: título principal e sobrenome do autor', qg('Sapiens: Uma Breve História da Humanidade', 'Yuval Noah Harari'))
+pg = C.consulta_google('Sapiens', 'Yuval Noah Harari')
+confere(pg['langRestrict'] == 'pt' and pg['printType'] == 'books', 'pede só livros, e em português', pg)
+confere(all(C.consulta_google('Um Livro Qualquer', a) is None for a in ('', 'Vários autores', 'Autor não informado')), 'sem autor certo não se procura, como nas outras fontes')
+confere(C.consulta_google('1984 (em quadrinhos)', 'George Orwell') is None and qg('1984 (em quadrinhos)', 'George Orwell e Fido Nesti') == 'intitle:"1984" inauthor:"nesti"', 'adaptação em quadrinhos: só com o autor da adaptação')
+confere(C.imagem_google(gb('Sapiens', 'Yuval Noah Harari', 1)['volumeInfo']) == NO_PAINEL_G(1), 'a capa vira https e perde a ponta enrolada da miniatura')
+tortos_g = ['', 'http://exemplo.org/books/content?id=1', 'https://exemplo.org/books/content?id=1', 'https://books.google.com.exemplo.org/books/content?id=1',
+            'https://books.google.com/books/content?id=1&x="><script>']
+confere(all(C.imagem_google({'imageLinks': {'thumbnail': u}}) == '' for u in tortos_g), 'endereço que não tem a forma dos do Google não é guardado', [u for u in tortos_g if C.imagem_google({'imageLinks': {'thumbnail': u}})])
+confere(C.imagem_google({'imageLinks': {'smallThumbnail': ARTE_G(2)}}) == NO_PAINEL_G(2) and C.imagem_google({}) == '', 'sem a miniatura grande, vale a pequena; sem nenhuma, nada')
+confere(C.escolher_google('Sapiens', 'harari', [gb('Sapiens', 'Yuval Noah Harari', 3)]) == NO_PAINEL_G(3), 'título e autor conferem: serve')
+confere(C.escolher_google('Sapiens', 'harari', [gb('Sapiens', 'Yuval Noah Harari', 4, sub='Uma breve história da humanidade')]) == NO_PAINEL_G(4), 'o subtítulo vem em campo separado no Google: entra na comparação')
+confere(C.escolher_google('Batman: Ano Um', 'miller', [gb('Batman', 'Frank Miller', 5, sub='Ano Um')], hq=True) == NO_PAINEL_G(5), 'num quadrinho, o subtítulo em campo separado também vale')
+confere(C.escolher_google('Batman: Ano Um', 'miller', [gb('Batman', 'Frank Miller', 6)], hq=True) == '', 'quadrinho sem o nosso subtítulo: não serve')
+confere(C.escolher_google('Sapiens', 'harari', [gb('Sapiens', 'Outra Pessoa', 7)]) == '', 'mesmo título, outro autor: não serve')
+confere(C.escolher_google('Guerra e Paz', 'tolstoi', [gb('Guerra e Paz', 'Leo Tolstoy', 8)]) == NO_PAINEL_G(8), 'o mesmo autor em outra grafia serve')
+confere(C.escolher_google('Sapiens', 'harari', [gb('Sapiens', 'Yuval Noah Harari', 9, lingua='en')]) == '', 'livro em outra língua não entra, mesmo tendo vindo na resposta')
+confere(C.escolher_google('Sapiens', 'harari', [gb('Sapiens', 'Yuval Noah Harari', 10, tipo='MAGAZINE')]) == '', 'o que não é livro não serve')
+confere(C.escolher_google('Fundação', 'asimov', [gb('Box Fundação', 'Isaac Asimov', 11), gb('Fundação: Resumo do livro', 'Isaac Asimov', 12)]) == '', 'caixa e resumo do livro não servem')
+confere(C.escolher_google('A Saga de Elric, Livro 2', 'moorcock', [gb('A Saga de Elric, Livro 1', 'Michael Moorcock', 13), gb('A Saga de Elric, Livro 2', 'Michael Moorcock', 14)]) == NO_PAINEL_G(14), 'o volume certo, também aqui')
+iguais = [gb('Sapiens', 'Yuval Noah Harari', 15, sub='Uma breve história da humanidade'), gb('Sapiens', 'Yuval Noah Harari', 16)]
+confere(C.escolher_google('Sapiens', 'harari', iguais) == NO_PAINEL_G(16), 'título igual ganha de título com subtítulo, mesmo vindo depois')
+confere(C.escolher_google('Sapiens', 'harari', None) == '' and C.escolher_google('Sapiens', 'harari', ['texto solto', {}, {'volumeInfo': None}]) == '', 'resposta vazia ou torta: nada')
+gg = Google({pg['q']: [gb('Sapiens', 'Yuval Noah Harari', 17)]})
+confere(procurar_google_real('Sapiens', 'Yuval Noah Harari', False, None, gg) == (NO_PAINEL_G(17), 'google') and gg.feitas == [pg['q']], 'achou: o endereço e a origem "google", com uma consulta só')
+confere(procurar_google_real('Livro Que Não Existe', 'Fulano de Tal', False, None, Google()) == ('', 'nao-achei-3'), 'não achou: "nao-achei-3", sem capa')
+confere(procurar_google_real('Antologia', 'Vários autores', False, None, Google()) == ('', 'nao-achei-3'), 'sem autor certo: nenhuma consulta')
+try: procurar_google_real('Sapiens', 'Yuval Noah Harari', False, None, Google({pg['q']: OSError('rede fora')})); levantou = False
+except OSError: levantou = True
+confere(levantou, 'consulta que falha levanta erro (o livro não é dado como "não achei")')
+try:
+    C.urllib.request.urlopen, pedidos_g = servidor([429, 503, {'items': []}]); esperas.clear()
+    r = C.buscar_google(pg, SemEspera(), dormir=esperas.append)
+    confere(r == {'items': []} and esperas == [30, 12] and len(pedidos_g) == 3, 'o Google recusa por excesso (429) ou cai (503): espera e tenta de novo', (esperas, len(pedidos_g)))
+    confere(pedidos_g[0].startswith('https://www.googleapis.com/books/v1/volumes?') and 'langRestrict=pt' in pedidos_g[0], 'o endereço consultado é o da busca do Google Books', pedidos_g[0])
+    C.urllib.request.urlopen, pedidos_g = servidor([429, 429, 429]); esperas.clear()
+    try: C.buscar_google(pg, SemEspera(), dormir=esperas.append); levantou = False
+    except urllib.error.HTTPError: levantou = True
+    confere(levantou and len(pedidos_g) == 3, 'recusado três vezes: a consulta falha e o livro fica para a próxima execução', len(pedidos_g))
+    C.urllib.request.urlopen, pedidos_g = servidor([403, {}]); esperas.clear()
+    try: C.buscar_google(pg, SemEspera(), dormir=esperas.append); levantou = False
+    except urllib.error.HTTPError: levantou = True
+    confere(levantou and len(pedidos_g) == 1, 'outro erro (403, chave ou cota): não insiste', len(pedidos_g))
+finally:
+    C.urllib.request.urlopen = abrir_url_real
+
+# o Google dentro do fluxo: entra depois das outras duas, e uma recusa não estraga o que já foi achado
+print('O GOOGLE DENTRO DO FLUXO')
+catalogo_de([('Livro Só do Google', 'Autora Sete'), ('Livro de Lugar Nenhum', 'Autora Três'), ('Já Nas Duas', 'Autora Oito')])
+tsv.write_text('titulo\tautor\tcapa\torigem\nJá Nas Duas\tAutora Oito\t\tnao-achei-2\n', encoding='utf-8')
+rede = Rede({}); apple = Apple(); google = Google({'intitle:"Livro Só do Google" inauthor:"sete"': [gb('Livro Só do Google', 'Autora Sete', 21)]})
+C.procurar = lambda t, a, hq, lim, buscar=None: procurar_real(t, a, hq, lim, rede)
+C.procurar_apple = lambda t, a, hq, lim, buscar=None: procurar_apple_real(t, a, hq, lim, apple)
+usa_google()
+codigo, saida = roda('--pausa-google', '0'); L = linhas_do_tsv()
+confere(codigo == 0 and L.get('Livro Só do Google') == [NO_PAINEL_G(21), 'google'], 'livro que só o Google tem: a capa entra com a origem "google"', (codigo, L.get('Livro Só do Google')))
+confere(L.get('Já Nas Duas') == ['', 'nao-achei-3'] and not any('Já Nas Duas' in q for q in rede.feitas + apple.feitas), 'quem já tinha passado pelas duas só é procurado no Google', L.get('Já Nas Duas'))
+confere(len(rede.feitas) == 4 and len(apple.feitas) == 2 and len(google.feitas) == 3, 'as consultas: Open Library nos livros novos, Apple no que ela não achou, Google no que sobrou', (len(rede.feitas), len(apple.feitas), len(google.feitas)))
+confere('Resultado: 1 google · 2 nao-achei-3' in saida, 'o resumo conta a origem nova', saida.strip().splitlines()[-1:])
+confere(C.para_o_painel(parse(cat.read_text(encoding='utf-8')), C.ler_capas(tsv))[0] == NO_PAINEL_G(21), 'para o painel: o endereço do Google vai como está')
+texto_g = tsv.read_text(encoding='utf-8')
+codigo, saida = roda('--pausa-google', '0')
+confere('0 a procurar' in saida and tsv.read_text(encoding='utf-8') == texto_g, 'segunda execução: os "nao-achei-3" não voltam sozinhos', saida.strip())
+class GoogleFora:
+    feitas = 0
+    def __call__(self, params, limite): GoogleFora.feitas += 1; raise OSError('recusado')
+antigos_g = [(f'Antigo {n}', f'Autora Velha{n}') for n in range(12)]
+catalogo_de(antigos_g)
+tsv.write_text('titulo\tautor\tcapa\torigem\n' + ''.join(f'{t}\t{a}\t\tnao-achei-2\n' for t, a in antigos_g), encoding='utf-8')
+C.procurar_google = lambda t, a, hq, lim, buscar=None: procurar_google_real(t, a, hq, lim, GoogleFora())
+codigo, saida = roda('--pausa-google', '0'); L = linhas_do_tsv()
+confere(codigo == 1 and 'O Google Books não respondeu a 5 consultas seguidas' in saida and 5 <= GoogleFora.feitas <= 7, 'o Google não responde: para depois de 5 falhas seguidas e a execução termina com erro', (codigo, GoogleFora.feitas))
+confere(all(L.get(t) == ['', 'nao-achei-2'] for t, _ in antigos_g) and 'ficaram para a próxima execução (o Google Books não respondeu)' in saida,
+        'e nenhum livro é dado como procurado nas três: continuam "nao-achei-2", para a próxima execução', saida.strip().splitlines()[-1:])
+usa_google()
+C.procurar, C.procurar_apple = procurar_real, procurar_apple_real
+
+# --sem-google: fica nas duas primeiras, e quem já tinha passado por elas nem é consultado
+catalogo_de([('Livro Novo Sem Google', 'Autora Nove'), ('Já Nas Duas', 'Autora Oito')])
+tsv.write_text('titulo\tautor\tcapa\torigem\nJá Nas Duas\tAutora Oito\t\tnao-achei-2\n', encoding='utf-8')
+rede = Rede({}); apple = Apple({}); google = Google({'intitle:"Livro Novo Sem Google" inauthor:"nove"': [gb('Livro Novo Sem Google', 'Autora Nove', 90)]})
+C.procurar = lambda t, a, hq, lim, buscar=None: procurar_real(t, a, hq, lim, rede)
+C.procurar_apple = lambda t, a, hq, lim, buscar=None: procurar_apple_real(t, a, hq, lim, apple)
+usa_google()
+codigo, saida = roda('--sem-google'); L = linhas_do_tsv()
+confere('1 a procurar' in saida and google.feitas == [] and L.get('Livro Novo Sem Google') == ['', 'nao-achei-2'] and L.get('Já Nas Duas') == ['', 'nao-achei-2'],
+        '--sem-google: ninguém chega à terceira fonte e quem já passou pelas duas fica como estava', (saida.strip(), google.feitas, L))
+usa_google()
+C.procurar, C.procurar_apple = procurar_real, procurar_apple_real
+
+# capa do Google repetida em volumes de uma série
+serie_g = {('saga', 'z'): {'titulo': 'Saga', 'autor': 'Z', 'capa': NO_PAINEL_G(30), 'origem': 'google'},
+           ('saga dois', 'z'): {'titulo': 'Saga: Volume Dois', 'autor': 'Z', 'capa': NO_PAINEL_G(30), 'origem': 'google'}}
+confere(C.sem_repetidas(serie_g) == 1 and serie_g[('saga', 'z')]['capa'] == NO_PAINEL_G(30) and serie_g[('saga dois', 'z')]['origem'] == 'nao-achei-3',
+        'capa do Google repetida em volumes: sai do volume, que fica "nao-achei-3" (já passou pelas três)', serie_g)
+
+# ───────── 6e ▸ escolher à mão: --candidatos ─────────
+print('ESCOLHER À MÃO (--candidatos)')
+cand = C.candidatos('Sapiens', 'Yuval Noah Harari', ol=Rede({'title:"Sapiens" author:harari': [doc('Sapiens', 'Yuval Noah Harari', 61, ('Sapiens', 62, 'por'))]}),
+                    apple=Apple({'Sapiens harari': [ap('Sapiens', 'Yuval Noah Harari', ARTE(63))]}),
+                    google=Google({'intitle:"Sapiens" inauthor:"harari"': [gb('Sapiens', 'Yuval Noah Harari', 64, ids='9788535902778')]}),
+                    limites={'ol': SemEspera(), 'apple': SemEspera(), 'google': SemEspera()})
+confere([c['fonte'] for c in cand] == ['Open Library', 'Google Books', 'Apple Books'] and all(c['serve'] for c in cand), 'as três fontes aparecem, e o que a busca aceitaria vem marcado', cand)
+confere([c['capa'] for c in cand] == ['62', NO_PAINEL_G(64), NO_PAINEL(63)], 'cada candidato traz a capa que iria para o arquivo', [c['capa'] for c in cand])
+confere(next(c for c in cand if c['fonte'] == 'Google Books')['isbn'] == '9788535902778', 'o ISBN vem junto quando a fonte o tem')
+tela = C.texto_candidatos('Sapiens', 'Yuval Noah Harari', cand)
+confere('3 candidatos · 3 aceitos' in tela and 'Sapiens\tYuval Noah Harari\t62\tmanual' in tela and 'Nada foi gravado' in tela, 'a tela mostra a linha pronta para colar no capas.tsv, com origem manual', tela[:200])
+cand = C.candidatos('Sapiens', 'Yuval Noah Harari', ol=Rede({'title:"Sapiens" author:harari': [doc('Sapiens', 'Outra Pessoa', 65, ('Sapiens', 65, 'por'))]}),
+                    apple=Apple({'Sapiens harari': [ap('Box Sapiens', 'Yuval Noah Harari', ARTE(66))]}),
+                    google=Google({'intitle:"Sapiens" inauthor:"harari"': [gb('Sapiens', 'Yuval Noah Harari', 67, lingua='en')]}),
+                    limites={'ol': SemEspera(), 'apple': SemEspera(), 'google': SemEspera()})
+confere(not any(c['serve'] for c in cand) and [c['motivo'] for c in cand] == ['o autor não confere', 'livro em outra língua', 'caixa, resumo ou guia'],
+        'e diz por que cada um não serviria', [c['motivo'] for c in cand])
+cand = C.candidatos('Dom Casmurro', 'Machado de Assis', isbn='9788535902778',
+                    ol=Rede({'isbn:9788535902778': [doc('Dom Casmurro', 'Machado de Assis', 70, ('Dom Casmurro', 70, 'por'))]}),
+                    apple=Apple({}), google=Google({'isbn:9788535902778': [gb('Dom Casmurro', 'Machado de Assis', 71)]}),
+                    limites={'ol': SemEspera(), 'apple': SemEspera(), 'google': SemEspera()})
+confere([c['fonte'] for c in cand] == ['Open Library', 'Google Books'] and all(c['serve'] for c in cand), 'com ISBN: procura pelo número na Open Library e no Google, e não consulta a Apple (a busca dela não tem ISBN)', cand)
+cand = C.candidatos('Sapiens', 'Yuval Noah Harari', ol=Rede({'title:"Sapiens" author:harari': OSError('caiu')}), apple=Apple({}), google=Google({}),
+                    limites={'ol': SemEspera(), 'apple': SemEspera(), 'google': SemEspera()})
+confere(any(c['fonte'] == 'Open Library' and 'OSError' in c['motivo'] for c in cand) and any(c['fonte'] == 'Apple Books' for c in cand), 'uma fonte que falha não derruba as outras: o erro aparece no lugar dela', cand)
+cand = C.candidatos('Um Livro Qualquer', 'Vários autores', ol=Rede({}), apple=Apple({}), google=Google({}), limites={'ol': SemEspera(), 'apple': SemEspera(), 'google': SemEspera()})
+confere(all('não se procura' in c['motivo'] or c['fonte'] == 'Open Library' for c in cand), 'sem autor certo, a Apple e o Google explicam por que não procuram', cand)
+antes_cmd = tsv.read_text(encoding='utf-8')
+google = Google({'intitle:"Sapiens" inauthor:"harari"': [gb('Sapiens', 'Yuval Noah Harari', 80)]})
+C.buscar_json, C.buscar_apple, C.buscar_google = Rede({}), Apple({}), google
+codigo, saida = roda('--pausa-google', '0', '--candidatos', 'Sapiens', '--autor', 'Yuval Noah Harari')
+C.buscar_json, C.buscar_apple, C.buscar_google = real, buscar_apple_real, buscar_google_real
+confere(codigo == 0 and 'Candidatos para “Sapiens”' in saida and 'Google Books' in saida and tsv.read_text(encoding='utf-8') == antes_cmd, '--candidatos mostra o que há e não grava nada', saida.strip().splitlines()[:2])
+codigo, saida = roda('--candidatos', 'Dom Casmurro', '--isbn', '123')
+confere(codigo == 2 and 'não fecha na conta' in saida, '--isbn torto é recusado antes de qualquer consulta', saida.strip())
+codigo, saida = roda('--candidatos')
+confere(codigo == 2 and 'Candidatos' not in saida, '--candidatos sem título nem ISBN: mostra a ajuda', codigo)
 
 # ───────── 7 ▸ a amostra: as capas guardadas abrem? ─────────
 print('A AMOSTRA DAS CAPAS (--testar)')
@@ -446,6 +640,11 @@ caps = {('a', 'x'): {'capa': '123'}, ('b', 'x'): {'capa': 'https://exemplo.org/b
 lista = C.para_o_painel([{'t': t, 'a': 'x'} for t in 'abcdefgh'], caps)
 confere(lista == [123, 'https://exemplo.org/b.jpg', 0, 0, 0, 0, 0, 0], 'número, endereço https ou 0; o que não for isso (http, aspas, texto solto) vira 0', lista)
 confere(C.endereco('123') == 'https://covers.openlibrary.org/b/id/123-M.jpg' and C.endereco('https://exemplo.org/b.jpg') == 'https://exemplo.org/b.jpg' and C.endereco('') == '', 'endereço da imagem de uma capa')
+caps_f = {('a', 'x'): {'capa': '123', 'origem': 'edicao'}, ('b', 'x'): {'capa': '124', 'origem': 'obra'}, ('c', 'x'): {'capa': 'https://is1-ssl.mzstatic.com/a.jpg/200x300bb.jpg', 'origem': 'apple'},
+          ('d', 'x'): {'capa': 'https://books.google.com/books/content?id=1', 'origem': 'google'}, ('e', 'x'): {'capa': 'https://exemplo.org/e.jpg', 'origem': 'manual'},
+          ('f', 'x'): {'capa': '', 'origem': 'nao-achei-3'}, ('g', 'x'): {'capa': 'http://sem-s.org/g.jpg', 'origem': 'edicao'}}
+confere(C.para_as_fontes([{'t': t, 'a': 'x'} for t in 'abcdefg'], caps_f) == 'eoagm00', 'de onde vem cada capa: uma letra por livro (e, o, a, g, m), e 0 para quem não tem capa que o painel mostre', C.para_as_fontes([{'t': t, 'a': 'x'} for t in 'abcdefg'], caps_f))
+confere(C.para_as_fontes([{'t': 'novo', 'a': 'x'}], {}) == '0', 'livro ainda sem linha no capas.tsv: 0')
 
 # o que está no repositório: src/capas.json em dia com catalogo/capas.tsv e com o catálogo
 C.CATALOGO, C.CAPAS = bc.SRC, C.RAIZ / 'catalogo' / 'capas.tsv'
@@ -453,6 +652,9 @@ do_catalogo = parse(bc.SRC.read_text(encoding='utf-8'))
 no_painel = json.loads(bc.DEST_CAPAS.read_text(encoding='utf-8')) if bc.DEST_CAPAS.exists() else None
 confere(no_painel == C.para_o_painel(do_catalogo), 'src/capas.json está em dia com catalogo/capas.tsv (se falhar: python tools/atualizar.py)')
 confere(no_painel is not None and len(no_painel) == len(json.loads(bc.DEST.read_text(encoding='utf-8'))), 'uma posição por linha de src/catalog.json')
+fontes = C.para_as_fontes(do_catalogo)
+confere(bc.DEST_FONTES.exists() and json.loads(bc.DEST_FONTES.read_text(encoding='utf-8')) == fontes, 'src/capas-fontes.json está em dia com catalogo/capas.tsv (se falhar: python tools/atualizar.py)')
+confere(len(fontes) == len(no_painel or []) and fontes.count('0') == sum(1 for c in (no_painel or []) if not c), 'uma letra por livro, e 0 exatamente em quem está sem capa', (len(fontes), fontes.count('0')))
 guardadas = C.ler_capas()
 confere(all(r['origem'] in C.ORIGENS for r in guardadas.values()), 'capas.tsv: toda origem é uma das conhecidas', sorted({r['origem'] for r in guardadas.values()} - C.ORIGENS))
 confere(all((r['capa'] == '') == (r['origem'] in C.SEM_CAPA) for r in guardadas.values() if r['origem'] != 'manual'), 'capas.tsv: tem capa quem foi achado, e só quem foi achado')
