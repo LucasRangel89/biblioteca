@@ -22,6 +22,7 @@ Este arquivo é atualizado ao fim de cada rodada. Para saber em que pé as coisa
 | 8 | Análise dos filtros, trilhas personalizadas e novas recomendações | **Feita** (11/11/2026) — das oito propostas, três viraram a etapa 9; cinco esperam a sua decisão (lista abaixo) |
 | 9 | Filtros que dizem quantos livros têm e somam dentro do grupo; grupo da psicologia; conserto das caixas que não cabiam na tela | **Feita** (11/11/2026) |
 | 10 | As suas ideias: ocultar categorias, imprimir e copiar listas, sinopses, temas visuais, estímulo à leitura | **Em parte** (11/11/2026) — ocultar e imprimir estão prontos; as sinopses começaram (lote 1: 149 livros); os três primeiros temas estão prontos (Lovecraft, Sherlock Holmes, Moby Dick); falta a guia de leitura (o plano e o que falta decidir estão abaixo) |
+| 11 | Biblioteca conectada: abrir e ler os arquivos digitais pelo painel, no notebook, no tablet e no celular | **Começada** (12/11/2026) — o plano das sete partes está escrito; a parte 1 (conectar a pasta no notebook) está em construção |
 
 A ordem pode mudar: as etapas que faltam não dependem umas das outras. Se alguma interessar mais, peça por ela.
 
@@ -915,6 +916,138 @@ visita diária só para marcar presença.
 respondidas acima.
 
 **Pronta quando** cada parte estiver no painel, com teste e com a sua aprovação. A parte 3 se completa aos poucos.
+
+---
+
+## Etapa 11 — Biblioteca conectada: abrir e ler os arquivos pelo painel
+
+**Começada** (12/11/2026), como combinado em novembro de 2026. A parte 1 está em construção nesta rodada; as outras
+seis estão planejadas abaixo, na ordem que você pediu. Para retomar, basta dizer "vamos para a parte 2" (ou a que
+for).
+
+**O que você pediu:** abrir e ler os seus arquivos digitais direto do painel — no notebook, no tablet e no celular.
+Começamos pelo navegador, porque dá para ir testando daqui; o programa com instalador fica para depois de tudo
+pronto.
+
+### O que você usa
+
+- **Notebook:** Windows, com Edge e Chrome.
+- **Celular e tablet:** Android.
+- **Os arquivos** ficam numa pasta principal, `LIVROS`: alguns soltos, a maioria em subpastas. Os nomes das
+  subpastas não são iguais aos das listagens do projeto; os nomes dos arquivos são.
+- **A mesma pasta está no seu Google Drive.**
+
+### As regras
+
+- **O painel acha cada livro pelo nome do arquivo, em qualquer subpasta.** Mudar um arquivo de pasta não atrapalha.
+  Mudar o nome dele desfaz a ligação, até a listagem ser refeita.
+- **Um leitor só, igual em todos os aparelhos,** sem depender de onde o arquivo vem: da pasta conectada (notebook)
+  ou de um arquivo que você escolhe, inclusive do Drive (celular e tablet).
+- **PDF e EPUB com leitor próprio,** num arquivo à parte, que lembra onde você parou.
+- **Os arquivos não saem do aparelho.** Ligar o painel ao Google Drive (entrar com a conta Google) muda essa regra:
+  fica para o fim, e só se você aprovar.
+- **Programa com instalador, só depois de tudo pronto.**
+
+### As partes
+
+| Parte | O que é | Em que pé está |
+| --- | --- | --- |
+| 1 | Notebook: conectar a pasta e mostrar o que achou e o que faltou; "Abrir" para PDF | Em construção (12/11/2026) |
+| 2 | Leitor de PDF; no celular e no tablet, "Abrir arquivo" | A fazer |
+| 3 | Leitor de EPUB | A fazer |
+| 4 | Celular e tablet: guardar no aparelho os livros que você está lendo | A fazer |
+| 5 | Quadrinhos (CBZ primeiro) e os outros formatos | A fazer |
+| 6 | Instalar como aplicativo pelo navegador | A fazer |
+| 7 | Decidir sobre a ligação com o Google Drive | Decisão sua, no fim |
+
+### O que já foi apurado
+
+- **"Conectar pasta"** existe no Chrome e no Edge do computador. No Chrome do Android existe desde a versão 132, mas
+  não alcança pastas do Drive nem lembra a permissão entre visitas. No iPhone e no iPad não existe.
+- **O leitor de PDF do navegador** não serve embutido no celular; por isso o leitor próprio.
+- **A conexão com a pasta não funciona na prévia dentro de moldura:** o teste é numa aba própria.
+- **Entrar com o Google** exige um cadastro seu no Google, mostra o aviso de "app não verificado" e a conexão dura
+  cerca de uma hora.
+- **O que há para ler.** Dos 2.385 arquivos do inventário, 1.161 são PDF e 1.068 são EPUB: os dois leitores cobrem
+  93,5% deles. O resto são quadrinhos (84 CBR e 44 CBZ), 13 RAR, 5 ZIP, 5 MOBI, 4 AZW3 e 1 TXT. Há ainda 105
+  subpastas de quadrinhos, cujo conteúdo as listagens não mostram.
+
+De onde vêm essas informações: da tabela de compatibilidade dos navegadores mantida pela Mozilla (edição de
+02/11/2026), dos avisos de versão do Chrome e do registro de pendências do Chromium, consultados em 12/11/2026. As
+regras do Google foram lidas em páginas de terceiros; antes de qualquer proposta para a parte 7, serão conferidas na
+documentação oficial.
+
+### Parte 1 — Notebook: conectar a pasta, ver o que achou e o que faltou, "Abrir" para PDF
+
+Em construção nesta rodada. O texto desta parte é completado quando ela ficar pronta.
+
+### Parte 2 — Leitor de PDF; no celular e no tablet, "Abrir arquivo"
+
+- **O leitor é uma página à parte,** um segundo arquivo do site, ao lado do painel. Ele desenha as páginas do PDF
+  por conta própria, com o PDF.js — o programa de código aberto que o Firefox usa para mostrar PDF —, em vez de
+  depender do leitor de cada navegador. É por isso que fica igual no notebook, no tablet e no celular.
+- **Lembra a página em que você parou,** livro por livro, no navegador daquele aparelho.
+- **No notebook,** o "Abrir" da ficha passa a abrir nesse leitor, com o arquivo da pasta conectada.
+- **No celular e no tablet,** a ficha ganha "Abrir arquivo": aparece a janela de arquivos do Android, em que o Drive
+  é um dos lugares; o arquivo escolhido é lido no próprio aparelho. Se ele ainda não estiver baixado, é preciso
+  internet nessa hora.
+- **Muda uma regra antiga:** o site deixa de ser um arquivo só. O painel continua sendo um arquivo; o leitor é o
+  segundo. Ele pesa mais de 1 MB, mas só é baixado quando um livro é aberto.
+
+### Parte 3 — Leitor de EPUB
+
+- **No mesmo leitor,** com tamanho de letra ajustável e as cores do tema em uso no painel. Lembra o ponto em que
+  você parou.
+- **Arquivo com trava de loja (DRM) não abre,** nem PDF nem EPUB. O leitor avisa em vez de mostrar uma página em
+  branco.
+
+### Parte 4 — Celular e tablet: guardar no aparelho os livros que você está lendo
+
+- **Por quê:** no Android o navegador não lembra a pasta entre uma visita e outra e não enxerga o Drive como pasta.
+  Sem isto, seria preciso escolher o arquivo de novo a cada leitura.
+- **Como:** o leitor guarda uma cópia do livro aberto no próprio navegador do aparelho. Depois da primeira vez, ele
+  abre sem internet e sem escolher o arquivo.
+- **Uma lista "Lendo agora",** com o espaço que cada livro ocupa e o botão de tirar. São poucos livros de cada vez,
+  não a biblioteca inteira.
+- **Essas cópias não entram no backup:** são grandes, e os originais estão na sua pasta. Limpar os dados do
+  navegador apaga as cópias; os originais não são tocados.
+
+### Parte 5 — Quadrinhos (CBZ primeiro) e os outros formatos
+
+- **CBZ** é um pacote de imagens: o leitor mostra página por página. Vem primeiro por ser o mais simples.
+- **CBR** é o mesmo pacote num formato fechado (RAR). Falta avaliar se dá para abrir bem no navegador ou se o melhor
+  caminho é converter para CBZ. Fica como dúvida, não como promessa.
+- **MOBI e AZW3** são 9 arquivos: a saída provável é convertê-los para EPUB. **RAR e ZIP soltos** são 18: são
+  pacotes, não livros prontos para ler.
+- **O tamanho real desta parte sai da parte 1:** com a pasta conectada, o painel conta o que há dentro das 105
+  subpastas de quadrinhos, coisa que as listagens não diziam.
+
+### Parte 6 — Instalar como aplicativo pelo navegador
+
+- **O que é:** o Chrome e o Edge oferecem "instalar" um site. Ele ganha ícone na área de trabalho ou na tela
+  inicial, abre em janela própria e funciona sem internet com o que já foi carregado.
+- **O que não é:** não é o programa com instalador. Continua sendo o site, sem loja de aplicativos e sem instalação
+  no Windows.
+
+### Parte 7 — Decidir sobre a ligação com o Google Drive
+
+- **O que daria:** no celular e no tablet, o painel acharia cada livro no Drive pelo nome, sem você escolher o
+  arquivo.
+- **O que custa:** um cadastro seu no Google, feito uma vez; o aviso de "app não verificado" na hora de entrar;
+  entrar de novo mais ou menos a cada hora; e a regra muda — o painel passaria a conversar com o Google em seu nome.
+- **Nada é construído antes de você aprovar.** A proposta vem com as regras conferidas na documentação do Google.
+
+### Depois de tudo: o programa com instalador
+
+Fica para o fim, como você decidiu: "depois que estiver tudo pronto podemos migrar para o instalador".
+
+### Em aberto
+
+- **Como a cópia de `LIVROS` no Drive é mantida:** pelo programa do Google Drive no notebook, que atualiza sozinho,
+  ou enviando os arquivos à mão? A resposta muda o que vale a pena fazer nas partes 2 e 4.
+
+**Pronta quando** as partes 1 a 6 estiverem no site, cada uma testada aqui e por você nos seus aparelhos, e a parte
+7 estiver decidida.
 
 ---
 
