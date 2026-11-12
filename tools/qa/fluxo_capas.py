@@ -85,7 +85,9 @@ print('O SITE CONTINUA ESPERANDO APROVAÇÃO')
 site = SITE.read_text(encoding='utf-8')
 confere(re.search(r'push:\s*\n\s*branches: \[main\]', site) is not None, 'o site só é publicado quando algo entra em main')
 site_sem_comentarios = '\n'.join(l for l in site.splitlines() if not l.lstrip().startswith('#'))
-confere('tools/atualizar.py' not in site_sem_comentarios and 'tools/capas.py' not in site_sem_comentarios, 'e o serviço do site não gera nem procura nada: publica o arquivo que já está no repositório')
+confere('tools/capas.py' not in site_sem_comentarios and 'cp Biblioteca_Lucas_Dashboard.html _site/index.html' in site_sem_comentarios,
+        'o serviço do site não procura capas e publica o HTML que já está no repositório')
+confere('git diff --exit-code' in site_sem_comentarios, 'se o site confere a geração, não publica um artefato solto: exige que o HTML versionado esteja em dia')
 
 print('OS COMANDOS CITADOS EXISTEM')
 for nome in ('capas.py', 'auditar_capas.py', 'atualizar.py', 'qa/tudo.py'):

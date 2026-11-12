@@ -1,10 +1,10 @@
 # Publica o painel como site: https://lucasrangel89.github.io/biblioteca/
 #
-# Roda sozinho a cada mudança em `main`. Para publicar de novo à mão: aba Actions → "Publicar o site" → Run workflow.
+# Roda sozinho a cada mudança em `main`. Para publicar de novo à mão: aba Actions → "Publicar o site" →
+# Run workflow, escolhendo `main`. Pedidos manuais em outros ramos não publicam.
 #
-# O site é o painel pronto (Biblioteca_Lucas_Dashboard.html), servido como página inicial. Nada é gerado aqui:
-# o painel é montado e testado antes de entrar em `main` (tools/atualizar.py e tools/qa/tudo.py), e o que vai
-# para o site é exatamente o arquivo que está no repositório.
+# Antes de publicar, confere que o HTML versionado ainda é exatamente o que as fontes geram e roda os testes
+# rápidos. O que vai para o site continua sendo o arquivo já commitado, não um artefato improvisado na publicação.
 name: Publicar o site
 
 on:
@@ -13,9 +13,7 @@ on:
   workflow_dispatch:
 
 permissions:
-  contents: read    # ler o repositório
-  pages: write      # publicar no GitHub Pages
-  id-token: write   # o GitHub Pages confere por aqui de onde vem a publicação
+  contents: read    # por padrão, só ler o repositório
 
 # Uma publicação por vez: a que está em andamento termina; das que ficarem esperando, só a mais recente roda.
 concurrency:
@@ -23,10 +21,44 @@ concurrency:
   cancel-in-progress: false
 
 jobs:
-  publicar:
-    name: Publicar
+  conferir:
+    name: Conferir antes de publicar
+    if: github.ref == 'refs/heads/main'
     runs-on: ubuntu-latest
     timeout-minutes: 15
+    permissions:
+      contents: read    # a conferência não precisa publicar nada
+    steps:
+      - name: Baixar o repositório
+        uses: actions/checkout@v7
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+
+      - name: Conferir se os arquivos gerados estão em dia
+        run: |
+          python3 tools/atualizar.py
+          git diff --exit-code
+
+      - name: Conferir a sintaxe JavaScript
+        run: |
+          for f in src/js/*.js; do node --check "$f"; done
+
+      - name: Rodar os testes sem navegador
+        env:
+          BIBLIOTECA_QA_TMP: ${{ runner.temp }}/biblioteca-qa
+        run: python3 tools/qa/tudo.py importador busca_capas auditoria_capas fluxo_capas fluxo_ci
+
+  publicar:
+    name: Publicar
+    needs: conferir
+    if: github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    permissions:
+      contents: read    # ler o HTML que já está no repositório
+      pages: write      # publicar no GitHub Pages
+      id-token: write   # o GitHub Pages confere por aqui de onde vem a publicação
     environment:
       name: github-pages
       url: ${{ steps.publicacao.outputs.page_url }}

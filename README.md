@@ -67,9 +67,11 @@ do autor e do tipo de obra — nenhum arquivo foi aberto.
 | Caminho | O que é |
 | --- | --- |
 | `Biblioteca_Lucas_Dashboard.html` | O painel pronto (gerado; não edite à mão). É este arquivo que vai para o site |
-| `.github/workflows/publicar-site.yml` | Publica o painel como site a cada mudança em `main` (ver "O site") |
+| `.github/workflows/publicar-site.yml` | Confere a geração e os testes rápidos, depois publica o painel como site a cada mudança em `main` (ver "O site") |
+| `.github/workflows/verificar.yml` | CI rápido de PR e ramos de trabalho: geração em dia, sintaxe JS e testes sem navegador |
 | `.github/workflows/buscar-capas.yml` | Procura as capas dos livros na Open Library e na Apple Books e grava `catalogo/capas.tsv`. Só roda quando pedido, pela aba Actions (ver "As capas") |
 | `ROTEIRO.md` | As etapas de desenvolvimento e as pendências de cada uma |
+| `catalogo/ANALISE-E-PLANO.md` | Análise independente do projeto, comparação com a especificação enviada e ordem proposta para os próximos PRs |
 | `catalogo/Biblioteca_Lucas_Catalogo_Mestre.md` | O Catálogo Mestre |
 | `catalogo/renomeados.tsv` | O nome antigo de cada linha da estante ou das recomendações que teve título ou autor corrigido (ver "Corrigir o título ou o autor…") |
 | `catalogo/capas.tsv` | A capa de cada livro: o número da imagem na Open Library, o endereço da imagem na Apple Books, ou vazio quando não foi achada (ver "As capas") |
@@ -551,11 +553,13 @@ desenho com a inicial do título. Até 11/11/2026 eram 761, todas da primeira fo
 ### O site
 
 O painel está publicado em <https://lucasrangel89.github.io/biblioteca/> (GitHub Pages). É o mesmo arquivo, sem nada a
-mais: `.github/workflows/publicar-site.yml` copia `Biblioteca_Lucas_Dashboard.html` para a página inicial do site.
+mais: `.github/workflows/publicar-site.yml` confere que o HTML versionado ainda é o que as fontes geram, roda os testes
+rápidos e só então copia `Biblioteca_Lucas_Dashboard.html` para a página inicial do site.
 
-- **Quando o site muda.** A cada mudança em `main`, sozinho, em um ou dois minutos. O navegador pode mostrar a versão
-  anterior por mais alguns minutos; recarregar a página resolve. Para publicar de novo à mão: no GitHub, aba
-  **Actions** → **Publicar o site** → **Run workflow**.
+- **Quando o site muda.** A cada mudança em `main`, depois de passar pela conferência, sozinho. O navegador pode
+  mostrar a versão anterior por mais alguns minutos; recarregar a página resolve. Para publicar de novo à mão: no
+  GitHub, aba **Actions** → **Publicar o site** → **Run workflow**, escolhendo `main`. Se a conferência falhar, a
+  publicação não acontece.
 - **O site mostra o painel que está no repositório**, não o catálogo. Mudar o catálogo sem rodar
   `python tools/atualizar.py` não muda o site.
 - **Os dados continuam no navegador**, e cada endereço tem os seus: o que foi anotado no arquivo aberto do computador
@@ -578,12 +582,18 @@ anexos) · `60-drawer` (gaveta do livro, formulários, cotações, importação)
 ## Testes
 
 ```bash
-python tools/qa/tudo.py importador busca_capas auditoria_capas fluxo_capas   # os que não precisam de navegador
+python tools/qa/tudo.py importador busca_capas auditoria_capas fluxo_capas fluxo_ci   # os que não precisam de navegador
 pip install playwright pillow
 python -m playwright install chromium   # no Linux, se faltarem bibliotecas: python -m playwright install-deps chromium
-python tools/qa/tudo.py                 # tudo, ~35 min; termina com "TUDO CERTO"
+python tools/qa/tudo.py                 # os 37 testes, ~35 min; termina com "TUDO CERTO"
 python tools/qa/tudo.py posse func6     # só alguns
 ```
+
+**No GitHub.** O workflow `Verificar` roda os cinco testes sem navegador em cada PR e em ramos de trabalho (exceto
+`main`), depois de conferir a geração e a sintaxe JavaScript. A publicação também passa por essa conferência. Para o
+GitHub recusar o merge quando ela falhar, é preciso marcar **Rápido (sem navegador)** como verificação obrigatória na
+proteção de `main`; o workflow sozinho não muda essa configuração. A suíte completa continua sendo uma conferência
+separada antes da aprovação humana.
 
 Os testes de navegador abrem o HTML final por `file://` (o `site` também o serve por HTTP, como no GitHub Pages).
 Para darem sempre o mesmo resultado, `relogio.py` fixa o relógio em 09/11/2026 — os dados de exemplo são gerados a
@@ -608,7 +618,8 @@ avisa no fim, em vez de dar o teste por completo. `git fetch --unshallow` traz o
 | `posse` | Físico × digital × nos dois: indicadores, gaveta, formulário, filtros, cartão no celular; quadrinhos (filtro "HQ", gaveta de uma série guardada em subpasta, busca pelo nome da subpasta, os cinco botões do filtro Tipo no celular); **migração do que o painel anterior salvou** no navegador e de um backup exportado por ele; livro anotado no painel e depois corrigido no catálogo ou no inventário (os painéis antigos são tirados do histórico do Git) |
 | `busca_capas` | A busca de capas (`tools/capas.py`), sem internet. Open Library: a consulta feita para cada livro, a capa escolhida (edição em português antes da capa da obra), a segunda tentativa só pelo título. Apple Books: a consulta, o resultado que serve (título e autor conferem; caixa, trilogia, resumo e audiolivro não), o endereço da imagem, a espera quando a busca recusa por excesso de consultas. As três em ordem: livro novo passa pelas três; quem já tinha passado por alguma vai só às que faltam; uma fonte fora do ar não atrapalha as outras. O `capas.tsv` (retomar de onde parou, não mexer no que foi posto à mão, a mesma capa em volumes de uma série), a amostra de `--testar` nas fontes; o volume certo em cada casamento; o ISBN (conta de conferência e procura por ele); o Google Books (consulta, imagem em https, língua, caixa e resumo recusados, recusas e desistência); `--sem-google`; o modo `--candidatos` com o motivo de cada recusa; `src/capas.json` e `src/capas-fontes.json` em dia com `catalogo/capas.tsv` |
 | `auditoria_capas` | A auditoria das capas (`tools/auditar_capas.py`), sem internet: os números saem do mesmo cruzamento que gera `src/capas.json`; cada problema da fila (capa que o painel não mostra, capa repetida em volumes, capa da obra, casamento que hoje não se faria, autoria e título a conferir, linha que falta, linha órfã) e o que não é problema; a conferência das imagens por amostra (`--rede`); o relatório sempre igual para o mesmo catálogo, sem data nem hora e sem nada que dependa da rede; `--resumo`, `--conferir` e o `--auditar` do `capas.py`; `catalogo/capas-revisao.md` em dia |
-| `fluxo_capas` | O robô das capas (`.github/workflows/buscar-capas.yml`), lido como arquivo: só roda quando alguém manda; nunca grava no ramo em que rodou (cria `capas/…` e abre PR); a ordem buscar → conferir → amostrar → montar → auditar → testar → PR; teste falhando vira PR em rascunho; nenhum merge automático; o site continua publicando só de `main`; os comandos e opções citados existem. Não executa o GitHub Actions: confere o desenho do fluxo |
+| `fluxo_capas` | O robô das capas (`.github/workflows/buscar-capas.yml`), lido como arquivo: só roda quando alguém manda; nunca grava no ramo em que rodou (cria `capas/…` e abre PR); a ordem buscar → conferir → amostrar → montar → auditar → testar → PR; teste falhando vira PR em rascunho; nenhum merge automático; o site continua publicando só de `main` e o HTML versionado; os comandos e opções citados existem. Não executa o GitHub Actions: confere o desenho do fluxo |
+| `fluxo_ci` | O CI rápido (`.github/workflows/verificar.yml`) e a publicação condicionada (`.github/workflows/publicar-site.yml`), lidos como arquivo: PR e ramos de trabalho passam pela conferência; geração determinística, sintaxe JS e cinco testes sem navegador; só o job de publicação tem permissão de publicar, depois da conferência e apenas em `main`; `runner.temp` fica no passo, não no env do job. Não executa o GitHub Actions nem substitui a validação do YAML |
 | `inicio` | Como o painel abre e os dados de exemplo: primeira abertura só com o catálogo; "Ver com dados de exemplo", "Limpar dados de exemplo" e "Recomeçar"; o endereço com `?exemplo=1`; **a saída dos exemplos de fábrica** para quem usava o painel anterior — sem edições, com um e com três livros editados, no computador e no celular, e com o painel que estava no ar antes da mudança (tirado do histórico do Git) |
 | `leitura_de_fora` | "Já li" para o livro que não está no acervo (emprestado, de biblioteca, perdido): a ficha da recomendação e a do item da lista de compra oferecem o botão; a leitura conta como "de fora", o livro sai da fila de recomendações e da ordem de compra e a trilha o dá por feito; data e nota opcionais; "Não li" desfaz, também no livro que o catálogo traz como lido; a recomendação lida que vai para a lista de compra e é comprada continua lida; os botões da ficha na largura do celular |
 | `opcionais` | Só o título é obrigatório: "Novo livro", "Já tenho", "Comprei", "Já li" e "Terminei hoje" sem data, loja ou valor; o que a ficha, os indicadores, Finanças, o CSV e o backup mostram nesses casos; data futura e valor ilegível recusados |
