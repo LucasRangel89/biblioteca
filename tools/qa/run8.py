@@ -15,6 +15,6 @@ e = run([('_', "document.querySelector('#aviso .pri').click()", 300),
          ('m-busca', "(() => { document.querySelector('#busca-b, [data-busca], .b-busca')?.click(); })()", 500),
         ], w=390, h=844, full=False)
 print('390 erros:', len(e)); [print(' ', x) for x in e[:10]]
-e = run([('_', "document.querySelector('#aviso .pri').click()", 300), ('_', "document.querySelector('#b-tema').click()", 400),
+e = run([('_', "document.querySelector('#aviso .pri').click()", 300), ('_', "document.querySelector('#pop-tema [data-tema-id=escuro]').click()", 400),
          ('md-geral', None, 500), ('md-gaveta', "document.querySelector('#p-ranking .li').click()", 800)], w=390, h=844, full=False)
 print('390 escuro erros:', len(e)); [print(' ', x) for x in e[:10]]

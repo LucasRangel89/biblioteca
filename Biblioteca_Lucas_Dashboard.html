@@ -160,7 +160,7 @@ a { color: var(--accent); }
 .topo-t { display: flex; align-items: center; gap: 12px; min-width: 0; }
 .topo-t .so-m { display: none; }
 .topo h1 { font: var(--tit-peso) calc(27px * var(--tit-esc))/1.15 var(--serif); letter-spacing: -.015em; }
-.topo p { color: var(--ink-2); margin-top: 3px; font-size: 13.5px; }
+.topo-t p { color: var(--ink-2); margin-top: 3px; font-size: 13.5px; }
 .t-c { display: none; }
 .topo-a { display: flex; align-items: center; gap: 8px; flex: none; }
 .ib { flex: none; width: 36px; height: 36px; display: inline-grid; place-items: center; border-radius: 10px; color: var(--ink-2); border: 1px solid var(--line); background: var(--surface); transition: background .16s, color .16s, border-color .16s; }
@@ -723,7 +723,7 @@ td.c-spark svg { margin-left: auto; margin-right: auto; }
 .lnk:hover { color: var(--accent); }
 .gv-obs { color: var(--ink-2); line-height: 1.5; }
 #gv-sin { margin-top: 16px; }
-.gv-sin-tx { margin: 0; font: calc(15px * var(--tit-esc))/1.6 var(--serif); color: var(--ink); text-wrap: pretty; hyphens: auto; }      /* a sinopse: texto de leitura, na letra dos títulos */
+.gv-sin-tx { margin: 0; font: max(15px, calc(15px * var(--tit-esc)))/1.6 var(--serif); color: var(--ink); text-wrap: pretty; hyphens: auto; }      /* a sinopse: texto de leitura, na letra dos títulos */
 .fatos > .f-oc { grid-column: 1 / -1; }
 /* suas anotações: comentários, "possui análise", arquivos anexados e a capa enviada */
 #gv-notas textarea { display: block; width: 100%; min-height: 76px; }
@@ -800,6 +800,8 @@ td.c-spark svg { margin-left: auto; margin-right: auto; }
 /* ───────────── temas: o ornamento de cada um e o seletor ───────────── */
 /* As letras dos temas foram desenhadas sem o aperto que a letra padrão dos títulos pede */
 html:is([data-tema="lovecraft"], [data-tema="holmes"], [data-tema="moby"]) :is(.marca-t b, .topo h1, .card h3, .gv-c h2, .dlg-cx h2) { letter-spacing: 0; }
+/* a letra do Lovecraft tem hastes altas: o título da página ganha um pouco mais de linha, para não perder a ponta delas no celular */
+html[data-tema="lovecraft"] .topo h1 { line-height: 1.3; }
 /* Lovecraft: um céu de poucas estrelas atrás da página. Fica só no fundo — os cartões continuam lisos — e num
    elemento à parte, para o fundo da página seguir sendo uma cor só (é contra ela que o contraste é medido). */
 html[data-tema="lovecraft"] body::before { content: ""; position: fixed; inset: 0; z-index: -1; pointer-events: none;
@@ -812,7 +814,7 @@ html[data-tema="moby"] .topo::after { content: ""; position: absolute; left: var
 
 /* o seletor: um quadro sob o botão da paleta, com uma amostra de cada tema */
 .tema-w { position: relative; display: inline-flex; flex: none; }
-.tema-pop { left: auto; right: 0; width: 304px; padding: 8px; }
+.tema-pop { left: auto; right: 0; width: min(304px, calc(100vw - 24px)); padding: 8px; }
 .temas { display: grid; gap: 4px; }
 .tema-o { display: grid; grid-template-columns: 58px minmax(0, 1fr) 18px; align-items: center; gap: 12px; width: 100%; padding: 8px 10px 8px 8px; border-radius: 11px; border: 1.5px solid transparent; transition: background .16s, border-color .16s; }
 .tema-o:hover { background: var(--surface-2); }
@@ -882,7 +884,7 @@ html[data-tema="moby"] .topo::after { content: ""; position: absolute; left: var
   .topo { padding: 14px var(--pad) 6px; align-items: center; gap: 10px; }
   .topo-t .so-m { display: grid; width: 34px; height: 34px; border-radius: 10px; }
   .topo h1 { font-size: 20px; }
-  .topo p { display: none; }
+  .topo-t p { display: none; }
   .topo-a { gap: 6px; }
   #b-novo span { display: none; }
   #b-novo { width: 36px; padding: 0; }
