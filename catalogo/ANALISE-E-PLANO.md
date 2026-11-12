@@ -272,3 +272,34 @@ Esta seção atualiza o estado sem apagar o retrato anterior.
   Google enquanto a fonte não responder.
 - **Proteção de `main`:** continua pendente de configuração no GitHub; o workflow não liga verificação obrigatória
   sozinho.
+
+### Registro operacional posterior — PR #15 e caminho gratuito das capas
+
+- **PR #15:** mesclada em `main` (`fb2d70a`) após aprovação explícita. A publicação seguinte passou
+  (run `43310223733`); o site continua em <https://lucasrangel89.github.io/biblioteca/>.
+- **Decisão de custo:** o projeto é totalmente gratuito. ISBNdb e qualquer assinatura/API paga foram descartados.
+  O caminho aprovado é: chave opcional do Google Books, ISBN só quando conferido no exemplar, piloto pequeno do
+  Internet Archive e medição em amostra antes de expandir.
+- **Implementado nesta branch (`arena/107c0160-biblioteca`):**
+  - `catalogo/isbns.tsv` opcional, começando só com cabeçalho; título/autor precisam casar com o catálogo, ISBN precisa
+    fechar na conta de conferência e a fonte da conferência é obrigatória. Nenhum ISBN é inferido de outra edição.
+  - Open Library por ISBN exato (`api/books`, `jscmd=data`) e Google por ISBN antes de título/autor; ISBN-10 e ISBN-13
+    da mesma edição casam. Erro de rede não vira “não achei”.
+  - Chave opcional `GOOGLE_BOOKS_API_KEY` em secret do GitHub, enviada no cabeçalho `X-Goog-Api-Key`; motivo de recusa
+    vai ao resumo com a chave ocultada. Sem chave, a consulta pública continua sendo tentada.
+  - Internet Archive apenas como piloto de leitura (`--piloto N` e `--candidatos … --arquivo`): candidatos/miniaturas
+    para revisão humana, nunca casamento automático, nunca gravação em `capas.tsv`, fora do robô `Buscar capas`.
+  - Painel e documentação passam a citar as três fontes gratuitas; a chave “Mostrar as capas” e a privacidade continuam.
+- **Conferência local:** `python3 tools/atualizar.py` regenerou o painel sem mudar catálogo/capas; `node --check` passou
+  em todos os módulos JS; os cinco testes rápidos (`importador`, `busca_capas`, `auditoria_capas`, `fluxo_capas`,
+  `fluxo_ci`) passaram com zero erros; YAML dos três workflows e `bash -n` dos blocos `run` passaram. A suíte com
+  navegador não foi repetida aqui (sem Playwright/Chromium neste ambiente); o teste `capas_painel` foi atualizado para
+  exigir também a menção ao Google Books em “Seus dados”.
+- **O que não foi feito:** nenhuma busca real nova, nenhum dispatch (a API continua devolvendo 403), nenhum merge desta
+  mudança, nenhuma publicação. O Google Books ainda não teve uma consulta bem-sucedida em produção.
+- **PR desta mudança:** [#16](https://github.com/LucasRangel89/biblioteca/pull/16), aberto para revisão. O CI rápido do
+  PR passou (run `43318662762`); o push inicial também tinha passado (run `43318594140`). Aguarda aprovação explícita
+  para merge.
+- **Próximo passo seguro:** depois de aprovado e mesclado, rodar `Buscar capas` em `main` com limite 40 e ler o motivo
+  no resumo. Só então medir o piloto/ISBN numa amostra de cerca de 100 livros sem capa. Gerador único de listagens e
+  revisão de `referencias/` continuam como próximos PRs da Etapa 5, para não misturar escopos.

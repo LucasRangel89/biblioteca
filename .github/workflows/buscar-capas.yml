@@ -1,7 +1,10 @@
 # Procura a capa dos livros do catálogo e abre um Pull Request com o resultado — nunca publica nada sozinho.
 #
 # Três fontes, nesta ordem: Open Library; Apple Books (busca pública do iTunes, loja do Brasil, ~20 consultas por
-# minuto); e Google Books, só para o que as duas primeiras não acharam e só entre livros em português.
+# minuto); e Google Books, só para o que as duas primeiras não acharam e só entre livros em português. Tudo gratuito.
+# Se catalogo/isbns.tsv trouxer um ISBN conferido no exemplar, Open Library e Google procuram esse número primeiro.
+# A chave do Google é opcional (secret GOOGLE_BOOKS_API_KEY): vai no cabeçalho X-Goog-Api-Key, nunca na URL nem no log.
+# O Internet Archive fica fora deste robô: é um piloto só de leitura (--piloto), para revisão humana, sem gravar capa.
 #
 # Para rodar: aba Actions → "Buscar capas" → Run workflow (escolha o ramo). Só procura o que falta: os livros novos
 # e os que ainda não passaram por todas as fontes. Marcando "refazer", tenta de novo os que não tinham sido achados.
@@ -68,6 +71,7 @@ jobs:
           REFAZER: ${{ inputs.refazer && '--refazer' || '' }}
           SEM_GOOGLE: ${{ !inputs.google && '--sem-google' || '' }}
           LIMITE: ${{ inputs.limite }}
+          GOOGLE_BOOKS_API_KEY: ${{ secrets.GOOGLE_BOOKS_API_KEY }}
         run: |
           case "$LIMITE" in
             ''|*[!0-9]*) limite='' ;;
@@ -208,7 +212,8 @@ jobs:
             echo
             echo "- Capas no catálogo: **${CAPAS_ANTES} → ${depois}** (${saldo})"
             echo "- Testes: ${estado}"
-            echo "- Fontes: Open Library → Apple Books (Brasil) → Google Books (em português)"
+            echo "- Fontes gratuitas: Open Library → Apple Books (Brasil) → Google Books (em português); ISBN conferido tem prioridade"
+            echo "- Internet Archive: fora da busca automática; só o piloto de leitura, sem gravar capa"
             echo
             echo '## O que a busca disse'
             echo

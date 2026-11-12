@@ -10,7 +10,7 @@ respondidos aqui (ver relogio.py). Confere que:
   · a capa não é guardada: nem no navegador, nem no backup; e um backup não consegue trocar a capa de um livro;
   · endereço de capa que não seja https é ignorado, e aspas no endereço não escapam do atributo;
   · no celular, a capa cabe no cartão do livro;
-  · de onde vem a capa (Open Library, Apple, à mão) e o aviso de que pode ser outra edição;
+  · de onde vem a capa (Open Library, Apple, Google, à mão) e o aviso de que pode ser outra edição;
   · a capa maior só é pedida quando o usuário clica, e no tamanho certo de cada fonte;
   · a mesma lista como grade de capas: a escolha fica guardada, o cartão abre o livro e nada é pedido a mais.
 """
@@ -182,7 +182,7 @@ with sync_playwright() as p:
     print('CAPAS DESLIGADAS')
     pg.click('#b-dados'); pg.wait_for_timeout(400)
     texto = pg.inner_text('#dlg').replace('\u00a0', ' ')
-    ok('"Seus dados" explica de onde vêm as capas e quantos livros têm', 'Open Library' in texto and 'Apple Books' in texto and '7 dos 2.614 livros têm capa encontrada' in texto, re.findall(r'\d+ dos [\d.]+ livros[^.]*', texto))
+    ok('"Seus dados" explica de onde vêm as capas e quantos livros têm', 'Open Library' in texto and 'Apple Books' in texto and 'Google Books' in texto and '7 dos 2.614 livros têm capa encontrada' in texto, re.findall(r'\d+ dos [\d.]+ livros[^.]*', texto))
     ok('a chave "mostrar as capas" começa ligada', pg.is_checked('#dlg input[data-x=capas]'))
     pg.click('#dlg input[data-x=capas]'); pg.wait_for_timeout(500)
     ok('desligar avisa que nada mais será buscado', pg.evaluate(TOAST) == 'Capas desligadas: o painel não busca mais nenhuma imagem.', pg.evaluate(TOAST))
