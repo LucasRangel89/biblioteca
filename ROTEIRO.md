@@ -21,7 +21,7 @@ Este arquivo é atualizado ao fim de cada rodada. Para saber em que pé as coisa
 | 7 | A versão 3 do catálogo: camadas e trilhas de leitura | **Feita** (11/11/2026) |
 | 8 | Análise dos filtros, trilhas personalizadas e novas recomendações | **Feita** (11/11/2026) — das oito propostas, três viraram a etapa 9; cinco esperam a sua decisão (lista abaixo) |
 | 9 | Filtros que dizem quantos livros têm e somam dentro do grupo; grupo da psicologia; conserto das caixas que não cabiam na tela | **Feita** (11/11/2026) |
-| 10 | As suas ideias: ocultar categorias, imprimir e copiar listas, sinopses, temas visuais, estímulo à leitura | **Em parte** (11/11/2026) — ocultar e imprimir estão prontos; as sinopses começaram (lote 1: 149 livros); os três primeiros temas estão prontos (Lovecraft, Sherlock Holmes, Moby Dick); falta a guia de leitura (o plano e o que falta decidir estão abaixo) |
+| 10 | As suas ideias: ocultar categorias, imprimir e copiar listas, sinopses, temas visuais, estímulo à leitura | **Em parte** (12/11/2026) — ocultar e imprimir estão prontos; sinopses dos lotes 1 e 2 (292 livros); seis temas prontos (Lovecraft, Sherlock Holmes, Moby Dick, Deserto, Terras antigas, Clássico greco-romano); a guia de leitura continua aguardando a aprovação do desenho abaixo |
 
 A ordem pode mudar: as etapas que faltam não dependem umas das outras. Se alguma interessar mais, peça por ela.
 
@@ -740,7 +740,8 @@ amostras têm 281 e 251), com a fonte e a data anotadas no arquivo.
 | Lote | Livros | Quantos | Situação |
 | --- | --- | --- | --- |
 | 1 | Os 97 da estante e as 53 prioridades (`#top`) que não estão nela | 150 | Feito em 11/11/2026: 148 sinopses e 2 pendências |
-| 2 a 5 | O restante das recomendações (seções 1 a 16 do catálogo), seção por seção | 554 | A fazer |
+| 2 | As recomendações ainda não adquiridas das seções 1 a 5, sem repetir as prioridades do lote 1 | 143 | Feito em 12/11/2026: 143 sinopses, nenhuma pendência nova |
+| 3 a 5 | O restante das recomendações: as já adquiridas nas seções 1 a 5 e as que faltam nas seções 6 a 16 | 410 | A fazer |
 | 6 em diante | Os livros digitais (seção 17), um eixo de cada vez — você escolhe por onde começar | 1.910 | A fazer |
 
 Esta tabela é atualizada a cada lote. Se quiser outra ordem — um autor, um eixo, uma trilha na frente —, é só dizer.
@@ -756,7 +757,19 @@ vem logo abaixo do título. De onde vieram:
 
 Nenhuma sinopse é cópia de editora ou de livraria, e nenhuma conta o final.
 
-**Pendências — dois livros ficaram sem sinopse**, porque não deu para confirmar que livro é. No painel, a ficha deles
+**Lote 2 — o que saiu (12/11/2026).** Entraram **143 sinopses novas**, e o painel passou a ter **292**. Este lote cobre
+as recomendações que você ainda não adquiriu nas **seções 1 a 5** do catálogo: pré-história e origens; ficção científica,
+fantasia e distopia; clássicos e romances de ideias; América Latina, Brasil e lusofonia; ficção contemporânea e mundial.
+As 12 prioridades que já estavam no lote 1 e a amostra *A Metamorfose*, que você já tinha aprovado, não foram repetidas.
+
+- **125 de obra bem conhecida**, escritas a partir do que é estabelecido sobre elas;
+- **18 conferidas em fontes externas** — obras recentes, autores menos conhecidos e títulos que pediam confirmação. O
+  endereço consultado ficou na linha de cada uma em `catalogo/sinopses.tsv`.
+
+Nenhuma pendência nova: as 143 obras puderam ser confirmadas. O catálogo não mudou — título, autor, posse e marcadores
+continuam como estavam. As duas pendências abaixo são as do lote 1 e continuam precisando de uma resposta sua.
+
+**Pendências do lote 1 — dois livros ficaram sem sinopse**, porque não deu para confirmar que livro é. No painel, a ficha deles
 segue como antes, sem nada no lugar:
 
 - *Noite do Sul* (Erico Verissimo) — não achei livro dele com este título. Pode ser *Noite*, a novela de 1954. **O que
@@ -843,6 +856,24 @@ Duas coisas que você precisa saber:
 - **Para trocar entre claro e escuro agora são dois cliques** (paleta, depois a opção), em vez de um. Foi o jeito de
   caber tudo num botão só, sem apertar o cabeçalho no celular. Se fizer falta o clique único, eu trago de volta.
 
+**O que ficou pronto (12/11/2026) — o segundo bloco de temas.**
+
+| Tema | Clima | Cores | Letra dos títulos | Ornamento |
+| --- | --- | --- | --- | --- |
+| **Deserto** | claro | areia, especiarias e ocre | Marcellus, de traços largos | duas linhas como um sulco na areia, sob o título |
+| **Terras antigas** | claro | folhas, musgo e caminhos da floresta | Cormorant Garamond | uma linha de folhas, no mesmo lugar |
+| **Clássico greco-romano** | claro | mármore, azul egeu e terracota | Cinzel, inspirada em inscrições romanas | um pequeno meandro, sob o título |
+
+Como combinado, **Deserto** é inspirado em Duna e **Terras antigas** em Tolkien, sem usar o nome das obras protegidas,
+personagens ou logotipos. Cada um nasceu com um clima só. As três letras novas são livres (SIL OFL 1.1), vão dentro do
+painel com as licenças e não são buscadas na internet. O arquivo passou de cerca de 1,2 MB para **1,37 MB**, já contando
+também as sinopses do lote 2.
+
+- Os três passaram pela conferência de contraste e pelas mesmas medidas de tela, ficha e celular dos anteriores.
+- Com oito opções no quadro **Aparência**, a lista agora rola quando não cabe inteira. Ao abrir, a escolha guardada
+  aparece mesmo que seja a última; **Home** e **End** alcançam as duas pontas sem escondê-la.
+- A folha de impressão continua preta no branco, na letra do padrão.
+
 **Para você olhar e dizer:**
 
 - As cores de cada tema estão no ponto, ou alguma está forte ou apagada demais? No Moby Dick, por exemplo, os
@@ -850,9 +881,8 @@ Duas coisas que você precisa saber:
 - A letra do Lovecraft é irregular de propósito, como tipo antigo. Dá para ler bem a sinopse nela?
 - Os ornamentos estão discretos o bastante?
 
-**Os próximos, na ordem combinada:** "Deserto" (inspirado em Duna), "Terras antigas" (inspirado em Tolkien), clássico
-greco-romano e cyberpunk; depois Viena de 1900, modernismo brasileiro e manuscrito medieval. Dois ou três por
-rodada, no mesmo acabamento. Se quiser outra ordem, diga.
+**Os próximos, na ordem combinada:** cyberpunk; depois Viena de 1900, modernismo brasileiro e manuscrito medieval.
+Dois ou três por rodada, no mesmo acabamento. Se quiser outra ordem, diga.
 
 ### Parte 5 — Estímulo à leitura (gamificação)
 

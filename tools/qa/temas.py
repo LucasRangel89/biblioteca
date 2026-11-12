@@ -29,7 +29,7 @@ from playwright.sync_api import sync_playwright
 
 CHAVE = 'biblioteca-lucas:v1'
 errs = []; falhas = []
-SERIF_PADRAO = '"Iowan Old Style"'
+SERIF_PADRAO = 'Iowan Old Style'
 VISOES = ['geral', 'biblioteca', 'recs', 'financas', 'desejos', 'precos']
 
 
@@ -44,7 +44,8 @@ js = (RAIZ / 'src' / 'js' / '30-state.js').read_text(encoding='utf-8')
 TEMAS = [dict(zip(('id', 'n', 'd', 'clima', 'cor'), m)) for m in re.findall(r"\{ id: '(\w+)', n: '([^']+)', d: '([^']+)', clima: '(claro|escuro)', cor: '(#[0-9A-F]{6})' \}", js)]
 IDS = [t['id'] for t in TEMAS]; NOVOS = [t for t in TEMAS if t['id'] not in ('claro', 'escuro')]
 ok('TEMAS (src/js/30-state.js) começa pelo padrão — claro e escuro — e traz pelo menos três outros', IDS[:2] == ['claro', 'escuro'] and len(NOVOS) >= 3 and len(set(IDS)) == len(IDS), IDS)
-ok('Lovecraft é escuro; Sherlock Holmes e Moby Dick, claros (cada tema, um clima só)', {t['id']: t['clima'] for t in NOVOS} == {'lovecraft': 'escuro', 'holmes': 'claro', 'moby': 'claro'}, {t['id']: t['clima'] for t in NOVOS})
+CLIMAS = {'lovecraft': 'escuro', 'holmes': 'claro', 'moby': 'claro', 'deserto': 'claro', 'terras': 'claro', 'greco': 'claro'}
+ok('cada tema tem o clima combinado — um só, claro ou escuro', {t['id']: t['clima'] for t in TEMAS} == {'claro': 'claro', 'escuro': 'escuro', **CLIMAS}, {t['id']: t['clima'] for t in NOVOS})
 casca = (RAIZ / 'src' / 'index.html').read_text(encoding='utf-8')
 m = re.search(r"dataset\.tema=\[([^\]]+)\]\.indexOf\(c\.tema\)>=0\?c\.tema:", casca)
 ok('o começo de src/index.html aceita exatamente os mesmos temas', m is not None and re.findall(r"'(\w+)'", m.group(1)) == IDS, m and m.group(1))
@@ -110,21 +111,25 @@ ESTADO = """() => { const h = document.documentElement, b = document.querySelect
   const h1 = document.querySelector('.topo h1'), h3 = document.querySelector('.visao:not([hidden]) .card h3');      // o título da página e o de um cartão
   return { tema: h.dataset.tema, aberto: w.classList.contains('aberto'), expandido: b.getAttribute('aria-expanded'), rotulo: b.getAttribute('aria-label'), dica: b.title,
     meta: document.querySelector('meta[name="theme-color"]').content, fundo: cs(document.body).backgroundColor, fundoImg: cs(document.body).backgroundImage, tinta: cs(document.body).color,
-    h1: { letra: cs(h1).fontFamily.split(',')[0].trim(), peso: cs(h1).fontWeight, tam: parseFloat(cs(h1).fontSize), esp: cs(h1).letterSpacing }, h3: { letra: cs(h3).fontFamily.split(',')[0].trim(), peso: cs(h3).fontWeight, tam: parseFloat(cs(h3).fontSize) },
-    corpo: cs(document.querySelector('.topo-t p, .nav button')).fontFamily.split(',')[0].trim(),
+    h1: { letra: cs(h1).fontFamily.split(',')[0].trim().replace(/\x22/g, ''), peso: cs(h1).fontWeight, tam: parseFloat(cs(h1).fontSize), esp: cs(h1).letterSpacing }, h3: { letra: cs(h3).fontFamily.split(',')[0].trim().replace(/\x22/g, ''), peso: cs(h3).fontWeight, tam: parseFloat(cs(h3).fontSize) },
+    corpo: cs(document.querySelector('.topo-t p, .nav button')).fontFamily.split(',')[0].trim().replace(/\x22/g, ''),
     marcado: [...document.querySelectorAll('#pop-tema [data-tema-id]')].filter(o => o.getAttribute('aria-checked') === 'true').map(o => o.dataset.temaId),
     foco: document.activeElement.dataset.temaId || document.activeElement.id || document.activeElement.tagName,
     guardado: (JSON.parse(localStorage.getItem('%s') || '{}').cfg || {}).tema }; }""" % CHAVE
 QUADRO = """() => { const p = document.querySelector('#pop-tema'), r = p.getBoundingClientRect(), cs = e => getComputedStyle(e);
   return { visivel: cs(p).display !== 'none' && r.width > 0, caixa: [Math.round(r.left), Math.round(r.top), Math.round(r.right), Math.round(r.bottom)], janela: [innerWidth, innerHeight], papel: p.getAttribute('role'), nome: p.getAttribute('aria-label'),
     titulo: p.querySelector('.pop-h b').textContent, grupo: p.querySelector('[role=radiogroup]').getAttribute('aria-labelledby') === p.querySelector('.pop-h b').id, nota: p.querySelector('.pop-n').textContent, notaVisivel: p.querySelector('.pop-n').getBoundingClientRect().height > 0,
+    marcadaVisivel: [...p.querySelectorAll('[aria-checked="true"]')].every(o => { const ro = o.getBoundingClientRect(); return ro.top >= r.top && ro.bottom <= r.bottom; }),
     opcoes: [...p.querySelectorAll('[data-tema-id]')].map(o => { const am = o.querySelector('.tema-am'), n = o.querySelector('.tema-n'), ro = o.getBoundingClientRect();
       return { id: o.dataset.temaId, papel: o.getAttribute('role'), marcado: o.getAttribute('aria-checked'), tab: o.tabIndex, nome: n.textContent, frase: o.querySelector('em').textContent, alt: Math.round(ro.height),
         amostra: { tema: am.dataset.tema, fundo: cs(am).backgroundColor, cartao: cs(am.children[0]).backgroundColor, tinta: cs(am.children[1]).backgroundColor, destaque: cs(am.children[3]).backgroundColor, oculta: am.getAttribute('aria-hidden') },
-        letra: cs(n).fontFamily.split(',')[0].trim(), cor: cs(n).color, corQuadro: cs(p.querySelector('.pop-h b')).color, visto: cs(o.querySelector('svg')).visibility }; }) }; }"""
-# a letra embutida está mesmo desenhando o título? Mede o mesmo texto na letra do tema e numa letra que não é a dele
-DESENHA = """async fam => { await document.fonts.load('400 40px ' + fam); await document.fonts.ready; const m = f => { const s = document.createElement('span'); s.textContent = 'Visão geral — Ação, coração'; s.style.cssText = 'position:absolute;left:-9999px;white-space:nowrap;font:400 40px ' + f; document.body.appendChild(s); const w = s.getBoundingClientRect().width; s.remove(); return w; };
-  return { carregada: [...document.fonts].some(f => f.family.replace(/"/g, '') === fam.replace(/"/g, '') && f.status === 'loaded'), dif: Math.abs(m(fam + ', monospace') - m('monospace')) }; }"""
+        letra: cs(n).fontFamily.split(',')[0].trim().replace(/\x22/g, ''), cor: cs(n).color, corQuadro: cs(p.querySelector('.pop-h b')).color, visto: cs(o.querySelector('svg')).visibility }; }) }; }"""
+# A letra embutida está mesmo desenhando? Compara três textos com a reserva monoespaçada: uma coincidência de largura
+# numa frase não prova que a fonte falhou. As aspas em nomes de família variam entre versões do Chromium; retirá-las
+# mantém a comparação igual, sem mudar o CSS que o painel usa.
+DESENHA = """async fam => { await document.fonts.load('400 40px ' + fam); await document.fonts.ready; const m = (f, texto) => { const s = document.createElement('span'); s.textContent = texto; s.style.cssText = 'position:absolute;left:-9999px;white-space:nowrap;font:400 40px ' + f; document.body.appendChild(s); const w = s.getBoundingClientRect().width; s.remove(); return w; };
+  const textos = ['Visão geral — Ação, coração', 'Biblioteca: 2614 livros e muitas histórias', 'Ilhas, memória, água e coração'];
+  return { carregada: [...document.fonts].some(f => f.family.replace(/\x22/g, '') === fam.replace(/\x22/g, '') && f.status === 'loaded'), dif: textos.reduce((s, t) => s + Math.abs(m(fam + ', monospace', t) - m('monospace', t)), 0) }; }"""
 ORNAMENTO = """() => { const p = (e, ps) => { const c = getComputedStyle(e, ps); return { tem: c.content !== 'none' && c.content !== 'normal' && c.display !== 'none', img: c.backgroundImage !== 'none', pos: c.position, z: c.zIndex, toque: c.pointerEvents, alt: parseFloat(c.height) || 0, borda: c.borderTopWidth }; };
   return { ceu: p(document.body, '::before'), fio: p(document.querySelector('.topo'), '::after') }; }"""
 LARGURA = """() => { const d = document.documentElement, t = document.querySelector('.topo-t').getBoundingClientRect(), a = document.querySelector('.topo-a').getBoundingClientRect(), h1 = document.querySelector('.topo h1');
@@ -180,14 +185,14 @@ with sync_playwright() as p:
     ok('é um grupo de opções de escolha única, com nome', q['grupo'] and all(o['papel'] == 'radio' for o in q['opcoes']))
     ok('a opção do tema em uso vem marcada — só ela —, com o sinal de visto, e recebe o foco', [o['id'] for o in q['opcoes'] if o['marcado'] == 'true'] == ['claro'] == [o['id'] for o in q['opcoes'] if o['visto'] == 'visible'] == [o['id'] for o in q['opcoes'] if o['tab'] == 0] and e['foco'] == 'claro', e['foco'])
     ok('cada amostra mostra as cores do seu tema: fundo, cartão, tinta e destaque', all(o['amostra'] == {'tema': o['id'], 'fundo': rgb(BLOCOS[o['id']]['--bg']), 'cartao': rgb(BLOCOS[o['id']]['--surface']), 'tinta': rgb(BLOCOS[o['id']]['--ink']), 'destaque': rgb(BLOCOS[o['id']]['--accent']), 'oculta': 'true'} for o in q['opcoes']), [o['amostra'] for o in q['opcoes'] if o['amostra']['fundo'] != rgb(BLOCOS[o['id']]['--bg'])])
-    ok('cada nome vem na letra do seu tema, na cor do quadro (não na do tema da amostra)', all(o['letra'] == BLOCOS[o['id']]['--serif'].split(',')[0] and o['cor'] == o['corQuadro'] for o in q['opcoes']), [(o['id'], o['letra'], o['cor']) for o in q['opcoes']])
+    ok('cada nome vem na letra do seu tema, na cor do quadro (não na do tema da amostra)', all(o['letra'] == BLOCOS[o['id']]['--serif'].split(',')[0].strip('"') and o['cor'] == o['corQuadro'] for o in q['opcoes']), [(o['id'], o['letra'], o['cor']) for o in q['opcoes']])
     ok('a nota diz o que o tema troca e onde a escolha fica', q['notaVisivel'] and 'cores' in q['nota'] and 'letra dos títulos' in q['nota'] and 'neste navegador' in q['nota'], q['nota'])
     ok('as opções têm altura boa para o dedo (44 px ou mais)', all(o['alt'] >= 44 for o in q['opcoes']), [o['alt'] for o in q['opcoes']])
 
     print('F. Escolher um tema')
     for t in NOVOS:
         pg.click(f'#pop-tema [data-tema-id={t["id"]}]'); pg.wait_for_timeout(600)
-        e = pg.evaluate(ESTADO); q = pg.evaluate(QUADRO); v = BLOCOS[t['id']]; fam = v['--serif'].split(',')[0]
+        e = pg.evaluate(ESTADO); q = pg.evaluate(QUADRO); v = BLOCOS[t['id']]; fam = v['--serif'].split(',')[0].strip('"')
         ok(f'{t["n"]}: a página troca na hora, com o quadro ainda aberto para experimentar outro', e['tema'] == t['id'] and e['aberto'] and e['marcado'] == [t['id']], (e['tema'], e['aberto'], e['marcado']))
         ok(f'{t["n"]}: fundo, tinta e a cor da barra do navegador são as do tema', e['fundo'] == rgb(v['--bg']) and e['tinta'] == rgb(v['--ink']) and e['meta'] == t['cor'], (e['fundo'], e['tinta'], e['meta']))
         ok(f'{t["n"]}: os títulos passam para a letra do tema, no peso e na escala dele', e['h1']['letra'] == fam == e['h3']['letra'] and e['h1']['peso'] == v['--tit-peso'] == e['h3']['peso'] and abs(e['h1']['tam'] - 27 * float(v['--tit-esc'])) < .02 and abs(e['h3']['tam'] - 16.5 * float(v['--tit-esc'])) < .02 and e['h1']['esp'] in ('normal', '0px'), (e['h1'], e['h3']))
@@ -196,7 +201,7 @@ with sync_playwright() as p:
         ok(f'{t["n"]}: o texto corrido, os botões e os números continuam na letra de sempre', e['corpo'] == 'Inter', e['corpo'])
         ok(f'{t["n"]}: o botão passa a dizer o nome do tema', e['rotulo'] == f'Aparência: tema {t["n"]}. Trocar o tema', e['rotulo'])
         ok(f'{t["n"]}: a escolha fica guardada no navegador', e['guardado'] == t['id'], e['guardado'])
-        ok(f'{t["n"]}: as amostras não mudam com o tema em uso', all(o['amostra']['fundo'] == rgb(BLOCOS[o['id']]['--bg']) and o['amostra']['destaque'] == rgb(BLOCOS[o['id']]['--accent']) and o['letra'] == BLOCOS[o['id']]['--serif'].split(',')[0] for o in q['opcoes']))
+        ok(f'{t["n"]}: as amostras não mudam com o tema em uso', all(o['amostra']['fundo'] == rgb(BLOCOS[o['id']]['--bg']) and o['amostra']['destaque'] == rgb(BLOCOS[o['id']]['--accent']) and o['letra'] == BLOCOS[o['id']]['--serif'].split(',')[0].strip('"') for o in q['opcoes']))
     pg.context.close()
 
     print('G. A escolha volta ao recarregar — antes de a página aparecer')
@@ -261,6 +266,14 @@ with sync_playwright() as p:
             ok('Sherlock Holmes: o fio duplo sob o título da página', o['fio']['tem'] and o['fio']['borda'] == '2px' and o['fio']['alt'] >= 4 and o['fio']['toque'] == 'none' and not o['ceu']['tem'], o)
         elif t['id'] == 'moby':
             ok('Moby Dick: a linha de ondas sob o título da página', o['fio']['tem'] and o['fio']['img'] and o['fio']['alt'] >= 6 and o['fio']['toque'] == 'none' and not o['ceu']['tem'], o)
+        elif t['id'] == 'deserto':
+            ok('Deserto: o sulco de duas linhas sob o título da página', o['fio']['tem'] and o['fio']['borda'] == '1px' and o['fio']['alt'] >= 5 and o['fio']['toque'] == 'none' and not o['ceu']['tem'], o)
+        elif t['id'] == 'terras':
+            ok('Terras antigas: a linha de folhas sob o título da página', o['fio']['tem'] and o['fio']['img'] and o['fio']['alt'] >= 8 and o['fio']['toque'] == 'none' and not o['ceu']['tem'], o)
+        elif t['id'] == 'greco':
+            ok('Clássico greco-romano: o meandro sob o título da página', o['fio']['tem'] and o['fio']['img'] and o['fio']['alt'] >= 6 and o['fio']['toque'] == 'none' and not o['ceu']['tem'], o)
+        else:
+            ok(f'{t["n"]}: falta definir neste teste qual é o ornamento combinado', False)
         ok(f'{t["n"]}: no máximo um ornamento, e o fundo da página continua de uma cor só', o['ceu']['tem'] + o['fio']['tem'] <= 1 and e['fundoImg'] == 'none', (o['ceu']['tem'], o['fio']['tem'], e['fundoImg']))
     pg.context.close()
 
@@ -280,14 +293,18 @@ with sync_playwright() as p:
             pg.fill('#p-tab-geral input[type=search]', com_sinopse); pg.wait_for_timeout(600)
             pg.evaluate("t => [...document.querySelectorAll('#p-tab-geral tbody tr[data-id]')].find(tr => tr.querySelector('.tt b').textContent.trim() === t).click()", com_sinopse); pg.wait_for_timeout(700)
             f = pg.evaluate("""() => { const g = document.querySelector('#gaveta'), c = g.querySelector('.gv-c'), h2 = g.querySelector('#gv-topo h2'), s = g.querySelector('.gv-sin-tx'), cs = e => getComputedStyle(e);
-              return { aberta: g.classList.contains('on'), sobra: c.scrollWidth - c.clientWidth, pagina: document.documentElement.scrollWidth - innerWidth, h2: cs(h2).fontFamily.split(',')[0].trim(), sin: cs(s).fontFamily.split(',')[0].trim(), tam: parseFloat(cs(s).fontSize), peso: cs(s).fontWeight }; }""")
-            fam = BLOCOS[t['id']]['--serif'].split(',')[0]
+              return { aberta: g.classList.contains('on'), sobra: c.scrollWidth - c.clientWidth, pagina: document.documentElement.scrollWidth - innerWidth, h2: cs(h2).fontFamily.split(',')[0].trim().replace(/\x22/g, ''), sin: cs(s).fontFamily.split(',')[0].trim().replace(/\x22/g, ''), tam: parseFloat(cs(s).fontSize), peso: cs(s).fontWeight }; }""")
+            fam = BLOCOS[t['id']]['--serif'].split(',')[0].strip('"')
             ok(f'{t["n"]}, {nome}: a ficha cabe na largura, com o título e a sinopse na letra do tema (sinopse com 15 px ou mais, em peso normal)', f['aberta'] and f['sobra'] <= 0 and f['pagina'] <= 0 and f['h2'] == fam == f['sin'] and f['tam'] >= 15 and f['peso'] == '400', f)
             pg.keyboard.press('Escape'); pg.wait_for_timeout(300)
             pg.fill('#p-tab-geral input[type=search]', ''); pg.wait_for_timeout(300)
         if largura <= 820:
             pg.click('#b-tema'); pg.wait_for_timeout(300); q = pg.evaluate(QUADRO)
             ok('no celular, o quadro dos temas cabe na tela, com 12 px de folga dos lados', q['visivel'] and q['caixa'][0] >= 12 and q['caixa'][2] <= q['janela'][0] - 12 and q['caixa'][3] <= q['janela'][1] and q['notaVisivel'], q['caixa'])
+            ok('…e a última escolha aparece inteira, mesmo quando a lista precisa rolar', q['marcadaVisivel'], q['caixa'])
+            pg.keyboard.press('Home'); pg.wait_for_timeout(250); primeiro = pg.evaluate(QUADRO)
+            pg.keyboard.press('End'); pg.wait_for_timeout(250); ultimo = pg.evaluate(QUADRO)
+            ok('…Home e End alcançam as duas pontas da lista sem esconder a opção escolhida', primeiro['marcadaVisivel'] and ultimo['marcadaVisivel'] and primeiro['opcoes'][0]['marcado'] == 'true' and ultimo['opcoes'][-1]['marcado'] == 'true', (primeiro['caixa'], ultimo['caixa']))
             pg.keyboard.press('Escape'); pg.wait_for_timeout(200)
             pg.set_viewport_size({'width': 320, 'height': 568}); pg.wait_for_timeout(400)
             pg.click('#b-tema'); pg.wait_for_timeout(300); q = pg.evaluate(QUADRO); m = pg.evaluate(LARGURA)
@@ -298,7 +315,7 @@ with sync_playwright() as p:
     print('K. No papel')
     pg = abre(b)
     escolhe(pg, 'lovecraft')
-    imp = pg.evaluate("() => { const i = document.querySelector('#impressao'), c = getComputedStyle(i); return { tema: i.dataset.tema, serif: c.getPropertyValue('--serif').trim().split(',')[0], peso: c.getPropertyValue('--tit-peso').trim(), tinta: c.getPropertyValue('--ink').trim() }; }")
+    imp = pg.evaluate("() => { const i = document.querySelector('#impressao'), c = getComputedStyle(i); return { tema: i.dataset.tema, serif: c.getPropertyValue('--serif').trim().split(',')[0].replace(/\x22/g, ''), peso: c.getPropertyValue('--tit-peso').trim(), tinta: c.getPropertyValue('--ink').trim() }; }")
     ok('a folha de impressão das listas não muda com o tema: letra e cores do padrão claro', imp == {'tema': 'claro', 'serif': SERIF_PADRAO, 'peso': '600', 'tinta': BLOCOS['claro']['--ink']}, imp)
     pg.evaluate("() => window.dispatchEvent(new Event('beforeprint'))"); durante = pg.evaluate("() => document.documentElement.dataset.tema")
     pg.evaluate("() => window.dispatchEvent(new Event('afterprint'))"); depois = pg.evaluate("() => document.documentElement.dataset.tema")
@@ -321,8 +338,8 @@ with sync_playwright() as p:
     fr = pg.frames[1]
     fr.click('#aviso .pri'); pg.wait_for_timeout(200)
     fr.click('#b-tema'); pg.wait_for_timeout(300); fr.click('#pop-tema [data-tema-id=moby]'); pg.wait_for_timeout(600)
-    r = fr.evaluate("() => ({ tema: document.documentElement.dataset.tema, fundo: getComputedStyle(document.body).backgroundColor, letra: getComputedStyle(document.querySelector('.topo h1')).fontFamily.split(',')[0].trim() })")
-    ok('trocar de tema funciona enquanto a página estiver aberta, sem erro', r == {'tema': 'moby', 'fundo': rgb(BLOCOS['moby']['--bg']), 'letra': BLOCOS['moby']['--serif'].split(',')[0]}, r)
+    r = fr.evaluate("() => ({ tema: document.documentElement.dataset.tema, fundo: getComputedStyle(document.body).backgroundColor, letra: getComputedStyle(document.querySelector('.topo h1')).fontFamily.split(',')[0].trim().replace(/\x22/g, '') })")
+    ok('trocar de tema funciona enquanto a página estiver aberta, sem erro', r == {'tema': 'moby', 'fundo': rgb(BLOCOS['moby']['--bg']), 'letra': BLOCOS['moby']['--serif'].split(',')[0].strip('"')}, r)
     ctx.close()
     b.close()
 

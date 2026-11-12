@@ -9,14 +9,17 @@ instaladas e sem buscar nada na internet.
 | Lovecraft | IM Fell English | `im-fell-english-latin-400-normal.woff2` | Igino Marini, 2007 — recriação dos tipos de John Fell, do século XVII |
 | Sherlock Holmes | Libre Baskerville | `libre-baskerville-latin-400-normal.woff2`, `…-600-normal.woff2` | The Libre Baskerville Project Authors (Impallari Type), 2012 |
 | Moby Dick | Old Standard TT | `old-standard-tt-latin-400-normal.woff2`, `…-700-normal.woff2` | The Old Standard Project Authors (Alexey Kryukov), 2011 |
+| Deserto | Marcellus | `marcellus-latin-400-normal.woff2` | Brian J. Bonislawsky / Astigmatic (AOETI), 2012 |
+| Terras antigas | Cormorant Garamond | `cormorant-garamond-latin-400-normal.woff2`, `…-600-normal.woff2` | The Cormorant Project Authors (Christian Thalmann), 2015 |
+| Clássico greco-romano | Cinzel | `cinzel-latin-400-normal.woff2`, `…-600-normal.woff2` | The Cinzel Project Authors (NDISCOVER), 2020 |
 
-As três são **fontes livres**, sob a SIL Open Font License 1.1, que permite usar, copiar e embutir, desde que a
+Todas são **fontes livres**, sob a SIL Open Font License 1.1, que permite usar, copiar e embutir, desde que a
 licença acompanhe a fonte e ela não seja vendida sozinha. O texto da licença de cada uma está aqui, em
 `<letra>-LICENSE.txt`, com o aviso de direitos autorais do autor.
 
 Os arquivos vieram do pacote `@fontsource/<letra>` (versão 5.3.0), que redistribui as fontes do Google Fonts. São
-recortes só com o **alfabeto latino** — todas as letras e sinais do português —, para pesar pouco: os cinco arquivos
-somam cerca de 150 KB e acrescentam uns 200 KB ao painel. Um sinal que a letra não tenha (o "ł" de Kołakowski, por
+recortes só com o **alfabeto latino** — todas as letras e sinais do português —, para pesar pouco: os dez arquivos
+somam cerca de 233 KB e acrescentam uns 311 KB ao painel. Um sinal que a letra não tenha (o "ł" de Kołakowski, por
 exemplo) é desenhado pela letra seguinte da lista do tema, que é uma letra do sistema.
 
 ## Para pôr outra letra

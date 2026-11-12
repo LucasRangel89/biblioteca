@@ -62,6 +62,9 @@ const TEMAS = [
   { id: 'lovecraft', n: 'Lovecraft', d: 'Noite funda: verde-abissal, violeta e poucas estrelas', clima: 'escuro', cor: '#0A100F' },
   { id: 'holmes', n: 'Sherlock Holmes', d: 'Papel de jornal, vinho e latão', clima: 'claro', cor: '#EEE8DA' },
   { id: 'moby', n: 'Moby Dick', d: 'Névoa do mar, azul-profundo e cobre', clima: 'claro', cor: '#E8EEEE' },
+  { id: 'deserto', n: 'Deserto', d: 'Areia, especiarias e ocre ao sol', clima: 'claro', cor: '#F2E7D2' },
+  { id: 'terras', n: 'Terras antigas', d: 'Folhas, musgo e caminhos da floresta', clima: 'claro', cor: '#E9EDDF' },
+  { id: 'greco', n: 'Clássico greco-romano', d: 'Mármore, azul egeu e terracota', clima: 'claro', cor: '#F0EFE8' },
 ];
 const ICONE_FMT = { fisico: 'livro', ebook: 'tablet', audio: 'fone' };
 
