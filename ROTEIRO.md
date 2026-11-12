@@ -16,7 +16,7 @@ Este arquivo é atualizado ao fim de cada rodada. Para saber em que pé as coisa
 | 2 | Decidir o que ficou de fora (quadrinhos, subpastas) | **Feita** (10/11/2026) — ficaram 12 perguntas para você (lista abaixo) |
 | 3 | Trocar os dados de exemplo pelos seus | **Em parte** (10/11/2026) — o painel já abre sem nada inventado; falta a sua lista de leituras |
 | 4 | Classificar os livros digitais: a vistoria dos marcadores | **Feita** (11/11/2026) — falta a sua conferência por amostragem e duas dúvidas (lista abaixo) |
-| 5 | Rotina à prova de erro | A fazer |
+| 5 | Rotina à prova de erro | **Em parte** (12/11/2026) — CI rápido e publicação condicionada implementados, aguardando aprovação; falta o gerador único de listagens e a revisão de `referencias/` |
 | 6 | Melhorias do painel | **Em parte** (11/11/2026) — endereço próprio, guia Finanças, capas (agora de duas fontes), só o título obrigatório, suas anotações, ordem de compra |
 | 7 | A versão 3 do catálogo: camadas e trilhas de leitura | **Feita** (11/11/2026) |
 | 8 | Análise dos filtros, trilhas personalizadas e novas recomendações | **Feita** (11/11/2026) — das oito propostas, três viraram a etapa 9; cinco esperam a sua decisão (lista abaixo) |
@@ -317,7 +317,18 @@ atualizar as listagens pede um `gerador de nomes.bat` em cada pasta.
 **O que será feito:** os testes passam a rodar sozinhos no GitHub a cada mudança; um único arquivo gera todas as
 listagens de uma vez; o material antigo guardado em `referencias/` é revisto.
 
-**De você:** aprovar, e testar o gerador novo uma vez no seu computador.
+**Implementado em 12/11/2026, aguardando aprovação:** `.github/workflows/verificar.yml` roda em PR e ramos de
+trabalho: confere que `python tools/atualizar.py` não muda nada, roda `node --check` e os cinco testes sem navegador.
+A publicação do site ganhou um job `conferir` antes de `publicar`; se a geração ou os testes rápidos falharem, o site
+não publica. Pedidos manuais de publicação também ficam restritos a `main`. O teste `tools/qa/fluxo_ci.py` confere
+esse desenho. A suíte completa, agora com 37 testes, continua separada, para não transformar todo PR em 35 minutos
+de espera.
+
+**Ainda falta:** marcar `Rápido (sem navegador)` como verificação obrigatória na proteção de `main` (configuração
+do GitHub, não algo que o workflow possa ligar sozinho); um único arquivo gerar todas as listagens da biblioteca
+virtual; revisar `referencias/`.
+
+**De você:** aprovar este PR; depois, ajustar a proteção de `main` e testar o gerador novo uma vez no seu computador.
 
 **Pronta quando** atualizar a biblioteca virtual for: dois cliques, um envio, um pedido.
 

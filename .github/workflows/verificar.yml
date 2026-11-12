@@ -1,0 +1,45 @@
+# Confere um PR (ou um ramo de trabalho) antes de qualquer merge.
+#
+# É o nível rápido: geração determinística, sintaxe JavaScript e testes sem navegador.
+# A suíte completa com Chromium continua em tools/qa/tudo.py e pode ser rodada à parte;
+# ela não entra aqui para não transformar todo PR em 35 minutos de espera.
+name: Verificar
+
+on:
+  pull_request:
+  push:
+    branches-ignore: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: verificar-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  rapido:
+    name: Rápido (sem navegador)
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - name: Baixar o repositório
+        uses: actions/checkout@v7
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+
+      - name: Conferir se os arquivos gerados estão em dia
+        run: |
+          python3 tools/atualizar.py
+          git diff --exit-code
+
+      - name: Conferir a sintaxe JavaScript
+        run: |
+          for f in src/js/*.js; do node --check "$f"; done
+
+      - name: Rodar os testes sem navegador
+        env:
+          BIBLIOTECA_QA_TMP: ${{ runner.temp }}/biblioteca-qa
+        run: python3 tools/qa/tudo.py importador busca_capas auditoria_capas fluxo_capas fluxo_ci
