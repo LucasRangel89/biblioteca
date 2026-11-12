@@ -183,7 +183,8 @@ function novoLivro(o) {
     _dg: null,      // dados da biblioteca virtual; vêm sempre do catálogo embutido e não são salvos
     _ant: null,     // [[título, autor], …] que a linha do catálogo já teve (catalogo/renomeados.tsv); também vêm do catálogo e não são salvos
     _sin: '',       // sinopse do catálogo (catalogo/sinopses.tsv); não é salva
-    _img: 0,        // imagem da capa: número na Open Library ou endereço https — o da Apple Books, ou um posto à mão (catalogo/capas.tsv); vem do catálogo e não é salva
+    _img: 0,        // imagem da capa: número na Open Library ou endereço https — o da Apple Books, do Google Books, ou um posto à mão (catalogo/capas.tsv); vem do catálogo e não é salva
+    _fonte: '0',    // de onde veio essa capa: e edição OL · o obra OL · a Apple · g Google · m à mão · 0 sem capa (src/capas-fontes.json); também não é salva
   }, o));
 }
 const MAX_COMENTARIO = 5000, MAX_ANEXOS = 8;
@@ -242,7 +243,7 @@ const doCatalogo = (r, id) => estadoBase(novoLivro({ id, t: r[0], a: r[1], tags:
 /* sinopse: duas ou três frases sobre o livro, escritas para o painel (catalogo/sinopses.tsv). Só os livros já pesquisados têm;
    vem sempre do catálogo embutido, pela linha do livro, e não é salva com os dados do usuário. */
 const SINOPSE_DA_LINHA = new Map(SINOPSES);
-function livrosDoCatalogo() { return CATALOGO.map((r, i) => { const b = doCatalogo(r, 'c' + i); b._img = CAPAS[i] || 0; b._sin = SINOPSE_DA_LINHA.get(i) || ''; return b; }); }
+function livrosDoCatalogo() { return CATALOGO.map((r, i) => { const b = doCatalogo(r, 'c' + i); b._img = CAPAS[i] || 0; b._fonte = CAPAS_FONTES[i] || '0'; b._sin = SINOPSE_DA_LINHA.get(i) || ''; return b; }); }
 /* imagem da capa: endereço da imagem do livro, ou '' (sem capa achada, livro criado no painel, ou capas desligadas) */
 let MOSTRAR_CAPAS = true;
 const enderecoCapa = c => (!c ? '' : typeof c === 'number' ? (c > 0 ? `https://covers.openlibrary.org/b/id/${Math.round(c)}-M.jpg?default=false` : '') : typeof c === 'string' && /^https:\/\//i.test(c) ? c : '');
@@ -250,6 +251,27 @@ const temCapa = b => !!enderecoCapa(b._img);                                 // 
 const capaPropria = b => (b.cp && Anexos.capas.get(b.cp)) || '';            // imagem que o usuário enviou (fica no navegador; ver Anexos)
 // o que vai para a tela: a capa enviada pelo usuário, sempre; senão a do catálogo — ou nada, com as capas desligadas
 const urlCapa = b => capaPropria(b) || (MOSTRAR_CAPAS ? enderecoCapa(b._img) : '');
+/* a mesma capa em tamanho grande, para ver de perto na ficha. Só é pedida quando o usuário clica: a Open Library
+   tem o tamanho L e a Apple aceita trocar o tamanho no endereço; para as outras, vale o endereço que já está lá. */
+const urlCapaGrande = b => {
+  const propria = capaPropria(b); if (propria) return propria;
+  if (!MOSTRAR_CAPAS) return '';
+  const c = b._img;
+  if (typeof c === 'number' && c > 0) return `https://covers.openlibrary.org/b/id/${Math.round(c)}-L.jpg?default=false`;
+  const u = enderecoCapa(c);
+  return /is\d+-ssl\.mzstatic\.com\//.test(u) ? u.replace(/\/\d+x\d+bb\.(jpg|jpeg|png)$/, '/600x900bb.$1') : u;
+};
+/* de onde vem a capa, em uma frase curta para a ficha. A letra vem do catálogo (src/capas-fontes.json); quando ela
+   não está lá — painel antigo, livro criado no painel —, o endereço já diz a fonte. */
+function fonteCapa(b) {
+  if (capaPropria(b)) return 'Capa enviada por você: fica só neste navegador.';
+  if (!urlCapa(b)) return '';
+  return { e: 'Capa da Open Library, da edição com este título.', o: 'Capa da obra na Open Library: pode ser de outra edição ou língua.',
+           a: 'Capa da Apple Books: a do livro digital à venda no Brasil.', g: 'Capa do Google Books: edição em português.',
+           m: 'Capa escolhida à mão no catálogo.' }[b._fonte]
+    || (typeof b._img === 'number' ? 'Capa da Open Library.' : /mzstatic\.com/.test(urlCapa(b)) ? 'Capa da Apple Books.'
+      : /books\.google\./.test(urlCapa(b)) ? 'Capa do Google Books.' : 'Capa escolhida à mão no catálogo.');
+}
 
 /* os marcadores de posse acompanham a lista e o formato do livro (e o que o catálogo diz da biblioteca virtual) */
 const defTag = (b, t, on) => { const i = b.tags.indexOf(t); if (on && i < 0) b.tags.push(t); if (!on && i >= 0) b.tags.splice(i, 1); };
@@ -303,7 +325,7 @@ const ASSINATURA = CATALOGO.length + '.' + hashStr(JSON.stringify(CATALOGO)).toS
 function anexarDigital(livros) {
   const linhas = new Map(CATALOGO.map((r, i) => [chaveCat(r), i]));
   for (const b of livros) {
-    const i = b.o ? linhas.get(b.o) : undefined, r = i == null ? null : CATALOGO[i]; b._dg = (r && r[6]) || null; b._ant = (r && r[7]) || null; b._img = (r && CAPAS[i]) || 0; b._sin = (r && SINOPSE_DA_LINHA.get(i)) || ''; if (b._dg) b.arq = b._dg[4];
+    const i = b.o ? linhas.get(b.o) : undefined, r = i == null ? null : CATALOGO[i]; b._dg = (r && r[6]) || null; b._ant = (r && r[7]) || null; b._img = (r && CAPAS[i]) || 0; b._fonte = (r && CAPAS_FONTES[i]) || '0'; b._sin = (r && SINOPSE_DA_LINHA.get(i)) || ''; if (b._dg) b.arq = b._dg[4];
     if (b.u && !b.cl && r) b.cl = classeCat(r);       // dados de um painel antigo: daqui em diante a base é o catálogo de agora
     derivar(b);
   }

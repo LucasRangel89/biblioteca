@@ -40,6 +40,10 @@ arq_capas = SRC / 'capas.json'
 capas = json.loads(arq_capas.read_text(encoding='utf-8')) if arq_capas.exists() else []
 assert not capas or len(capas) == len(catalogo), 'src/capas.json não acompanha src/catalog.json: rode tools/build_catalog.py'
 assert all(c == 0 or (isinstance(c, int) and c > 0) or (isinstance(c, str) and c.startswith('https://')) for c in capas)
+arq_fontes = SRC / 'capas-fontes.json'                  # de onde veio cada capa: uma letra por livro (ver capas.para_as_fontes)
+fontes_capas = json.loads(arq_fontes.read_text(encoding='utf-8')) if arq_fontes.exists() else ''
+assert isinstance(fontes_capas, str) and (not fontes_capas or len(fontes_capas) == len(catalogo)), 'src/capas-fontes.json não acompanha src/catalog.json: rode tools/build_catalog.py'
+assert set(fontes_capas) <= set('eoagm0'), 'src/capas-fontes.json: só as letras e, o, a, g, m e 0'
 arq_trilhas = SRC / 'trilhas.json'                      # trilhas de leitura: [marcador, nome, descrição, [posições no catálogo]]
 trilhas = json.loads(arq_trilhas.read_text(encoding='utf-8')) if arq_trilhas.exists() else []
 assert all(len(t) == 4 and all(isinstance(i, int) and 0 <= i < len(catalogo) for i in t[3]) for t in trilhas), 'src/trilhas.json não acompanha src/catalog.json: rode tools/build_catalog.py'
@@ -52,6 +56,7 @@ assert all(len(x) == 2 and isinstance(x[0], int) and 0 <= x[0] < len(catalogo) a
 assert len({x[0] for x in sinopses}) == len(sinopses), 'src/sinopses.json tem duas sinopses para a mesma linha'
 dados = ('const CATALOGO = ' + json.dumps(catalogo, ensure_ascii=False, separators=(',', ':')) + ';\n'
          + 'const CAPAS = ' + json.dumps(capas, ensure_ascii=False, separators=(',', ':')) + ';\n'
+         + 'const CAPAS_FONTES = ' + json.dumps(fontes_capas, ensure_ascii=False) + ';\n'
          + 'const TRILHAS_DADOS = ' + json.dumps(trilhas, ensure_ascii=False, separators=(',', ':')) + ';\n'
          + 'const CLASSE_ANTES = ' + json.dumps(antes, ensure_ascii=False, separators=(',', ':')) + ';\n'
          + 'const SINOPSES = ' + json.dumps(sinopses, ensure_ascii=False, separators=(',', ':')) + ';')

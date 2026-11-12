@@ -22,7 +22,7 @@ Este arquivo é atualizado ao fim de cada rodada. Para saber em que pé as coisa
 | 8 | Análise dos filtros, trilhas personalizadas e novas recomendações | **Feita** (11/11/2026) — das oito propostas, três viraram a etapa 9; cinco esperam a sua decisão (lista abaixo) |
 | 9 | Filtros que dizem quantos livros têm e somam dentro do grupo; grupo da psicologia; conserto das caixas que não cabiam na tela | **Feita** (11/11/2026) |
 | 10 | As suas ideias: ocultar categorias, imprimir e copiar listas, sinopses, temas visuais, estímulo à leitura | **Em parte** (12/11/2026) — ocultar e imprimir estão prontos; sinopses dos lotes 1 e 2 (292 livros); seis temas prontos (Lovecraft, Sherlock Holmes, Moby Dick, Deserto, Terras antigas, Clássico greco-romano); a guia de leitura continua aguardando a aprovação do desenho abaixo |
-| 11 | Mais capas: auditoria, casamento e fontes, robô que abre PR e capas no painel | **Em parte** (12/11/2026) — a auditoria e a fila de revisão estão prontas; as outras três partes vêm nesta rodada |
+| 11 | Mais capas: auditoria, casamento e fontes, robô que abre PR e capas no painel | **Feita** (12/11/2026) — as quatro partes estão no painel e nos testes; falta você aprovar e rodar a primeira busca |
 
 A ordem pode mudar: as etapas que faltam não dependem umas das outras. Se alguma interessar mais, peça por ela.
 
@@ -960,7 +960,24 @@ e por último melhorar como as capas aparecem no painel. Quatro partes, nesta or
 | 1 | Auditoria e fila de revisão | **Feita** (12/11/2026) |
 | 2 | Casamento mais seguro e uma fonte nova | **Feita** (12/11/2026) — falta a primeira execução real, que é a parte 3 |
 | 3 | O robô das capas abrindo um PR para revisão | **Feita** (12/11/2026) — falta você rodar a primeira busca |
-| 4 | As capas no painel: capa maior, aviso de outra edição, grade | Nesta rodada |
+| 4 | As capas no painel: capa maior, aviso de outra edição, grade | **Feita** (12/11/2026) |
+
+### Parte 4 — As capas no painel
+
+- **Capa maior num clique.** Na ficha do livro, clicar na capa abre a imagem grande num quadro por cima (Esc fecha).
+  A imagem maior só é pedida nesse clique: nada a mais sai do navegador enquanto você só olha as listas.
+- **De onde vem a capa**, numa linha discreta na ficha: Open Library (edição ou obra), Apple Books, Google Books,
+  escolhida à mão no catálogo ou enviada por você. Quando é a capa da **obra**, vem o aviso de que pode ser de outra
+  edição ou língua — os 32 casos estão na fila de revisão.
+- **Ver como estante.** As tabelas "Todos os livros", "Livros do acervo" e "Lista de recomendações" ganharam dois
+  botões: lista e grade. Na grade, cada livro é um cartão com a capa, o título, o autor e a etiqueta da lista ou da
+  leitura; a busca, as abas, a ordem e as páginas continuam as mesmas, e clicar no cartão abre a ficha. A escolha
+  fica guardada no navegador.
+- **Quando a imagem não vem**, o desenho com a inicial fica no lugar, com o recado de que a capa não carregou —
+  antes, o quadro inteiro desaparecia da ficha.
+- **A privacidade continua a mesma.** As imagens seguem sendo a única coisa que o painel busca fora; a capa maior
+  só é pedida quando você clica; a chave "Mostrar as capas" desliga tudo (na grade também); e nada disso é guardado
+  no navegador nem vai no backup — a origem de cada capa vai no painel como uma letra por livro.
 
 ### Parte 3 — O robô das capas abrindo um PR
 

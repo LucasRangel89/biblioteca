@@ -620,6 +620,23 @@ def para_o_painel(livros, capas=None):
     return out
 
 
+FONTE_DA_ORIGEM = {'edicao': 'e', 'obra': 'o', 'apple': 'a', 'google': 'g', 'manual': 'm'}
+
+
+def para_as_fontes(livros, capas=None):
+    """Uma letra por livro do catálogo, na mesma ordem de para_o_painel: de onde veio a capa que o painel mostra.
+    'e' edição da Open Library · 'o' obra da Open Library (pode ser outra edição) · 'a' Apple · 'g' Google ·
+    'm' escolhida à mão · '0' sem capa. É o que permite ao painel dizer a origem e avisar de uma possível outra edição,
+    sem guardar mais nada além de uma letra por livro."""
+    capas = ler_capas() if capas is None else capas
+    painel = para_o_painel(livros, capas)
+    out = []
+    for b, tem in zip(livros, painel):
+        origem = (capas.get((chave(b['t']), chave(b['a']))) or {}).get('origem', '')
+        out.append(FONTE_DA_ORIGEM.get(origem, '0') if tem else '0')
+    return ''.join(out)
+
+
 def endereco(capa, tamanho='M'):
     """O endereço da imagem: número da Open Library ou, se posto à mão, o endereço completo."""
     capa = (capa or '').strip()

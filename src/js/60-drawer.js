@@ -330,12 +330,24 @@ function montarGaveta() {
   el.addEventListener('click', e => {
     if (e.target.closest('[data-fechar]')) { fecharGaveta(); return; }
     const b = porId(Gaveta.id); if (!b) return;
+    if (e.target.closest('[data-capa-zoom]')) { dlgCapa(b); return; }
     const a = e.target.closest('[data-acao]'); if (a) { acao(b, a.dataset.acao); return; }
     const ap = e.target.closest('[data-apagar]'); if (ap) { apagarCotacao(b, ap.dataset.apagar, +ap.dataset.dia); return; }
     const tr = e.target.closest('[data-trilha]'); if (tr) { const t = TRILHAS.find(x => x.tag === tr.dataset.trilha); if (t) dlgTrilha(t); return; }
     const tg = e.target.closest('[data-tag]'); if (tg) { fecharGaveta(); limparFiltros(false); S.tags.add(tg.dataset.tag); if (b.col === 'rec' && S.visao !== 'geral') irPara('recs'); else filtrosMudaram(); toast(`Filtrando por #${tg.dataset.tag}.`); return; }
     const ex = e.target.closest('[data-eixo]'); if (ex) { fecharGaveta(); limparFiltros(false); S.eixos.add(+ex.dataset.eixo); filtrosMudaram(); }
   });
+}
+/* a capa em tamanho grande: só é buscada quando o usuário clica (ver urlCapaGrande). Sem rede, ou se a fonte não
+   tiver a imagem maior, o retrato pequeno continua na ficha e aqui fica o recado. */
+function dlgCapa(b) {
+  const u = urlCapaGrande(b); if (!u) return;
+  Dlg.abrir({ titulo: b.t, largo: true, corpo: `<div class="capa-grande"><img src="${esc(u)}" alt="Capa de ${esc(b.t)}${b.a ? ', de ' + esc(b.a) : ''}"></div><p class="nota capa-grande-f">${esc(fonteCapa(b))}</p>`,
+    botoes: [{ n: 'Fechar' }],
+    aoAbrir(el) {
+      const im = $('img', el);
+      im.addEventListener('error', () => { const d = $('.capa-grande', el); if (d) d.innerHTML = `<p class="nota">A imagem maior desta capa não abriu agora. ${capaPropria(b) ? '' : 'Ela vem de um catálogo de livros na internet; sem rede, fica só o retrato pequeno na ficha.'}</p>`; }, { once: true });
+    } });
 }
 function abrirLivro(id) {
   if (!porId(id)) return;
@@ -355,8 +367,8 @@ function desenharGaveta() {
   const b = porId(Gaveta.id); if (!b) { fecharGaveta(); return; }
   const c = ctxAtual(), I = c.I, T = DB.hoje, x = c.px(b), fato = (r, v) => (v == null || v === '' ? '' : `<div><dt>${r}</dt><dd>${v}</dd></div>`);
   $('#gv-k').innerHTML = `<span class="pill col-${b.col}">${COLECOES[b.col].n}</span>${b.demo ? '<span class="pill ex" title="Datas, valores e preços deste item são simulados">dados de exemplo</span>' : ''}`;
-  $('#gv-topo').innerHTML = `${urlCapa(b) ? capaHtml(b, 'g') : ''}<div class="gv-tx"><h2>${esc(b.t)}</h2><p class="gv-a2">${esc(b.a || 'Autor não informado')}</p>
-    <div class="gv-ch"><button type="button" class="tag lig" data-eixo="${b.eixo}" title="Filtrar por este eixo">${EIXOS[b.eixo] ? esc(EIXOS[b.eixo].n) : 'Sem eixo'}</button><span class="tag">${TIPOS[b._tipo].n}</span>${b._d ? `<span class="tag">${pontos(b._d)}${NIVEIS[b._d].n}</span>` : ''}${b._e ? `<span class="tag" title="${EXTENSOES[b._e].d}">${EXTENSOES[b._e].n} · ${EXTENSOES[b._e].d}</span>` : ''}${b._top ? `<span class="tag dest">${icone('estrela', 12)}Prioridade</span>` : ''}${b.tags.includes('sem-pt') ? '<span class="tag av">Sem edição em PT</span>' : ''}${b.tags.includes('verificar') ? '<span class="tag av">A verificar</span>' : ''}</div>${oculto(b) ? `<p class="gv-fora">${icone('olhoOff', 14)}<span>Fora das listas: você pediu para ocultar <b>${esc(motivosFora(b).join(' · '))}</b>.</span></p>` : ''}</div>`;
+  $('#gv-topo').innerHTML = `${urlCapa(b) ? `<button type="button" class="capa-zoom" data-capa-zoom title="Ver a capa maior" aria-label="Ver a capa maior de ${esc(b.t)}">${capaHtml(b, 'g')}</button>` : ''}<div class="gv-tx"><h2>${esc(b.t)}</h2><p class="gv-a2">${esc(b.a || 'Autor não informado')}</p>
+    <div class="gv-ch"><button type="button" class="tag lig" data-eixo="${b.eixo}" title="Filtrar por este eixo">${EIXOS[b.eixo] ? esc(EIXOS[b.eixo].n) : 'Sem eixo'}</button><span class="tag">${TIPOS[b._tipo].n}</span>${b._d ? `<span class="tag">${pontos(b._d)}${NIVEIS[b._d].n}</span>` : ''}${b._e ? `<span class="tag" title="${EXTENSOES[b._e].d}">${EXTENSOES[b._e].n} · ${EXTENSOES[b._e].d}</span>` : ''}${b._top ? `<span class="tag dest">${icone('estrela', 12)}Prioridade</span>` : ''}${b.tags.includes('sem-pt') ? '<span class="tag av">Sem edição em PT</span>' : ''}${b.tags.includes('verificar') ? '<span class="tag av">A verificar</span>' : ''}</div>${fonteCapa(b) ? `<p class="gv-capa-f${b._fonte === 'o' && !capaPropria(b) ? ' av' : ''}" id="gv-capa-f">${icone(b._fonte === 'o' && !capaPropria(b) ? 'info' : 'imagem', 13)}<span>${esc(fonteCapa(b))}</span></p>` : ''}${oculto(b) ? `<p class="gv-fora">${icone('olhoOff', 14)}<span>Fora das listas: você pediu para ocultar <b>${esc(motivosFora(b).join(' · '))}</b>.</span></p>` : ''}</div>`;
   // a sinopse, quando o livro já tem (catalogo/sinopses.tsv); sem ela, nada aparece no lugar
   const sin = $('#gv-sin'); sin.hidden = !b._sin; sin.innerHTML = b._sin ? `<div class="gv-st"><h4 id="gv-sin-t">Sinopse</h4></div><p class="gv-sin-tx">${esc(b._sin)}</p>` : '';
   let f = '';

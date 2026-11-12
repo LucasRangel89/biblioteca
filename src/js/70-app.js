@@ -2,7 +2,7 @@
 const REG = {};
 let CTX = null, pendente = 0, CHIPS = [];
 const ctxAtual = () => CTX || (CTX = contexto());
-const cfgAtual = () => ({ tema: S.tema, ocultar: S.ocultar, avisoVisto: S.avisoVisto, saiu: S.saiu || undefined, capas: S.capas, visao: S.visao, ui: S.ui, tam: Object.fromEntries(Object.entries(S.tab).map(([k, v]) => [k, v.tam])) });
+const cfgAtual = () => ({ tema: S.tema, ocultar: S.ocultar, avisoVisto: S.avisoVisto, saiu: S.saiu || undefined, capas: S.capas, visao: S.visao, ui: S.ui, tam: Object.fromEntries(Object.entries(S.tab).map(([k, v]) => [k, v.tam])), grade: Object.fromEntries(Object.entries(S.tab).filter(([, v]) => v.grade).map(([k]) => [k, true])) });
 /* salvar() agenda a gravação (várias alterações seguidas viram uma só); gravarJa() grava na hora — usada quando a página
    vai sair de cena, para o que acabou de ser digitado não se perder. */
 let SUJO = false;
@@ -403,7 +403,15 @@ function iniciar() {
   S.saiu = DB.saiuExemplo || (cfg.saiu > 0 && !DB.exemplos ? Math.round(+cfg.saiu) || 0 : 0);
   if (DB.saiuExemplo) S.avisoVisto = false;
   // imagem de capa que não carregou (sem rede, capa retirada do ar): some, e fica o desenho com a inicial do título
-  document.addEventListener('error', e => { const im = e.target; if (im && im.tagName === 'IMG' && im.parentElement && im.parentElement.classList.contains('capa')) { const c = im.parentElement; if (c.classList.contains('g')) c.remove(); else im.remove(); } }, true);
+  document.addEventListener('error', e => {
+    const im = e.target; if (!im || im.tagName !== 'IMG') return;
+    const c = im.parentElement; if (!c || !c.classList.contains('capa')) return;
+    im.remove();
+    if (!c.classList.contains('g')) return;
+    const bt = c.closest('[data-capa-zoom]'); if (bt) bt.replaceWith(c);      // sem imagem não há o que ampliar
+    const nota = c.closest('#gv-topo') && $('#gv-capa-f');
+    if (nota) { nota.classList.add('av'); nota.innerHTML = `${icone('info', 13)}<span>A imagem desta capa não carregou agora.</span>`; }
+  }, true);
   if (cfg.visao && VISOES[cfg.visao]) S.visao = cfg.visao;
   if (cfg.ui && typeof cfg.ui === 'object') Object.assign(S.ui, cfg.ui);
   S.ui.fora = lerFora(S.ui.fora); refazerFora();      // "Ocultar": só valem regras que existem
@@ -413,6 +421,7 @@ function iniciar() {
   // chaves "todos" dos grupos de marcadores: só valem as de grupos que existem
   S.ui.cruzar = S.ui.cruzar && typeof S.ui.cruzar === 'object' && !Array.isArray(S.ui.cruzar) ? Object.fromEntries(GRUPOS_TAG.filter(g => S.ui.cruzar[g[0]] === true).map(g => [g[0], true])) : {};
   if (cfg.tam) for (const k in cfg.tam) if (TABELAS[k] && [10, 25, 50, 100].includes(cfg.tam[k])) S.tab[k] = { tam: cfg.tam[k] };
+  if (cfg.grade) for (const k in cfg.grade) if (TABELAS[k] && TABELAS[k].grade && cfg.grade[k] === true) S.tab[k] = Object.assign({}, S.tab[k], { grade: true });
   montarCasca(); montarFiltros(); montarGaveta(); aplicarTema(); aplicarOlho(); pintarStatus(true);
   if (window.matchMedia) { const mq = matchMedia('(prefers-color-scheme: dark)'), f = () => { if (!S.tema) aplicarTema(); }; if (mq.addEventListener) mq.addEventListener('change', f); }
   irPara(S.visao, true);

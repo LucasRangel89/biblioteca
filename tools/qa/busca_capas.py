@@ -640,6 +640,11 @@ caps = {('a', 'x'): {'capa': '123'}, ('b', 'x'): {'capa': 'https://exemplo.org/b
 lista = C.para_o_painel([{'t': t, 'a': 'x'} for t in 'abcdefgh'], caps)
 confere(lista == [123, 'https://exemplo.org/b.jpg', 0, 0, 0, 0, 0, 0], 'número, endereço https ou 0; o que não for isso (http, aspas, texto solto) vira 0', lista)
 confere(C.endereco('123') == 'https://covers.openlibrary.org/b/id/123-M.jpg' and C.endereco('https://exemplo.org/b.jpg') == 'https://exemplo.org/b.jpg' and C.endereco('') == '', 'endereço da imagem de uma capa')
+caps_f = {('a', 'x'): {'capa': '123', 'origem': 'edicao'}, ('b', 'x'): {'capa': '124', 'origem': 'obra'}, ('c', 'x'): {'capa': 'https://is1-ssl.mzstatic.com/a.jpg/200x300bb.jpg', 'origem': 'apple'},
+          ('d', 'x'): {'capa': 'https://books.google.com/books/content?id=1', 'origem': 'google'}, ('e', 'x'): {'capa': 'https://exemplo.org/e.jpg', 'origem': 'manual'},
+          ('f', 'x'): {'capa': '', 'origem': 'nao-achei-3'}, ('g', 'x'): {'capa': 'http://sem-s.org/g.jpg', 'origem': 'edicao'}}
+confere(C.para_as_fontes([{'t': t, 'a': 'x'} for t in 'abcdefg'], caps_f) == 'eoagm00', 'de onde vem cada capa: uma letra por livro (e, o, a, g, m), e 0 para quem não tem capa que o painel mostre', C.para_as_fontes([{'t': t, 'a': 'x'} for t in 'abcdefg'], caps_f))
+confere(C.para_as_fontes([{'t': 'novo', 'a': 'x'}], {}) == '0', 'livro ainda sem linha no capas.tsv: 0')
 
 # o que está no repositório: src/capas.json em dia com catalogo/capas.tsv e com o catálogo
 C.CATALOGO, C.CAPAS = bc.SRC, C.RAIZ / 'catalogo' / 'capas.tsv'
@@ -647,6 +652,9 @@ do_catalogo = parse(bc.SRC.read_text(encoding='utf-8'))
 no_painel = json.loads(bc.DEST_CAPAS.read_text(encoding='utf-8')) if bc.DEST_CAPAS.exists() else None
 confere(no_painel == C.para_o_painel(do_catalogo), 'src/capas.json está em dia com catalogo/capas.tsv (se falhar: python tools/atualizar.py)')
 confere(no_painel is not None and len(no_painel) == len(json.loads(bc.DEST.read_text(encoding='utf-8'))), 'uma posição por linha de src/catalog.json')
+fontes = C.para_as_fontes(do_catalogo)
+confere(bc.DEST_FONTES.exists() and json.loads(bc.DEST_FONTES.read_text(encoding='utf-8')) == fontes, 'src/capas-fontes.json está em dia com catalogo/capas.tsv (se falhar: python tools/atualizar.py)')
+confere(len(fontes) == len(no_painel or []) and fontes.count('0') == sum(1 for c in (no_painel or []) if not c), 'uma letra por livro, e 0 exatamente em quem está sem capa', (len(fontes), fontes.count('0')))
 guardadas = C.ler_capas()
 confere(all(r['origem'] in C.ORIGENS for r in guardadas.values()), 'capas.tsv: toda origem é uma das conhecidas', sorted({r['origem'] for r in guardadas.values()} - C.ORIGENS))
 confere(all((r['capa'] == '') == (r['origem'] in C.SEM_CAPA) for r in guardadas.values() if r['origem'] != 'manual'), 'capas.tsv: tem capa quem foi achado, e só quem foi achado')

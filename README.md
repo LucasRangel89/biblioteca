@@ -82,13 +82,15 @@ do autor e do tipo de obra — nenhum arquivo foi aberto.
 | `biblioteca-virtual/inventario.tsv` | Uma linha por arquivo (e por subpasta de série de quadrinhos), com título, autor, eixo, gênero e marcadores **revisados** — é aqui que se corrige um livro digital |
 | `biblioteca-virtual/RESUMO.md` | Relatório da última importação: o que entrou, o que falta conferir e o que ficou de fora (gerado) |
 | `biblioteca-virtual/Biblioteca virtual.md` | A listagem original, como foi enviada (só para consulta; os acentos estão corrompidos) |
-| `src/` | Fontes do painel: `index.html`, `styles.css`, `js/00-util.js` … `70-app.js`; `catalog.json`, `capas.json`, `trilhas.json`, `antes.json` e `sinopses.json` (gerados) |
+| `src/` | Fontes do painel: `index.html`, `styles.css`, `js/00-util.js` … `70-app.js`; `catalog.json`, `capas.json`, `capas-fontes.json`, `trilhas.json`, `antes.json` e `sinopses.json` (gerados) |
 | `src/letras/` | As letras dos temas (seis famílias de fontes livres, em dez arquivos WOFF2), com a licença de cada uma e um `LEIAME.md`. Vão dentro do painel (ver "Os temas") |
 | `tools/atualizar.py` | Faz tudo de uma vez: importa a biblioteca virtual, converte o catálogo e monta o painel |
 | `tools/importar_digital.py` | Listagens + inventário → Catálogo Mestre (seção 17 e `#tenho-digital`) e `RESUMO.md` |
-| `tools/build_catalog.py` | Catálogo Mestre + inventário → `src/catalog.json`; `catalogo/capas.tsv` → `src/capas.json`; `catalogo/trilhas.md` → `src/trilhas.json`; `catalogo/antes-da-vistoria.tsv` → `src/antes.json`; `catalogo/sinopses.tsv` → `src/sinopses.json` (usa `parse_catalog.py`, `eixos.py` e `capas.py`). O que não bate sai como `AVISO:` |
+| `tools/build_catalog.py` | Catálogo Mestre + inventário → `src/catalog.json`; `catalogo/capas.tsv` → `src/capas.json` e `src/capas-fontes.json`; `catalogo/trilhas.md` → `src/trilhas.json`; `catalogo/antes-da-vistoria.tsv` → `src/antes.json`; `catalogo/sinopses.tsv` → `src/sinopses.json` (usa `parse_catalog.py`, `eixos.py` e `capas.py`). O que não bate sai como `AVISO:` |
 | `tools/build.py` | `src/` → `Biblioteca_Lucas_Dashboard.html`, com os dados e as letras dos temas (`src/letras`) dentro; confere que não sobrou referência externa |
-| `tools/capas.py` | Busca das capas na Open Library e, para o que ela não tem, na Apple Books → `catalogo/capas.tsv`. É o único script que precisa de internet; no GitHub, quem o roda é o serviço "Buscar capas" |
+| `tools/capas.py` | Busca das capas na Open Library, na Apple Books e, para o que as duas não têm, no Google Books → `catalogo/capas.tsv`. Também escolhe à mão (`--candidatos`) e faz a auditoria (`--auditar`). No GitHub, quem o roda é o serviço "Buscar capas", que abre um PR |
+| `tools/auditar_capas.py` | O retrato das capas e a fila de revisão → `catalogo/capas-revisao.md`. Não precisa de internet (a não ser com `--rede N`) e não mexe no `capas.tsv` |
+| `catalogo/capas-revisao.md` | Auditoria das capas: quantos têm capa por parte da biblioteca, eixo, tipo e origem, e a lista do que merece um olhar, com o motivo (gerado) |
 | `tools/analisar_marcadores.py` | Mede os filtros e a categorização (alcance de cada grupo, marcadores raros e amplos, pastas × eixos…). Só mostra; não grava nada |
 | `tools/qa/` | Testes automatizados |
 | `referencias/` | Material guardado só como referência: um painel de inspiração, um protótipo abandonado e `catalogo-v3-enviado-2026-11-10.md`, a "versão 3" do catálogo, de onde vieram as camadas e as trilhas (nada lê esse arquivo) |
@@ -430,7 +432,7 @@ importação faz a mesma conciliação.
 
 ### As capas
 
-O painel mostra a capa do livro nas listas, nas tabelas e na ficha. Hoje **1.564 dos 2.614** livros têm capa (61 dos
+O painel mostra a capa do livro nas listas, nas tabelas, na grade e na ficha. Hoje **1.564 dos 2.614** livros têm capa (61 dos
 97 da estante, 494 das 607 linhas de recomendações, 1.009 dos 1.910 da biblioteca virtual); os outros aparecem com um
 desenho com a inicial do título. Até 11/11/2026 eram 761, todas da primeira fonte.
 
@@ -443,14 +445,13 @@ desenho com a inicial do título. Até 11/11/2026 eram 761, todas da primeira fo
      daqui: entrou em 12/11/2026 e espera a primeira execução). Como as outras, é uma consulta pública de catálogo —
      nenhuma loja é raspada, nenhuma imagem é copiada para o repositório.
 
-  Nenhuma imagem fica no repositório: `catalogo/capas.tsv` guarda só o número da capa (Open Library) ou o endereço da
-   imagem (Apple ou Google), e o navegador busca a imagem em `covers.openlibrary.org`, `is…-ssl.mzstatic.com` ou
-  `books.google.com` quando ela
-  aparece na tela. São os únicos pedidos que o painel faz à internet; nada do que foi anotado vai junto, e o pedido
-  não diz de que página veio. Sem internet, ou se a imagem faltar, fica o desenho. Em "Seus dados" há uma chave
-  para desligar as capas.
+  Nenhuma imagem fica no repositório: `catalogo/capas.tsv` guarda só o número da capa (Open Library) ou o endereço
+  da imagem (Apple ou Google), e o navegador busca a imagem em `covers.openlibrary.org`, `is…-ssl.mzstatic.com` ou
+  `books.google.com` quando ela aparece na tela. São os únicos pedidos que o painel faz à internet; nada do que foi
+  anotado vai junto, e o pedido não diz de que página veio. Sem internet, ou se a imagem faltar, fica o desenho.
+  Em "Seus dados" há uma chave para desligar as capas.
 - **Por que não são todas.** A busca só aceita uma capa quando o título **e** o autor conferem com os do catálogo.
-  Fica sem capa o livro que não está em nenhum dos dois catálogos com esse título — é o caso de muita edição antiga,
+  Fica sem capa o livro que não está em nenhum dos catálogos consultados com esse título — é o caso de muita edição antiga,
   de teses e de quadrinhos —, o livro sem autor certo (ou de "Vários autores") e a adaptação em quadrinhos com um
   autor só: nesses dois últimos casos nem se procura, porque o resultado não seria confiável. Os volumes de uma
   série nunca ficam com a mesma capa. A capa da Apple é a do livro digital à venda hoje: pode não ser a da edição que
@@ -499,6 +500,20 @@ desenho com a inicial do título. Até 11/11/2026 eram 761, todas da primeira fo
   uma imagem) e escreva `manual` na coluna `origem` — a busca nunca mexe nessas linhas. Para um livro ficar sem
   capa, apague o número e deixe `manual`. Depois, `python tools/atualizar.py`. Para a busca procurar de novo a capa de
   um livro só, apague a linha dele em `catalogo/capas.tsv`: na execução seguinte ele conta como livro novo.
+- **Ver a capa maior.** Na ficha do livro, clique na capa: ela abre grande, num quadro por cima. A imagem maior só
+  é buscada nesse clique (Open Library no tamanho L; Apple em 600 × 900; para as outras, o endereço que já está lá).
+  Sem rede, fica o recado e o retrato pequeno continua na ficha. `Esc` fecha.
+- **De onde vem aquela capa.** Embaixo dos marcadores da ficha, uma linha discreta diz a fonte: Open Library (edição
+  ou obra), Apple Books, Google Books, escolhida à mão no catálogo ou enviada por você. Quando a capa é da **obra**
+  na Open Library, a linha vem com um aviso: *pode ser de outra edição ou língua* — são 32 livros assim, todos
+  listados na fila de revisão. A informação vai no painel como uma letra por livro (`src/capas-fontes.json`, gerado
+  do `capas.tsv`); nenhuma capa é guardada no navegador por causa disso.
+- **Ver como estante (grade).** Nas tabelas "Todos os livros", "Livros do acervo" e "Lista de recomendações" há dois
+  botões ao lado de "Imprimir": lista e grade. Na grade, cada livro é um cartão com a capa maior, título, autor e a
+  etiqueta da lista (ou da leitura). A busca, as abas, a ordem e a paginação são as mesmas; clicar num cartão abre a
+  ficha. A escolha fica guardada neste navegador. Com as capas desligadas, a grade mostra os desenhos com as iniciais.
+- **Quando a imagem não vem** (sem rede, capa retirada do ar): nas listas fica o desenho com a inicial; na ficha, o
+  desenho continua no lugar, com o recado "A imagem desta capa não carregou agora" e sem o botão de ampliar.
 - **Ou envie a capa pelo painel:** na ficha do livro, "Suas anotações" → "Enviar capa…". Essa imagem fica guardada no
   seu navegador (e no backup), vale só para você e aparece mesmo com as capas desligadas — não é pedida à internet.
 
@@ -591,7 +606,7 @@ avisa no fim, em vez de dar o teste por completo. `git fetch --unshallow` traz o
 | --- | --- |
 | `importador` | Leitura das listagens, arquivo novo e ausente, casamento com o catálogo, seção 17, execução repetida sem mudanças; a classificação que vem da coluna `marcadores` do inventário (e o inventário antigo, sem ela); a pasta e o nome do arquivo de cada item a verificar, no resumo; quadrinhos (subpasta de série, edição nova de série conhecida, série nova, adaptação com o título de um livro, subpasta com listagem própria); `src/catalog.json` em dia com o catálogo; `renomeados.tsv`; as trilhas (`trilhas.md` × marcadores das linhas, com os avisos; um livro da biblioteca virtual numa trilha); `antes-da-vistoria.tsv`; o HTML pronto em dia com `src/`; `analisar_marcadores.py` roda e conta o catálogo inteiro |
 | `posse` | Físico × digital × nos dois: indicadores, gaveta, formulário, filtros, cartão no celular; quadrinhos (filtro "HQ", gaveta de uma série guardada em subpasta, busca pelo nome da subpasta, os cinco botões do filtro Tipo no celular); **migração do que o painel anterior salvou** no navegador e de um backup exportado por ele; livro anotado no painel e depois corrigido no catálogo ou no inventário (os painéis antigos são tirados do histórico do Git) |
-| `busca_capas` | A busca de capas (`tools/capas.py`), sem internet. Open Library: a consulta feita para cada livro, a capa escolhida (edição em português antes da capa da obra), a segunda tentativa só pelo título. Apple Books: a consulta, o resultado que serve (título e autor conferem; caixa, trilogia, resumo e audiolivro não), o endereço da imagem, a espera quando a busca recusa por excesso de consultas. As duas em ordem: livro novo passa pelas duas; quem só tinha passado pela primeira vai só à segunda; a Apple fora do ar não atrapalha a Open Library. O `capas.tsv` (retomar de onde parou, não mexer no que foi posto à mão, a mesma capa em volumes de uma série), a amostra de `--testar` nas duas fontes; `src/capas.json` em dia com `catalogo/capas.tsv` |
+| `busca_capas` | A busca de capas (`tools/capas.py`), sem internet. Open Library: a consulta feita para cada livro, a capa escolhida (edição em português antes da capa da obra), a segunda tentativa só pelo título. Apple Books: a consulta, o resultado que serve (título e autor conferem; caixa, trilogia, resumo e audiolivro não), o endereço da imagem, a espera quando a busca recusa por excesso de consultas. As três em ordem: livro novo passa pelas três; quem já tinha passado por alguma vai só às que faltam; uma fonte fora do ar não atrapalha as outras. O `capas.tsv` (retomar de onde parou, não mexer no que foi posto à mão, a mesma capa em volumes de uma série), a amostra de `--testar` nas fontes; o volume certo em cada casamento; o ISBN (conta de conferência e procura por ele); o Google Books (consulta, imagem em https, língua, caixa e resumo recusados, recusas e desistência); `--sem-google`; o modo `--candidatos` com o motivo de cada recusa; `src/capas.json` e `src/capas-fontes.json` em dia com `catalogo/capas.tsv` |
 | `auditoria_capas` | A auditoria das capas (`tools/auditar_capas.py`), sem internet: os números saem do mesmo cruzamento que gera `src/capas.json`; cada problema da fila (capa que o painel não mostra, capa repetida em volumes, capa da obra, casamento que hoje não se faria, autoria e título a conferir, linha que falta, linha órfã) e o que não é problema; a conferência das imagens por amostra (`--rede`); o relatório sempre igual para o mesmo catálogo, sem data nem hora e sem nada que dependa da rede; `--resumo`, `--conferir` e o `--auditar` do `capas.py`; `catalogo/capas-revisao.md` em dia |
 | `fluxo_capas` | O robô das capas (`.github/workflows/buscar-capas.yml`), lido como arquivo: só roda quando alguém manda; nunca grava no ramo em que rodou (cria `capas/…` e abre PR); a ordem buscar → conferir → amostrar → montar → auditar → testar → PR; teste falhando vira PR em rascunho; nenhum merge automático; o site continua publicando só de `main`; os comandos e opções citados existem. Não executa o GitHub Actions: confere o desenho do fluxo |
 | `inicio` | Como o painel abre e os dados de exemplo: primeira abertura só com o catálogo; "Ver com dados de exemplo", "Limpar dados de exemplo" e "Recomeçar"; o endereço com `?exemplo=1`; **a saída dos exemplos de fábrica** para quem usava o painel anterior — sem edições, com um e com três livros editados, no computador e no celular, e com o painel que estava no ar antes da mudança (tirado do histórico do Git) |
@@ -605,7 +620,7 @@ avisa no fim, em vez de dar o teste por completo. `git fetch --unshallow` traz o
 | `temas` | Os temas visuais. Sem navegador: os três lugares que listam os temas dizem o mesmo e todo tema define as mesmas variáveis do padrão; contraste AA par a par nas variáveis de cada tema; as letras no painel, idênticas aos arquivos de `src/letras`, cada uma com a licença, e nada buscado fora. No navegador: sem escolha, o padrão do sistema, igual ao que era; o quadro "Aparência" com uma amostra fiel de cada tema; escolher troca cores, letra dos títulos (com a fonte de fato carregada) e a cor da barra do navegador; a escolha fica guardada e vale antes de a página aparecer; teclado (setas, Esc, Tab), clique fora e um quadro aberto por vez; o ornamento de cada tema; a rolagem da paleta e a escolha guardada visível no celular; nas seis telas e na ficha, no computador e no celular, nada estoura a largura; a folha de impressão não muda com o tema; tema guardado que não existe; pré-visualização isolada |
 | `listas` | "Imprimir" e "Copiar", nas tabelas e nas trilhas: os três botões nas seis tabelas; a folha com as mesmas linhas da tabela (todas as páginas), na mesma ordem, e o cabeçalho com lista, aba, quantidade, ordem, filtros, busca e data; no papel (mídia de impressão emulada) só a folha aparece, preta no branco nos dois temas, com o cabeçalho da tabela repetido e sem linha cortada; **PDF de verdade** gerado pelo navegador: o número de páginas confere com o que o painel estimou, também com a página travada por uma caixa aberta; a página volta ao normal depois (com e sem o aviso do navegador); lista longa pergunta antes; lista vazia só avisa; quadradinho marcado nos lidos e estrela nas prioridades, desenhados; valores só com o olho aberto; ocultos fora, com a nota; a área de transferência recebe o texto esperado, e os dois caminhos de reserva; a folha e o texto de uma trilha; o celular; a pré-visualização isolada (sem imprimir e sem erro) |
 | `vistoria` | O catálogo revisto no painel (todo livro com tipo, eixo, dificuldade e extensão; os marcadores novos nos filtros) e **o que acontece com quem já tinha livros editados**: com o painel anterior, tirado do Git, edita oito livros e abre o painel novo — o que não foi mexido acompanha a vistoria, o que foi mexido fica; duas edições que viraram uma linha; a recomendação que mudou de título. Depois, o catálogo muda de novo em quatro livros (só no catálogo, só no painel, nos dois, em nada) |
-| `capas_painel` | As capas no painel, com uma lista de capas conhecida: tabela, listas e ficha; capa da Open Library, capa da Apple Books e capa posta à mão; imagem que falta (nas duas fontes); o que o navegador pede, e quando; a chave "Mostrar as capas"; a capa do catálogo não é guardada nem aceita de um backup; endereços inválidos; celular |
+| `capas_painel` | As capas no painel, com uma lista de capas conhecida: tabela, listas, grade e ficha; capa da Open Library, da Apple Books e posta à mão; imagem que falta (nas duas fontes); a frase que diz a origem e o aviso de outra edição; a capa maior só depois do clique, no tamanho de cada fonte; a grade (a escolha guardada, o cartão que abre a ficha, o que fica salvo); o que o navegador pede, e quando; a chave "Mostrar as capas"; a capa do catálogo não é guardada nem aceita de um backup; endereços inválidos; celular |
 | `financas` | A guia Finanças e a navegação: nenhum valor em reais em Visão geral, Biblioteca e Recomendações; indicadores, cartões e tabela de Finanças, com e sem compras; ocultar valores; as seis guias numa linha só no celular (412 a 320 px) e nenhuma guia estourando a largura da tela |
 | `func3` … `func8` | Cotações, novo livro, limpar/restaurar exemplos, exportar/importar, períodos (dentro de "Mais filtros"), filtros, Finanças, CSV, dados corrompidos |
 | `valores`, `resto` | Valores digitados; excluir livro; período invertido; importação com registros ilegíveis |
