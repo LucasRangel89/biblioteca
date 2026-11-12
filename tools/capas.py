@@ -9,8 +9,9 @@
     python tools/capas.py --conferir      # só conta o que falta; não consulta nem grava
     python tools/capas.py --arrumar       # não consulta: põe o arquivo na ordem do catálogo e tira capas repetidas
     python tools/capas.py --testar 40     # pede 40 das capas guardadas de cada fonte e confere se abrem como imagem
+    python tools/capas.py --auditar       # o retrato das capas e a fila de revisão (tools/auditar_capas.py; sem internet)
 
-Precisa de internet. No GitHub, quem roda é .github/workflows/buscar-capas.yml.
+Precisa de internet (menos --conferir, --arrumar e --auditar). No GitHub, quem roda é .github/workflows/buscar-capas.yml.
 
 As fontes, nesta ordem:
   1. Open Library (openlibrary.org), um catálogo aberto de livros. Tem poucas edições brasileiras.
@@ -427,6 +428,9 @@ def main(argv):
     for saida in (sys.stdout, sys.stderr):
         try: saida.reconfigure(encoding='utf-8', errors='replace')
         except Exception: pass
+    if '--auditar' in argv:                                             # o retrato e a fila de revisão: script só de leitura
+        import auditar_capas
+        return auditar_capas.main([a for a in argv if a != '--auditar'])
     livros = parse(pathlib.Path(CATALOGO).read_text(encoding='utf-8'))
     capas = ler_capas()
     # o que falta, livro a livro: 'tudo' = as duas fontes, em ordem; 'apple' = já passou pela Open Library, falta a Apple
