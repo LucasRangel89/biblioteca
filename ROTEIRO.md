@@ -959,8 +959,30 @@ e por último melhorar como as capas aparecem no painel. Quatro partes, nesta or
 | --- | --- | --- |
 | 1 | Auditoria e fila de revisão | **Feita** (12/11/2026) |
 | 2 | Casamento mais seguro e uma fonte nova | **Feita** (12/11/2026) — falta a primeira execução real, que é a parte 3 |
-| 3 | O robô das capas abrindo um PR para revisão | Nesta rodada |
+| 3 | O robô das capas abrindo um PR para revisão | **Feita** (12/11/2026) — falta você rodar a primeira busca |
 | 4 | As capas no painel: capa maior, aviso de outra edição, grade | Nesta rodada |
+
+### Parte 3 — O robô das capas abrindo um PR
+
+Antes, o serviço "Buscar capas" gravava o resultado direto no ramo e não montava o painel: as capas só chegavam ao
+site numa rodada seguinte, à mão. Agora ele faz o caminho inteiro e **para num Pull Request**:
+
+1. procura o que falta (com as escolhas da tela: refazer, limite, com ou sem Google Books);
+2. vê se alguma capa mudou — se não mudou nada, encerra sem abrir PR;
+3. confere o arquivo e pede 40 imagens de cada fonte para ver se abrem;
+4. monta o painel (`tools/atualizar.py`);
+5. refaz a auditoria e pede mais 40 imagens, espalhadas por todo o arquivo;
+6. roda os testes (`importador`, `busca_capas`, `auditoria_capas`, `capas_painel`, `site`; a suíte inteira é uma opção);
+7. põe tudo num ramo `capas/…` e abre o PR com o resumo, a amostra, o retrato das capas e os testes.
+
+- **Nada é publicado.** O site só muda quando o PR entra em `main`, e isso depende de aprovação. Se um teste falhar,
+  o PR nasce como rascunho e a execução fica vermelha — o trabalho da busca não se perde, mas nada é proposto como
+  pronto.
+- **Uma coisa para ligar no GitHub** (uma vez só): **Settings → Actions → General → Allow GitHub Actions to create
+  and approve pull requests**. Sem isso, o ramo é gravado e o aviso diz como abrir o PR à mão.
+- **Teste novo:** `tools/qa/fluxo_capas.py` confere o desenho do serviço lendo o arquivo (gatilho, permissões, ordem
+  dos passos, PR em rascunho quando os testes falham, nenhum merge automático, site publicando só de `main`). Ele
+  não executa o GitHub Actions — isso só acontece quando você mandar rodar.
 
 ### Parte 2 — Casamento mais seguro e uma fonte nova
 

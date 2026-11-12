@@ -457,12 +457,20 @@ desenho com a inicial do título. Até 11/11/2026 eram 761, todas da primeira fo
   está na sua estante. Na busca de 11/11/2026, 967 livros não foram achados em nenhuma das duas fontes e 83 não foram
   procurados; entre os 245 quadrinhos, só 58 têm capa.
 - **Procurar de novo** (depois de entrarem livros, por exemplo): no GitHub, aba **Actions** → **Buscar capas** →
-  **Run workflow**. O serviço procura só o que falta — os livros novos, nas duas fontes, e os que só tinham passado
-  pela primeira —, grava `catalogo/capas.tsv` e, no fim, pede 40 capas de cada fonte para conferir se as imagens
-  abrem; o resumo aparece na página da execução. Marcando "refazer", tenta de novo, nas duas fontes, os que não foram
-  achados. A busca da Apple aceita cerca de 20 consultas por minuto: mil livros levam perto de uma hora; se o tempo
-  acabar, basta rodar de novo, que ele continua de onde parou. O serviço não monta o painel: as capas novas aparecem
-  depois de `python tools/atualizar.py`, numa rodada.
+  **Run workflow**. O serviço procura só o que falta — os livros novos, em todas as fontes, e os que ainda não
+  tinham passado por alguma delas. Marcando "refazer", tenta de novo os que não foram achados; desmarcando o Google
+  Books, fica nas duas primeiras; "limite" corta a execução em N livros; "suíte completa" roda todos os testes.
+  A busca da Apple aceita cerca de 20 consultas por minuto: mil livros levam perto de uma hora; se o tempo acabar,
+  basta rodar de novo, que ele continua de onde parou.
+- **O robô não publica nada: ele abre um Pull Request.** Depois de procurar, ele confere o `capas.tsv`, pede 40
+  imagens de cada fonte, monta o painel (`tools/atualizar.py`), refaz a auditoria, roda os testes
+  (`importador`, `busca_capas`, `auditoria_capas`, `capas_painel`, `site`) e põe tudo num ramo `capas/…`, com um PR
+  que traz o resumo da busca, a amostra das imagens, o retrato das capas e o resultado dos testes. Se um teste
+  falhar, o PR nasce como rascunho e a execução fica vermelha. Nada entra em `main` — e é só `main` que publica o
+  site — sem alguém aprovar. Se não houver nenhuma capa nova, nenhum PR é aberto.
+  - Para o GitHub deixar o robô abrir o PR: **Settings → Actions → General → Allow GitHub Actions to create and
+    approve pull requests**. Se estiver desligado, o ramo fica gravado do mesmo jeito e o aviso na execução traz o
+    endereço para abrir o PR à mão.
 - **Auditoria e fila de revisão.** `python tools/auditar_capas.py` (ou `python tools/capas.py --auditar`) refaz
   [`catalogo/capas-revisao.md`](catalogo/capas-revisao.md): quantos livros têm capa por parte da biblioteca, por eixo,
   por tipo e por origem, e a lista dos que merecem um olhar — capa repetida, capa que o painel não consegue mostrar,
@@ -555,7 +563,7 @@ anexos) · `60-drawer` (gaveta do livro, formulários, cotações, importação)
 ## Testes
 
 ```bash
-python tools/qa/tudo.py importador busca_capas auditoria_capas   # os que não precisam de navegador
+python tools/qa/tudo.py importador busca_capas auditoria_capas fluxo_capas   # os que não precisam de navegador
 pip install playwright pillow
 python -m playwright install chromium   # no Linux, se faltarem bibliotecas: python -m playwright install-deps chromium
 python tools/qa/tudo.py                 # tudo, ~35 min; termina com "TUDO CERTO"
@@ -585,6 +593,7 @@ avisa no fim, em vez de dar o teste por completo. `git fetch --unshallow` traz o
 | `posse` | Físico × digital × nos dois: indicadores, gaveta, formulário, filtros, cartão no celular; quadrinhos (filtro "HQ", gaveta de uma série guardada em subpasta, busca pelo nome da subpasta, os cinco botões do filtro Tipo no celular); **migração do que o painel anterior salvou** no navegador e de um backup exportado por ele; livro anotado no painel e depois corrigido no catálogo ou no inventário (os painéis antigos são tirados do histórico do Git) |
 | `busca_capas` | A busca de capas (`tools/capas.py`), sem internet. Open Library: a consulta feita para cada livro, a capa escolhida (edição em português antes da capa da obra), a segunda tentativa só pelo título. Apple Books: a consulta, o resultado que serve (título e autor conferem; caixa, trilogia, resumo e audiolivro não), o endereço da imagem, a espera quando a busca recusa por excesso de consultas. As duas em ordem: livro novo passa pelas duas; quem só tinha passado pela primeira vai só à segunda; a Apple fora do ar não atrapalha a Open Library. O `capas.tsv` (retomar de onde parou, não mexer no que foi posto à mão, a mesma capa em volumes de uma série), a amostra de `--testar` nas duas fontes; `src/capas.json` em dia com `catalogo/capas.tsv` |
 | `auditoria_capas` | A auditoria das capas (`tools/auditar_capas.py`), sem internet: os números saem do mesmo cruzamento que gera `src/capas.json`; cada problema da fila (capa que o painel não mostra, capa repetida em volumes, capa da obra, casamento que hoje não se faria, autoria e título a conferir, linha que falta, linha órfã) e o que não é problema; a conferência das imagens por amostra (`--rede`); o relatório sempre igual para o mesmo catálogo, sem data nem hora e sem nada que dependa da rede; `--resumo`, `--conferir` e o `--auditar` do `capas.py`; `catalogo/capas-revisao.md` em dia |
+| `fluxo_capas` | O robô das capas (`.github/workflows/buscar-capas.yml`), lido como arquivo: só roda quando alguém manda; nunca grava no ramo em que rodou (cria `capas/…` e abre PR); a ordem buscar → conferir → amostrar → montar → auditar → testar → PR; teste falhando vira PR em rascunho; nenhum merge automático; o site continua publicando só de `main`; os comandos e opções citados existem. Não executa o GitHub Actions: confere o desenho do fluxo |
 | `inicio` | Como o painel abre e os dados de exemplo: primeira abertura só com o catálogo; "Ver com dados de exemplo", "Limpar dados de exemplo" e "Recomeçar"; o endereço com `?exemplo=1`; **a saída dos exemplos de fábrica** para quem usava o painel anterior — sem edições, com um e com três livros editados, no computador e no celular, e com o painel que estava no ar antes da mudança (tirado do histórico do Git) |
 | `leitura_de_fora` | "Já li" para o livro que não está no acervo (emprestado, de biblioteca, perdido): a ficha da recomendação e a do item da lista de compra oferecem o botão; a leitura conta como "de fora", o livro sai da fila de recomendações e da ordem de compra e a trilha o dá por feito; data e nota opcionais; "Não li" desfaz, também no livro que o catálogo traz como lido; a recomendação lida que vai para a lista de compra e é comprada continua lida; os botões da ficha na largura do celular |
 | `opcionais` | Só o título é obrigatório: "Novo livro", "Já tenho", "Comprei", "Já li" e "Terminei hoje" sem data, loja ou valor; o que a ficha, os indicadores, Finanças, o CSV e o backup mostram nesses casos; data futura e valor ilegível recusados |
