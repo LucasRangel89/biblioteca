@@ -434,14 +434,18 @@ O painel mostra a capa do livro nas listas, nas tabelas e na ficha. Hoje **1.564
 97 da estante, 494 das 607 linhas de recomendações, 1.009 dos 1.910 da biblioteca virtual); os outros aparecem com um
 desenho com a inicial do título. Até 11/11/2026 eram 761, todas da primeira fonte.
 
-- **De onde vêm.** De dois catálogos de livros na internet, nesta ordem:
+- **De onde vêm.** De três catálogos de livros na internet, nesta ordem:
   1. a [Open Library](https://openlibrary.org), um catálogo aberto (784 capas). Tem poucas edições brasileiras;
   2. a **Apple Books**, a loja de livros digitais da Apple, consultada pela busca pública do iTunes na loja do Brasil
      (780 capas). Só é procurada para o que a Open Library não achou. Traz a capa do livro digital em português que
-     está à venda: quase sempre a da edição brasileira, às vezes a da edição de Portugal.
+     está à venda: quase sempre a da edição brasileira, às vezes a da edição de Portugal;
+  3. o **Google Books**, só para o que as duas primeiras não acharam e só entre livros em português (ainda sem capas
+     daqui: entrou em 12/11/2026 e espera a primeira execução). Como as outras, é uma consulta pública de catálogo —
+     nenhuma loja é raspada, nenhuma imagem é copiada para o repositório.
 
   Nenhuma imagem fica no repositório: `catalogo/capas.tsv` guarda só o número da capa (Open Library) ou o endereço da
-  imagem (Apple), e o navegador busca a imagem em `covers.openlibrary.org` ou em `is…-ssl.mzstatic.com` quando ela
+   imagem (Apple ou Google), e o navegador busca a imagem em `covers.openlibrary.org`, `is…-ssl.mzstatic.com` ou
+  `books.google.com` quando ela
   aparece na tela. São os únicos pedidos que o painel faz à internet; nada do que foi anotado vai junto, e o pedido
   não diz de que página veio. Sem internet, ou se a imagem faltar, fica o desenho. Em "Seus dados" há uma chave
   para desligar as capas.
@@ -467,9 +471,22 @@ desenho com a inicial do título. Até 11/11/2026 eram 761, todas da primeira fo
   mexe no `capas.tsv`; `--conferir` diz se o relatório guardado está em dia e `--rede 40` pede 40 das imagens para ver
   quais ainda abrem (essa parte vai para a tela, nunca para o arquivo). Hoje são **191 livros na fila** e 1.050 sem capa
   (967 já procurados nas duas fontes, 83 sem autor certo).
+- **O casamento é por título, autor e volume.** Além de título e autor, o número do volume tem de ser o mesmo:
+  "…, Livro 2" não recebe mais a capa de "…" nem a de "…, Livro 1" ("Livro 2", "Vol. 2" e "#2" são o mesmo volume).
+  O que o catálogo anota entre parênteses sobre a série não atrapalha: "O Império Final (Mistborn, vol. 1)" casa com
+  "O Império Final", porque o título do livro é único.
 - **O que a coluna `origem` diz:** `edicao` e `obra`, capa da Open Library (a da edição com o nosso título, ou a da
-  obra em outra língua); `apple`, capa da Apple Books; `manual`, posta à mão; `nao-achei`, procurada só na Open
-  Library (falta a Apple); `nao-achei-2`, procurada nas duas; `sem-autor`, não procurada.
+  obra em outra língua); `apple`, capa da Apple Books; `google`, capa do Google Books; `manual`, posta à mão;
+  `nao-achei`, procurada só na Open Library (faltam Apple e Google); `nao-achei-2`, procurada nas duas primeiras
+  (falta o Google); `nao-achei-3`, procurada nas três; `sem-autor`, não procurada. Quem já estava `nao-achei-2`
+  (967 livros) vai ao Google na próxima execução, sem precisar refazer as duas primeiras.
+- **Escolher uma capa à mão, vendo o que há:** `python tools/capas.py --candidatos "Dom Casmurro" --autor "Machado de
+  Assis"` mostra o que cada fonte devolve — título, autor, língua, ISBN, o endereço da imagem, se a busca automática
+  aceitaria e, quando não, por quê — com a linha pronta para colar no `capas.tsv`. Com `--isbn 978…` (o número da
+  edição que está na sua mão) a procura é pelo ISBN, na Open Library e no Google; `--hq` aplica a regra mais dura dos
+  quadrinhos. Nada é gravado. É também o jeito mais rápido de ver se uma fonte está respondendo.
+- **Se uma fonte estiver recusando:** `--sem-google` deixa a execução nas duas primeiras; o robô também desiste
+  sozinho de uma fonte depois de cinco recusas seguidas, sem estragar o que as outras acharam.
 - **Corrigir uma capa errada:** em `catalogo/capas.tsv`, troque o número da linha (ou ponha o endereço `https://…` de
   uma imagem) e escreva `manual` na coluna `origem` — a busca nunca mexe nessas linhas. Para um livro ficar sem
   capa, apague o número e deixe `manual`. Depois, `python tools/atualizar.py`. Para a busca procurar de novo a capa de

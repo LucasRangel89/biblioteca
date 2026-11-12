@@ -405,3 +405,6 @@ Estes dependem do catálogo, não da busca: com o autor certo, a próxima execu�
 2. Ponha o número da capa na Open Library ou o endereço `https://…` da imagem.
 3. Escreva `manual` na coluna `origem`: assim a busca nunca troca a sua escolha.
 4. Rode `python tools/atualizar.py` para o painel receber a mudança, e `python tools/auditar_capas.py` para refazer este relatório.
+
+Para ver o que cada fonte devolveria antes de escolher:
+`python tools/capas.py --candidatos "Título" --autor "Nome"` (ou `--isbn 978…`, com o número da edição na mão).

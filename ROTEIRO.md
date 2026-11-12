@@ -958,9 +958,27 @@ e por último melhorar como as capas aparecem no painel. Quatro partes, nesta or
 | Parte | O que é | Em que pé está |
 | --- | --- | --- |
 | 1 | Auditoria e fila de revisão | **Feita** (12/11/2026) |
-| 2 | Casamento mais seguro e uma fonte nova | Nesta rodada |
+| 2 | Casamento mais seguro e uma fonte nova | **Feita** (12/11/2026) — falta a primeira execução real, que é a parte 3 |
 | 3 | O robô das capas abrindo um PR para revisão | Nesta rodada |
 | 4 | As capas no painel: capa maior, aviso de outra edição, grade | Nesta rodada |
+
+### Parte 2 — Casamento mais seguro e uma fonte nova
+
+- **O volume tem de ser o mesmo.** Era daqui que vinham capas trocadas em séries: "A Saga de Elric, Livro 2" recebia
+  a capa de "A Saga de Elric". Agora o número entra na comparação, escrito de qualquer forma ("Livro 2", "Vol. 2",
+  "#2"). A anotação de série entre parênteses continua não atrapalhando.
+- **Uma terceira fonte: o Google Books**, consultada só depois da Open Library e da Apple, e só entre livros em
+  português. Entra na busca automática e no `--candidatos`. Quem já estava marcado `nao-achei-2` (os 967 que não
+  foram achados nas duas primeiras) vai a ela na próxima execução, sem repetir as duas primeiras; se também não
+  achar, fica `nao-achei-3`.
+- **Ainda não houve execução real.** As três fontes foram testadas com respostas gravadas, no formato das respostas
+  verdadeiras, mas desta máquina não se chega à internet desses catálogos. A primeira execução de verdade é a
+  parte 3 (o robô), que abre um PR para você revisar antes de qualquer coisa entrar.
+- **Escolher à mão ficou fácil:** `python tools/capas.py --candidatos "Título" --autor "Nome"` (ou `--isbn 978…`)
+  mostra o que cada fonte tem, com o ISBN quando existe, se a busca aceitaria e por que não aceitaria — e a linha
+  pronta para colar no `capas.tsv` com origem `manual`. Nada é gravado.
+- **Cada fonte tem o seu freio.** A Apple já esperava 3 segundos entre consultas; o Google espera 1,5 e, se recusar
+  cinco vezes seguidas, o robô para de procurar nele e segue com o resto. `--sem-google` volta às duas primeiras.
 
 ### Parte 1 — Auditoria e fila de revisão
 
