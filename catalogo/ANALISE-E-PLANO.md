@@ -297,6 +297,9 @@ Esta seção atualiza o estado sem apagar o retrato anterior.
   exigir também a menção ao Google Books em “Seus dados”.
 - **O que não foi feito:** nenhuma busca real nova, nenhum dispatch (a API continua devolvendo 403), nenhum merge desta
   mudança, nenhuma publicação. O Google Books ainda não teve uma consulta bem-sucedida em produção.
-- **Próximo passo seguro:** abrir PR próprio para revisão; depois de aprovado e mesclado, rodar `Buscar capas` em `main`
-  com limite 40 e ler o motivo no resumo. Só então medir o piloto/ISBN numa amostra de cerca de 100 livros sem capa.
-  Gerador único de listagens e revisão de `referencias/` continuam como próximos PRs da Etapa 5, para não misturar escopos.
+- **PR desta mudança:** [#16](https://github.com/LucasRangel89/biblioteca/pull/16), aberto para revisão. O CI rápido do
+  PR passou (run `43318662762`); o push inicial também tinha passado (run `43318594140`). Aguarda aprovação explícita
+  para merge.
+- **Próximo passo seguro:** depois de aprovado e mesclado, rodar `Buscar capas` em `main` com limite 40 e ler o motivo
+  no resumo. Só então medir o piloto/ISBN numa amostra de cerca de 100 livros sem capa. Gerador único de listagens e
+  revisão de `referencias/` continuam como próximos PRs da Etapa 5, para não misturar escopos.
