@@ -16,7 +16,8 @@ Também gera:
 - src/trilhas.json (catalogo/trilhas.md): as trilhas de leitura, cada uma como
   [marcador, nome, descrição, [posições das linhas do catálogo, na ordem da trilha]];
 - src/antes.json (catalogo/antes-da-vistoria.tsv): [posição da linha, eixo, "marcadores"] que a linha tinha no painel
-  publicado antes da vistoria de 10/11/2026 — só nas linhas em que a vistoria trocou ou tirou alguma coisa.
+  publicado antes da vistoria de 10/11/2026 — só nas linhas em que a vistoria trocou ou tirou alguma coisa;
+- src/sinopses.json (catalogo/sinopses.tsv): [posição da linha, "sinopse"] dos livros que já têm sinopse.
 """
 import csv, hashlib, json, pathlib, re, sys, unicodedata
 sys.path.insert(0, str(pathlib.Path(__file__).parent))
@@ -33,6 +34,10 @@ RENOMEADOS = RAIZ / 'catalogo' / 'renomeados.tsv'
 TRILHAS = RAIZ / 'catalogo' / 'trilhas.md'
 ANTES = RAIZ / 'catalogo' / 'antes-da-vistoria.tsv'
 DEST_ANTES = RAIZ / 'src' / 'antes.json'
+SINOPSES = RAIZ / 'catalogo' / 'sinopses.tsv'
+DEST_SINOPSES = RAIZ / 'src' / 'sinopses.json'
+SINOPSE_MIN, SINOPSE_MAX = 140, 400          # caracteres: as duas amostras aprovadas têm 251 e 281
+_ABREV = {'dr', 'dra', 'sr', 'sra', 'prof', 'st', 'vol', 'séc', 'cap', 'ed', 'p', 'pe'}
 AUTOR_FIX = {
     'Liev Tolstói (na prateleira consta Dostoiévski; autor correto: Tolstói)': ('Liev Tolstói', 'Na prateleira consta Dostoiévski; o autor correto é Tolstói.'),
     'Irvin D. Yalom (conforme a prateleira)': ('Irvin D. Yalom', 'Autoria conforme a prateleira — conferir.'),
@@ -218,6 +223,67 @@ def classe_anterior(linhas, avisos, caminho=None):
     return sorted(out)
 
 
+def frases(texto):
+    """Quantas frases o texto tem: conta os pontos finais (e ? ! …) seguidos de maiúscula ou do fim do texto.
+    Inicial de nome ("R. Daneel", "Rob J. Cole", "C.S. Lewis") e abreviatura comum ("Dr.") não encerram frase."""
+    n = 0
+    for m in re.finditer(r'([^\s.!?…]*)[.!?…]+[”’)]*(?=\s+[“‘(]?[A-ZÀ-Ý0-9]|\s*$)', texto):
+        w = m.group(1)
+        if not ((len(w) == 1 and w.isupper()) or w.lower() in _ABREV or re.fullmatch(r'(?:[A-Z]\.)*[A-Z]', w)):
+            n += 1
+    return n
+
+
+def ler_sinopses(linhas, avisos, caminho=None):
+    """[[posição da linha, "sinopse"], …]: as sinopses já escritas (catalogo/sinopses.tsv).
+
+    O arquivo é também o registro das buscas — uma linha por livro pesquisado: título, autor, sinopse, fonte (conhecimento
+    geral ou o endereço consultado) e data. Linha sem sinopse é pendência: o livro foi pesquisado e não deu para confirmar
+    do que trata; o motivo fica na coluna "fonte", começando por "pendente:". Só as linhas com sinopse vão para o painel.
+    `linhas` é a saída de build(): o livro é achado pelo título e autor de hoje ou por um nome antigo dele.
+    Os campos são lidos ao pé da letra (sem aspas de planilha): a sinopse pode ter aspas à vontade, só não pode ter tabulação."""
+    caminho = pathlib.Path(caminho or SINOPSES)
+    if not caminho.exists():
+        return []
+    autor = lambda a: AUTOR_FIX[a][0] if a in AUTOR_FIX else a
+    chave = lambda t, a: (_norm(t), _norm(autor(a)))
+    pos = {}
+    for i, l in enumerate(linhas):
+        for t, a in [(l[0], l[1])] + [tuple(n) for n in (l[7] if len(l) > 7 and l[7] else [])]:
+            pos.setdefault(chave(t, a), i)
+    out, vistos = [], set()
+    with open(caminho, encoding='utf-8-sig', newline='') as f:
+        for r in csv.DictReader(f, delimiter='\t', quoting=csv.QUOTE_NONE):
+            t, a = (r.get('titulo') or '').strip(), (r.get('autor') or '').strip()
+            if not t:
+                continue
+            texto, fonte, data = (' '.join((r.get(k) or '').split()) for k in ('sinopse', 'fonte', 'data'))
+            i, quem = pos.get(chave(t, a)), f'sinopses.tsv: “{t}” ({a or "sem autor"})'
+            if i is None:
+                avisos.append(f'{quem} não é uma linha do catálogo; a linha foi ignorada')
+                continue
+            if i in vistos:
+                avisos.append(f'{quem} aparece mais de uma vez; vale a primeira')
+                continue
+            vistos.add(i)
+            if not re.fullmatch(r'\d{4}-\d{2}-\d{2}', data):
+                avisos.append(f'{quem} está com a data “{data}” (esperado: AAAA-MM-DD)')
+            if not texto:
+                if not fonte.lower().startswith('pendente:'):
+                    avisos.append(f'{quem} está sem sinopse e sem o motivo (a coluna "fonte" deve começar por "pendente:")')
+                continue
+            if not fonte or fonte.lower().startswith('pendente'):
+                avisos.append(f'{quem} tem sinopse, mas a fonte não diz de onde ela veio')
+            if not SINOPSE_MIN <= len(texto) <= SINOPSE_MAX:
+                avisos.append(f'{quem} tem sinopse de {len(texto)} caracteres (esperado: de {SINOPSE_MIN} a {SINOPSE_MAX})')
+            if not 2 <= frases(texto) <= 3:
+                avisos.append(f'{quem} tem sinopse de {frases(texto)} frase(s) (o combinado: duas ou três)')
+            if '"' in texto:
+                avisos.append(f'{quem} tem aspas retas na sinopse (use “ ”, que não confundem planilhas)')
+            out.append([i, texto])
+    return sorted(out)
+
+
 def build(avisos=None):
     avisos = [] if avisos is None else avisos
     books = parse(SRC.read_text(encoding='utf-8'))
@@ -261,5 +327,9 @@ if __name__ == '__main__':
     with open(DEST_ANTES, 'w', encoding='utf-8', newline='\n') as f:
         f.write(json.dumps(antes, ensure_ascii=False, separators=(',', ':')))
     print(len(antes), 'classificações de antes da vistoria ->', DEST_ANTES, DEST_ANTES.stat().st_size, 'bytes')
+    sinopses = ler_sinopses(data, avisos)
+    with open(DEST_SINOPSES, 'w', encoding='utf-8', newline='\n') as f:
+        f.write(json.dumps(sinopses, ensure_ascii=False, separators=(',', ':')))
+    print(len(sinopses), 'sinopses ->', DEST_SINOPSES, DEST_SINOPSES.stat().st_size, 'bytes')
     for a in avisos:
         print('AVISO:', a)

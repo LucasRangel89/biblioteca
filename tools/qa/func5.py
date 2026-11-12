@@ -75,11 +75,12 @@ with sync_playwright() as p:
     pg.keyboard.press('Enter'); pg.wait_for_timeout(600); print('   enter ->', pg.evaluate(GV)); pg.keyboard.press('Escape'); pg.wait_for_timeout(300)
     pg.fill('#q', 'xyzxyz'); pg.wait_for_timeout(300); print('   sem resultado:', pg.inner_text('#q-r')[:80]); pg.keyboard.press('Escape'); pg.wait_for_timeout(200)
     # I) tema e olho
-    pg.click('#b-tema'); pg.wait_for_timeout(300); pg.click('#b-olho'); pg.wait_for_timeout(600)
+    pg.click('#b-tema'); pg.wait_for_timeout(300); pg.click('#pop-tema [data-tema-id=escuro]'); pg.wait_for_timeout(300); pg.keyboard.press('Escape'); pg.wait_for_timeout(200)      # o tema escuro, pelo quadro da paleta
+    pg.click('#b-olho'); pg.wait_for_timeout(600)
     print('I) tema:', pg.evaluate("() => document.documentElement.dataset.tema"), '| KPIs com olho:', pg.evaluate(K))
     pg.wait_for_timeout(700); pg.reload(); pg.wait_for_timeout(1200)
     print('   após recarregar: tema', pg.evaluate("() => document.documentElement.dataset.tema"), '| KPIs:', pg.evaluate(K), '| aviso:', pg.is_visible('#aviso'), '| visão:', pg.inner_text('#titulo .t-l'))
-    pg.click('#b-olho'); pg.click('#b-tema'); pg.wait_for_timeout(500)
+    pg.click('#b-olho'); pg.click('#b-tema'); pg.wait_for_timeout(300); pg.click('#pop-tema [data-tema-id=claro]'); pg.wait_for_timeout(300); pg.keyboard.press('Escape'); pg.wait_for_timeout(300)
     # E) recomeçar
     pg.click('#b-dados'); pg.wait_for_timeout(400); print('E) dados:', pg.evaluate("() => [...document.querySelectorAll('#dlg .dd-n > div')].map(d => d.textContent)"))
     pg.click('#dlg [data-x=zerar]'); pg.wait_for_timeout(400); print('   confirmar:', pg.inner_text('#dlg h2'), '|', pg.inner_text('#dlg .dlg-msg')[:200])

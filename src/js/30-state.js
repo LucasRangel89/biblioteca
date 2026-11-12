@@ -6,8 +6,7 @@ const IC = {
   sacola: '<path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"/><path d="M3 6h18"/><path d="M16 10a4 4 0 0 1-8 0"/>',
   etiqueta: '<path d="M12.6 2.6A2 2 0 0 0 11.2 2H4a2 2 0 0 0-2 2v7.2a2 2 0 0 0 .6 1.4l8.7 8.7a2.4 2.4 0 0 0 3.4 0l6.6-6.6a2.4 2.4 0 0 0 0-3.4z"/><circle cx="7.5" cy="7.5" r=".6" fill="currentColor"/>',
   busca: '<circle cx="11" cy="11" r="7.5"/><path d="m21 21-4.3-4.3"/>',
-  sol: '<circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M6.3 17.7l-1.4 1.4M19.1 4.9l-1.4 1.4"/>',
-  lua: '<path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9z"/>',
+  paleta: '<path d="M12 22a1 1 0 0 1 0-20 10 9 0 0 1 10 9 5 5 0 0 1-5 5h-2.25a1.75 1.75 0 0 0-1.4 2.8l.3.4a1.75 1.75 0 0 1-1.4 2.8z"/><circle cx="13.5" cy="6.5" r=".6" fill="currentColor"/><circle cx="17.5" cy="10.5" r=".6" fill="currentColor"/><circle cx="6.5" cy="12.5" r=".6" fill="currentColor"/><circle cx="8.5" cy="7.5" r=".6" fill="currentColor"/>',
   olho: '<path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7-10-7-10-7z"/><circle cx="12" cy="12" r="3"/>',
   olhoOff: '<path d="M9.9 9.9a3 3 0 1 0 4.2 4.2"/><path d="M10.7 5.1A10.4 10.4 0 0 1 12 5c6.5 0 10 7 10 7a13.2 13.2 0 0 1-1.7 2.7"/><path d="M6.6 6.6A13.5 13.5 0 0 0 2 12s3.5 7 10 7a9.7 9.7 0 0 0 5.4-1.6"/><path d="m2 2 20 20"/>',
   mais: '<path d="M5 12h14M12 5v14"/>',
@@ -52,6 +51,18 @@ const IC = {
   rota: '<circle cx="6" cy="19" r="3"/><path d="M9 19h8.5a3.5 3.5 0 0 0 0-7h-11a3.5 3.5 0 0 1 0-7H15"/><circle cx="18" cy="5" r="3"/>',
 };
 const icone = (n, t = 18) => `<svg class="ic" width="${t}" height="${t}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${IC[n] || ''}</svg>`;
+
+/* Os temas. Cada um é um bloco de variáveis em styles.css ([data-tema="id"]): cores, a letra dos títulos e, no máximo,
+   um ornamento. Aqui ficam o nome, a frase do seletor, o clima (cada tema tem um só: claro ou escuro) e a cor do fundo,
+   que vai para a barra do navegador no celular. Os dois primeiros são o tema padrão; sem escolha feita, vale o do
+   sistema. A lista de ids se repete no começo de index.html, que aplica o tema antes de a página aparecer. */
+const TEMAS = [
+  { id: 'claro', n: 'Claro', d: 'O padrão, em tons claros', clima: 'claro', cor: '#F5F3EE' },
+  { id: 'escuro', n: 'Escuro', d: 'O padrão, em tons escuros', clima: 'escuro', cor: '#141310' },
+  { id: 'lovecraft', n: 'Lovecraft', d: 'Noite funda: verde-abissal, violeta e poucas estrelas', clima: 'escuro', cor: '#0A100F' },
+  { id: 'holmes', n: 'Sherlock Holmes', d: 'Papel de jornal, vinho e latão', clima: 'claro', cor: '#EEE8DA' },
+  { id: 'moby', n: 'Moby Dick', d: 'Névoa do mar, azul-profundo e cobre', clima: 'claro', cor: '#E8EEEE' },
+];
 const ICONE_FMT = { fisico: 'livro', ebook: 'tablet', audio: 'fone' };
 
 const VISOES = {
@@ -115,7 +126,8 @@ function selTags() {
    estão fora (pintarFora, em 70-app). Regras: situação (já li · sem edição em PT · a verificar), tipo, eixo e marcador;
    basta uma para o livro sair.
    Exceção única: quem saiu só por "já li" continua contando no que é número de leitura — leituras concluídas e suas páginas,
-   adquiridos × lidos, o andamento das trilhas. O livro some das listas, mas não deixa de ter sido lido (ver c.L, em contexto). */
+   adquiridos × lidos — e continua aparecendo nas trilhas de que faz parte, com a etiqueta "Lido". O livro some das listas, mas
+   não deixa de ter sido lido (ver c.L, em contexto, e estadoTrilhas). */
 const SIT_FORA = [['lido', 'Já li', b => b.leit === 'lido'], ['sem-pt', 'Sem edição em PT', b => b.tags.includes('sem-pt')], ['verificar', 'A verificar', b => b.tags.includes('verificar')]];
 const ROTULO_TIPO = { F: 'Ficção', NF: 'Não ficção', HQ: 'HQ', O: 'Poesia e outros' };
 const minuscula = s => (s === s.toUpperCase() ? s : s.charAt(0).toLowerCase() + s.slice(1));      // no meio da frase: "Sem edição em PT" → "sem edição em PT"; "HQ" fica
@@ -291,14 +303,15 @@ function contagens(c) {
    Para cada trilha: os livros (na ordem da lista; quem ganhou o marcador no painel entra no fim), quantos estão no acervo,
    quantos foram lidos e quais ainda faltam — isto é, nem estão no acervo nem foram lidos (um livro lido emprestado não falta). */
 function estadoTrilhas() {
-  // Livro oculto (ver "ocultar") não entra na trilha. O que só saiu das listas por "já li" continua contando no andamento:
-  // fica em livros e fora de vis (o que a trilha mostra). esc = quantos livros da trilha não aparecem, por um motivo ou por outro.
+  // Livro oculto (ver "ocultar") não entra na trilha — menos o que só saiu das listas por "já li": esse continua na trilha, com
+  // a etiqueta "Lido", e contando no andamento (pedido do dono da biblioteca, 11/11/2026). vis = o que a trilha mostra (hoje, o
+  // mesmo que livros). esc = quantos livros da trilha não aparecem, por causa das outras regras.
   const porTag = new Map(TRILHAS.map(t => [t.tag, []])), foraDe = new Map();
   for (const b of DB.livros) { const f = oculto(b, true); for (const tg of b.tags) { const l = porTag.get(tg); if (!l) continue; if (f) foraDe.set(tg, (foraDe.get(tg) || 0) + 1); else l.push(b); } }
   return TRILHAS.map(t => {
     const pos = new Map(t.linhas.map((k, i) => [k, i])), ord = b => (pos.has(b.o) ? pos.get(b.o) : 1e6);
-    const livros = porTag.get(t.tag).sort((a, z) => ord(a) - ord(z) || a.t.localeCompare(z.t, 'pt-BR')), vis = FORA.lido ? livros.filter(b => b.leit !== 'lido') : livros;
-    return { t, livros, vis, esc: (foraDe.get(t.tag) || 0) + livros.length - vis.length, n: livros.length, tenho: livros.filter(b => b.col === 'acervo').length, lidos: livros.filter(b => b.leit === 'lido').length, faltam: livros.filter(b => b.col !== 'acervo' && b.leit !== 'lido') };
+    const livros = porTag.get(t.tag).sort((a, z) => ord(a) - ord(z) || a.t.localeCompare(z.t, 'pt-BR'));
+    return { t, livros, vis: livros, esc: foraDe.get(t.tag) || 0, n: livros.length, tenho: livros.filter(b => b.col === 'acervo').length, lidos: livros.filter(b => b.leit === 'lido').length, faltam: livros.filter(b => b.col !== 'acervo' && b.leit !== 'lido') };
   });
 }
 

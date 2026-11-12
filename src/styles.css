@@ -1,8 +1,19 @@
 /* ───────────── base ───────────── */
 :root {
   --sans: Inter, "Segoe UI", system-ui, -apple-system, BlinkMacSystemFont, Roboto, "Helvetica Neue", Arial, sans-serif;
-  --serif: "Iowan Old Style", "Palatino Linotype", Palatino, "Book Antiqua", "URW Palladio L", P052, Georgia, serif;
   --r: 14px; --r-s: 9px; --lat: 232px; --pad: 28px;
+}
+/* O tema padrão: a letra dos títulos é a mesma no claro e no escuro — --serif, com o peso (--tit-peso), a escala
+   (--tit-esc), o aperto entre as letras (--tit-esp: 1 = o de sempre, 0 = nenhum) e a altura da linha do título da
+   página (--tit-alt). Depois vêm as cores e a força do mapa de calor (--mz-k) de cada um. Um tema é um bloco destes.
+   Os seletores [data-tema="claro"] e [data-tema="escuro"] repetem os valores para quem precisa deles dentro de outro
+   tema: as amostras do seletor de temas e a folha de impressão. */
+:root, [data-tema="claro"], [data-tema="escuro"] {
+  --serif: "Iowan Old Style", "Palatino Linotype", Palatino, "Book Antiqua", "URW Palladio L", P052, Georgia, serif;
+  --tit-peso: 600; --tit-esc: 1; --tit-esp: 1; --tit-alt: 1.15;
+}
+:root, [data-tema="claro"] {
+  --mz-k: 62%;
   --bg: #F5F3EE; --surface: #FFFFFF; --surface-2: #FAF8F4; --surface-3: #F0ECE4;
   --ink: #1F1D1A; --ink-2: #5A554D; --ink-3: #6F6A62; --line: #E7E2D8; --line-2: #D8D1C4;
   --accent: #B4502A; --accent-ink: #FFFFFF; --accent-soft: #F7E7DF; --accent-forte: #9A4122;
@@ -24,7 +35,62 @@
   --sombra: 0 1px 2px rgba(0, 0, 0, .3), 0 12px 28px -18px rgba(0, 0, 0, .6);
   --sombra-2: 0 2px 8px rgba(0, 0, 0, .4), 0 26px 56px -18px rgba(0, 0, 0, .75);
   --seg-on: #EFEBE3; --seg-on-ink: #1A1814; --veu: rgba(0, 0, 0, .58);
+  --mz-k: 47%;
   color-scheme: dark;
+}
+
+/* ───────────── temas ─────────────
+   Um tema troca as cores, a letra dos títulos e, no máximo, um ornamento discreto; as telas, os botões e os números
+   ficam onde estão. Cada tema tem um clima só (claro ou escuro) e passa pelo mesmo teste de contraste do tema padrão
+   (tools/qa/a11y.py e tools/qa/temas.py). As letras são fontes livres, postas dentro do painel por tools/build.py a
+   partir de src/letras; depois delas vêm letras do sistema, para os sinais que elas não têm.
+   Para criar outro: um bloco como estes, uma linha em TEMAS (src/js/30-state.js) e o id no começo de src/index.html.
+   O ornamento, se houver, fica mais abaixo, com o seletor de temas. */
+
+/* Lovecraft — noite funda: verde-abissal, osso e violeta; os títulos em letra de livro antigo */
+[data-tema="lovecraft"] {
+  --serif: "IM Fell English", "Iowan Old Style", "Palatino Linotype", Palatino, "Book Antiqua", Georgia, serif;
+  --tit-peso: 400; --tit-esc: 1.1; --tit-esp: 0; --tit-alt: 1.3; --mz-k: 42%;      /* hastes altas: o título da página pede mais linha */
+  --bg: #0A100F; --surface: #111917; --surface-2: #151F1C; --surface-3: #1D2926;
+  --ink: #E3E8DD; --ink-2: #AAB6AB; --ink-3: #8D9A8F; --line: #22302B; --line-2: #33453E;
+  --accent: #B79DEA; --accent-ink: #170F28; --accent-soft: #2A2342; --accent-forte: #CFBBF6;
+  --good: #6FC79C; --good-soft: #163029; --bad: #EE8D86; --bad-soft: #3A2222; --warn: #DDBA5E; --warn-soft: #342E17;
+  --c1: #B79DEA; --c2: #56BFA4; --c3: #D6C35B; --c4: #7FA7DA; --c5: #DB89B9; --c6: #8FBF6E; --c7: #E68D75; --c8: #A5A18D; --c9: #5F6C65;
+  --c2-ink: #56BFA4; --c4-ink: #7FA7DA; --estrela: #D6C35B;
+  --sombra: 0 1px 2px rgba(0, 0, 0, .34), 0 12px 28px -18px rgba(0, 0, 0, .66);
+  --sombra-2: 0 2px 8px rgba(0, 0, 0, .44), 0 26px 56px -18px rgba(0, 0, 0, .8);
+  --seg-on: #E3E8DD; --seg-on-ink: #101715; --veu: rgba(2, 6, 5, .62);
+  color-scheme: dark;
+}
+/* Sherlock Holmes — papel de jornal, tinta, vinho e latão; os títulos em Baskerville */
+[data-tema="holmes"] {
+  --serif: "Libre Baskerville", Baskerville, "Bookman Old Style", "Palatino Linotype", Palatino, Georgia, serif;
+  --tit-peso: 600; --tit-esc: .95; --tit-esp: 0; --tit-alt: 1.15; --mz-k: 50%;
+  --bg: #EEE8DA; --surface: #FCF9F1; --surface-2: #F6F1E4; --surface-3: #E9E1CF;
+  --ink: #221B13; --ink-2: #54493A; --ink-3: #685C4B; --line: #E0D7C3; --line-2: #CDC1A8;
+  --accent: #782A30; --accent-ink: #FFF9F0; --accent-soft: #F2E0DB; --accent-forte: #63212A;
+  --good: #2B6A49; --good-soft: #DDEBDD; --bad: #B0302A; --bad-soft: #F7E0DA; --warn: #80590A; --warn-soft: #F3E7C2;
+  --c1: #782A30; --c2: #2F5876; --c3: #A9822A; --c4: #66788A; --c5: #7D5A82; --c6: #4A7353; --c7: #B8574A; --c8: #8A7355; --c9: #C6BCA7;
+  --c2-ink: #2B4F6C; --c4-ink: #55626F; --estrela: #A27C1E;
+  --sombra: 0 1px 2px rgba(58, 40, 18, .06), 0 10px 26px -16px rgba(58, 40, 18, .22);
+  --sombra-2: 0 2px 6px rgba(40, 28, 12, .1), 0 22px 48px -18px rgba(40, 28, 12, .36);
+  --seg-on: #221B13; --seg-on-ink: #FCF9F1; --veu: rgba(34, 27, 19, .44);
+  color-scheme: light;
+}
+/* Moby Dick — névoa do mar, azul-profundo, cobre e corda; os títulos na letra dos livros do século XIX */
+[data-tema="moby"] {
+  --serif: "Old Standard TT", "Century Schoolbook", "Sitka Text", Charter, Cambria, Georgia, serif;
+  --tit-peso: 700; --tit-esc: 1.06; --tit-esp: 0; --tit-alt: 1.15; --mz-k: 55%;
+  --bg: #E8EEEE; --surface: #FAFCFB; --surface-2: #F1F5F4; --surface-3: #E0E8E8;
+  --ink: #13212B; --ink-2: #3F515D; --ink-3: #566873; --line: #D6DFDF; --line-2: #BFCCCD;
+  --accent: #1C5874; --accent-ink: #FFFFFF; --accent-soft: #DCEAF0; --accent-forte: #154860;
+  --good: #2F7436; --good-soft: #DFEEDD; --bad: #B23A31; --bad-soft: #F6E1DD; --warn: #845B08; --warn-soft: #F3E8C6;
+  --c1: #1C5874; --c2: #B0672A; --c3: #AD8A24; --c4: #7A6FA0; --c5: #3F8C8C; --c6: #5B8A4E; --c7: #B84E52; --c8: #8C8272; --c9: #BAC4C5;
+  --c2-ink: #8F5220; --c4-ink: #62588A; --estrela: #A8821C;
+  --sombra: 0 1px 2px rgba(20, 40, 52, .06), 0 10px 26px -16px rgba(20, 40, 52, .22);
+  --sombra-2: 0 2px 6px rgba(14, 30, 40, .1), 0 22px 48px -18px rgba(14, 30, 40, .36);
+  --seg-on: #13212B; --seg-on-ink: #FAFCFB; --veu: rgba(15, 28, 36, .44);
+  color-scheme: light;
 }
 *, *::before, *::after { box-sizing: border-box; }
 html { -webkit-text-size-adjust: 100%; text-size-adjust: 100%; scroll-padding-top: 76px; }
@@ -53,7 +119,7 @@ a { color: var(--accent); }
 .marca { display: flex; align-items: center; gap: 11px; padding: 2px 8px; }
 .marca-i { flex: none; width: 36px; height: 36px; border-radius: 11px; display: grid; place-items: center; background: var(--accent); color: var(--accent-ink); box-shadow: inset 0 -2px 0 rgba(0, 0, 0, .14); }
 .marca-t { display: flex; flex-direction: column; line-height: 1.12; min-width: 0; }
-.marca-t b { font: 600 18px/1.1 var(--serif); letter-spacing: -.01em; }
+.marca-t b { font: var(--tit-peso) calc(18px * var(--tit-esc))/1.1 var(--serif); letter-spacing: calc(-.01em * var(--tit-esp)); }
 .marca-t em { font-style: normal; font-size: 12px; color: var(--ink-3); }
 .nav { display: flex; flex-direction: column; gap: 3px; }
 .nav button { display: flex; align-items: center; gap: 11px; padding: 9px 11px; border-radius: 10px; color: var(--ink-2); font-weight: 500; position: relative; transition: background .16s, color .16s; }
@@ -75,8 +141,8 @@ a { color: var(--accent); }
 .topo { display: flex; align-items: flex-end; justify-content: space-between; gap: 20px; padding: 24px var(--pad) 8px; }
 .topo-t { display: flex; align-items: center; gap: 12px; min-width: 0; }
 .topo-t .so-m { display: none; }
-.topo h1 { font: 600 27px/1.15 var(--serif); letter-spacing: -.015em; }
-.topo p { color: var(--ink-2); margin-top: 3px; font-size: 13.5px; }
+.topo h1 { font: var(--tit-peso) calc(27px * var(--tit-esc))/var(--tit-alt) var(--serif); letter-spacing: calc(-.015em * var(--tit-esp)); }
+.topo-t p { color: var(--ink-2); margin-top: 3px; font-size: 13.5px; }
 .t-c { display: none; }
 .topo-a { display: flex; align-items: center; gap: 8px; flex: none; }
 .ib { flex: none; width: 36px; height: 36px; display: inline-grid; place-items: center; border-radius: 10px; color: var(--ink-2); border: 1px solid var(--line); background: var(--surface); transition: background .16s, color .16s, border-color .16s; }
@@ -147,8 +213,8 @@ input.erro, select.erro { border-color: var(--bad); box-shadow: 0 0 0 3px color-
 .pop-b .cont { margin-left: -1px; }
 .pop-w.ativo > .pop-b { border-color: color-mix(in srgb, var(--accent) 55%, var(--line)); color: var(--accent-forte); }
 .pop-w.aberto > .pop-b { background: var(--surface-3); }
-.pop-b > .ic:last-child { color: var(--ink-3); transition: transform .18s; }
-.pop-w.aberto > .pop-b > .ic:last-child { transform: rotate(180deg); }
+.btn.pop-b > .ic:last-child { color: var(--ink-3); transition: transform .18s; }
+.pop-w.aberto > .btn.pop-b > .ic:last-child { transform: rotate(180deg); }
 /* altura do quadro: 64% da janela, no máximo 520 px — e nunca mais do que cabe abaixo da barra de filtros (ela ocupa até ~190 px
    quando quebra em duas linhas): em janela com menos de ~550 px de altura o quadro passava da borda de baixo */
 .pop { display: none; position: absolute; top: calc(100% + 8px); left: 0; width: 318px; max-height: min(64vh, 520px, calc(100vh - 200px)); overflow: auto; background: var(--surface); border: 1px solid var(--line); border-radius: 13px; box-shadow: var(--sombra-2); padding: 8px; z-index: 50; }
@@ -240,7 +306,7 @@ main { padding: 18px var(--pad) 28px; flex: 1; outline: 0; }
 .card { background: var(--surface); border: 1px solid var(--line); border-radius: var(--r); box-shadow: var(--sombra); padding: 16px 18px 14px; min-width: 0; display: flex; flex-direction: column; container-type: inline-size; }
 .card-h { display: flex; align-items: flex-start; justify-content: space-between; flex-wrap: wrap; gap: 8px 12px; margin-bottom: 12px; }
 .card-tt { min-width: 0; flex: 1 1 190px; }
-.card h3 { font: 600 16.5px/1.25 var(--serif); letter-spacing: -.005em; }
+.card h3 { font: var(--tit-peso) calc(16.5px * var(--tit-esc))/1.25 var(--serif); letter-spacing: calc(-.005em * var(--tit-esp)); }
 .card-s { color: var(--ink-3); font-size: 12.5px; margin-top: 3px; line-height: 1.35; }
 .card-t { display: flex; align-items: center; gap: 8px; flex: none; }
 .card-b { flex: 1; min-width: 0; position: relative; container-type: inline-size; }
@@ -347,7 +413,7 @@ button.hb:hover { background: var(--surface-3); }
 .li-sp { flex: none; }
 /* capa: a imagem (quando há) por cima de um "livro" desenhado com a inicial do título */
 .capa { position: relative; flex: none; display: inline-block; width: 30px; aspect-ratio: 2 / 3; border-radius: 3px; overflow: hidden; background: linear-gradient(140deg, var(--surface-3), color-mix(in srgb, var(--accent) 16%, var(--surface-3))); box-shadow: inset 3px 0 0 rgba(0, 0, 0, .07), 0 0 0 1px var(--line); }
-.capa::before { content: attr(data-l); position: absolute; inset: 0; display: grid; place-items: center; padding-left: 3px; font: 600 14px/1 var(--serif); color: var(--ink-3); }
+.capa::before { content: attr(data-l); position: absolute; inset: 0; display: grid; place-items: center; padding-left: 3px; font: var(--tit-peso) 14px/1 var(--serif); color: var(--ink-3); }
 .capa img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }   /* sem fundo: enquanto a imagem não chega, vê-se o desenho */
 .capa.g { width: 104px; border-radius: 6px; box-shadow: var(--sombra-2), 0 0 0 1px var(--line); }
 .capa.g::before { font-size: 40px; }
@@ -450,11 +516,10 @@ td.c-oc b { font-weight: 650; }
 .mz-h b { font-size: 12.5px; font-weight: 600; }
 .mz-h em { font-style: normal; font-size: 11px; color: var(--ink-3); }
 .mz-r { display: flex; align-items: center; justify-content: flex-end; font-size: 12.5px; font-weight: 600; padding-right: 6px; }
-.mz { --i: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 1px; border-radius: 11px; border: 1.5px solid transparent; background: color-mix(in srgb, var(--accent) calc(var(--i) * 62% + 7%), var(--surface-2)); transition: background .45s, transform .12s, opacity .2s, border-color .2s; }
+.mz { --i: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 1px; border-radius: 11px; border: 1.5px solid transparent; background: color-mix(in srgb, var(--accent) calc(var(--i) * var(--mz-k) + 7%), var(--surface-2)); transition: background .45s, transform .12s, opacity .2s, border-color .2s; }
 .mz:hover { transform: scale(1.025); border-color: color-mix(in srgb, var(--accent) 60%, transparent); }
 .mz b { font-size: 21px; font-weight: 680; letter-spacing: -.01em; }
 .mz span { font-size: 11.5px; font-variant-numeric: tabular-nums; }   /* mesma tinta do número: sobre as células mais fortes o cinza não tinha contraste */
-[data-tema="escuro"] .mz { background: color-mix(in srgb, var(--accent) calc(var(--i) * 47% + 7%), var(--surface-2)); }
 .mz.sel { border-color: var(--ink); box-shadow: 0 0 0 2px var(--surface) inset; }
 .mz.fora { opacity: .42; }
 
@@ -614,7 +679,7 @@ td.c-spark svg { margin-left: auto; margin-right: auto; }
 .gv-h { display: flex; align-items: center; justify-content: space-between; gap: 10px; padding: 14px 16px 12px 22px; border-bottom: 1px solid var(--line); }
 .gv-k { display: flex; gap: 6px; flex-wrap: wrap; }
 .gv-c { flex: 1; overflow: auto; padding: 18px 22px 22px; overscroll-behavior: contain; }
-.gv-c h2 { font: 600 23px/1.2 var(--serif); letter-spacing: -.012em; }
+.gv-c h2 { font: var(--tit-peso) calc(23px * var(--tit-esc))/1.2 var(--serif); letter-spacing: calc(-.012em * var(--tit-esp)); }
 .gv-a2 { color: var(--ink-2); margin-top: 4px; font-size: 14.5px; }
 .gv-ch, .gv-tags { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 12px; }
 .gv-tags { margin-top: 0; }
@@ -639,6 +704,8 @@ td.c-spark svg { margin-left: auto; margin-right: auto; }
 .lnk { color: var(--accent-forte); text-decoration: underline; text-underline-offset: 2px; font-size: inherit; border-radius: 3px; }
 .lnk:hover { color: var(--accent); }
 .gv-obs { color: var(--ink-2); line-height: 1.5; }
+#gv-sin { margin-top: 16px; }
+.gv-sin-tx { margin: 0; font: max(15px, calc(15px * var(--tit-esc)))/1.6 var(--serif); color: var(--ink); text-wrap: pretty; hyphens: auto; }      /* a sinopse: texto de leitura, na letra dos títulos */
 .fatos > .f-oc { grid-column: 1 / -1; }
 /* suas anotações: comentários, "possui análise", arquivos anexados e a capa enviada */
 #gv-notas textarea { display: block; width: 100%; min-height: 76px; }
@@ -668,7 +735,7 @@ td.c-spark svg { margin-left: auto; margin-right: auto; }
 .dlg-cx.largo { width: min(640px, 100%); }
 .dlg.on .dlg-cx { transform: none; opacity: 1; }
 .dlg-cx > header { display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 16px 16px 10px 22px; }
-.dlg-cx h2 { font: 600 20px/1.2 var(--serif); }
+.dlg-cx h2 { font: var(--tit-peso) calc(20px * var(--tit-esc))/1.2 var(--serif); }
 .dlg-c { padding: 4px 22px 18px; overflow: auto; overscroll-behavior: contain; }
 .dlg-cx > footer { display: flex; flex-wrap: wrap; justify-content: flex-end; gap: 8px; padding: 12px 22px; border-top: 1px solid var(--line); background: var(--surface-2); border-radius: 0 0 16px 16px; }
 .dlg-msg { color: var(--ink-2); line-height: 1.5; }
@@ -712,6 +779,38 @@ td.c-spark svg { margin-left: auto; margin-right: auto; }
 @container (max-width: 480px) { .li-pb { flex-direction: column; align-items: flex-end; gap: 3px; } }
 
 /* ───────────── responsivo ───────────── */
+/* ───────────── temas: o ornamento de cada um e o seletor ───────────── */
+/* Lovecraft: um céu de poucas estrelas atrás da página. Fica só no fundo — os cartões continuam lisos — e num
+   elemento à parte, para o fundo da página seguir sendo uma cor só (é contra ela que o contraste é medido). */
+html[data-tema="lovecraft"] body::before { content: ""; position: fixed; inset: 0; z-index: -1; pointer-events: none;
+  background: radial-gradient(62vw 48vh at 90% -10%, rgba(150, 120, 224, .14), transparent 72%), radial-gradient(52vw 42vh at -8% 106%, rgba(64, 170, 128, .1), transparent 72%), url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='420' height='420'%3E%3Cg fill='%23DDE8DC'%3E%3Ccircle cx='200' cy='275' r='.7' opacity='.34'/%3E%3Ccircle cx='92' cy='166' r='.7' opacity='.34'/%3E%3Ccircle cx='128' cy='384' r='.7' opacity='.34'/%3E%3Ccircle cx='134' cy='58' r='.7' opacity='.34'/%3E%3Ccircle cx='235' cy='222' r='.7' opacity='.34'/%3E%3Ccircle cx='95' cy='231' r='.7' opacity='.34'/%3E%3Ccircle cx='131' cy='41' r='.7' opacity='.34'/%3E%3Ccircle cx='97' cy='335' r='.7' opacity='.34'/%3E%3Ccircle cx='21' cy='277' r='.7' opacity='.34'/%3E%3Ccircle cx='278' cy='198' r='.7' opacity='.34'/%3E%3Ccircle cx='196' cy='84' r='.7' opacity='.34'/%3E%3Ccircle cx='114' cy='112' r='.7' opacity='.34'/%3E%3Ccircle cx='229' cy='308' r='.7' opacity='.34'/%3E%3Ccircle cx='401' cy='292' r='.7' opacity='.34'/%3E%3Ccircle cx='278' cy='300' r='.7' opacity='.34'/%3E%3Ccircle cx='231' cy='410' r='1' opacity='.46'/%3E%3Ccircle cx='359' cy='44' r='1' opacity='.46'/%3E%3Ccircle cx='247' cy='399' r='1' opacity='.46'/%3E%3Ccircle cx='67' cy='66' r='1' opacity='.46'/%3E%3Ccircle cx='100' cy='319' r='1' opacity='.46'/%3E%3Ccircle cx='399' cy='13' r='1' opacity='.46'/%3E%3Ccircle cx='358' cy='228' r='1' opacity='.46'/%3E%3Ccircle cx='134' cy='334' r='1.4' opacity='.6'/%3E%3Ccircle cx='200' cy='403' r='1.4' opacity='.6'/%3E%3Ccircle cx='134' cy='200' r='1.4' opacity='.6'/%3E%3C/g%3E%3C/svg%3E"); }
+/* Sherlock Holmes: o fio duplo dos cabeçalhos de jornal, sob o título da página */
+html[data-tema="holmes"] .topo, html[data-tema="moby"] .topo { position: relative; padding-bottom: 19px; }
+html[data-tema="holmes"] .topo::after { content: ""; position: absolute; left: var(--pad); right: var(--pad); bottom: 6px; height: 5px; border-top: 2px solid var(--ink); border-bottom: 1px solid var(--ink); opacity: .62; pointer-events: none; }
+/* Moby Dick: uma linha de ondas no mesmo lugar */
+html[data-tema="moby"] .topo::after { content: ""; position: absolute; left: var(--pad); right: var(--pad); bottom: 5px; height: 7px; background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='28' height='7' viewBox='0 0 28 7'%3E%3Cpath d='M0 3.5Q7-.4 14 3.5T28 3.5' fill='none' stroke='%23566873' stroke-width='1.3'/%3E%3C/svg%3E") repeat-x 0 50% / 28px 7px; opacity: .75; pointer-events: none; }
+
+/* o seletor: um quadro sob o botão da paleta, com uma amostra de cada tema */
+.tema-w { position: relative; display: inline-flex; flex: none; }
+.tema-pop { left: auto; right: 0; width: min(304px, calc(100vw - 24px)); padding: 8px; }
+.temas { display: grid; gap: 4px; }
+.tema-o { display: grid; grid-template-columns: 58px minmax(0, 1fr) 18px; align-items: center; gap: 12px; width: 100%; padding: 8px 10px 8px 8px; border-radius: 11px; border: 1.5px solid transparent; transition: background .16s, border-color .16s; }
+.tema-o:hover { background: var(--surface-2); }
+.tema-o[aria-checked="true"] { background: var(--accent-soft); border-color: color-mix(in srgb, var(--accent) 55%, transparent); }
+.tema-o > .ic { color: var(--accent-forte); visibility: hidden; }
+.tema-o[aria-checked="true"] > .ic { visibility: visible; }
+.tema-tx { display: flex; flex-direction: column; gap: 2px; min-width: 0; }
+.tema-n { font: var(--tit-peso) calc(15px * var(--tit-esc))/1.2 var(--serif); color: inherit; }
+.tema-tx em { font-style: normal; font-size: 12px; line-height: 1.3; color: var(--ink-3); }
+.tema-o[aria-checked="true"] .tema-tx em { color: var(--ink-2); }
+/* a amostra: uma página em miniatura, nas cores do tema — fundo, cartão, título, texto e a cor de destaque */
+.tema-am { position: relative; display: block; width: 58px; height: 42px; border-radius: 8px; overflow: hidden; background: var(--bg); border: 1px solid var(--line-2); }
+.tema-am i { position: absolute; display: block; }
+.tema-am i:nth-child(1) { left: 7px; top: 8px; right: 7px; bottom: 0; border-radius: 4px 4px 0 0; background: var(--surface); border: 1px solid var(--line); border-bottom: 0; }
+.tema-am i:nth-child(2) { left: 13px; top: 14px; width: 21px; height: 4px; border-radius: 2px; background: var(--ink); }
+.tema-am i:nth-child(3) { left: 13px; top: 23px; width: 30px; height: 3px; border-radius: 2px; background: var(--ink-3); box-shadow: 0 7px 0 var(--ink-3); opacity: .7; }
+.tema-am i:nth-child(4) { right: 12px; top: 13px; width: 7px; height: 7px; border-radius: 50%; background: var(--accent); }
+
 @media (max-width: 1500px) {
   .kpis.k6 { grid-template-columns: repeat(3, minmax(0, 1fr)); }
   .kpis.k6 .kpi-v b { font-size: 27px; }
@@ -763,7 +862,7 @@ td.c-spark svg { margin-left: auto; margin-right: auto; }
   .topo { padding: 14px var(--pad) 6px; align-items: center; gap: 10px; }
   .topo-t .so-m { display: grid; width: 34px; height: 34px; border-radius: 10px; }
   .topo h1 { font-size: 20px; }
-  .topo p { display: none; }
+  .topo-t p { display: none; }
   .topo-a { gap: 6px; }
   #b-novo span { display: none; }
   #b-novo { width: 36px; padding: 0; }
@@ -784,7 +883,7 @@ td.c-spark svg { margin-left: auto; margin-right: auto; }
   .filtros.folha::before { content: ""; position: fixed; inset: 0; background: var(--veu); z-index: 79; }
   .filtros.folha .f-painel { display: flex; animation: folha .26s cubic-bezier(.3, .7, .2, 1); outline: 0; }
   .f-ph { display: flex; align-items: center; justify-content: space-between; padding: 14px 14px 8px 18px; }
-  .f-ph b { font: 600 18px var(--serif); }
+  .f-ph b { font: var(--tit-peso) calc(18px * var(--tit-esc)) var(--serif); }
   .f-ph .lk { display: inline-flex; align-items: center; min-height: 36px; margin-left: auto; margin-right: 10px; padding: 0 4px; font-size: 13px; }
   .f-fora { padding: 2px 11px; }
   .ff-a { gap: 6px; margin-left: -6px; }
@@ -797,10 +896,11 @@ td.c-spark svg { margin-left: auto; margin-right: auto; }
   .f-g .seg button { flex: 1; height: 34px; padding: 0 6px; }   /* cinco opções no Tipo: com 11px de respiro, "Outros" saía da folha em telas de 320 px */
   .f-custom label { flex: 1; }
   .f-custom input { flex: 1; width: 100%; }
-  .pop-b { display: none; }
-  .pop, .pop.largo { display: block; position: static; width: auto; max-height: none; box-shadow: none; border: 0; padding: 0; animation: none; overflow: visible; }
-  .pop-h { padding: 0 0 6px; }
-  .pop-h b { font-size: 12px; font-weight: 600; color: var(--ink-3); letter-spacing: .02em; }
+  /* na folha, os quadros dos filtros ficam abertos, um abaixo do outro (só os dos filtros: o dos temas, no cabeçalho, continua um quadro) */
+  .filtros .pop-b { display: none; }
+  .filtros .pop, .filtros .pop.largo { display: block; position: static; width: auto; max-height: none; box-shadow: none; border: 0; padding: 0; animation: none; overflow: visible; }
+  .filtros .pop-h { padding: 0 0 6px; }
+  .filtros .pop-h b { font-size: 12px; font-weight: 600; color: var(--ink-3); letter-spacing: .02em; }
   .pop-l { margin: 0 -8px; }
   #pop-eixo .pop-l { display: grid; grid-template-columns: 1fr; }
   main { padding: 14px var(--pad) 22px; }
@@ -899,7 +999,7 @@ td.c-spark svg { margin-left: auto; margin-right: auto; }
 .impressao .imp-n + .imp-n { margin-top: 1mm; }
 @media print {
   .lateral, .inferior, .filtros, .topo-a, .aviso, .gaveta, .dlg, .toasts { display: none !important; }
-  .app { display: block; } body { background: #fff; } .card, .kpi { box-shadow: none; break-inside: avoid; }
+  .app { display: block; } body { background: #fff; } body::before { display: none !important; } .card, .kpi { box-shadow: none; break-inside: avoid; }
   @page { margin: 14mm 13mm 15mm; }
   /* com uma caixa aberta a página fica travada (overflow: hidden), e o papel sairia cortado na primeira página */
   html.imprimindo, html.imprimindo body { background: #fff !important; color: #000 !important; overflow: visible !important; height: auto !important; }

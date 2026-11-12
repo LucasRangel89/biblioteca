@@ -21,7 +21,7 @@ Este arquivo é atualizado ao fim de cada rodada. Para saber em que pé as coisa
 | 7 | A versão 3 do catálogo: camadas e trilhas de leitura | **Feita** (11/11/2026) |
 | 8 | Análise dos filtros, trilhas personalizadas e novas recomendações | **Feita** (11/11/2026) — das oito propostas, três viraram a etapa 9; cinco esperam a sua decisão (lista abaixo) |
 | 9 | Filtros que dizem quantos livros têm e somam dentro do grupo; grupo da psicologia; conserto das caixas que não cabiam na tela | **Feita** (11/11/2026) |
-| 10 | As suas ideias: ocultar categorias, imprimir e copiar listas, sinopses, temas visuais, estímulo à leitura | **Em parte** (11/11/2026) — ocultar e imprimir estão prontos; faltam as sinopses, os temas e a guia de leitura (o plano e o que falta decidir estão abaixo) |
+| 10 | As suas ideias: ocultar categorias, imprimir e copiar listas, sinopses, temas visuais, estímulo à leitura | **Em parte** (11/11/2026) — ocultar e imprimir estão prontos; as sinopses começaram (lote 1: 149 livros); os três primeiros temas estão prontos (Lovecraft, Sherlock Holmes, Moby Dick); falta a guia de leitura (o plano e o que falta decidir estão abaixo) |
 
 A ordem pode mudar: as etapas que faltam não dependem umas das outras. Se alguma interessar mais, peça por ela.
 
@@ -657,11 +657,11 @@ Ao lado de cada opção vai o número de livros que ela esconde.
   dizer só "nenhum livro".
 - **"Recomeçar do catálogo original"** desfaz também o que estava oculto.
 
-**A decisão que ficou comigo, e que você pode mudar.** Ocultar "já li" tira os livros lidos das listas, mas eles
-**continuam contando nos números de leitura**: leituras concluídas, "Por ler", "Adquiridos × lidos", os dois gráficos
-por situação de leitura e o andamento das trilhas. O livro some da vista, mas não deixa de ter sido lido — e a guia
-de estímulo à leitura (parte 5) vai depender dessa conta. O quadro que conta um livro oculto avisa: "conta os lidos
-ocultos". Se preferir que sumam também dos números, é só dizer.
+**"Já li", como você decidiu (11/11/2026).** Ocultar "já li" tira os livros lidos das listas, mas eles **continuam
+contando como leituras concluídas** — nos indicadores, em "Por ler", em "Adquiridos × lidos" e nos dois gráficos por
+situação de leitura — e **continuam aparecendo nas trilhas** de que fazem parte, no lugar deles e com a etiqueta
+"Lido". O livro some das listas, mas não deixa de ter sido lido. O quadro que conta um livro oculto avisa: "conta os
+lidos ocultos".
 
 **Nota para quem for programar:** nas preferências guardadas, o controle novo chama-se `fora`. O nome `ocultar` já
 era do botão do olho ("ocultar valores em reais") e continua sendo.
@@ -732,15 +732,52 @@ todas as outras:
 > e descobre que pressente a morte dos doentes. Decidido a ser médico de verdade, atravessa a Europa disfarçado de
 > judeu para estudar na Pérsia com Avicena.
 
+Na prática, virou regra que o teste cobra de cada sinopse: **duas ou três frases, de 140 a 400 caracteres** (as
+amostras têm 281 e 251), com a fonte e a data anotadas no arquivo.
+
 **Roteiro das buscas** — um lote por rodada, de uns 150 livros cada:
 
 | Lote | Livros | Quantos | Situação |
 | --- | --- | --- | --- |
-| 1 | Os 97 da estante e as 53 prioridades (`#top`) que não estão nela | 150 | A fazer |
+| 1 | Os 97 da estante e as 53 prioridades (`#top`) que não estão nela | 150 | Feito em 11/11/2026: 148 sinopses e 2 pendências |
 | 2 a 5 | O restante das recomendações (seções 1 a 16 do catálogo), seção por seção | 554 | A fazer |
 | 6 em diante | Os livros digitais (seção 17), um eixo de cada vez — você escolhe por onde começar | 1.910 | A fazer |
 
 Esta tabela é atualizada a cada lote. Se quiser outra ordem — um autor, um eixo, uma trilha na frente —, é só dizer.
+
+**Lote 1 — o que saiu (11/11/2026).** O painel tem agora **149 sinopses**: as 148 do lote e a de *A Metamorfose*, que
+você já tinha aprovado como amostra. Abra a ficha de qualquer livro da estante, ou de uma das prioridades: a sinopse
+vem logo abaixo do título. De onde vieram:
+
+- **121 de obra bem conhecida** — clássicos e livros muito comentados, escritos a partir do que é estabelecido sobre
+  eles;
+- **28 só depois de busca online** — autores gaúchos, livros técnicos, lançamentos e tudo o que deixava dúvida. O
+  endereço consultado está em `catalogo/sinopses.tsv`, na linha de cada livro.
+
+Nenhuma sinopse é cópia de editora ou de livraria, e nenhuma conta o final.
+
+**Pendências — dois livros ficaram sem sinopse**, porque não deu para confirmar que livro é. No painel, a ficha deles
+segue como antes, sem nada no lugar:
+
+- *Noite do Sul* (Erico Verissimo) — não achei livro dele com este título. Pode ser *Noite*, a novela de 1954. **O que
+  está escrito na lombada?**
+- *A Arte de Envelhecer* (no catálogo, Irvin D. Yalom, "autoria conforme a prateleira — conferir") — o livro que achei
+  com este título é de Schopenhauer, pela Martins Fontes. **Quem aparece como autor na capa?**
+
+**Para você conferir, sem pressa** — aqui a sinopse foi escrita, mas com uma ressalva:
+
+- *Apocalipse: A Batalha do Fim* (Eduardo Spohr) — não existe livro dele com este nome. Escrevi a sinopse de *A
+  Batalha do Apocalipse*, que deve ser o seu. Se for, acerto o título no catálogo.
+- *Se Liga na Filosofia* — o catálogo dá "Globo Livros" como autor. Globo é a editora; o autor é Marcus Weeks. Posso
+  corrigir?
+- *Contos* de Poe, de Lovecraft e de Conan Doyle, e *Lovecraft: Medo Clássico* — o catálogo não diz quais contos cada
+  volume traz. A sinopse fala do autor e do tipo de história, não do sumário. Se você mandar o sumário, eu refaço.
+- *Coraline* — está marcado "a verificar": livro ilustrado ou quadrinhos? A sinopse vale para os dois.
+- *Sobre o que nos Perguntam os Grandes Filósofos* — a obra saiu em três volumes; a sinopse fala do conjunto.
+- *Comédias da Vida Pública* — as fontes divergem sobre os anos das crônicas; a sinopse não cita datas.
+
+**Como pedir uma correção.** Se alguma sinopse estiver errada, longa, sem graça ou contar demais, diga o título e o
+que mudar. O texto mora numa linha do arquivo `catalogo/sinopses.tsv`: trocar é rápido.
 
 ### Parte 4 — Temas visuais
 
@@ -776,6 +813,46 @@ medieval, com iluminuras (romances históricos).
 3. **Cada tema nasce com um clima só, o dele:** Lovecraft e cyberpunk, escuros; Sherlock Holmes, Moby Dick,
    greco-romano e os outros, claros. O claro e o escuro de hoje continuam existindo, como o tema padrão. Assim cada
    tema sai bem acabado, em vez de catorze meio prontos.
+
+**O que ficou pronto (11/11/2026) — os três primeiros temas.**
+
+No alto da página, o botão que trocava entre claro e escuro virou o **botão da paleta**. Ele abre o quadro
+**Aparência**, com uma amostra de cada tema. Clique numa e a página muda na hora; o quadro fica aberto para você
+comparar. A escolha fica guardada no navegador.
+
+| Tema | Clima | Cores | Letra dos títulos | Ornamento |
+| --- | --- | --- | --- | --- |
+| Claro e Escuro | — | o padrão de sempre | a de sempre | nenhum |
+| **Lovecraft** | escuro | verde-abissal, osso e violeta | de livro antigo, do século XVII | um céu de poucas estrelas atrás da página |
+| **Sherlock Holmes** | claro | papel de jornal, tinta, vinho e latão | Baskerville | o fio duplo dos jornais, sob o título |
+| **Moby Dick** | claro | névoa do mar, azul-profundo e cobre | a dos livros do século XIX | uma linha de ondas, sob o título |
+
+Como combinado:
+
+- **Só mudam as cores, a letra dos títulos e da sinopse, e um ornamento.** Telas, botões e números ficam onde estão;
+  o texto corrido continua na letra de sempre.
+- **Sem imagens de personagens e sem logotipos.**
+- **Todos passaram no teste de contraste**, em todas as telas, fichas e caixas, no computador e no celular.
+- **A folha de "Imprimir" não muda com o tema:** continua preta no branco.
+
+Duas coisas que você precisa saber:
+
+- **As letras dos temas vão dentro do painel.** São três fontes livres, de uso permitido. Assim o tema aparece igual
+  no notebook e no celular, sem depender do que está instalado e sem buscar nada na internet. O preço: o arquivo do
+  painel cresceu uns 200 KB (de 1,0 para 1,2 MB).
+- **Para trocar entre claro e escuro agora são dois cliques** (paleta, depois a opção), em vez de um. Foi o jeito de
+  caber tudo num botão só, sem apertar o cabeçalho no celular. Se fizer falta o clique único, eu trago de volta.
+
+**Para você olhar e dizer:**
+
+- As cores de cada tema estão no ponto, ou alguma está forte ou apagada demais? No Moby Dick, por exemplo, os
+  gráficos saem em cor de cobre: fica bom ou pesa?
+- A letra do Lovecraft é irregular de propósito, como tipo antigo. Dá para ler bem a sinopse nela?
+- Os ornamentos estão discretos o bastante?
+
+**Os próximos, na ordem combinada:** "Deserto" (inspirado em Duna), "Terras antigas" (inspirado em Tolkien), clássico
+greco-romano e cyberpunk; depois Viena de 1900, modernismo brasileiro e manuscrito medieval. Dois ou três por
+rodada, no mesmo acabamento. Se quiser outra ordem, diga.
 
 ### Parte 5 — Estímulo à leitura (gamificação)
 

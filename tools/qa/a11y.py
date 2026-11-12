@@ -1,13 +1,24 @@
 """Auditoria rápida de acessibilidade em tempo de execução: ids duplicados, controles sem nome acessível, campos sem rótulo,
-contraste de texto (WCAG AA) nos temas claro e escuro, alvos de toque pequenos no celular.
+contraste de texto (WCAG AA) em todos os temas, alvos de toque pequenos no celular.
 
-Cada tela é auditada duas vezes: com os dados de exemplo (gráficos e tabelas cheios) e como o painel abre, só com o
-catálogo — é aí que aparecem os estados vazios, as abas sem nenhum livro e as linhas zeradas."""
-from caminhos import PAINEL_LIMPO, PAINEL_URL
+No tema padrão (claro e escuro), cada tela é auditada duas vezes: com os dados de exemplo (gráficos e tabelas cheios) e
+como o painel abre, só com o catálogo — é aí que aparecem os estados vazios, as abas sem nenhum livro e as linhas zeradas.
+Cada um dos outros temas (os que estão em TEMAS, em src/js/30-state.js) passa pelas mesmas telas: no computador com os
+dados de exemplo, e no celular só com o catálogo. Tema novo entra na auditoria sozinho.
+
+Para auditar só alguns temas:  python a11y.py lovecraft holmes"""
+from caminhos import PAINEL_LIMPO, PAINEL_URL, RAIZ
 from relogio import fixa
 from playwright.sync_api import sync_playwright
-import sys
+import re, sys
 URL = PAINEL_URL
+# os temas que não são o padrão, lidos de onde o painel os define
+TEMAS = [t for t in re.findall(r"\{ id: '(\w+)', n: '", (RAIZ / 'src' / 'js' / '30-state.js').read_text(encoding='utf-8')) if t not in ('claro', 'escuro')]
+assert len(TEMAS) >= 3, TEMAS
+EXEMPLO, LIMPO = ('exemplo', URL), ('limpo', PAINEL_LIMPO)
+CENARIOS = [(w, h, esquema, '', (EXEMPLO, LIMPO)) for w, h, esquema in [(1440, 900, 'light'), (1440, 900, 'dark'), (390, 844, 'light'), (390, 844, 'dark')]]
+for t in TEMAS: CENARIOS += [(1440, 900, 'light', t, (EXEMPLO,)), (390, 844, 'light', t, (LIMPO,))]
+if len(sys.argv) > 1: CENARIOS = [c for c in CENARIOS if c[3] in sys.argv[1:]]
 AUD = r"""() => {
   const vis = e => { const r = e.getBoundingClientRect(); const cs = getComputedStyle(e); return r.width > 0 && r.height > 0 && cs.visibility !== 'hidden'; };
   const out = { ids: [], semNome: [], semRotulo: [] };
@@ -52,13 +63,17 @@ def junta(rot, r):
         if r[k]: achados.setdefault(k, {})[rot] = r[k][:6]
 with sync_playwright() as p:
     b = p.chromium.launch()
-    # cada tamanho e tema, duas vezes: com os dados de exemplo (telas cheias) e como o painel abre (só o catálogo: telas vazias)
-    for w, h, tema in [(1440, 900, 'light'), (1440, 900, 'dark'), (390, 844, 'light'), (390, 844, 'dark')]:
-      for modo, url in (('exemplo', URL), ('limpo', PAINEL_LIMPO)):
-        ctx = b.new_context(viewport={'width': w, 'height': h}, color_scheme=tema, locale='pt-BR', timezone_id='America/Sao_Paulo')
+    # cada tamanho e tema: com os dados de exemplo (telas cheias) e como o painel abre (só o catálogo: telas vazias)
+    for w, h, esquema, tema_id, modos in CENARIOS:
+      tema = tema_id or esquema
+      for modo, url in modos:
+        ctx = b.new_context(viewport={'width': w, 'height': h}, color_scheme=esquema, locale='pt-BR', timezone_id='America/Sao_Paulo')
         pg = ctx.new_page(); fixa(pg)
         pg.on('pageerror', lambda e: achados.setdefault('pageerror', {}).update({str(e)[:80]: 1}))
         pg.goto(url); pg.wait_for_timeout(1000)
+        if tema_id:                         # o tema é escolhido como o usuário escolhe: pelo quadro da paleta
+            pg.click('#b-tema'); pg.wait_for_timeout(200); pg.click(f'#pop-tema [data-tema-id={tema_id}]'); pg.wait_for_timeout(500); pg.keyboard.press('Escape'); pg.wait_for_timeout(200)
+            if pg.evaluate("() => document.documentElement.dataset.tema") != tema_id: achados.setdefault('tema', {})[tema_id] = 'não foi aplicado'
         nav = '#nav' if w > 820 else '#nav-m'; contr = {}; tot = 0; R = f'{w}{tema}{"" if modo == "exemplo" else "-limpo"}'
         def contraste(rot):
             global tot
@@ -92,6 +107,7 @@ with sync_playwright() as p:
         pg.keyboard.press('Escape'); pg.wait_for_timeout(300)
         n += camada('dlg-novo', lambda: pg.click('#b-novo'))
         n += camada('dlg-dados', lambda: pg.click('#b-dados'))
+        n += camada('temas', lambda: pg.click('#b-tema'))
         if w <= 820: n += camada('folha', lambda: pg.click('#f-abrir'))
         else: n += camada('mais-filtros', lambda: pg.click('#pw-mais .pop-b'))
         print(f'== {w}px {tema} · {"com exemplos" if modo == "exemplo" else "só o catálogo"}: {n} textos medidos; abaixo de AA: {len(contr)}')
