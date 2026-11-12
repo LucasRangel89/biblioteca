@@ -92,6 +92,51 @@
   --seg-on: #13212B; --seg-on-ink: #FAFCFB; --veu: rgba(15, 28, 36, .44);
   color-scheme: light;
 }
+/* Deserto — areia, especiarias e ocre; uma inscrição de traços largos, sem imagens ou símbolos de uma obra. */
+[data-tema="deserto"] {
+  --serif: "Marcellus", "Palatino Linotype", Palatino, "Book Antiqua", Georgia, serif;
+  --tit-peso: 400; --tit-esc: 1.04; --tit-esp: 0; --tit-alt: 1.2; --mz-k: 45%;
+  --bg: #F2E7D2; --surface: #FBF5E8; --surface-2: #F7EDD9; --surface-3: #E9DABD;
+  --ink: #30271C; --ink-2: #5A4934; --ink-3: #6B5B42; --line: #DDCEB3; --line-2: #C6B493;
+  --accent: #945322; --accent-ink: #FFF9EF; --accent-soft: #EEDCC4; --accent-forte: #794018;
+  --good: #41633B; --good-soft: #E0E8D2; --bad: #A5362A; --bad-soft: #F4DDD0; --warn: #805A0B; --warn-soft: #F0E2BA;
+  --c1: #945322; --c2: #356977; --c3: #A07B20; --c4: #62638F; --c5: #865477; --c6: #557644; --c7: #AF4F3C; --c8: #7F7058; --c9: #BEAF94;
+  --c2-ink: #2C5967; --c4-ink: #515278; --estrela: #967016;
+  --sombra: 0 1px 2px rgba(70, 45, 18, .06), 0 10px 26px -16px rgba(70, 45, 18, .22);
+  --sombra-2: 0 2px 6px rgba(50, 32, 12, .1), 0 22px 48px -18px rgba(50, 32, 12, .36);
+  --seg-on: #30271C; --seg-on-ink: #FBF5E8; --veu: rgba(42, 32, 20, .44);
+  color-scheme: light;
+}
+/* Terras antigas — folhas, musgo e caminhos da floresta; uma serifada de desenho humanista, inspirada nos mundos de Tolkien. */
+[data-tema="terras"] {
+  --serif: "Cormorant Garamond", Garamond, "Palatino Linotype", Palatino, Georgia, serif;
+  --tit-peso: 600; --tit-esc: 1.16; --tit-esp: 0; --tit-alt: 1.15; --mz-k: 48%;
+  --bg: #E9EDDF; --surface: #FAFBF3; --surface-2: #F1F4E8; --surface-3: #E0E6D3;
+  --ink: #243326; --ink-2: #485640; --ink-3: #58664D; --line: #D4DCC7; --line-2: #BAC6AA;
+  --accent: #506637; --accent-ink: #FCFDF6; --accent-soft: #E0E7CF; --accent-forte: #3E5428;
+  --good: #356443; --good-soft: #DCEBD9; --bad: #A43D32; --bad-soft: #F3DFD6; --warn: #7B590F; --warn-soft: #EFE4C4;
+  --c1: #506637; --c2: #386C78; --c3: #A3832B; --c4: #687397; --c5: #855C7C; --c6: #548048; --c7: #B35D47; --c8: #827457; --c9: #B6C0A6;
+  --c2-ink: #305B66; --c4-ink: #525E82; --estrela: #987721;
+  --sombra: 0 1px 2px rgba(28, 46, 22, .06), 0 10px 26px -16px rgba(28, 46, 22, .22);
+  --sombra-2: 0 2px 6px rgba(20, 34, 16, .1), 0 22px 48px -18px rgba(20, 34, 16, .36);
+  --seg-on: #243326; --seg-on-ink: #FAFBF3; --veu: rgba(24, 36, 24, .44);
+  color-scheme: light;
+}
+/* Clássico greco-romano — mármore, azul egeu e terracota; letras inspiradas nas inscrições romanas e um pequeno meandro. */
+[data-tema="greco"] {
+  --serif: "Cinzel", "Trajan Pro", "Palatino Linotype", Palatino, Georgia, serif;
+  --tit-peso: 600; --tit-esc: .94; --tit-esp: 0; --tit-alt: 1.25; --mz-k: 48%;
+  --bg: #F0EFE8; --surface: #FDFCF7; --surface-2: #F6F5EE; --surface-3: #E6E4D9;
+  --ink: #252D32; --ink-2: #4D575B; --ink-3: #596367; --line: #DCDCD2; --line-2: #C4C7BD;
+  --accent: #315F73; --accent-ink: #FFFFFF; --accent-soft: #DEE8E9; --accent-forte: #264C5E;
+  --good: #3C6B4C; --good-soft: #E0ECDE; --bad: #A33D32; --bad-soft: #F4E0D8; --warn: #7D5B13; --warn-soft: #F0E6C9;
+  --c1: #315F73; --c2: #A8583D; --c3: #A1842C; --c4: #68759A; --c5: #855D81; --c6: #537C51; --c7: #B35448; --c8: #847864; --c9: #B9BEB5;
+  --c2-ink: #8C472F; --c4-ink: #526084; --estrela: #947622;
+  --sombra: 0 1px 2px rgba(30, 38, 40, .05), 0 10px 26px -16px rgba(30, 38, 40, .2);
+  --sombra-2: 0 2px 6px rgba(24, 30, 32, .09), 0 22px 48px -18px rgba(24, 30, 32, .34);
+  --seg-on: #252D32; --seg-on-ink: #FDFCF7; --veu: rgba(26, 34, 38, .44);
+  color-scheme: light;
+}
 *, *::before, *::after { box-sizing: border-box; }
 html { -webkit-text-size-adjust: 100%; text-size-adjust: 100%; scroll-padding-top: 76px; }
 html.travado, html.travado body { overflow: hidden; }
@@ -785,10 +830,17 @@ td.c-spark svg { margin-left: auto; margin-right: auto; }
 html[data-tema="lovecraft"] body::before { content: ""; position: fixed; inset: 0; z-index: -1; pointer-events: none;
   background: radial-gradient(62vw 48vh at 90% -10%, rgba(150, 120, 224, .14), transparent 72%), radial-gradient(52vw 42vh at -8% 106%, rgba(64, 170, 128, .1), transparent 72%), url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='420' height='420'%3E%3Cg fill='%23DDE8DC'%3E%3Ccircle cx='200' cy='275' r='.7' opacity='.34'/%3E%3Ccircle cx='92' cy='166' r='.7' opacity='.34'/%3E%3Ccircle cx='128' cy='384' r='.7' opacity='.34'/%3E%3Ccircle cx='134' cy='58' r='.7' opacity='.34'/%3E%3Ccircle cx='235' cy='222' r='.7' opacity='.34'/%3E%3Ccircle cx='95' cy='231' r='.7' opacity='.34'/%3E%3Ccircle cx='131' cy='41' r='.7' opacity='.34'/%3E%3Ccircle cx='97' cy='335' r='.7' opacity='.34'/%3E%3Ccircle cx='21' cy='277' r='.7' opacity='.34'/%3E%3Ccircle cx='278' cy='198' r='.7' opacity='.34'/%3E%3Ccircle cx='196' cy='84' r='.7' opacity='.34'/%3E%3Ccircle cx='114' cy='112' r='.7' opacity='.34'/%3E%3Ccircle cx='229' cy='308' r='.7' opacity='.34'/%3E%3Ccircle cx='401' cy='292' r='.7' opacity='.34'/%3E%3Ccircle cx='278' cy='300' r='.7' opacity='.34'/%3E%3Ccircle cx='231' cy='410' r='1' opacity='.46'/%3E%3Ccircle cx='359' cy='44' r='1' opacity='.46'/%3E%3Ccircle cx='247' cy='399' r='1' opacity='.46'/%3E%3Ccircle cx='67' cy='66' r='1' opacity='.46'/%3E%3Ccircle cx='100' cy='319' r='1' opacity='.46'/%3E%3Ccircle cx='399' cy='13' r='1' opacity='.46'/%3E%3Ccircle cx='358' cy='228' r='1' opacity='.46'/%3E%3Ccircle cx='134' cy='334' r='1.4' opacity='.6'/%3E%3Ccircle cx='200' cy='403' r='1.4' opacity='.6'/%3E%3Ccircle cx='134' cy='200' r='1.4' opacity='.6'/%3E%3C/g%3E%3C/svg%3E"); }
 /* Sherlock Holmes: o fio duplo dos cabeçalhos de jornal, sob o título da página */
-html[data-tema="holmes"] .topo, html[data-tema="moby"] .topo { position: relative; padding-bottom: 19px; }
+html[data-tema="holmes"] .topo, html[data-tema="moby"] .topo, html[data-tema="deserto"] .topo, html[data-tema="terras"] .topo, html[data-tema="greco"] .topo { position: relative; padding-bottom: 19px; }
 html[data-tema="holmes"] .topo::after { content: ""; position: absolute; left: var(--pad); right: var(--pad); bottom: 6px; height: 5px; border-top: 2px solid var(--ink); border-bottom: 1px solid var(--ink); opacity: .62; pointer-events: none; }
 /* Moby Dick: uma linha de ondas no mesmo lugar */
 html[data-tema="moby"] .topo::after { content: ""; position: absolute; left: var(--pad); right: var(--pad); bottom: 5px; height: 7px; background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='28' height='7' viewBox='0 0 28 7'%3E%3Cpath d='M0 3.5Q7-.4 14 3.5T28 3.5' fill='none' stroke='%23566873' stroke-width='1.3'/%3E%3C/svg%3E") repeat-x 0 50% / 28px 7px; opacity: .75; pointer-events: none; }
+
+/* Deserto: duas linhas interrompidas, como um sulco na areia; sem imagem de dunas ou personagens. */
+html[data-tema="deserto"] .topo::after { content: ""; position: absolute; left: var(--pad); right: var(--pad); bottom: 5px; height: 6px; border-top: 1px solid var(--accent); border-bottom: 1px solid var(--accent); opacity: .5; pointer-events: none; mask-image: linear-gradient(90deg, #000 0%, #000 65%, transparent 100%); }
+/* Terras antigas: uma linha de folhas, desenhada para o painel, no mesmo lugar. */
+html[data-tema="terras"] .topo::after { content: ""; position: absolute; left: var(--pad); right: var(--pad); bottom: 4px; height: 9px; background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='44' height='9' viewBox='0 0 44 9'%3E%3Cpath d='M0 7Q11 1 22 7T44 7M11 4Q8 0 5 2Q6 6 11 4M33 4Q36 0 39 2Q38 6 33 4' fill='none' stroke='%23506637' stroke-width='1'/%3E%3C/svg%3E") repeat-x 0 50% / 44px 9px; opacity: .65; pointer-events: none; }
+/* Clássico greco-romano: um pequeno meandro, sem reproduzir uma obra ou um logotipo. */
+html[data-tema="greco"] .topo::after { content: ""; position: absolute; left: var(--pad); right: var(--pad); bottom: 5px; height: 7px; background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='7' viewBox='0 0 24 7'%3E%3Cpath d='M0 6H23V1H6V4H16' fill='none' stroke='%23596367' stroke-width='1'/%3E%3C/svg%3E") repeat-x 0 50% / 24px 7px; opacity: .65; pointer-events: none; }
 
 /* o seletor: um quadro sob o botão da paleta, com uma amostra de cada tema */
 .tema-w { position: relative; display: inline-flex; flex: none; }

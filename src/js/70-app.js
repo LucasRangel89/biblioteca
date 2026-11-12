@@ -307,7 +307,14 @@ function montarTemas() {
   b.addEventListener('click', () => {
     const abrir = !w.classList.contains('aberto'); fecharPops(); if (!abrir) return;
     w.classList.add('aberto'); b.setAttribute('aria-expanded', 'true'); posicionarTema();
-    const o = $('[aria-checked="true"]', pop); if (o) o.focus({ preventScroll: true });
+    const o = $('[aria-checked="true"]', pop);
+    if (o) {
+      o.focus({ preventScroll: true });
+      // Com mais temas do que cabem no quadro, a escolha guardada precisa aparecer sem tirar o cabeçalho da janela.
+      const r = o.getBoundingClientRect(), pr = pop.getBoundingClientRect();
+      if (r.bottom > pr.bottom) pop.scrollTop += r.bottom - pr.bottom + 8;
+      else if (r.top < pr.top) pop.scrollTop -= pr.top - r.top + 8;
+    }
   });
   pop.addEventListener('click', e => { const o = e.target.closest('[data-tema-id]'); if (o) escolher(o.dataset.temaId); });
   // como num grupo de opções: as setas andam e já escolhem (a página muda na hora); Esc fecha e devolve o foco ao botão

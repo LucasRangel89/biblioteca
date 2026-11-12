@@ -15,7 +15,8 @@ SAIDA = RAIZ / 'Biblioteca_Lucas_Dashboard.html'
 # As letras dos temas: arquivo "familia-latin-peso-estilo.woff2" em src/letras → uma regra @font-face com o arquivo
 # dentro. Só o alfabeto latino (cobre o português); o que faltar numa letra o navegador desenha com a letra seguinte da
 # lista do tema. As licenças (SIL OFL 1.1) estão na mesma pasta; ver src/letras/LEIAME.md.
-FAMILIAS = {'im-fell-english': 'IM Fell English', 'libre-baskerville': 'Libre Baskerville', 'old-standard-tt': 'Old Standard TT'}
+FAMILIAS = {'im-fell-english': 'IM Fell English', 'libre-baskerville': 'Libre Baskerville', 'old-standard-tt': 'Old Standard TT',
+            'marcellus': 'Marcellus', 'cormorant-garamond': 'Cormorant Garamond', 'cinzel': 'Cinzel'}
 LATINO = ('U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,'
           'U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD')
 letras = []

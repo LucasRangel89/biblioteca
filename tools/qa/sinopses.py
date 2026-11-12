@@ -10,7 +10,7 @@ Confere que:
   · cada sinopse segue o combinado: duas ou três frases, de 140 a 400 caracteres, com a fonte e a data; as duas amostras
     aprovadas pelo dono (A Metamorfose e O Físico) estão como ele aprovou;
   · pendência não tem sinopse, diz o motivo e aparece na lista de pendências do ROTEIRO.md;
-  · o lote 1 está completo: toda linha da estante e toda prioridade (#top) foi pesquisada;
+  · os lotes 1 e 2 estão completos: estante, prioridades (#top) e recomendações ainda não adquiridas das seções 1 a 5;
   · o leitor do arquivo avisa do que está errado em vez de deixar passar (livro que não existe, linha repetida, sinopse
     longa, de uma frase só, sem fonte), e acha o livro também pelo nome antigo;
   · src/sinopses.json e o painel pronto estão em dia com o arquivo;
@@ -110,7 +110,7 @@ ok('as duas amostras aprovadas pelo dono estão como ele aprovou', all(da.get(t)
 roteiro = (RAIZ / 'ROTEIRO.md').read_text(encoding='utf-8')
 ok('…e são as mesmas que o ROTEIRO.md mostra', all(' '.join(s.split()) in ' '.join(roteiro.replace('\n> ', ' ').split()) for s in AMOSTRAS.values()))
 
-print('C. Pendências e o lote 1')
+print('C. Pendências e os lotes 1 e 2')
 ok('pendência não tem sinopse e diz o motivo ("pendente: …")', all(r['fonte'].startswith('pendente: ') and len(r['fonte']) > 40 for r in PEND), [r['titulo'] for r in PEND if not r['fonte'].startswith('pendente: ')])
 ok('cada pendência está na lista de pendências do ROTEIRO.md', bool(PEND) and all(f'*{r["titulo"]}*' in roteiro for r in PEND), [r['titulo'] for r in PEND if f'*{r["titulo"]}*' not in roteiro])
 pesquisados = {POS[norm(r['titulo'], r['autor'])] for r in LINHAS if norm(r['titulo'], r['autor']) in POS}
@@ -118,6 +118,15 @@ estante = [i for i, r in enumerate(CAT) if r[3] == 0]; top = [i for i, r in enum
 ok('lote 1: os 97 livros da estante foram pesquisados', len(estante) == 97 and set(estante) <= pesquisados, [CAT[i][0] for i in estante if i not in pesquisados][:5])
 ok('lote 1: as 53 prioridades (#top) que não estão na estante também', len(top) == 53 and set(top) <= pesquisados, [CAT[i][0] for i in top if i not in pesquisados][:5])
 ok('a tabela de lotes do ROTEIRO.md dá o lote 1 como feito, com os números de hoje', re.search(r'\| 1 \|[^\n]*\| 150 \| Feito[^\n]*\b%d sinopses\b[^\n]*\b%d pendências\b' % (len([r for r in COM if POS[norm(r['titulo'], r['autor'])] in set(estante) | set(top)]), len(PEND)), roteiro) is not None)
+
+sem_posse = lambda r: not any(t in r[2].split() for t in ('tenho-fisico', 'tenho-digital'))
+recs_1_5 = [i for i, r in enumerate(CAT) if 1 <= r[3] <= 5 and sem_posse(r)]
+lote2 = [POS[norm(r['titulo'], r['autor'])] for r in LINHAS if r['data'] == '2026-11-12' and norm(r['titulo'], r['autor']) in POS]
+ok('lote 2: todas as recomendações ainda não adquiridas das seções 1 a 5 foram pesquisadas', set(recs_1_5) <= pesquisados, [CAT[i][0] for i in recs_1_5 if i not in pesquisados][:5])
+ok('…sem repetir as prioridades e a amostra que já estavam antes', len(lote2) == 143 and set(lote2) <= set(recs_1_5) and not (set(lote2) & set(top)), len(lote2))
+ok('a tabela de lotes dá o lote 2 como feito, com o número de livros de hoje', re.search(r'\| 2 \|[^\n]*\| %d \| Feito[^\n]*\b%d sinopses\b' % (len(lote2), len(lote2)), roteiro) is not None)
+restantes = [i for i, r in enumerate(CAT) if 1 <= r[3] <= 16 and i not in pesquisados]
+ok('…e o que ainda falta nas recomendações continua certo na tabela', re.search(r'\| 3 a 5 \|[^\n]*\| %d \| A fazer' % len(restantes), roteiro) is not None, len(restantes))
 
 print('D. O leitor do arquivo (tools/build_catalog.py)')
 av = []; dados = bc.build([]); lidas = bc.ler_sinopses(dados, av)
@@ -162,6 +171,9 @@ with sync_playwright() as p:
     f = ficha(pg, 'Ismael', 'recs')
     ok('recomendação que não está na estante: também', f and not f['escondida'] and f['texto'] == da['Ismael'], f and f['texto'][:80])
     ok('aspas, travessões e apóstrofos chegam inteiros, como texto', f and '“Professor procura aluno.' in f['texto'] and '—' in f['texto'] and '<' not in f['html'], f and f['html'][:120])
+    for titulo in ('Piranesi', 'Vidas Secas'):
+        f = ficha(pg, titulo, 'recs')
+        ok(f'lote 2: a recomendação “{titulo}” abre com a sinopse nova', f and not f['escondida'] and f['texto'] == da[titulo], f and f['texto'][:80])
     f = ficha(pg, SEM, 'recs')
     ok(f'livro ainda sem sinopse ("{SEM}"): nada no lugar — nem título, nem espaço', f and f['titulo'] == SEM and f['escondida'] and f['vazia'] and f['alt'] == 0, f and (f['titulo'], f['escondida'], f['alt']))
     ok('…e os dados do livro sobem para junto do título', f and com_sinopse and f['est']['cima'] - f['topo']['baixo'] < com_sinopse['est']['cima'] - com_sinopse['topo']['baixo'] - 60, f and (f['topo'], f['est']))

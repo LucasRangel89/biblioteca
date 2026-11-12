@@ -1,5 +1,6 @@
 """Auditoria rápida de acessibilidade em tempo de execução: ids duplicados, controles sem nome acessível, campos sem rótulo,
-contraste de texto (WCAG AA) em todos os temas, alvos de toque pequenos no celular.
+contraste de texto (WCAG AA) em todos os temas, medido com a tela assentada (depois das animações de entrada),
+alvos de toque pequenos no celular.
 
 No tema padrão (claro e escuro), cada tela é auditada duas vezes: com os dados de exemplo (gráficos e tabelas cheios) e
 como o painel abre, só com o catálogo — é aí que aparecem os estados vazios, as abas sem nenhum livro e as linhas zeradas.
@@ -33,7 +34,11 @@ AUD = r"""() => {
   }
   return out;
 }"""
-CONTRASTE = r"""() => {
+CONTRASTE = r"""async () => {
+  // Mede a tela assentada, não o meio de uma animação de entrada: a opacidade passageira de `.visao.entra`
+  // misturava texto e fundo e podia derrubar um par aprovado (ex.: "Atualizado" no escuro, 4,48 em vez de 5,26).
+  // Esperar o fim das animações/transições mantém a conta da opacidade real, sem abrir exceção no limite AA.
+  await Promise.all(document.getAnimations().map(a => a.finished.catch(() => {})));
   const lum = c => { const f = v => { v /= 255; return v <= 0.03928 ? v / 12.92 : Math.pow((v + 0.055) / 1.055, 2.4); }; return 0.2126 * f(c[0]) + 0.7152 * f(c[1]) + 0.0722 * f(c[2]); };
   const cv = document.createElement('canvas'); cv.width = cv.height = 1; const cx = cv.getContext('2d', { willReadFrequently: true });
   const rgba = s => { cx.clearRect(0, 0, 1, 1); cx.fillStyle = '#000'; cx.fillStyle = s; cx.fillRect(0, 0, 1, 1); const d = cx.getImageData(0, 0, 1, 1).data; return [d[0], d[1], d[2], d[3] / 255]; };
