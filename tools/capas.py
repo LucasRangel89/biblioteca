@@ -15,6 +15,9 @@
                                           # o que cada fonte devolve para um livro, para escolher à mão (não grava)
     python tools/capas.py --candidatos "Dom Casmurro" --isbn 9788525406958
                                           # o mesmo, procurando pelo ISBN da edição que está na sua mão
+    python tools/capas.py --candidatos "Dom Casmurro" --autor "Machado de Assis" --arquivo
+                                          # inclui o piloto gratuito do Internet Archive (só candidatos; não grava)
+    python tools/capas.py --piloto 20     # pede até 20 livros sem capa ao Internet Archive; só mostra, não grava
 
 Precisa de internet (menos --conferir, --arrumar e --auditar). No GitHub, quem roda é .github/workflows/buscar-capas.yml.
 
@@ -24,7 +27,13 @@ As fontes, nesta ordem:
      aqui, quase todos com a capa da edição brasileira. Só é consultada para o que a Open Library não achou, e
      devagar — a busca aceita cerca de 20 consultas por minuto.
   3. Google Books (www.googleapis.com/books/v1/volumes), só para o que as duas primeiras não acharam e só entre
-     livros em português. Também devagar, e desiste depois de cinco recusas seguidas.
+     livros em português. Também devagar, e desiste depois de cinco recusas seguidas. A chave de API é opcional:
+     se GOOGLE_BOOKS_API_KEY estiver no ambiente, vai no cabeçalho X-Goog-Api-Key, nunca na URL nem no registro.
+
+Quando catalogo/isbns.tsv traz um ISBN conferido para o livro, a Open Library e o Google procuram primeiro esse
+número (a edição exata), e só depois tentam título/autor. O arquivo é opcional e começa vazio; nenhum ISBN é inferido
+de outra edição. O Internet Archive é um piloto gratuito e só de leitura: --arquivo/--piloto mostram miniaturas de
+itens para revisão humana; nunca entram no casamento automático nem no capas.tsv.
 
 O arquivo catalogo/capas.tsv tem uma linha por livro: título, autor, capa e origem.
   capa    número da capa na Open Library (a imagem é https://covers.openlibrary.org/b/id/NÚMERO-M.jpg),
@@ -43,26 +52,35 @@ Nenhuma imagem é guardada no repositório: o painel mostra a capa direto da fon
 Para corrigir uma capa errada: troque o número (ou ponha o endereço de uma imagem) e escreva `manual` na origem.
 Para escolher à mão vendo o que cada fonte tem: --candidatos (abaixo).
 """
-import concurrent.futures, csv, io, json, pathlib, re, sys, threading, time, unicodedata, urllib.error, urllib.parse, urllib.request
+import concurrent.futures, csv, io, json, os, pathlib, re, sys, threading, time, unicodedata, urllib.error, urllib.parse, urllib.request
 
 RAIZ = pathlib.Path(__file__).resolve().parent.parent
 sys.path.insert(0, str(pathlib.Path(__file__).resolve().parent))
 from parse_catalog import SRC as CATALOGO, parse          # noqa: E402
 
 CAPAS = RAIZ / 'catalogo' / 'capas.tsv'
+ISBNS = RAIZ / 'catalogo' / 'isbns.tsv'
 COLUNAS = ['titulo', 'autor', 'capa', 'origem']
+COLUNAS_ISBN = ['titulo', 'autor', 'isbn', 'fonte']
 ORIGENS = {'edicao', 'obra', 'apple', 'google', 'manual', 'nao-achei', 'nao-achei-2', 'nao-achei-3', 'sem-autor'}
 SEM_CAPA = {'nao-achei', 'nao-achei-2', 'nao-achei-3', 'sem-autor'}    # origens de quem foi procurado (ou nem isso) e ficou sem capa
 NAO_ACHADAS = ('nao-achei', 'nao-achei-2', 'nao-achei-3')
 PROXIMA = {'nao-achei': 'nao-achei-2', 'nao-achei-2': 'nao-achei-3', 'apple': 'nao-achei-2', 'google': 'nao-achei-3'}
 BUSCA = 'https://openlibrary.org/search.json'
+BUSCA_ISBN = 'https://openlibrary.org/api/books'
 APPLE = 'https://itunes.apple.com/search'
 GOOGLE = 'https://www.googleapis.com/books/v1/volumes'
+ARQUIVO = 'https://archive.org/advancedsearch.php'
+ARQUIVO_IMAGEM = 'https://archive.org/services/img/'
 PAUSA_APPLE = 3.1                                                     # segundos entre consultas: a busca aceita ~20 por minuto
 PAUSA_GOOGLE = 1.5                                                    # o Google Books sem chave é de graça, mas recusa quando se insiste
+PAUSA_ISBN = 3.1                                                      # consulta por ISBN: devagar, como a Apple
+PAUSA_ARQUIVO = 1.0                                                   # piloto do Internet Archive: uma consulta por segundo
 TAMANHO_APPLE = '200x300bb.jpg'                                       # a imagem pedida: cabe em 200 × 300 (perto do tamanho M da Open Library)
 IMAGEM_APPLE = re.compile(r'^https://is\d+-ssl\.mzstatic\.com/image/thumb/[\w./%+-]+/\d+x\d+bb\.(?:jpg|jpeg|png)$', re.ASCII)
 IMAGEM_GOOGLE = re.compile(r'^https://books\.google\.[a-z]{2,3}(?:\.[a-z]{2})?/books/(?:content|pagedimg)\?[\w&=%.;:+-]+$', re.ASCII)
+IMAGEM_OL = re.compile(r'^https://covers\.openlibrary\.org/b/id/(\d+)-[SML]\.jpg$')
+IDENTIFICADOR_ARQUIVO = re.compile(r'^[A-Za-z0-9][A-Za-z0-9_.-]{0,254}$')
 OUTRO_PRODUTO = {'box', 'trilogia', 'tetralogia', 'colecao', 'coletanea', 'resumo', 'resumido', 'summary', 'guia', 'workbook', 'audiolivro', 'audiobook'}
 CAMPOS = 'key,title,author_name,cover_i,editions,editions.title,editions.cover_i,editions.language'
 AGENTE = 'biblioteca-lucas/1.0 (https://github.com/LucasRangel89/biblioteca; catalogo pessoal de livros)'
@@ -136,6 +154,51 @@ def isbn_de(s):
         if isbn_valido(c):
             return c
     return ''
+
+
+def isbn13(isbn):
+    """ISBN-10 → ISBN-13 (prefixo 978); ISBN-13 válido volta limpo. '' se não der para converter."""
+    c = isbn_limpo(isbn)
+    if len(c) == 13 and isbn_valido(c):
+        return c
+    if len(c) != 10 or not isbn_valido(c):
+        return ''
+    base = '978' + c[:9]
+    return base + str((-sum((1 if i % 2 == 0 else 3) * int(d) for i, d in enumerate(base))) % 10)
+
+
+def mesmo_isbn(a, b):
+    """Dois ISBNs são da mesma edição? Compara pelo ISBN-13 (o 10 e o 13 do mesmo livro casam)."""
+    x, y = isbn13(a), isbn13(b)
+    return bool(x and y and x == y)
+
+
+def ler_isbns(caminho=None):
+    """{(chave do título, chave do autor): ISBN-13} do catalogo/isbns.tsv, arquivo opcional e conferido à mão.
+    Levanta ValueError se o cabeçalho estiver errado, houver livro repetido, ISBN inválido ou fonte vazia.
+    Nenhuma linha é inferida de outra edição: o arquivo começa vazio e só ganha o que o dono conferiu no exemplar."""
+    caminho = pathlib.Path(caminho or ISBNS)
+    if not caminho.exists():
+        return {}
+    leitor = csv.DictReader(io.StringIO(caminho.read_text(encoding='utf-8-sig'), newline=''), delimiter='\t')
+    if leitor.fieldnames != COLUNAS_ISBN:
+        raise ValueError(f'{caminho.name}: o cabeçalho deve ser exatamente: ' + '\t'.join(COLUNAS_ISBN))
+    out = {}
+    for n, r in enumerate(leitor, 2):
+        if None in r or any(r.get(c) is None for c in COLUNAS_ISBN):
+            raise ValueError(f'{caminho.name}, linha {n}: use exatamente as quatro colunas do cabeçalho, separadas por TAB')
+        r = {c: (r.get(c) or '').strip() for c in COLUNAS_ISBN}
+        if not any(r.values()):
+            continue
+        k = (chave(r['titulo']), chave(r['autor']))
+        if not r['titulo'] or not r['fonte']:
+            raise ValueError(f'{caminho.name}, linha {n}: título e fonte da conferência são obrigatórios')
+        if k in out:
+            raise ValueError(f'{caminho.name}, linha {n}: livro repetido ({r["titulo"]} — {r["autor"]})')
+        if not isbn_valido(r['isbn']):
+            raise ValueError(f'{caminho.name}, linha {n}: ISBN {r["isbn"]!r} não fecha na conta de conferência')
+        out[k] = isbn13(r['isbn'])
+    return out
 
 
 def autores(autor):
@@ -383,19 +446,30 @@ def titulo_google(v):
     return f'{t}: {s}' if s else t
 
 
-def escolher_google(titulo, nome, itens, hq=False):
+def escolher_google(titulo, nome, itens, hq=False, isbn=''):
     """O endereço da capa entre os volumes do Google Books, ou ''. Servem os livros em português cujo título é o
     nosso (o subtítulo pode vir no campo separado) e cujo autor tem o nosso sobrenome. Caixa, resumo e guia não
-    servem, como na Apple. Título igual ganha de título com subtítulo; no empate, o que veio antes."""
+    servem, como na Apple. Título igual ganha de título com subtítulo; no empate, o que veio antes.
+    Com `isbn`, o volume também tem de declarar aquele ISBN (10 e 13 da mesma edição casam); nesse caso, um ISBN
+    conferido à mão permite aceitar mesmo sem autor certo no catálogo, desde que o título confira."""
     alvo, nosso, melhor = nt(titulo), set(chave(titulo).split()), None
+    por_isbn = isbn_valido(isbn)
     for pos, item in enumerate(itens or []):
         v = item.get('volumeInfo') if isinstance(item, dict) else None
         if not isinstance(v, dict) or v.get('printType', 'BOOK') != 'BOOK':
             continue
+        if por_isbn:
+            ids = [x.get('identifier') for x in (v.get('industryIdentifiers') or []) if isinstance(x, dict)]
+            if not any(mesmo_isbn(isbn, x) for x in ids):
+                continue
         capa, completo = imagem_google(v), titulo_google(v)
         if not capa or not (titulo_confere(titulo, str(v.get('title') or ''), hq) or titulo_confere(titulo, completo, hq)):
             continue
-        if not nome or som(nome) not in set(som(' '.join(str(a) for a in (v.get('authors') or []))).split()):
+        autores_deles = set(som(' '.join(str(a) for a in (v.get('authors') or []))).split())
+        if nome:
+            if som(nome) not in autores_deles:
+                continue
+        elif not por_isbn:
             continue
         lingua = str(v.get('language') or '')
         if lingua and lingua not in ('pt', 'por'):
@@ -408,10 +482,116 @@ def escolher_google(titulo, nome, itens, hq=False):
     return melhor[3] if melhor else ''
 
 
-def buscar_google(params, limite, tentativas=3, dormir=time.sleep):
+def ocultar_chave(texto, segredo=''):
+    """Texto de erro sem a chave de API: remove o valor exato, parâmetros key=… e o formato de chave do Google."""
+    texto = str(texto or '')
+    if segredo:
+        texto = texto.replace(segredo, '[chave ocultada]')
+    texto = re.sub(r'(?i)([?&]key=)[^&\s"\']+', r'\1[chave ocultada]', texto)
+    texto = re.sub(r'(?i)(\bkey\s*[=:]\s*)[^&\s"\',;]+', r'\1[chave ocultada]', texto)
+    return re.sub(r'AIza[0-9A-Za-z_-]{20,}', '[chave ocultada]', texto)
+
+
+def detalhe_http(e, segredo=''):
+    """O motivo que o serviço devolveu no corpo do erro, limpo e curto, para o resumo da execução.
+    Nunca devolve a chave de API: remove o valor exato e qualquer parecido com chave na URL/texto."""
+    try:
+        corpo = e.read(4096).decode('utf-8', 'replace')
+    except Exception:
+        corpo = ''
+    detalhe = ''
+    try:
+        dado = json.loads(corpo)
+        erro = dado.get('error') if isinstance(dado, dict) else None
+        if isinstance(erro, dict):
+            detalhe = str(erro.get('message') or '')
+            status = str(erro.get('status') or '')
+            if status and status not in detalhe:
+                detalhe = f'{detalhe} ({status})'.strip()
+        elif isinstance(erro, str):
+            detalhe = erro
+    except (json.JSONDecodeError, TypeError, ValueError):
+        pass
+    if not detalhe:
+        detalhe = str(getattr(e, 'msg', '') or getattr(e, 'reason', '') or '')
+    detalhe = re.sub(r'[\x00-\x1f\x7f]+', ' ', detalhe).strip()
+    return ocultar_chave(detalhe, segredo)[:300]
+
+
+def buscar_google(params, limite, tentativas=3, dormir=time.sleep, chave=None):
     """A resposta do Google Books. Quando ele recusa por excesso de consultas (429) ou fica fora do ar, espera um
-    pouco e tenta de novo; se a recusa continua, a consulta falha e o livro fica para a próxima execução."""
+    pouco e tenta de novo; se a recusa continua, a consulta falha e o livro fica para a próxima execução.
+    A chave opcional vem de GOOGLE_BOOKS_API_KEY (ou do argumento `chave`) e vai no cabeçalho X-Goog-Api-Key,
+    nunca na URL. O motivo do erro HTTP vai na mensagem, sem a chave, para aparecer no resumo do GitHub."""
+    if chave is None:
+        chave = os.environ.get('GOOGLE_BOOKS_API_KEY', '').strip()
     url = GOOGLE + '?' + urllib.parse.urlencode(params)
+    cabecalhos = {'User-Agent': AGENTE, 'Accept': 'application/json'}
+    if chave:
+        cabecalhos['X-Goog-Api-Key'] = chave
+    for n in range(tentativas):
+        limite.espera()
+        try:
+            req = urllib.request.Request(url, headers=cabecalhos)
+            with urllib.request.urlopen(req, timeout=40) as r:
+                return json.loads(r.read().decode('utf-8'))
+        except urllib.error.HTTPError as e:
+            if e.code not in (429, 500, 502, 503, 504) or n == tentativas - 1:
+                motivo = detalhe_http(e, chave)
+                msg = ocultar_chave(e.msg, chave)
+                e.msg = f'{msg} — {motivo}' if motivo and motivo not in msg else msg
+                raise
+            dormir(30 * (n + 1) if e.code == 429 else 3 * (n + 1) ** 2)
+        except (urllib.error.URLError, TimeoutError, ConnectionError, json.JSONDecodeError):
+            if n == tentativas - 1:
+                raise
+            dormir(3 * (n + 1) ** 2)
+    raise RuntimeError('sem resposta')
+
+
+def consulta_google_isbn(isbn):
+    """A consulta ao Google Books pelo ISBN exato da edição conferida à mão."""
+    c = isbn_limpo(isbn)
+    return {'q': f'isbn:{c}', 'maxResults': '10', 'printType': 'books'} if isbn_valido(c) else None
+
+
+def procurar_google(titulo, autor, hq, limite, buscar=buscar_google, isbn=''):
+    """(endereço da capa, 'google') ou ('', 'nao-achei-3'). Levanta exceção se a consulta falhar.
+    Com ISBN conferido, procura primeiro o número exato; se a resposta vier sem capa que sirva, tenta título/autor.
+    Erro de rede não vira 'não achei' nem dispara a segunda tentativa: o livro fica para a próxima execução."""
+    nome = sobrenome(autor, ultimo=adaptacao(titulo))
+    if isbn_valido(isbn):
+        itens = (buscar(consulta_google_isbn(isbn), limite) or {}).get('items')
+        capa = escolher_google(titulo, nome, itens, hq, isbn=isbn)
+        if capa:
+            return capa, 'google'
+    params = consulta_google(titulo, autor)
+    if params is None:
+        return '', 'nao-achei-3'
+    capa = escolher_google(titulo, nome, (buscar(params, limite) or {}).get('items'), hq)
+    return (capa, 'google') if capa else ('', 'nao-achei-3')
+
+
+# ───────── piloto gratuito: Internet Archive (só leitura, nunca entra no casamento automático) ─────────
+
+def consulta_arquivo(titulo, autor, isbn=''):
+    """A consulta ao Internet Archive (advancedsearch.php, API pública e gratuita). Com ISBN conferido, procura o
+    número; sem ele, título principal + sobrenome do autor, só entre itens de texto. None quando não há como procurar."""
+    c = isbn_limpo(isbn)
+    if isbn_valido(c):
+        q = f'isbn:{c} AND mediatype:texts'
+    else:
+        nome = sobrenome(autor, ultimo=adaptacao(titulo))
+        frase = ' '.join(re.sub(r'["\\]', ' ', principal(titulo)).split())
+        if not nome or not frase:
+            return None
+        q = f'title:"{frase}" AND creator:"{nome}" AND mediatype:texts'
+    return {'q': q, 'fl[]': ['identifier', 'title', 'creator', 'isbn', 'language', 'mediatype'], 'rows': '8', 'output': 'json'}
+
+
+def buscar_arquivo(params, limite, tentativas=3, dormir=time.sleep):
+    """A resposta JSON do Internet Archive. Recusa por excesso (429) ou queda espera e tenta de novo, devagar."""
+    url = ARQUIVO + '?' + urllib.parse.urlencode(params, doseq=True)
     for n in range(tentativas):
         limite.espera()
         try:
@@ -429,14 +609,100 @@ def buscar_google(params, limite, tentativas=3, dormir=time.sleep):
     raise RuntimeError('sem resposta')
 
 
-def procurar_google(titulo, autor, hq, limite, buscar=buscar_google):
-    """(endereço da capa, 'google') ou ('', 'nao-achei-3'). Levanta exceção se a consulta falhar."""
-    params = consulta_google(titulo, autor)
+def _lista_texto(valor):
+    if isinstance(valor, list):
+        return [str(x) for x in valor if str(x).strip()]
+    return [str(valor)] if str(valor or '').strip() else []
+
+
+def documentos_arquivo(resp):
+    """Os itens de uma resposta do advancedsearch.php; lista vazia quando a resposta não tem a forma esperada."""
+    if not isinstance(resp, dict):
+        return []
+    resposta = resp.get('response')
+    docs = resposta.get('docs') if isinstance(resposta, dict) else None
+    return [d for d in docs if isinstance(d, dict)] if isinstance(docs, list) else []
+
+
+def candidatos_arquivo(titulo, autor, isbn, docs):
+    """Candidatos do Internet Archive para revisão humana. `serve` é sempre False: a miniatura é do item digitalizado,
+    pode ser de outra edição ou de uma página que não a capa. Nenhum resultado daqui vai para o capas.tsv sozinho."""
+    out = []
+    for d in docs or []:
+        if not isinstance(d, dict):
+            continue
+        ident = str(d.get('identifier') or '').strip()
+        if not IDENTIFICADOR_ARQUIVO.match(ident):
+            continue
+        if str(d.get('mediatype') or 'texts') != 'texts':
+            continue
+        deles = ' '.join(_lista_texto(d.get('title')))
+        autor_deles = '; '.join(_lista_texto(d.get('creator')))
+        isbn_deles = '; '.join(_lista_texto(d.get('isbn')))
+        lingua = '; '.join(_lista_texto(d.get('language')))
+        motivo = 'piloto gratuito: a miniatura é do item digitalizado; confira edição e capa antes de escolher'
+        if not titulo_confere(titulo, deles, adaptacao(titulo)):
+            motivo += '; o título não confere'
+        if isbn_valido(isbn) and not any(mesmo_isbn(isbn, x) for x in re.split(r'[;,\s]+', isbn_deles) if x):
+            motivo += '; o ISBN não confere'
+        out.append({'fonte': 'Internet Archive (piloto)', 'titulo': deles, 'autor': autor_deles, 'lingua': lingua,
+                    'isbn': isbn_deles, 'capa': ARQUIVO_IMAGEM + urllib.parse.quote(ident, safe=''),
+                    'serve': False, 'motivo': motivo})
+    return out
+
+
+def procurar_arquivo(titulo, autor, isbn, limite, buscar=buscar_arquivo):
+    """Só leitura: devolve candidatos do Internet Archive. Levanta exceção se a consulta falhar."""
+    params = consulta_arquivo(titulo, autor, isbn)
     if params is None:
-        return '', 'nao-achei-3'
-    nome = sobrenome(autor, ultimo=adaptacao(titulo))
-    capa = escolher_google(titulo, nome, (buscar(params, limite) or {}).get('items'), hq)
-    return (capa, 'google') if capa else ('', 'nao-achei-3')
+        return []
+    resp = buscar(params, limite)
+    return candidatos_arquivo(titulo, autor, isbn, documentos_arquivo(resp))
+
+
+def piloto_arquivo(livros, capas, isbns=None, quantos=20, pausa=PAUSA_ARQUIVO, buscar=buscar_arquivo):
+    """Amostra determinística e pequena de livros sem capa, só para medir o piloto do Internet Archive.
+    Mostra candidatos e miniaturas para revisão humana; não escolhe capa, não consulta as outras fontes e não
+    grava em arquivo nenhum. Devolve 1 se alguma consulta falhar, 0 quando todas responderam (mesmo sem candidato)."""
+    quantos, isbns = max(1, min(int(quantos), 100)), isbns or {}
+    sem_capa, consultaveis, vistos = 0, [], set()
+    for b in livros:
+        k = (chave(b['t']), chave(b['a']))
+        if k in vistos or (capas.get(k) or {}).get('capa', ''):
+            continue
+        vistos.add(k)
+        sem_capa += 1
+        isbn = isbns.get(k, '')
+        if consulta_arquivo(b['t'], b['a'], isbn) is not None:
+            consultaveis.append((b, isbn))
+    amostra = [consultaveis[i * len(consultaveis) // min(quantos, len(consultaveis))] for i in range(min(quantos, len(consultaveis)))]
+    print(f'Piloto gratuito do Internet Archive: {sem_capa} livros sem capa · {len(consultaveis)} com título/autor ou ISBN para consultar · amostra de {len(amostra)}.')
+    print('Só leitura: nada é escolhido nem gravado; a miniatura pode ser de outra edição ou nem ser a capa.')
+    if not amostra:
+        print('Nada a consultar nesta amostra. Nada foi gravado.')
+        return 0
+    limite, consultados, com_candidatos, total, falhas, seguidas, restantes = Limite(pausa), 0, 0, 0, 0, 0, 0
+    for i, (b, isbn) in enumerate(amostra):
+        if seguidas >= 5:
+            restantes = len(amostra) - i
+            print('O Internet Archive não respondeu a 5 consultas seguidas; parei o piloto.')
+            break
+        print(f'\n── {i + 1}/{len(amostra)} · {b["t"]} — {b["a"] or "sem autor certo"}', flush=True)
+        try:
+            lista = procurar_arquivo(b['t'], b['a'], isbn, limite, buscar)
+        except Exception as e:
+            falhas += 1
+            seguidas += 1
+            print(f'   falhou: {type(e).__name__}: {e}', flush=True)
+            continue
+        seguidas, consultados = 0, consultados + 1
+        com_candidatos += 1 if lista else 0
+        total += len(lista)
+        print(texto_candidatos(b['t'], b['a'], lista), flush=True)
+    print(f'Piloto Internet Archive: {consultados} consultados · {com_candidatos} com candidatos para revisar · {total} candidatos · {falhas} falha(s)'
+          + (f' · {restantes} ficaram sem consultar' if restantes else ''))
+    print('Nada foi gravado: nenhum candidato entrou no casamento automático nem em catalogo/capas.tsv.')
+    return 1 if falhas else 0
 
 
 # ───────── escolher à mão: o que cada fonte devolve (--candidatos) ─────────
@@ -447,18 +713,97 @@ def consulta_isbn(isbn):
     return {'q': f'isbn:{c}', 'fields': CAMPOS, 'limit': '8'} if isbn_valido(c) else None
 
 
+def consulta_isbn_exata(isbn):
+    """A consulta da edição exata na Open Library (Books API, jscmd=data): ficha, autores e capa do ISBN pedido.
+    Diferente da busca por palavras, não devolve a obra com outra edição no lugar. None se o ISBN não fecha."""
+    c = isbn_limpo(isbn)
+    return {'bibkeys': f'ISBN:{c}', 'format': 'json', 'jscmd': 'data'} if isbn_valido(c) else None
+
+
+def capa_isbn_ol(registro):
+    """O número da capa a partir do endereço que a Books API devolve (covers.openlibrary.org/b/id/N-M.jpg).
+    '' quando não há capa ou o endereço não é o da Open Library."""
+    capa = (registro or {}).get('cover') or {}
+    for tamanho in ('medium', 'large', 'small'):
+        m = IMAGEM_OL.match(str(capa.get(tamanho) or '').strip())
+        if m and int(m.group(1)) > 0:
+            return m.group(1)
+    return ''
+
+
+def escolher_isbn(titulo, autor, isbn, registro, hq=False):
+    """(capa, motivo) da edição exata devolvida pela Books API. Só aceita quando o ISBN do registro é o pedido
+    (10 e 13 da mesma edição casam), o título confere e — se o catálogo tem autor certo — o autor também.
+    Sem autor certo, o ISBN conferido à mão é a segurança; ainda assim o título tem de conferir."""
+    if not isinstance(registro, dict) or not registro:
+        return '', 'a fonte não devolveu a ficha deste ISBN'
+    ids = (registro.get('identifiers') or {})
+    numeros = list(ids.get('isbn_13') or []) + list(ids.get('isbn_10') or [])
+    if not any(mesmo_isbn(isbn, x) for x in numeros):
+        return '', 'o ISBN da ficha não é o desta edição'
+    deles = str(registro.get('title') or '')
+    if not titulo_confere(titulo, deles, hq):
+        return '', 'o título não confere'
+    nome = sobrenome(autor, ultimo=adaptacao(titulo))
+    if nome:
+        nomes = ' '.join(str(a.get('name') or '') for a in (registro.get('authors') or []) if isinstance(a, dict))
+        if som(nome) not in set(som(nomes).split()):
+            return '', 'o autor não confere'
+    if (set(chave(deles).split()) - set(chave(titulo).split())) & OUTRO_PRODUTO:
+        return '', 'caixa, resumo ou guia'
+    capa = capa_isbn_ol(registro)
+    return (capa, SERVE) if capa else ('', 'sem imagem')
+
+
+def buscar_isbn(params, limite, tentativas=3, dormir=time.sleep):
+    """A resposta da Books API da Open Library para um ISBN. Recusa por excesso (429) ou queda espera e tenta de novo."""
+    url = BUSCA_ISBN + '?' + urllib.parse.urlencode(params)
+    for n in range(tentativas):
+        limite.espera()
+        try:
+            req = urllib.request.Request(url, headers={'User-Agent': AGENTE, 'Accept': 'application/json'})
+            with urllib.request.urlopen(req, timeout=40) as r:
+                return json.loads(r.read().decode('utf-8'))
+        except urllib.error.HTTPError as e:
+            if e.code not in (429, 500, 502, 503, 504) or n == tentativas - 1:
+                raise
+            dormir(30 * (n + 1) if e.code == 429 else 3 * (n + 1) ** 2)
+        except (urllib.error.URLError, TimeoutError, ConnectionError, json.JSONDecodeError):
+            if n == tentativas - 1:
+                raise
+            dormir(3 * (n + 1) ** 2)
+    raise RuntimeError('sem resposta')
+
+
+def procurar_isbn(titulo, autor, isbn, hq, limite, buscar=buscar_isbn):
+    """(capa, 'edicao') da edição exata na Open Library, ou ('', motivo). Levanta exceção se a consulta falhar.
+    'edicao' é a mesma origem das capas de edição da Open Library: o painel já sabe mostrar e rotular."""
+    params = consulta_isbn_exata(isbn)
+    if params is None:
+        return '', 'ISBN inválido'
+    resp = buscar(params, limite) or {}
+    registro = resp.get(f'ISBN:{isbn_limpo(isbn)}')
+    capa, motivo = escolher_isbn(titulo, autor, isbn, registro, hq)
+    return (capa, 'edicao') if capa else ('', motivo)
+
+
 SERVE = 'a capa que a busca automática escolheria'                      # o motivo que marca o candidato aceito
 
 
-def candidatos(titulo, autor, hq=False, isbn='', ol=None, apple=None, google=None, limites=None):
+def candidatos(titulo, autor, hq=False, isbn='', ol=None, apple=None, google=None, limites=None, arquivo=False, ia=None, ol_isbn=None):
     """O que cada fonte devolve para um livro, para escolher à mão. Não grava nada.
 
     Devolve uma lista de candidatos: fonte, título, autor, língua, ISBN, capa, se a busca automática aceitaria
     ("serve") e por que não aceitaria. As respostas são as mesmas consultas da busca; o julgamento é o das mesmas
     funções que escolhem a capa sozinha — o que aparece como "serve" é o que entraria numa execução automática.
-    Uma consulta que falha não derruba as outras: entra na lista como um candidato de fonte com o erro no motivo."""
+    Uma consulta que falha não derruba as outras: entra na lista como um candidato de fonte com o erro no motivo.
+    Com ISBN conferido, a Open Library responde primeiro pela edição exata; a busca por palavras só entra se essa
+    ficha não der capa. Com `arquivo=True`, inclui o piloto gratuito do Internet Archive; esses candidatos nunca
+    vêm como "serve"."""
     ol, apple, google = (buscar_json if ol is None else ol), (buscar_apple if apple is None else apple), (buscar_google if google is None else google)
-    lim = limites or {'ol': Limite(0.4), 'apple': Limite(PAUSA_APPLE), 'google': Limite(PAUSA_GOOGLE)}
+    ia, ol_isbn = (buscar_arquivo if ia is None else ia), (buscar_isbn if ol_isbn is None else ol_isbn)
+    lim = {'ol': Limite(0.4), 'apple': Limite(PAUSA_APPLE), 'google': Limite(PAUSA_GOOGLE), 'isbn': Limite(PAUSA_ISBN), 'arquivo': Limite(PAUSA_ARQUIVO)}
+    lim.update(limites or {})
     nome = sobrenome(autor, ultimo=adaptacao(titulo))
     out = []
 
@@ -471,42 +816,57 @@ def candidatos(titulo, autor, hq=False, isbn='', ol=None, apple=None, google=Non
             return None, f'{type(e).__name__}: {e}'
 
     por_isbn = isbn_valido(isbn)
-    params_ol = consulta_isbn(isbn) if por_isbn else (consulta_de(titulo, autor) or consulta_so_titulo(titulo))
-    if params_ol is not None:
-        params_ol['fields'] = CAMPOS + ',editions.isbn'                # o ISBN da edição, para conferir com o livro na mão
-    resp, erro = consulta('ol', ol, params_ol)
-    if erro:
-        out.append({'fonte': 'Open Library', 'titulo': '', 'autor': '', 'lingua': '', 'isbn': '', 'capa': '', 'serve': False, 'motivo': erro})
-    else:
-        docs = (resp or {}).get('docs') or []
-        escolhida = escolher(titulo, docs, hq)[0]
-        for d in docs:
-            eds = ((d.get('editions') or {}).get('docs') or [])
-            ed = eds[0] if eds else {}
-            capa = ed.get('cover_i') or d.get('cover_i')
-            deles = ed.get('title') or d.get('title') or ''
-            lingua = ', '.join(ed.get('language') or [])
-            motivo = ('sem imagem' if not capa else 'o título não confere' if not titulo_confere(titulo, deles, hq) else
-                      'o autor não confere' if not autor_confere(nome, d) else
-                      'a capa que a busca automática escolheria' if capa == escolhida else 'não é a que a busca escolheria')
-            out.append({'fonte': 'Open Library', 'titulo': deles, 'autor': ', '.join(d.get('author_name') or []), 'lingua': lingua,
-                        'isbn': ', '.join((ed.get('isbn') or [])[:2]), 'capa': str(capa) if capa else '',
-                        'serve': motivo == SERVE, 'motivo': motivo})
-        if not docs:
-            out.append({'fonte': 'Open Library', 'titulo': '', 'autor': '', 'lingua': '', 'isbn': '', 'capa': '', 'serve': False, 'motivo': 'a fonte não devolveu nenhum resultado'})
-    resp, erro = consulta('google', google, {'q': f'isbn:{isbn_limpo(isbn)}', 'maxResults': '10', 'printType': 'books'} if por_isbn else consulta_google(titulo, autor))
+    ol_resolvido = False
+    if por_isbn:
+        resp, erro = consulta('isbn', ol_isbn, consulta_isbn_exata(isbn))
+        registro = (resp or {}).get(f'ISBN:{isbn_limpo(isbn)}') if not erro else None
+        capa, motivo = ('', erro) if erro else escolher_isbn(titulo, autor, isbn, registro, hq)
+        registro = registro if isinstance(registro, dict) else {}
+        out.append({'fonte': 'Open Library (ISBN)', 'titulo': str(registro.get('title') or ''),
+                    'autor': ', '.join(str(a.get('name') or '') for a in (registro.get('authors') or []) if isinstance(a, dict)),
+                    'lingua': '', 'isbn': isbn_limpo(isbn), 'capa': capa, 'serve': bool(capa), 'motivo': motivo})
+        ol_resolvido = bool(capa)
+    if not ol_resolvido:
+        params_ol = consulta_isbn(isbn) if por_isbn else (consulta_de(titulo, autor) or consulta_so_titulo(titulo))
+        if params_ol is not None:
+            params_ol['fields'] = CAMPOS + ',editions.isbn'            # o ISBN da edição, para conferir com o livro na mão
+        resp, erro = consulta('ol', ol, params_ol)
+        if erro:
+            out.append({'fonte': 'Open Library', 'titulo': '', 'autor': '', 'lingua': '', 'isbn': '', 'capa': '', 'serve': False, 'motivo': erro})
+        else:
+            docs = (resp or {}).get('docs') or []
+            escolhida = escolher(titulo, docs, hq)[0]
+            for d in docs:
+                eds = ((d.get('editions') or {}).get('docs') or [])
+                ed = eds[0] if eds else {}
+                capa = ed.get('cover_i') or d.get('cover_i')
+                deles = ed.get('title') or d.get('title') or ''
+                lingua = ', '.join(ed.get('language') or [])
+                motivo = ('sem imagem' if not capa else 'o título não confere' if not titulo_confere(titulo, deles, hq) else
+                          'o autor não confere' if not autor_confere(nome, d) else
+                          SERVE if capa == escolhida else 'não é a que a busca escolheria')
+                out.append({'fonte': 'Open Library', 'titulo': deles, 'autor': ', '.join(d.get('author_name') or []), 'lingua': lingua,
+                            'isbn': ', '.join((ed.get('isbn') or [])[:2]), 'capa': str(capa) if capa else '',
+                            'serve': motivo == SERVE, 'motivo': motivo})
+            if not docs:
+                out.append({'fonte': 'Open Library', 'titulo': '', 'autor': '', 'lingua': '', 'isbn': '', 'capa': '', 'serve': False, 'motivo': 'a fonte não devolveu nenhum resultado'})
+    resp, erro = consulta('google', google, consulta_google_isbn(isbn) if por_isbn else consulta_google(titulo, autor))
     if erro:
         out.append({'fonte': 'Google Books', 'titulo': '', 'autor': '', 'lingua': '', 'isbn': '', 'capa': '', 'serve': False, 'motivo': erro})
     else:
         itens = [i for i in ((resp or {}).get('items') or []) if isinstance(i, dict) and isinstance(i.get('volumeInfo'), dict)]
-        escolhida = escolher_google(titulo, nome, itens, hq)
+        escolhida = escolher_google(titulo, nome, itens, hq, isbn=isbn if por_isbn else '')
         for i in itens:
             v = i['volumeInfo']
             capa, completo = imagem_google(v), titulo_google(v)
             autor_deles = ', '.join(str(a) for a in (v.get('authors') or []))
+            ids = [x.get('identifier') for x in (v.get('industryIdentifiers') or []) if isinstance(x, dict)]
+            bate_isbn = not por_isbn or any(mesmo_isbn(isbn, x) for x in ids)
             bate_titulo = titulo_confere(titulo, str(v.get('title') or ''), hq) or titulo_confere(titulo, completo, hq)
-            bate_autor = bool(nome) and som(nome) in set(som(' '.join(str(a) for a in (v.get('authors') or []))).split())
+            nomes_deles = set(som(' '.join(str(a) for a in (v.get('authors') or []))).split())
+            bate_autor = som(nome) in nomes_deles if nome else (por_isbn and bate_isbn)
             motivo = ('sem imagem' if not capa else
+                      'o ISBN não é o desta edição' if not bate_isbn else
                       'caixa, resumo ou guia' if (set(chave(completo).split()) - set(chave(titulo).split())) & OUTRO_PRODUTO else
                       'o título não confere' if not bate_titulo else 'o autor não confere' if not bate_autor else
                       'livro em outra língua' if str(v.get('language') or '') not in ('', 'pt', 'por') else
@@ -534,6 +894,16 @@ def candidatos(titulo, autor, hq=False, isbn='', ol=None, apple=None, google=Non
                             'isbn': '', 'capa': capa, 'serve': motivo == SERVE, 'motivo': motivo})
             if not resultados:
                 out.append({'fonte': 'Apple Books', 'titulo': '', 'autor': '', 'lingua': '', 'isbn': '', 'capa': '', 'serve': False, 'motivo': 'a fonte não devolveu nenhum resultado'})
+    if arquivo:
+        params = consulta_arquivo(titulo, autor, isbn)
+        resp, erro = consulta('arquivo', ia, params)
+        if erro:
+            out.append({'fonte': 'Internet Archive (piloto)', 'titulo': '', 'autor': '', 'lingua': '', 'isbn': '', 'capa': '', 'serve': False, 'motivo': erro})
+        else:
+            achados = candidatos_arquivo(titulo, autor, isbn, documentos_arquivo(resp))
+            out += achados
+            if not achados:
+                out.append({'fonte': 'Internet Archive (piloto)', 'titulo': '', 'autor': '', 'lingua': '', 'isbn': '', 'capa': '', 'serve': False, 'motivo': 'a fonte não devolveu nenhum resultado'})
     return out
 
 
@@ -549,10 +919,16 @@ def texto_candidatos(titulo, autor, lista):
                  + (f' · {c["lingua"]}' if c['lingua'] else '') + (f' · ISBN {c["isbn"]}' if c['isbn'] else ''))
         L.append(f'    {"SERVE" if c["serve"] else "não serve"}: {c["motivo"]}')
         L.append(f'    capa: {c["capa"] or "(sem imagem)"}')
-        if c['capa']:
+        if c['capa'] and c['fonte'].startswith('Internet Archive'):
+            L.append('    só para conferir: o piloto do Internet Archive não entra no capas.tsv')
+        elif c['capa']:
             L.append(f'    para escolher esta, cole no capas.tsv: {titulo}\t{autor}\t{c["capa"]}\tmanual')
         L.append('')
-    L += ['Nada foi gravado. Quem escolhe é você: `manual` na coluna origem garante que a busca não troque a capa.', '']
+    if lista and all(c['fonte'].startswith('Internet Archive') for c in lista):
+        L += ['Nada foi gravado. Este piloto é só de leitura: nenhum candidato do Internet Archive entra no capas.tsv.', '']
+    else:
+        L += ['Nada foi gravado. Quem escolhe é você: `manual` na coluna origem garante que a busca não troque a capa.'
+              + (' Candidatos do Internet Archive são só para conferir; não entram no capas.tsv.' if any(c['fonte'].startswith('Internet Archive') for c in lista) else ''), '']
     return '\n'.join(L)
 
 
@@ -727,19 +1103,44 @@ def main(argv):
             print(f'ISBN {isbn} não fecha na conta de conferência; confira o número.')
             return 2
         titulo = titulo or f'ISBN {isbn}'
-        lista = candidatos(titulo, autor, '--hq' in argv, isbn, limites={'ol': Limite(pausa), 'apple': Limite(pausa_apple), 'google': Limite(valor('--pausa-google', PAUSA_GOOGLE))})
+        lista = candidatos(titulo, autor, '--hq' in argv, isbn, limites={'ol': Limite(pausa), 'apple': Limite(pausa_apple), 'google': Limite(valor('--pausa-google', PAUSA_GOOGLE)), 'arquivo': Limite(valor('--pausa-arquivo', PAUSA_ARQUIVO))}, arquivo='--arquivo' in argv)
         print(texto_candidatos(titulo, autor, lista))
         return 0
     livros = parse(pathlib.Path(CATALOGO).read_text(encoding='utf-8'))
     capas = ler_capas()
+    try:
+        isbns = ler_isbns()
+    except ValueError as e:
+        print(f'Arquivo de ISBN não pode ser usado: {e}')
+        return 2
+    chaves_do_catalogo = {(chave(b['t']), chave(b['a'])) for b in livros}
+    fora_do_catalogo = [k for k in isbns if k not in chaves_do_catalogo]
+    if fora_do_catalogo:
+        t, a = fora_do_catalogo[0]
+        print(f'Arquivo de ISBN não pode ser usado: {len(fora_do_catalogo)} linha(s) não casam com o catálogo. '
+              f'Copie o título e o autor exatamente como estão nele; a primeira é “{t}” — “{a}”.')
+        return 2
+    if '--piloto' in argv:
+        i = argv.index('--piloto')
+        try:
+            quantos = int(argv[i + 1]) if i + 1 < len(argv) else 20
+        except ValueError:
+            quantos = 0
+        if not 1 <= quantos <= 100:
+            print('Use --piloto N, com N entre 1 e 100 (por exemplo: --piloto 20).')
+            return 2
+        return piloto_arquivo(livros, capas, isbns, quantos, valor('--pausa-arquivo', PAUSA_ARQUIVO), buscar_arquivo)
     # o que falta, livro a livro: 'tudo' = as três fontes, em ordem; 'apple' = falta a Apple (e o Google);
-    # 'google' = já passou pelas duas primeiras, falta só o Google
+    # 'google' = já passou pelas duas primeiras, falta só o Google; 'isbn' = sem autor certo, mas com ISBN conferido
     falta = {}
     for b in livros:
         k = (chave(b['t']), chave(b['a']))
         r = capas.get(k)
-        if r is None or (refazer and r['origem'] in NAO_ACHADAS):
+        tem_isbn = k in isbns
+        if r is None or (refazer and (r['origem'] in NAO_ACHADAS or (tem_isbn and r['origem'] == 'sem-autor'))):
             falta.setdefault(k, (b, 'tudo'))
+        elif r['origem'] == 'sem-autor' and tem_isbn:
+            falta.setdefault(k, (b, 'isbn'))                     # ISBN conferido à mão: edição exata, mesmo sem autor certo
         elif r['origem'] == 'nao-achei':
             falta.setdefault(k, (b, 'apple'))
         elif r['origem'] == 'nao-achei-2' and '--sem-google' not in argv:
@@ -747,10 +1148,14 @@ def main(argv):
     falta = [(k, b, modo) for k, (b, modo) in falta.items()]
     so_apple = sum(1 for _, _, modo in falta if modo == 'apple')
     so_google = sum(1 for _, _, modo in falta if modo == 'google')
+    so_isbn = sum(1 for _, _, modo in falta if modo == 'isbn')
+    detalhes = ([f'{so_apple} só na Apple: já passaram pela Open Library'] if so_apple else [])
+    if so_google:
+        detalhes.append(f'{so_google} só no Google: já passaram pelas duas')
+    if so_isbn:
+        detalhes.append(f'{so_isbn} com ISBN conferido: edição exata')
     print(f'Catálogo: {len(livros)} livros · {sum(1 for r in capas.values() if r["capa"])} com capa · {len(falta)} a procurar'
-          + (f' ({so_apple} só na Apple: já passaram pela Open Library' if so_apple else '')
-          + (f'{" · " if so_apple else " ("}{so_google} só no Google: já passaram pelas duas' if so_google else '')
-          + (')' if so_apple or so_google else ''))
+          + (f' ({" · ".join(detalhes)})' if detalhes else ''))
     if conferir:
         return 0
     if '--testar' in argv:
@@ -779,10 +1184,11 @@ def main(argv):
     if limite_n is not None:
         falta = falta[:limite_n]
     lim, lim_apple, lim_google = Limite(pausa), Limite(pausa_apple), Limite(valor('--pausa-google', PAUSA_GOOGLE))
+    lim_isbn = Limite(valor('--pausa-isbn', PAUSA_ISBN))
     feitos, adiados, falhas, t0 = 0, 0, [], time.time()
 
     estado = {'desistiu': False, 'tentados': 0, 'falhos': 0, 'apple_fora': False, 'apple_seguidas': 0,
-              'google_fora': False, 'google_seguidas': 0}
+              'google_fora': False, 'google_seguidas': 0, 'isbn_fora': False, 'isbn_seguidas': 0}
     trava = threading.Lock()
 
     def fora_do_ar(fonte):
@@ -791,7 +1197,7 @@ def main(argv):
             estado[f'{fonte}_seguidas'] += 1
             if estado[f'{fonte}_seguidas'] >= 5 and not estado[f'{fonte}_fora']:
                 estado[f'{fonte}_fora'] = True
-                nome = 'A Apple' if fonte == 'apple' else 'O Google Books'
+                nome = {'apple': 'A Apple', 'google': 'O Google Books', 'isbn': 'A Open Library por ISBN'}.get(fonte, fonte)
                 print(f'{nome} não respondeu a 5 consultas seguidas; parei de procurar nele.', flush=True)
         return estado[f'{fonte}_fora']
 
@@ -801,6 +1207,32 @@ def main(argv):
         if estado['desistiu'] or (prazo and time.time() > prazo):
             return k, b, None, ''                                       # acabou o tempo (ou a rede não responde): fica para a próxima execução
         hq, res = 'HQ' in b['tags'], ('', 'nao-achei')
+        isbn = isbns.get(k, '')
+        if isbn and not estado['isbn_fora']:
+            try:
+                achado = procurar_isbn(b['t'], b['a'], isbn, hq, lim_isbn)
+            except Exception as e:
+                fora_do_ar('isbn')
+                return k, b, None, f'Open Library por ISBN: {type(e).__name__}: {e}'
+            with trava:
+                estado['isbn_seguidas'] = 0
+            if achado[1] == 'edicao':
+                return k, b, achado, None
+        if isbn and estado['isbn_fora']:                                # a ficha exata caiu: não troca por busca ampla
+            return k, b, None, ''
+        if modo == 'isbn':                                              # sem autor certo, mas com ISBN conferido à mão
+            if '--sem-google' in argv:
+                return k, b, ('', 'sem-autor'), None
+            if estado['google_fora']:
+                return k, b, None, ''
+            try:
+                achado = procurar_google(b['t'], b['a'], hq, lim_google, isbn=isbn)
+            except Exception as e:
+                fora_do_ar('google')
+                return k, b, None, f'Google: {type(e).__name__}: {e}'
+            with trava:
+                estado['google_seguidas'] = 0
+            return k, b, (achado if achado[1] == 'google' else ('', 'sem-autor')), None
         if modo == 'tudo':
             try:
                 res, erro = procurar(b['t'], b['a'], hq, lim), None
@@ -833,7 +1265,7 @@ def main(argv):
         if estado['google_fora']:                                       # o Google parou de responder: fica para a próxima execução
             return (k, b, res, None) if modo != 'google' else (k, b, None, '')
         try:
-            res = procurar_google(b['t'], b['a'], hq, lim_google)
+            res = procurar_google(b['t'], b['a'], hq, lim_google, isbn=isbn)
         except Exception as e:
             fora_do_ar('google')
             return k, b, (res if modo != 'google' else None), f'Google: {type(e).__name__}: {e}'
@@ -864,13 +1296,13 @@ def main(argv):
     cont = {}
     for r in capas.values():
         cont[r['origem']] = cont.get(r['origem'], 0) + 1
-    motivo = ('a Open Library não respondeu' if estado['desistiu'] else 'a Apple não respondeu' if estado['apple_fora']
-              else 'o Google Books não respondeu' if estado['google_fora'] else 'acabou o tempo')
+    motivo = ('a Open Library não respondeu' if estado['desistiu'] else 'a Open Library por ISBN não respondeu' if estado['isbn_fora']
+              else 'a Apple não respondeu' if estado['apple_fora'] else 'o Google Books não respondeu' if estado['google_fora'] else 'acabou o tempo')
     print('Resultado: ' + ' · '.join(f'{n} {o}' for o, n in sorted(cont.items())) + f' · {len(falhas)} consulta(s) falharam'
           + (f' · {adiados} ficaram para a próxima execução ({motivo})' if adiados else ''))
     for t, e in falhas[:10]:
         print(f'   falhou: {t} — {e}')
-    return 1 if estado['desistiu'] or estado['apple_fora'] or estado['google_fora'] else 0
+    return 1 if estado['desistiu'] or estado['isbn_fora'] or estado['apple_fora'] or estado['google_fora'] else 0
 
 
 if __name__ == '__main__':

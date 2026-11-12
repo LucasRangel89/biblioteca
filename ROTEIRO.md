@@ -17,12 +17,12 @@ Este arquivo é atualizado ao fim de cada rodada. Para saber em que pé as coisa
 | 3 | Trocar os dados de exemplo pelos seus | **Em parte** (10/11/2026) — o painel já abre sem nada inventado; falta a sua lista de leituras |
 | 4 | Classificar os livros digitais: a vistoria dos marcadores | **Feita** (11/11/2026) — falta a sua conferência por amostragem e duas dúvidas (lista abaixo) |
 | 5 | Rotina à prova de erro | **Em parte** (12/11/2026) — CI rápido e publicação condicionada no ar (PR #14); falta o gerador único de listagens, a revisão de `referencias/` e a proteção de `main` |
-| 6 | Melhorias do painel | **Em parte** (11/11/2026) — endereço próprio, guia Finanças, capas (agora de duas fontes), só o título obrigatório, suas anotações, ordem de compra |
+| 6 | Melhorias do painel | **Em parte** (12/11/2026) — endereço próprio, guia Finanças, capas (agora de três fontes gratuitas), só o título obrigatório, suas anotações, ordem de compra |
 | 7 | A versão 3 do catálogo: camadas e trilhas de leitura | **Feita** (11/11/2026) |
 | 8 | Análise dos filtros, trilhas personalizadas e novas recomendações | **Feita** (11/11/2026) — das oito propostas, três viraram a etapa 9; cinco esperam a sua decisão (lista abaixo) |
 | 9 | Filtros que dizem quantos livros têm e somam dentro do grupo; grupo da psicologia; conserto das caixas que não cabiam na tela | **Feita** (11/11/2026) |
 | 10 | As suas ideias: ocultar categorias, imprimir e copiar listas, sinopses, temas visuais, estímulo à leitura | **Em parte** (12/11/2026) — ocultar e imprimir estão prontos; sinopses dos lotes 1 e 2 (292 livros); seis temas prontos (Lovecraft, Sherlock Holmes, Moby Dick, Deserto, Terras antigas, Clássico greco-romano); a guia de leitura continua aguardando a aprovação do desenho abaixo |
-| 11 | Mais capas: auditoria, casamento e fontes, robô que abre PR e capas no painel | **Em parte** (12/11/2026) — as quatro partes estão no ar; o disparo manual funcionou, mas o Google Books não respondeu nas execuções #9 e #10; nenhuma capa nova entrou |
+| 11 | Mais capas: auditoria, casamento e fontes, robô que abre PR e capas no painel | **Em parte** (12/11/2026) — as quatro partes estão no ar; o Google Books não respondeu nas execuções #9 e #10. Caminho gratuito em revisão: ISBN conferido opcional, chave Google opcional e piloto do Internet Archive só de leitura; nenhuma capa nova entrou |
 
 A ordem pode mudar: as etapas que faltam não dependem umas das outras. Se alguma interessar mais, peça por ela.
 
@@ -60,9 +60,9 @@ O painel abre em <https://lucasrangel89.github.io/biblioteca/>, no computador ou
   ligados. Se você já usava o site, eles somem sozinhos na primeira abertura depois de 10/11/2026, e o painel avisa
   (os detalhes estão na etapa 3, abaixo).
 - **As capas vêm da internet.** O site inteiro é um arquivo só; a única coisa que ele busca fora são as imagens das
-  capas, em dois catálogos de livros: a Open Library, que é aberta, e a Apple Books, a loja de livros digitais da
-  Apple. Sem internet, ou quando o livro não tem capa, aparece um desenho com a inicial do título. Quem preferir
-  desliga as capas em "Seus dados".
+  capas, em três catálogos de livros: a Open Library, que é aberta, a Apple Books, a loja de livros digitais da Apple,
+  e o Google Books. Sem internet, ou quando o livro não tem capa, aparece um desenho com a inicial do título. Quem
+  preferir desliga as capas em "Seus dados".
 - **O arquivo continua valendo.** O `Biblioteca_Lucas_Dashboard.html` do repositório é o mesmo painel e abre sem
   internet. Quem preferir usá-lo baixa o arquivo novo a cada rodada e põe no lugar do antigo, na mesma pasta e com o
   mesmo nome, depois de exportar um backup.
@@ -968,9 +968,27 @@ e por último melhorar como as capas aparecem no painel. Quatro partes, nesta or
 | Parte | O que é | Em que pé está |
 | --- | --- | --- |
 | 1 | Auditoria e fila de revisão | **Feita** (12/11/2026) |
-| 2 | Casamento mais seguro e uma fonte nova | **Feita** (12/11/2026) — falta a primeira execução real, que é a parte 3 |
-| 3 | O robô das capas abrindo um PR para revisão | **Feita** (12/11/2026) — falta você rodar a primeira busca |
+| 2 | Casamento mais seguro e uma fonte nova | **Feita** (12/11/2026) — o Google ainda não respondeu nas buscas manuais; caminho gratuito em revisão |
+| 3 | O robô das capas abrindo um PR para revisão | **Feita** (12/11/2026) — o disparo manual funcionou (#9 e #10), mas sem capa nova; falta a busca curta de conferência |
 | 4 | As capas no painel: capa maior, aviso de outra edição, grade | **Feita** (12/11/2026) |
+
+### Caminho gratuito em revisão (12/11/2026)
+
+O projeto continua **totalmente gratuito**: ISBNdb e qualquer serviço pago ficam fora. A mudança preparada nesta
+rodada faz três coisas, sem publicar nada sozinha:
+
+1. **ISBN conferido, opcional.** `catalogo/isbns.tsv` começa vazio. Só entra o número que você conferiu no exemplar,
+   com título e autor copiados do catálogo e a fonte da conferência. Open Library e Google procuram esse número
+   primeiro; nenhum ISBN é inferido de outra edição.
+2. **Google Books com chave opcional.** Se houver o secret `GOOGLE_BOOKS_API_KEY` no GitHub, ele vai no cabeçalho
+   `X-Goog-Api-Key`, nunca na URL nem no painel. Sem chave, a consulta pública continua sendo tentada. O motivo de uma
+   recusa aparece no resumo, com a chave ocultada.
+3. **Internet Archive só como piloto de leitura.** `python tools/capas.py --piloto 20` mostra candidatos e miniaturas
+   para revisão humana; não entra no casamento automático, não grava no `capas.tsv` e não roda no robô `Buscar capas`.
+
+O próximo passo seguro continua sendo uma busca curta em `main`, com **limite 40**, para ler o motivo concreto do
+Google antes de repetir ou marcar os 967 como procurados. Depois disso, medir o ganho numa amostra de cerca de 100
+livros sem capa antes de expandir qualquer piloto.
 
 ### Parte 4 — As capas no painel
 
@@ -1020,12 +1038,13 @@ site numa rodada seguinte, à mão. Agora ele faz o caminho inteiro e **para num
   português. Entra na busca automática e no `--candidatos`. Quem já estava marcado `nao-achei-2` (os 967 que não
   foram achados nas duas primeiras) vai a ela na próxima execução, sem repetir as duas primeiras; se também não
   achar, fica `nao-achei-3`.
-- **Ainda não houve execução real.** As três fontes foram testadas com respostas gravadas, no formato das respostas
-  verdadeiras, mas desta máquina não se chega à internet desses catálogos. A primeira execução de verdade é a
-  parte 3 (o robô), que abre um PR para você revisar antes de qualquer coisa entrar.
+- **As buscas manuais #9 e #10 não trouxeram capa nova.** O robô rodou, mas o Google Books não respondeu; o fluxo foi
+  corrigido para mostrar a falha mesmo sem mudança no arquivo. As três fontes seguem testadas com respostas gravadas,
+  no formato das respostas verdadeiras. A próxima conferência é curta (limite 40) e abre PR só se houver mudança.
 - **Escolher à mão ficou fácil:** `python tools/capas.py --candidatos "Título" --autor "Nome"` (ou `--isbn 978…`)
   mostra o que cada fonte tem, com o ISBN quando existe, se a busca aceitaria e por que não aceitaria — e a linha
-  pronta para colar no `capas.tsv` com origem `manual`. Nada é gravado.
+  pronta para colar no `capas.tsv` com origem `manual`. `--arquivo` acrescenta o piloto do Internet Archive, que não
+  oferece linha para colar. Nada é gravado.
 - **Cada fonte tem o seu freio.** A Apple já esperava 3 segundos entre consultas; o Google espera 1,5 e, se recusar
   cinco vezes seguidas, o robô para de procurar nele e segue com o resto. `--sem-google` volta às duas primeiras.
 

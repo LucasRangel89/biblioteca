@@ -69,12 +69,13 @@ do autor e do tipo de obra — nenhum arquivo foi aberto.
 | `Biblioteca_Lucas_Dashboard.html` | O painel pronto (gerado; não edite à mão). É este arquivo que vai para o site |
 | `.github/workflows/publicar-site.yml` | Confere a geração e os testes rápidos, depois publica o painel como site a cada mudança em `main` (ver "O site") |
 | `.github/workflows/verificar.yml` | CI rápido de PR e ramos de trabalho: geração em dia, sintaxe JS e testes sem navegador |
-| `.github/workflows/buscar-capas.yml` | Procura as capas dos livros na Open Library e na Apple Books e grava `catalogo/capas.tsv`. Só roda quando pedido, pela aba Actions (ver "As capas") |
+| `.github/workflows/buscar-capas.yml` | Procura as capas dos livros na Open Library, Apple Books e Google Books (tudo gratuito; ISBN conferido tem prioridade) e grava `catalogo/capas.tsv`. Só roda quando pedido, pela aba Actions (ver "As capas") |
 | `ROTEIRO.md` | As etapas de desenvolvimento e as pendências de cada uma |
 | `catalogo/ANALISE-E-PLANO.md` | Análise independente do projeto, comparação com a especificação enviada e ordem proposta para os próximos PRs |
 | `catalogo/Biblioteca_Lucas_Catalogo_Mestre.md` | O Catálogo Mestre |
 | `catalogo/renomeados.tsv` | O nome antigo de cada linha da estante ou das recomendações que teve título ou autor corrigido (ver "Corrigir o título ou o autor…") |
-| `catalogo/capas.tsv` | A capa de cada livro: o número da imagem na Open Library, o endereço da imagem na Apple Books, ou vazio quando não foi achada (ver "As capas") |
+| `catalogo/capas.tsv` | A capa de cada livro: o número da imagem na Open Library, o endereço da imagem na Apple Books ou no Google Books, ou vazio quando não foi achada (ver "As capas") |
+| `catalogo/isbns.tsv` | Opcional e começa vazio: ISBN conferido no exemplar, com título, autor e fonte da conferência. A busca automática nunca inventa nem aproveita ISBN de outra edição (ver "As capas") |
 | `catalogo/trilhas.md` | As 36 trilhas de leitura: nome, marcador, descrição e os livros, em ordem (ver "Trilhas de leitura") |
 | `catalogo/ANALISE-DOS-FILTROS.md` | Análise e meta-análise dos filtros e da categorização, de 11/11/2026: o que cada filtro alcança, quanto confiar em cada dado, o que foi corrigido e o que fica proposto (as propostas 1 a 3 já foram feitas; as notas **[depois]** dizem o que mudou). Os números saem de `tools/analisar_marcadores.py` |
 | `catalogo/VISTORIA.md` | Relatório da vistoria dos marcadores de 10/11/2026: o que foi conferido, o que mudou e as dúvidas que ficaram. É um retrato daquela data; não é refeito pelas ferramentas |
@@ -90,7 +91,7 @@ do autor e do tipo de obra — nenhum arquivo foi aberto.
 | `tools/importar_digital.py` | Listagens + inventário → Catálogo Mestre (seção 17 e `#tenho-digital`) e `RESUMO.md` |
 | `tools/build_catalog.py` | Catálogo Mestre + inventário → `src/catalog.json`; `catalogo/capas.tsv` → `src/capas.json` e `src/capas-fontes.json`; `catalogo/trilhas.md` → `src/trilhas.json`; `catalogo/antes-da-vistoria.tsv` → `src/antes.json`; `catalogo/sinopses.tsv` → `src/sinopses.json` (usa `parse_catalog.py`, `eixos.py` e `capas.py`). O que não bate sai como `AVISO:` |
 | `tools/build.py` | `src/` → `Biblioteca_Lucas_Dashboard.html`, com os dados e as letras dos temas (`src/letras`) dentro; confere que não sobrou referência externa |
-| `tools/capas.py` | Busca das capas na Open Library, na Apple Books e, para o que as duas não têm, no Google Books → `catalogo/capas.tsv`. Também escolhe à mão (`--candidatos`) e faz a auditoria (`--auditar`). No GitHub, quem o roda é o serviço "Buscar capas", que abre um PR |
+| `tools/capas.py` | Busca gratuita das capas na Open Library, Apple Books e Google Books → `catalogo/capas.tsv`; ISBN conferido (`catalogo/isbns.tsv`) tem prioridade. Também escolhe à mão (`--candidatos`), roda o piloto só de leitura do Internet Archive (`--piloto`) e faz a auditoria (`--auditar`). No GitHub, quem o roda é o serviço "Buscar capas", que abre um PR |
 | `tools/auditar_capas.py` | O retrato das capas e a fila de revisão → `catalogo/capas-revisao.md`. Não precisa de internet (a não ser com `--rede N`) e não mexe no `capas.tsv` |
 | `catalogo/capas-revisao.md` | Auditoria das capas: quantos têm capa por parte da biblioteca, eixo, tipo e origem, e a lista do que merece um olhar, com o motivo (gerado) |
 | `tools/analisar_marcadores.py` | Mede os filtros e a categorização (alcance de cada grupo, marcadores raros e amplos, pastas × eixos…). Só mostra; não grava nada |
@@ -444,8 +445,10 @@ desenho com a inicial do título. Até 11/11/2026 eram 761, todas da primeira fo
      (780 capas). Só é procurada para o que a Open Library não achou. Traz a capa do livro digital em português que
      está à venda: quase sempre a da edição brasileira, às vezes a da edição de Portugal;
   3. o **Google Books**, só para o que as duas primeiras não acharam e só entre livros em português (ainda sem capas
-     daqui: entrou em 12/11/2026 e espera a primeira execução). Como as outras, é uma consulta pública de catálogo —
-     nenhuma loja é raspada, nenhuma imagem é copiada para o repositório.
+     daqui: entrou em 12/11/2026 e espera uma execução em que responda). Como as outras, é uma consulta de catálogo —
+     nenhuma loja é raspada, nenhuma imagem é copiada para o repositório. A chave de API é **opcional e gratuita**:
+     se existir o secret `GOOGLE_BOOKS_API_KEY` no GitHub, ela vai no cabeçalho `X-Goog-Api-Key`, nunca na URL, no
+     painel ou no registro; sem chave, o script continua tentando a consulta pública. ISBNdb e serviços pagos ficam fora.
 
   Nenhuma imagem fica no repositório: `catalogo/capas.tsv` guarda só o número da capa (Open Library) ou o endereço
   da imagem (Apple ou Google), e o navegador busca a imagem em `covers.openlibrary.org`, `is…-ssl.mzstatic.com` ou
@@ -459,6 +462,18 @@ desenho com a inicial do título. Até 11/11/2026 eram 761, todas da primeira fo
   série nunca ficam com a mesma capa. A capa da Apple é a do livro digital à venda hoje: pode não ser a da edição que
   está na sua estante. Na busca de 11/11/2026, 967 livros não foram achados em nenhuma das duas fontes e 83 não foram
   procurados; entre os 245 quadrinhos, só 58 têm capa.
+- **ISBN conferido, opcional.** `catalogo/isbns.tsv` começa só com o cabeçalho `titulo · autor · isbn · fonte`.
+  Para usar, copie o título e o autor exatamente como estão no catálogo, digite o ISBN que você conferiu no exemplar
+  (quarta capa ou página de créditos) e anote a fonte da conferência, por exemplo `exemplar físico`. Nenhum ISBN é
+  inferido de outra edição. Quando a linha casa com o catálogo, Open Library e Google procuram esse número primeiro;
+  a busca por título/autor só entra depois, e a Apple continua sem busca por ISBN. `python tools/capas.py --conferir`
+  valida o arquivo antes de qualquer consulta. Para um livro sem autor certo, o ISBN conferido é o que permite procurar
+  a edição exata com segurança.
+- **Piloto gratuito do Internet Archive, só para olhar.** `python tools/capas.py --piloto 20` mostra até 20 livros
+  sem capa, espalhados pelo catálogo, com candidatos e miniaturas do Internet Archive; `--candidatos "Título" --autor
+  "Autor" --arquivo` faz o mesmo para um livro. Nada é escolhido automaticamente, nada entra no `capas.tsv` e nenhuma
+  imagem é baixada para o repositório: a miniatura pode ser de outra edição ou nem ser a capa. A ideia é medir o ganho
+  numa amostra pequena antes de decidir qualquer expansão. O robô `Buscar capas` não roda esse piloto.
 - **Procurar de novo** (depois de entrarem livros, por exemplo): no GitHub, aba **Actions** → **Buscar capas** →
   **Run workflow**. O serviço procura só o que falta — os livros novos, em todas as fontes, e os que ainda não
   tinham passado por alguma delas. Marcando "refazer", tenta de novo os que não foram achados; desmarcando o Google
@@ -470,7 +485,9 @@ desenho com a inicial do título. Até 11/11/2026 eram 761, todas da primeira fo
   execuções manuais (12/11/2026, [#9](https://github.com/LucasRangel89/biblioteca/actions/runs/43303124412) e
   [#10](https://github.com/LucasRangel89/biblioteca/actions/runs/43305090974)), o botão funcionou, mas o Google Books não
   respondeu: sete consultas falharam em cada uma, 33 livros ficaram para a próxima e nenhuma capa entrou. O catálogo
-  continuou com 1.564 capas. O fluxo foi corrigido para não esconder mais esse caso atrás de um verde.
+  continuou com 1.564 capas. O fluxo foi corrigido para não esconder mais esse caso atrás de um verde. A próxima
+  conferência segura continua sendo uma busca curta em `main`, com **limite 40**, lendo o motivo no resumo antes de
+  repetir ou marcar os 967 como procurados no Google.
 - **O robô não publica nada: ele abre um Pull Request.** Depois de procurar, ele confere o `capas.tsv`, pede 40
   imagens de cada fonte, monta o painel (`tools/atualizar.py`), refaz a auditoria, roda os testes
   (`importador`, `busca_capas`, `auditoria_capas`, `capas_painel`, `site`) e põe tudo num ramo `capas/…`, com um PR
@@ -502,7 +519,8 @@ desenho com a inicial do título. Até 11/11/2026 eram 761, todas da primeira fo
   Assis"` mostra o que cada fonte devolve — título, autor, língua, ISBN, o endereço da imagem, se a busca automática
   aceitaria e, quando não, por quê — com a linha pronta para colar no `capas.tsv`. Com `--isbn 978…` (o número da
   edição que está na sua mão) a procura é pelo ISBN, na Open Library e no Google; `--hq` aplica a regra mais dura dos
-  quadrinhos. Nada é gravado. É também o jeito mais rápido de ver se uma fonte está respondendo.
+  quadrinhos; `--arquivo` acrescenta o piloto do Internet Archive, que não oferece linha para colar no `capas.tsv`.
+  Nada é gravado. É também o jeito mais rápido de ver se uma fonte está respondendo.
 - **Se uma fonte estiver recusando:** `--sem-google` deixa a execução nas duas primeiras; o robô também desiste
   sozinho de uma fonte depois de cinco recusas seguidas, sem estragar o que as outras acharam.
 - **Corrigir uma capa errada:** em `catalogo/capas.tsv`, troque o número da linha (ou ponha o endereço `https://…` de

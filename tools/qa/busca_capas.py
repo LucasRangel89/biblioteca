@@ -170,7 +170,7 @@ google = Google()                                                  # e aqui o Go
 procurar_google_real = C.procurar_google
 buscar_google_real, buscar_apple_real = C.buscar_google, C.buscar_apple
 def usa_google():
-    C.procurar_google = lambda t, a, hq, lim, buscar=None: procurar_google_real(t, a, hq, lim, google)
+    C.procurar_google = lambda t, a, hq, lim, buscar=None, isbn='': procurar_google_real(t, a, hq, lim, google, isbn=isbn)
 usa_google()
 
 def roda(*args):
@@ -423,6 +423,74 @@ confere(C.isbn_limpo(' 978-85-359-0277-8 ') == '9788535902778' and C.isbn_limpo(
 confere(C.isbn_de('edição brasileira, ISBN 978-85-359-0277-8, brochura') == '9788535902778' and C.isbn_de('volume 2, 2019, 320 páginas') == '',
         'acha o ISBN no meio de uma anotação, e não confunde ano com ISBN')
 confere(C.consulta_isbn('978-85-359-0277-8')['q'] == 'isbn:9788535902778' and C.consulta_isbn('123') is None, 'a consulta por ISBN só vai com um ISBN que fecha')
+confere(C.isbn13('0306406152') == '9780306406157' and C.mesmo_isbn('0306406152', '978-0-306-40615-7') and not C.mesmo_isbn('0306406152', '9788535902778'),
+        'ISBN-10 e ISBN-13 da mesma edição casam; edições diferentes não')
+confere(C.consulta_isbn_exata('978-85-359-0277-8') == {'bibkeys': 'ISBN:9788535902778', 'format': 'json', 'jscmd': 'data'} and C.consulta_isbn_exata('123') is None,
+        'a ficha exata da Open Library é pedida pelo ISBN, no formato data')
+
+def ficha_isbn(titulo, autor, isbn='9788535902778', capa=71):
+    endereco = f'https://covers.openlibrary.org/b/id/{capa}-M.jpg' if isinstance(capa, int) else str(capa or '')
+    return {'title': titulo, 'authors': [{'name': autor}] if autor else [], 'identifiers': {'isbn_13': [isbn]},
+            'cover': {'medium': endereco} if endereco else {}}
+class IsbnOL:
+    """Faz o papel da Books API da Open Library: responde pela bibkey pedida e anota a consulta."""
+    def __init__(self, respostas=None): self.respostas, self.feitas = respostas or {}, []
+    def __call__(self, params, limite):
+        k = params['bibkeys']; self.feitas.append(k)
+        r = self.respostas.get(k)
+        if isinstance(r, Exception): raise r
+        return {k: r} if r else {}
+
+confere(C.escolher_isbn('Dom Casmurro', 'Machado de Assis', '9788535902778', ficha_isbn('Dom Casmurro', 'Machado de Assis')) == ('71', C.SERVE),
+        'ISBN, título e autor conferem: a capa da edição exata serve')
+confere(C.escolher_isbn('Dom Casmurro', 'Machado de Assis', '9788535902778', ficha_isbn('Dom Casmurro', 'Machado de Assis', isbn='9780306406157'))[1] == 'o ISBN da ficha não é o desta edição',
+        'a ficha de outro ISBN não serve, mesmo com título e autor iguais')
+confere(C.escolher_isbn('Dom Casmurro', 'Machado de Assis', '9788535902778', ficha_isbn('Outro Livro', 'Machado de Assis'))[1] == 'o título não confere',
+        'o título também tem de conferir')
+confere(C.escolher_isbn('Dom Casmurro', 'Machado de Assis', '9788535902778', ficha_isbn('Dom Casmurro', 'Outra Pessoa'))[1] == 'o autor não confere',
+        'com autor certo no catálogo, o autor da ficha tem de conferir')
+confere(C.escolher_isbn('Dom Casmurro', 'Vários autores', '9788535902778', ficha_isbn('Dom Casmurro', ''))[0] == '71',
+        'sem autor certo, o ISBN conferido à mão mais o título permitem a edição exata')
+confere(C.escolher_isbn('Dom Casmurro', 'Machado de Assis', '9788535902778', ficha_isbn('Dom Casmurro', 'Machado de Assis', capa=None))[1] == 'sem imagem',
+        'ficha sem capa não inventa imagem')
+confere(C.capa_isbn_ol(ficha_isbn('Dom Casmurro', 'Machado de Assis', capa='https://exemplo.org/71-M.jpg')) == '',
+        'endereço que não é o de capas da Open Library não entra')
+iol = IsbnOL({'ISBN:9788535902778': ficha_isbn('Dom Casmurro', 'Machado de Assis')})
+confere(C.procurar_isbn('Dom Casmurro', 'Machado de Assis', '9788535902778', False, None, iol) == ('71', 'edicao') and iol.feitas == ['ISBN:9788535902778'],
+        'procurar_isbn devolve a capa com a origem que o painel já sabe mostrar')
+confere(C.procurar_isbn('Dom Casmurro', 'Machado de Assis', '123', False, None, iol) == ('', 'ISBN inválido') and len(iol.feitas) == 1,
+        'ISBN inválido não consulta a rede')
+
+arq_isbn = tmp / 'isbns.tsv'
+cab_isbn = '\t'.join(C.COLUNAS_ISBN) + '\n'
+arq_isbn.write_text(cab_isbn, encoding='utf-8')
+confere(C.ler_isbns(arq_isbn) == {} and C.ler_isbns(tmp / 'nao-existe.tsv') == {}, 'arquivo de ISBN vazio ou ausente: nenhum ISBN inferido')
+arq_isbn.write_text(cab_isbn + 'Dom Casmurro\tMachado de Assis\t978-85-359-0277-8\texemplar físico, quarta capa\nLivro Antigo\tAutora Tal\t0306406152\texemplar físico\n', encoding='utf-8')
+confere(C.ler_isbns(arq_isbn) == {('dom casmurro', 'machado de assis'): '9788535902778', ('livro antigo', 'autora tal'): '9780306406157'},
+        'ISBN conferido entra limpo e normalizado em 13 dígitos, ligado ao título e autor do catálogo')
+for texto_ruim, trecho in [('titulo\tautor\tisbn\n', 'cabeçalho'),
+                           (cab_isbn + 'Dom Casmurro\tMachado de Assis\t9788535902779\texemplar\n', 'conta de conferência'),
+                           (cab_isbn + 'Dom Casmurro\tMachado de Assis\t9788535902778\t\n', 'fonte'),
+                           (cab_isbn + 'Dom Casmurro\tMachado de Assis\t9788535902778\texemplar\nDom Casmurro\tMachado de Assis\t9788535902778\texemplar\n', 'repetido'),
+                           (cab_isbn + 'Dom Casmurro\tMachado de Assis\t9788535902778\texemplar\textra\n', 'quatro colunas')]:
+    arq_isbn.write_text(texto_ruim, encoding='utf-8')
+    try: C.ler_isbns(arq_isbn); levantou = False
+    except ValueError as e: levantou = trecho in str(e)
+    confere(levantou, f'arquivo de ISBN recusado quando há {trecho} errado')
+arq_isbn.write_text(cab_isbn, encoding='utf-8')
+try:
+    C.urllib.request.urlopen, pedidos_isbn = servidor([429, 503, {'ISBN:9788535902778': ficha_isbn('Dom Casmurro', 'Machado de Assis')}]); esperas.clear()
+    r = C.buscar_isbn(C.consulta_isbn_exata('9788535902778'), SemEspera(), dormir=esperas.append)
+    confere(r['ISBN:9788535902778']['title'] == 'Dom Casmurro' and esperas == [30, 12] and len(pedidos_isbn) == 3,
+            'Books API recusada por excesso ou queda: espera e tenta de novo', (esperas, len(pedidos_isbn)))
+    confere(pedidos_isbn[0].startswith(C.BUSCA_ISBN + '?') and 'bibkeys=ISBN%3A9788535902778' in pedidos_isbn[0] and 'jscmd=data' in pedidos_isbn[0],
+            'o endereço consultado é o da ficha exata da Open Library', pedidos_isbn[0])
+    C.urllib.request.urlopen, pedidos_isbn = servidor([403, {}]); esperas.clear()
+    try: C.buscar_isbn(C.consulta_isbn_exata('9788535902778'), SemEspera(), dormir=esperas.append); levantou = False
+    except urllib.error.HTTPError: levantou = True
+    confere(levantou and len(pedidos_isbn) == 1 and esperas == [], 'recusa 403 da Open Library por ISBN não insiste')
+finally:
+    C.urllib.request.urlopen = abrir_url_real
 
 # ───────── 6d ▸ a terceira fonte: Google Books ─────────
 print('A TERCEIRA FONTE: GOOGLE BOOKS')
@@ -481,6 +549,56 @@ try:
 finally:
     C.urllib.request.urlopen = abrir_url_real
 
+# chave opcional do Google: vai no cabeçalho, nunca na URL nem no motivo do erro
+CHAVE_TESTE = 'AIza' + 'T' * 30
+pedidos_chave = []
+def abre_chave(req, timeout=None):
+    pedidos_chave.append(req)
+    return Resposta(b'{"items":[]}')
+try:
+    C.urllib.request.urlopen = abre_chave
+    C.buscar_google(pg, SemEspera(), chave=CHAVE_TESTE)
+    confere(pedidos_chave[-1].get_header('X-goog-api-key') == CHAVE_TESTE and CHAVE_TESTE not in pedidos_chave[-1].full_url,
+            'a chave do Google vai no cabeçalho X-Goog-Api-Key, nunca na URL')
+    chave_amb = C.os.environ.get('GOOGLE_BOOKS_API_KEY')
+    try:
+        C.os.environ['GOOGLE_BOOKS_API_KEY'] = CHAVE_TESTE
+        C.buscar_google(pg, SemEspera())
+        confere(pedidos_chave[-1].get_header('X-goog-api-key') == CHAVE_TESTE, 'a chave opcional também pode vir de GOOGLE_BOOKS_API_KEY')
+        C.os.environ.pop('GOOGLE_BOOKS_API_KEY', None)
+        C.buscar_google(pg, SemEspera())
+        confere(pedidos_chave[-1].get_header('X-goog-api-key') is None, 'sem chave configurada, a consulta pública continua sem cabeçalho de chave')
+    finally:
+        if chave_amb is None: C.os.environ.pop('GOOGLE_BOOKS_API_KEY', None)
+        else: C.os.environ['GOOGLE_BOOKS_API_KEY'] = chave_amb
+    corpo_erro = json.dumps({'error': {'message': f'API key not valid: {CHAVE_TESTE}', 'status': 'PERMISSION_DENIED'}}).encode('utf-8')
+    def abre_erro_chave(req, timeout=None):
+        pedidos_chave.append(req)
+        raise urllib.error.HTTPError(req.full_url, 403, 'Forbidden', {}, io.BytesIO(corpo_erro))
+    C.urllib.request.urlopen = abre_erro_chave
+    try: C.buscar_google(pg, SemEspera(), chave=CHAVE_TESTE); msg_erro = ''
+    except urllib.error.HTTPError as e: msg_erro = str(e)
+    confere('API key not valid' in msg_erro and 'PERMISSION_DENIED' in msg_erro and CHAVE_TESTE not in msg_erro and CHAVE_TESTE not in pedidos_chave[-1].full_url,
+            'o motivo da recusa aparece no erro, mas a chave é ocultada', msg_erro)
+finally:
+    C.urllib.request.urlopen = abrir_url_real
+confere(CHAVE_TESTE not in C.ocultar_chave(f'?key={CHAVE_TESTE}&x=1 key={CHAVE_TESTE} {CHAVE_TESTE}', CHAVE_TESTE),
+        'chave em URL, texto solto ou formato do Google não vaza no resumo')
+
+# ISBN conferido: o Google procura o número primeiro e só depois título/autor
+gi = Google({pg['q']: [gb('Sapiens', 'Yuval Noah Harari', 18, ids='9788535902778')]})
+confere(procurar_google_real('Sapiens', 'Yuval Noah Harari', False, None, gi, isbn='9788535902778') == (NO_PAINEL_G(18), 'google') and gi.feitas == ['isbn:9788535902778', pg['q']],
+        'ISBN exato sem capa que sirva: tenta título/autor depois, sem aceitar outro ISBN no lugar do conferido', gi.feitas)
+gi = Google({'isbn:9788535902778': [gb('Sapiens', 'Yuval Noah Harari', 19, ids='9788535902778')]})
+confere(procurar_google_real('Sapiens', 'Yuval Noah Harari', False, None, gi, isbn='9788535902778') == (NO_PAINEL_G(19), 'google') and gi.feitas == ['isbn:9788535902778'],
+        'ISBN exato achado: uma consulta só')
+confere(procurar_google_real('Sapiens', 'Vários autores', False, None, gi, isbn='9788535902778') == (NO_PAINEL_G(19), 'google'),
+        'sem autor certo, o ISBN conferido ainda permite a edição exata no Google')
+gi = Google({'isbn:9788535902778': OSError('caiu'), pg['q']: [gb('Sapiens', 'Yuval Noah Harari', 20)]})
+try: procurar_google_real('Sapiens', 'Yuval Noah Harari', False, None, gi, isbn='9788535902778'); levantou = False
+except OSError: levantou = True
+confere(levantou and gi.feitas == ['isbn:9788535902778'], 'erro de rede no ISBN não vira "não achei" nem dispara busca por título', gi.feitas)
+
 # o Google dentro do fluxo: entra depois das outras duas, e uma recusa não estraga o que já foi achado
 print('O GOOGLE DENTRO DO FLUXO')
 catalogo_de([('Livro Só do Google', 'Autora Sete'), ('Livro de Lugar Nenhum', 'Autora Três'), ('Já Nas Duas', 'Autora Oito')])
@@ -504,11 +622,63 @@ class GoogleFora:
 antigos_g = [(f'Antigo {n}', f'Autora Velha{n}') for n in range(12)]
 catalogo_de(antigos_g)
 tsv.write_text('titulo\tautor\tcapa\torigem\n' + ''.join(f'{t}\t{a}\t\tnao-achei-2\n' for t, a in antigos_g), encoding='utf-8')
-C.procurar_google = lambda t, a, hq, lim, buscar=None: procurar_google_real(t, a, hq, lim, GoogleFora())
+C.procurar_google = lambda t, a, hq, lim, buscar=None, isbn='': procurar_google_real(t, a, hq, lim, GoogleFora(), isbn=isbn)
 codigo, saida = roda('--pausa-google', '0'); L = linhas_do_tsv()
 confere(codigo == 1 and 'O Google Books não respondeu a 5 consultas seguidas' in saida and 5 <= GoogleFora.feitas <= 7, 'o Google não responde: para depois de 5 falhas seguidas e a execução termina com erro', (codigo, GoogleFora.feitas))
 confere(all(L.get(t) == ['', 'nao-achei-2'] for t, _ in antigos_g) and 'ficaram para a próxima execução (o Google Books não respondeu)' in saida,
         'e nenhum livro é dado como procurado nas três: continuam "nao-achei-2", para a próxima execução', saida.strip().splitlines()[-1:])
+usa_google()
+C.procurar, C.procurar_apple = procurar_real, procurar_apple_real
+
+# ISBN conferido dentro do fluxo: edição exata primeiro, inclusive para quem não tem autor certo
+print('O ISBN CONFERIDO DENTRO DO FLUXO')
+catalogo_de([('Com ISBN e Autor', 'Autora Dez'), ('Com ISBN Sem Autor', 'Vários autores'), ('Sem ISBN Sem Autor', 'Vários autores'), ('Manual com ISBN', 'Autora Onze')])
+tsv.write_text('titulo\tautor\tcapa\torigem\nCom ISBN e Autor\tAutora Dez\t\tnao-achei-2\nCom ISBN Sem Autor\tVários autores\t\tsem-autor\nSem ISBN Sem Autor\tVários autores\t\tsem-autor\nManual com ISBN\tAutora Onze\thttps://exemplo.org/manual.jpg\tmanual\n', encoding='utf-8')
+arq_isbn.write_text(cab_isbn + 'Com ISBN e Autor\tAutora Dez\t9788535902778\texemplar físico\nCom ISBN Sem Autor\tVários autores\t9780306406157\texemplar físico\nManual com ISBN\tAutora Onze\t9780804429573\texemplar físico\n', encoding='utf-8')
+C.ISBNS = arq_isbn
+iol = IsbnOL({'ISBN:9788535902778': ficha_isbn('Com ISBN e Autor', 'Autora Dez', capa=81)})
+procurar_isbn_real = C.procurar_isbn
+C.procurar_isbn = lambda t, a, isbn, hq, lim, buscar=None: procurar_isbn_real(t, a, isbn, hq, lim, iol)
+rede = Rede({}); apple = Apple(); google = Google({'isbn:9780306406157': [gb('Com ISBN Sem Autor', 'Autora Real', 92, ids='9780306406157')]})
+C.procurar = lambda t, a, hq, lim, buscar=None: procurar_real(t, a, hq, lim, rede)
+C.procurar_apple = lambda t, a, hq, lim, buscar=None: procurar_apple_real(t, a, hq, lim, apple)
+usa_google()
+codigo, saida = roda('--pausa-google', '0', '--pausa-isbn', '0'); L = linhas_do_tsv()
+confere(codigo == 0 and L.get('Com ISBN e Autor') == ['81', 'edicao'] and L.get('Com ISBN Sem Autor') == [NO_PAINEL_G(92), 'google'],
+        'ISBN conferido: Open Library acha a edição exata; sem autor certo, o Google ainda pode achar pelo número', (codigo, L))
+confere(L.get('Sem ISBN Sem Autor') == ['', 'sem-autor'] and L.get('Manual com ISBN') == ['https://exemplo.org/manual.jpg', 'manual'],
+        'sem ISBN continua sem busca por título; capa manual com ISBN não é tocada')
+confere(rede.feitas == [] and apple.feitas == [] and sorted(iol.feitas) == ['ISBN:9780306406157', 'ISBN:9788535902778'] and google.feitas == ['isbn:9780306406157'],
+        'só as consultas exatas por ISBN foram feitas; nenhuma busca ampla por título/autor', (rede.feitas, apple.feitas, iol.feitas, google.feitas))
+confere('1 com ISBN conferido: edição exata' in saida, 'a contagem mostra quem entrou pelo ISBN conferido', saida.strip())
+codigo, saida = roda('--pausa-google', '0', '--pausa-isbn', '0')
+confere('0 a procurar' in saida and sorted(iol.feitas) == ['ISBN:9780306406157', 'ISBN:9788535902778'], 'segunda execução: quem já achou pelo ISBN não é procurado de novo', saida.strip())
+def isbn_fake(n):
+    base = f'978{n:09d}'
+    return base + str((-sum((1 if i % 2 == 0 else 3) * int(d) for i, d in enumerate(base))) % 10)
+catalogo_de([(f'Fora ISBN {n}', 'Vários autores') for n in range(12)])
+tsv.write_text('titulo\tautor\tcapa\torigem\n' + ''.join(f'Fora ISBN {n}\tVários autores\t\tsem-autor\n' for n in range(12)), encoding='utf-8')
+arq_isbn.write_text(cab_isbn + ''.join(f'Fora ISBN {n}\tVários autores\t{isbn_fake(n)}\texemplar\n' for n in range(12)), encoding='utf-8')
+falhas_isbn = []
+def isbn_fora(*a, **k): falhas_isbn.append(1); raise OSError('caiu')
+C.procurar_isbn = isbn_fora
+codigo, saida = roda('--pausa-isbn', '0')
+confere(codigo == 1 and 5 <= len(falhas_isbn) <= 7 and 'A Open Library por ISBN não respondeu a 5 consultas seguidas' in saida,
+        'Open Library por ISBN fora do ar: para depois de cinco falhas seguidas e sinaliza erro', (codigo, len(falhas_isbn)))
+confere('ficaram para a próxima execução (a Open Library por ISBN não respondeu)' in saida and all(l.split('\t')[2:] == ['', 'sem-autor'] for l in tsv.read_text(encoding='utf-8').splitlines()[1:]),
+        'ninguém é marcado como procurado quando a consulta por ISBN falhou', saida.strip().splitlines()[-1:])
+C.procurar_isbn = procurar_isbn_real
+antes_isbn = tsv.read_text(encoding='utf-8')
+arq_isbn.write_text(cab_isbn + 'Com ISBN e Autor\tAutora Dez\t9788535902779\texemplar\n', encoding='utf-8')
+codigo, saida = roda('--conferir')
+confere(codigo == 2 and 'conta de conferência' in saida and tsv.read_text(encoding='utf-8') == antes_isbn,
+        'ISBN inválido no arquivo manual: a execução para antes de consultar ou gravar', saida.strip())
+arq_isbn.write_text(cab_isbn + 'Livro Que Não Está no Catálogo\tAutora Tal\t9788535902778\texemplar\n', encoding='utf-8')
+codigo, saida = roda('--conferir')
+confere(codigo == 2 and 'não casam com o catálogo' in saida and tsv.read_text(encoding='utf-8') == antes_isbn,
+        'ISBN de livro que não casa com o catálogo é recusado, não fica esquecido em silêncio')
+C.ISBNS = C.RAIZ / 'catalogo' / 'isbns.tsv'
+C.procurar_isbn = procurar_isbn_real
 usa_google()
 C.procurar, C.procurar_apple = procurar_real, procurar_apple_real
 
@@ -548,11 +718,20 @@ cand = C.candidatos('Sapiens', 'Yuval Noah Harari', ol=Rede({'title:"Sapiens" au
                     limites={'ol': SemEspera(), 'apple': SemEspera(), 'google': SemEspera()})
 confere(not any(c['serve'] for c in cand) and [c['motivo'] for c in cand] == ['o autor não confere', 'livro em outra língua', 'caixa, resumo ou guia'],
         'e diz por que cada um não serviria', [c['motivo'] for c in cand])
+iol_c = IsbnOL({'ISBN:9788535902778': ficha_isbn('Dom Casmurro', 'Machado de Assis', capa=70)})
+ol_amplo = Rede({})
+cand = C.candidatos('Dom Casmurro', 'Machado de Assis', isbn='9788535902778', ol=ol_amplo, ol_isbn=iol_c,
+                    apple=Apple({}), google=Google({'isbn:9788535902778': [gb('Dom Casmurro', 'Machado de Assis', 71, ids='9788535902778')]}),
+                    limites={'ol': SemEspera(), 'isbn': SemEspera(), 'apple': SemEspera(), 'google': SemEspera()})
+confere([c['fonte'] for c in cand] == ['Open Library (ISBN)', 'Google Books'] and all(c['serve'] for c in cand) and ol_amplo.feitas == [],
+        'com ISBN: a ficha exata da Open Library e o Google vêm primeiro; a Apple não é consultada e a busca ampla nem acontece se o ISBN já resolveu', cand)
 cand = C.candidatos('Dom Casmurro', 'Machado de Assis', isbn='9788535902778',
                     ol=Rede({'isbn:9788535902778': [doc('Dom Casmurro', 'Machado de Assis', 70, ('Dom Casmurro', 70, 'por'))]}),
-                    apple=Apple({}), google=Google({'isbn:9788535902778': [gb('Dom Casmurro', 'Machado de Assis', 71)]}),
-                    limites={'ol': SemEspera(), 'apple': SemEspera(), 'google': SemEspera()})
-confere([c['fonte'] for c in cand] == ['Open Library', 'Google Books'] and all(c['serve'] for c in cand), 'com ISBN: procura pelo número na Open Library e no Google, e não consulta a Apple (a busca dela não tem ISBN)', cand)
+                    ol_isbn=IsbnOL({'ISBN:9788535902778': ficha_isbn('Dom Casmurro', 'Machado de Assis', capa=None)}),
+                    apple=Apple({}), google=Google({'isbn:9788535902778': [gb('Dom Casmurro', 'Machado de Assis', 71, ids='9788535902778')]}),
+                    limites={'ol': SemEspera(), 'isbn': SemEspera(), 'apple': SemEspera(), 'google': SemEspera()})
+confere([c['fonte'] for c in cand[:2]] == ['Open Library (ISBN)', 'Open Library'] and not cand[0]['serve'] and cand[1]['serve'],
+        'ficha exata sem capa: mostra o motivo e só então deixa a busca por palavras aparecer como alternativa', cand)
 cand = C.candidatos('Sapiens', 'Yuval Noah Harari', ol=Rede({'title:"Sapiens" author:harari': OSError('caiu')}), apple=Apple({}), google=Google({}),
                     limites={'ol': SemEspera(), 'apple': SemEspera(), 'google': SemEspera()})
 confere(any(c['fonte'] == 'Open Library' and 'OSError' in c['motivo'] for c in cand) and any(c['fonte'] == 'Apple Books' for c in cand), 'uma fonte que falha não derruba as outras: o erro aparece no lugar dela', cand)
@@ -568,6 +747,72 @@ codigo, saida = roda('--candidatos', 'Dom Casmurro', '--isbn', '123')
 confere(codigo == 2 and 'não fecha na conta' in saida, '--isbn torto é recusado antes de qualquer consulta', saida.strip())
 codigo, saida = roda('--candidatos')
 confere(codigo == 2 and 'Candidatos' not in saida, '--candidatos sem título nem ISBN: mostra a ajuda', codigo)
+
+# ───────── 6f ▸ Internet Archive: piloto gratuito, só de leitura ─────────
+print('INTERNET ARCHIVE: PILOTO SÓ DE LEITURA')
+def ia_doc(ident, titulo, autor, isbn='', lingua='por', mediatype='texts'):
+    return {'identifier': ident, 'title': titulo, 'creator': autor, 'isbn': isbn, 'language': lingua, 'mediatype': mediatype}
+class Arquivo:
+    """Faz o papel do advancedsearch.php: responde pelo q consultado e anota a consulta."""
+    def __init__(self, respostas=None): self.respostas, self.feitas = respostas or {}, []
+    def __call__(self, params, limite):
+        q = params['q']; self.feitas.append(q)
+        r = self.respostas.get(q)
+        if isinstance(r, Exception): raise r
+        return {'response': {'docs': r or []}}
+pa_ia = C.consulta_arquivo('Sapiens: Uma Breve História', 'Yuval Noah Harari')
+confere(pa_ia['q'] == 'title:"Sapiens" AND creator:"harari" AND mediatype:texts' and pa_ia['output'] == 'json' and pa_ia['rows'] == '8',
+        'a consulta do piloto é pública, por título/autor, só entre textos', pa_ia)
+confere(C.consulta_arquivo('Dom Casmurro', 'Machado de Assis', '9788535902778')['q'] == 'isbn:9788535902778 AND mediatype:texts'
+        and C.consulta_arquivo('Um Livro', 'Vários autores') is None,
+        'com ISBN conferido, procura o número; sem autor nem ISBN, não consulta')
+docs_ia = [ia_doc('domcasmurro00mach', 'Dom Casmurro', 'Machado de Assis', '9788535902778'),
+           ia_doc('../ruim', 'Dom Casmurro', 'Machado de Assis'), ia_doc('filme00mach', 'Dom Casmurro', 'Machado de Assis', mediatype='movies'),
+           ia_doc('outro00mach', 'Outro Livro', 'Machado de Assis', '9780306406157')]
+cands_ia = C.candidatos_arquivo('Dom Casmurro', 'Machado de Assis', '9788535902778', docs_ia)
+confere([c['capa'] for c in cands_ia] == [C.ARQUIVO_IMAGEM + 'domcasmurro00mach', C.ARQUIVO_IMAGEM + 'outro00mach'] and not any(c['serve'] for c in cands_ia),
+        'identificador torto e item que não é texto ficam fora; nenhum candidato do piloto serve ao casamento automático', cands_ia)
+confere('o título não confere' in cands_ia[1]['motivo'] and 'o ISBN não confere' in cands_ia[1]['motivo'] and 'confira edição e capa' in cands_ia[0]['motivo'],
+        'o piloto avisa o que não confere e lembra que a miniatura pode ser de outra edição')
+confere(C.documentos_arquivo(None) == [] and C.documentos_arquivo({'response': []}) == [] and C.documentos_arquivo({'response': {'docs': 'torto'}}) == [],
+        'resposta torta do Internet Archive não derruba o piloto')
+tela_ia = C.texto_candidatos('Dom Casmurro', 'Machado de Assis', cands_ia)
+confere('não entra no capas.tsv' in tela_ia and 'cole no capas.tsv' not in tela_ia and '0 aceitos' in tela_ia,
+        'a tela do piloto não oferece linha para colar no capas.tsv', tela_ia[:200])
+ia = Arquivo({pa_ia['q']: [ia_doc('sapiens00hara', 'Sapiens', 'Yuval Noah Harari')]})
+cand = C.candidatos('Sapiens', 'Yuval Noah Harari', ol=Rede({}), apple=Apple({}), google=Google({}), arquivo=True, ia=ia,
+                    limites={'ol': SemEspera(), 'apple': SemEspera(), 'google': SemEspera(), 'arquivo': SemEspera()})
+confere(any(c['fonte'] == 'Internet Archive (piloto)' and not c['serve'] for c in cand) and ia.feitas == [pa_ia['q']],
+        '--arquivo acrescenta o piloto à lista de candidatos, sem marcar nenhum como aceito')
+
+catalogo_de([(f'Piloto {n}', f'Autora Piloto{n}') for n in range(1, 6)])
+tsv.write_text('titulo\tautor\tcapa\torigem\nPiloto 1\tAutora Piloto1\t123\tedicao\n', encoding='utf-8')
+arq_isbn.write_text(cab_isbn, encoding='utf-8'); C.ISBNS = arq_isbn
+antes_piloto, antes_isbns = tsv.read_bytes(), arq_isbn.read_bytes()
+respostas_ia = {C.consulta_arquivo(f'Piloto {n}', f'Autora Piloto{n}')['q']: [ia_doc(f'piloto{n}', f'Piloto {n}', f'Autora Piloto{n}')] for n in (2, 4)}
+ia = Arquivo(respostas_ia)
+buscar_arquivo_real = C.buscar_arquivo
+C.buscar_arquivo = ia
+procurar_real_antes, procurar_apple_antes, procurar_google_antes = C.procurar, C.procurar_apple, C.procurar_google
+C.procurar = C.procurar_apple = C.procurar_google = lambda *a, **k: (_ for _ in ()).throw(AssertionError('o piloto não pode consultar as outras fontes'))
+codigo, saida = roda('--piloto', '2', '--pausa-arquivo', '0', '--arrumar')
+confere(codigo == 0 and ia.feitas == [C.consulta_arquivo('Piloto 2', 'Autora Piloto2')['q'], C.consulta_arquivo('Piloto 4', 'Autora Piloto4')['q']],
+        '--piloto 2: amostra espalhada entre os livros sem capa, sem consultar quem já tem capa', ia.feitas)
+confere('2 consultados · 2 com candidatos para revisar' in saida and 'Nada foi gravado' in saida and tsv.read_bytes() == antes_piloto and arq_isbn.read_bytes() == antes_isbns,
+        'o piloto mostra o retrato da amostra e não grava nada, nem com --arrumar junto', saida.strip().splitlines()[-2:])
+for n in ('abc', '0', '101'):
+    codigo, saida = roda('--piloto', n)
+    confere(codigo == 2 and 'entre 1 e 100' in saida and tsv.read_bytes() == antes_piloto, f'--piloto {n} é recusado antes de consultar')
+C.procurar, C.procurar_apple, C.procurar_google = procurar_real_antes, procurar_apple_antes, procurar_google_antes
+C.buscar_arquivo = buscar_arquivo_real
+catalogo_de([(f'Piloto Fora {n}', f'Autora Fora{n}') for n in range(10)])
+livros_p = parse(cat.read_text(encoding='utf-8'))
+ia_fora = Arquivo({C.consulta_arquivo(f'Piloto Fora {n}', f'Autora Fora{n}')['q']: OSError('caiu') for n in range(10)})
+s = io.StringIO()
+with contextlib.redirect_stdout(s): codigo_p = C.piloto_arquivo(livros_p, {}, quantos=10, pausa=0, buscar=ia_fora)
+confere(codigo_p == 1 and len(ia_fora.feitas) == 5 and '5 ficaram sem consultar' in s.getvalue() and 'Nada foi gravado' in s.getvalue(),
+        'fonte fora no piloto: para depois de cinco falhas, sinaliza erro e não grava', (codigo_p, len(ia_fora.feitas)))
+C.ISBNS = C.RAIZ / 'catalogo' / 'isbns.tsv'
 
 # ───────── 7 ▸ a amostra: as capas guardadas abrem? ─────────
 print('A AMOSTRA DAS CAPAS (--testar)')

@@ -88,6 +88,15 @@ confere('if [ "$MUDOU" = sim ]; then' in final and all(x in final for x in ('COD
         'quando há mudança, amostra, auditoria e testes também são conferidos no fim')
 confere(not re.search(r'^    env:\n(?:      [^\n]*\n)*?      BIBLIOTECA_QA_TMP:.*runner\.', txt, flags=re.M),
         'runner.temp não aparece no env do job: esse contexto só existe dentro dos passos; no job, o GitHub rejeita o arquivo inteiro')
+confere('GOOGLE_BOOKS_API_KEY: ${{ secrets.GOOGLE_BOOKS_API_KEY }}' in busca,
+        'a chave opcional do Google vem de um secret, só no passo da busca')
+confere(not re.search(r'^    env:\n(?:      [^\n]*\n)*?      GOOGLE_BOOKS_API_KEY:', txt, flags=re.M)
+        and not re.search(r'echo[^\n]*GOOGLE_BOOKS_API_KEY', txt),
+        'a chave não fica no env do job nem é impressa pelo fluxo')
+confere('X-Goog-Api-Key' in C.__doc__ and 'GOOGLE_BOOKS_API_KEY' in C.__doc__,
+        'o script documenta que a chave vai no cabeçalho, nunca na URL')
+confere('--piloto' not in sem_comentarios and '--arquivo' not in sem_comentarios,
+        'o piloto do Internet Archive não entra no robô automático: continua só de leitura, fora deste fluxo')
 pr = corpo['Abrir o Pull Request']
 confere('if [ "$CODIGO_TESTES" != 0 ] || [ "$CODIGO_BUSCA" != 0 ] || [ "$CODIGO_AMOSTRA" != 0 ] || [ "$CODIGO_AUDITORIA" != 0 ]; then' in pr
         and "rascunho='--draft'" in pr, 'fonte ou teste falhando: o PR nasce como rascunho, para ninguém aprovar por engano')
@@ -107,7 +116,7 @@ print('OS COMANDOS CITADOS EXISTEM')
 for nome in ('capas.py', 'auditar_capas.py', 'atualizar.py', 'qa/tudo.py'):
     confere((RAIZ / 'tools' / nome).exists(), f'tools/{nome} existe')
 ajuda = C.__doc__
-for opcao in ('--minutos', '--refazer', '--sem-google', '--limite', '--conferir', '--testar', '--auditar', '--candidatos'):
+for opcao in ('--minutos', '--refazer', '--sem-google', '--limite', '--conferir', '--testar', '--auditar', '--candidatos', '--isbn', '--arquivo', '--piloto'):
     confere(opcao in ajuda, f'o capas.py documenta {opcao}')
 import auditar_capas as A
 for opcao in ('--conferir', '--rede', '--resumo'):
