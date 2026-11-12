@@ -83,10 +83,11 @@ do autor e do tipo de obra — nenhum arquivo foi aberto.
 | `biblioteca-virtual/RESUMO.md` | Relatório da última importação: o que entrou, o que falta conferir e o que ficou de fora (gerado) |
 | `biblioteca-virtual/Biblioteca virtual.md` | A listagem original, como foi enviada (só para consulta; os acentos estão corrompidos) |
 | `src/` | Fontes do painel: `index.html`, `styles.css`, `js/00-util.js` … `70-app.js`; `catalog.json`, `capas.json`, `trilhas.json`, `antes.json` e `sinopses.json` (gerados) |
+| `src/letras/` | As letras dos temas (três fontes livres, em WOFF2), com a licença de cada uma e um `LEIAME.md`. Vão dentro do painel (ver "Os temas") |
 | `tools/atualizar.py` | Faz tudo de uma vez: importa a biblioteca virtual, converte o catálogo e monta o painel |
 | `tools/importar_digital.py` | Listagens + inventário → Catálogo Mestre (seção 17 e `#tenho-digital`) e `RESUMO.md` |
 | `tools/build_catalog.py` | Catálogo Mestre + inventário → `src/catalog.json`; `catalogo/capas.tsv` → `src/capas.json`; `catalogo/trilhas.md` → `src/trilhas.json`; `catalogo/antes-da-vistoria.tsv` → `src/antes.json`; `catalogo/sinopses.tsv` → `src/sinopses.json` (usa `parse_catalog.py`, `eixos.py` e `capas.py`). O que não bate sai como `AVISO:` |
-| `tools/build.py` | `src/` → `Biblioteca_Lucas_Dashboard.html`; confere que não sobrou referência externa |
+| `tools/build.py` | `src/` → `Biblioteca_Lucas_Dashboard.html`, com os dados e as letras dos temas (`src/letras`) dentro; confere que não sobrou referência externa |
 | `tools/capas.py` | Busca das capas na Open Library e, para o que ela não tem, na Apple Books → `catalogo/capas.tsv`. É o único script que precisa de internet; no GitHub, quem o roda é o serviço "Buscar capas" |
 | `tools/analisar_marcadores.py` | Mede os filtros e a categorização (alcance de cada grupo, marcadores raros e amplos, pastas × eixos…). Só mostra; não grava nada |
 | `tools/qa/` | Testes automatizados |
@@ -291,6 +292,11 @@ Seis guias: **Visão geral**, **Biblioteca**, **Recomendações**, **Finanças**
   que trata, sem contar o final. Só aparece nos livros já pesquisados (`catalogo/sinopses.tsv`; ver "Sinopses"); nos
   outros, a ficha fica como sempre foi, sem espaço vazio. A sinopse vem do catálogo: não é gravada com os seus dados
   nem vai para o backup, e muda sozinha quando o arquivo é corrigido.
+- **Temas.** O botão da paleta, no alto, abre o quadro **Aparência**, com uma amostra de cada tema: o padrão —
+  **Claro** e **Escuro** — e três temas de obras: **Lovecraft** (escuro), **Sherlock Holmes** e **Moby Dick**
+  (claros). Um tema troca as cores, a letra dos títulos e da sinopse e, no máximo, um ornamento; as telas, os botões
+  e os números ficam onde estão. A página muda na hora, com o quadro aberto, para comparar. A escolha fica guardada
+  no navegador; sem escolha, vale o claro ou o escuro do sistema. Detalhes em "Os temas".
 - **Dinheiro tem lugar próprio.** Visão geral, Biblioteca e Recomendações não mostram valores. **Finanças** reúne o
   que foi investido, o preço médio pago, os gastos por período e por loja e a tabela das compras registradas;
   Próximas aquisições e Preços continuam com a lista de compra e as cotações.
@@ -461,6 +467,33 @@ desenho com a inicial do título. Até 11/11/2026 eram 761, todas da primeira fo
 - **Ou envie a capa pelo painel:** na ficha do livro, "Suas anotações" → "Enviar capa…". Essa imagem fica guardada no
   seu navegador (e no backup), vale só para você e aparece mesmo com as capas desligadas — não é pedida à internet.
 
+### Os temas
+
+| Tema | Clima | Cores | Letra dos títulos | Ornamento |
+| --- | --- | --- | --- | --- |
+| Claro, Escuro | um de cada | o padrão de sempre | a serifada do sistema (Palatino e parentes) | nenhum |
+| Lovecraft | escuro | verde-abissal, osso e violeta | IM Fell English, de livro antigo | um céu de poucas estrelas atrás da página |
+| Sherlock Holmes | claro | papel de jornal, tinta, vinho e latão | Libre Baskerville | o fio duplo dos jornais, sob o título da página |
+| Moby Dick | claro | névoa do mar, azul-profundo e cobre | Old Standard, dos livros do século XIX | uma linha de ondas, no mesmo lugar |
+
+- **Como é feito.** Todo o painel é pintado com variáveis (`--bg`, `--ink`, `--accent`…). Um tema é um bloco dessas
+  variáveis em `src/styles.css`, sob `[data-tema="id"]`, mais uma linha em `TEMAS` (`src/js/30-state.js`: nome, frase,
+  clima e a cor do fundo) e o id na lista do começo de `src/index.html`, que aplica o tema guardado **antes** de a
+  página aparecer — sem piscar no tema errado. Os três lugares têm de dizer o mesmo; o teste `temas` confere.
+- **A letra** só troca nos títulos e na sinopse (`--serif`, com o peso e a escala em `--tit-peso` e `--tit-esc`). O
+  texto corrido, os botões e os números continuam na letra de sempre: as larguras medidas pelos testes não mudam.
+- **As letras vão dentro do painel.** São três fontes livres (SIL Open Font License), guardadas em `src/letras` com
+  as licenças; `tools/build.py` as embute. O tema fica igual em qualquer aparelho e nada é buscado na internet. Custo:
+  uns 200 KB a mais no arquivo. Só o alfabeto latino foi incluído; um sinal que a letra não tenha sai na letra
+  seguinte da lista, que é do sistema.
+- **Contraste.** Todo tema passa pelo mesmo teste do padrão: texto com contraste AA (4,5) em todas as telas, fichas e
+  caixas (`a11y`), e par a par nas variáveis (`temas`). Tema que não passa não entra.
+- **No papel.** A folha das listas ("Imprimir") é sempre preta no branco, na letra do padrão. Imprimir a página
+  inteira num tema escuro usa o padrão claro, para não sair letra clara em papel branco.
+- **Para criar outro tema:** copie um dos blocos em `src/styles.css`, troque as cores e, se quiser, a letra (ver
+  `src/letras/LEIAME.md`); acrescente a linha em `TEMAS` e o id em `src/index.html`; rode `python tools/build.py` e
+  `python tools/qa/tudo.py temas a11y`. Os que estão combinados, e a ordem, estão no `ROTEIRO.md` (etapa 10, parte 4).
+
 ### O site
 
 O painel está publicado em <https://lucasrangel89.github.io/biblioteca/> (GitHub Pages). É o mesmo arquivo, sem nada a
@@ -494,7 +527,7 @@ anexos) · `60-drawer` (gaveta do livro, formulários, cotações, importação)
 python tools/qa/tudo.py importador busca_capas   # os dois que não precisam de navegador
 pip install playwright pillow
 python -m playwright install chromium   # no Linux, se faltarem bibliotecas: python -m playwright install-deps chromium
-python tools/qa/tudo.py                 # tudo, ~30 min; termina com "TUDO CERTO"
+python tools/qa/tudo.py                 # tudo, ~35 min; termina com "TUDO CERTO"
 python tools/qa/tudo.py posse func6     # só alguns
 ```
 
@@ -528,6 +561,7 @@ avisa no fim, em vez de dar o teste por completo. `git fetch --unshallow` traz o
 | `filtros` | Os filtros por marcador, com o que se espera contado direto de `src/catalog.json`: os treze grupos, cada marcador num só, e as dez portas da psicologia; o número de cada botão contra o catálogo, na Visão geral, na Biblioteca e nas Recomendações; o botão apagado (cor e contorno, não transparência) que continua clicável; a soma dentro do grupo e o cruzamento entre grupos, com "ou" e "e" nos filtros ativos; a chave "qualquer um / todos", guardada e mantida ao recarregar; o quadro "Temas e camadas" (as barras não somem; a barra ligada sem livros fica, com zero); a busca de marcador pelo nome completo e pela explicação; **o número do botão contra a lista**, em seis guias com os dados de exemplo — 119 botões clicados, também com um período escolhido; preferências guardadas pelo painel anterior ou estragadas; a chave na folha de filtros do celular; contraste AA do que é novo, nos dois temas |
 | `ocultar` | "Ocultar", com o que se espera contado direto de `src/catalog.json` e `src/trilhas.json`: o número de cada opção (3 situações, 4 tipos, 16 eixos e o marcador achado pela busca); o livro oculto fora das tabelas, das abas, dos números dos filtros, da fila, da ordem de compra e das trilhas; o aviso sob a barra, o rodapé, a busca do topo e a ficha; a lista vazia que explica; guardado e resistente à recarga, nas seis guias; "já li" some das listas e continua nos números e gráficos de leitura; regras juntas escondem a união; "mostrar todos", "Limpar tudo" (não mexe) e "Recomeçar" (desfaz); a barra numa linha só em 1366 px e o quadro dentro da janela; o celular; o que veio guardado errado; contraste AA nos dois temas |
 | `sinopses` | A sinopse na ficha. Sem navegador: `catalogo/sinopses.tsv` inteiro (cabeçalho, cinco campos, cada linha achada no catálogo, sem repetição); cada sinopse como combinado (duas ou três frases, 140 a 400 caracteres, fonte e data; as duas amostras aprovadas, idênticas); pendência sem sinopse, com o motivo e listada no `ROTEIRO.md`; o lote 1 completo (estante e `#top`); o leitor do arquivo avisando de cada erro; `src/sinopses.json` e o painel em dia. Na ficha: a seção no alto, com o texto idêntico ao do arquivo; nada no lugar em livro sem sinopse; a sinopse continua depois de mexer no livro e recarregar, e não é gravada com os dados; contraste nos dois temas e largura no celular |
+| `temas` | Os temas visuais. Sem navegador: os três lugares que listam os temas dizem o mesmo e todo tema define as mesmas variáveis do padrão; contraste AA par a par nas variáveis de cada tema; as letras no painel, idênticas aos arquivos de `src/letras`, cada uma com a licença, e nada buscado fora. No navegador: sem escolha, o padrão do sistema, igual ao que era; o quadro "Aparência" com uma amostra fiel de cada tema; escolher troca cores, letra dos títulos (com a fonte de fato carregada) e a cor da barra do navegador; a escolha fica guardada e vale antes de a página aparecer; teclado (setas, Esc, Tab), clique fora e um quadro aberto por vez; o ornamento de cada tema; nas seis telas e na ficha, no computador e no celular, nada estoura a largura; a folha de impressão não muda com o tema; tema guardado que não existe; pré-visualização isolada |
 | `listas` | "Imprimir" e "Copiar", nas tabelas e nas trilhas: os três botões nas seis tabelas; a folha com as mesmas linhas da tabela (todas as páginas), na mesma ordem, e o cabeçalho com lista, aba, quantidade, ordem, filtros, busca e data; no papel (mídia de impressão emulada) só a folha aparece, preta no branco nos dois temas, com o cabeçalho da tabela repetido e sem linha cortada; **PDF de verdade** gerado pelo navegador: o número de páginas confere com o que o painel estimou, também com a página travada por uma caixa aberta; a página volta ao normal depois (com e sem o aviso do navegador); lista longa pergunta antes; lista vazia só avisa; quadradinho marcado nos lidos e estrela nas prioridades, desenhados; valores só com o olho aberto; ocultos fora, com a nota; a área de transferência recebe o texto esperado, e os dois caminhos de reserva; a folha e o texto de uma trilha; o celular; a pré-visualização isolada (sem imprimir e sem erro) |
 | `vistoria` | O catálogo revisto no painel (todo livro com tipo, eixo, dificuldade e extensão; os marcadores novos nos filtros) e **o que acontece com quem já tinha livros editados**: com o painel anterior, tirado do Git, edita oito livros e abre o painel novo — o que não foi mexido acompanha a vistoria, o que foi mexido fica; duas edições que viraram uma linha; a recomendação que mudou de título. Depois, o catálogo muda de novo em quatro livros (só no catálogo, só no painel, nos dois, em nada) |
 | `capas_painel` | As capas no painel, com uma lista de capas conhecida: tabela, listas e ficha; capa da Open Library, capa da Apple Books e capa posta à mão; imagem que falta (nas duas fontes); o que o navegador pede, e quando; a chave "Mostrar as capas"; a capa do catálogo não é guardada nem aceita de um backup; endereços inválidos; celular |
@@ -535,9 +569,9 @@ avisa no fim, em vez de dar o teste por completo. `git fetch --unshallow` traz o
 | `func3` … `func8` | Cotações, novo livro, limpar/restaurar exemplos, exportar/importar, períodos (dentro de "Mais filtros"), filtros, Finanças, CSV, dados corrompidos |
 | `valores`, `resto` | Valores digitados; excluir livro; período invertido; importação com registros ilegíveis |
 | `limpo` | Painel só com o catálogo, sem exemplos — depois de "Limpar dados de exemplo" e como ele abre: indicadores, legendas e estados vazios de todas as guias; a guia Preços sem nenhum livro para cotar (o quadro "Registrar cotação" explica como começar e só vira formulário quando há o que cotar) |
-| `foco`, `a11y` | Foco e Tab nas camadas; ids duplicados, nomes acessíveis, rótulos, contraste AA nos dois temas e alvos de toque no celular — em todas as guias, fichas e diálogos, com os dados de exemplo e só com o catálogo (é onde aparecem os estados vazios e as abas zeradas) |
+| `foco`, `a11y` | Foco e Tab nas camadas; ids duplicados, nomes acessíveis, rótulos, contraste AA e alvos de toque no celular — em todas as guias, fichas e diálogos. O tema padrão (claro e escuro) é auditado com os dados de exemplo e só com o catálogo (é onde aparecem os estados vazios e as abas zeradas), no computador e no celular; cada um dos outros temas, no computador com os exemplos e no celular só com o catálogo. Tema novo entra na auditoria sozinho |
 | `janela_baixa` | As caixas de diálogo em janela baixa (a de qualquer notebook) e no celular: em oito tamanhos de janela, de 1536 × 745 ao celular deitado, cada caixa — novo livro, editar, seus dados, trilha, cotação, compra — fica inteira na janela, com os botões do rodapé e o X à vista e recebendo o clique, e rola pelo miolo quando o conteúdo não cabe; o mesmo para os botões da ficha, os quadros "Eixo" e "Mais filtros" e a folha de filtros do celular; numa janela de 1366 × 650, adiciona e edita um livro clicando com o mouse |
-| `varredura` | Clica em tudo, em todas as visões, nos dois temas e no celular, à procura de erros |
+| `varredura` | Clica em tudo, em todas as visões, no claro, no escuro e no celular, à procura de erros |
 | `sandbox` | Página dentro de um iframe isolado (sem `localStorage`): funciona em memória |
 | `site` | O painel servido por HTTP, de dentro de uma pasta, como no site: vem inteiro numa única requisição (de fora, só as imagens das capas, pedidas sem dizer de que página vieram), abre sem exemplos — e com eles pelo endereço `?exemplo=1` —, guarda os dados, exporta o backup e importa o que foi feito no arquivo |
 | `medir3`, `tabs`, `largo` | Larguras de 2560 a 820 px: colunas das tabelas, quebras e estouros |

@@ -21,7 +21,7 @@ Este arquivo é atualizado ao fim de cada rodada. Para saber em que pé as coisa
 | 7 | A versão 3 do catálogo: camadas e trilhas de leitura | **Feita** (11/11/2026) |
 | 8 | Análise dos filtros, trilhas personalizadas e novas recomendações | **Feita** (11/11/2026) — das oito propostas, três viraram a etapa 9; cinco esperam a sua decisão (lista abaixo) |
 | 9 | Filtros que dizem quantos livros têm e somam dentro do grupo; grupo da psicologia; conserto das caixas que não cabiam na tela | **Feita** (11/11/2026) |
-| 10 | As suas ideias: ocultar categorias, imprimir e copiar listas, sinopses, temas visuais, estímulo à leitura | **Em parte** (11/11/2026) — ocultar e imprimir estão prontos; as sinopses começaram (lote 1: 149 livros); faltam os temas e a guia de leitura (o plano e o que falta decidir estão abaixo) |
+| 10 | As suas ideias: ocultar categorias, imprimir e copiar listas, sinopses, temas visuais, estímulo à leitura | **Em parte** (11/11/2026) — ocultar e imprimir estão prontos; as sinopses começaram (lote 1: 149 livros); os três primeiros temas estão prontos (Lovecraft, Sherlock Holmes, Moby Dick); falta a guia de leitura (o plano e o que falta decidir estão abaixo) |
 
 A ordem pode mudar: as etapas que faltam não dependem umas das outras. Se alguma interessar mais, peça por ela.
 
@@ -813,6 +813,46 @@ medieval, com iluminuras (romances históricos).
 3. **Cada tema nasce com um clima só, o dele:** Lovecraft e cyberpunk, escuros; Sherlock Holmes, Moby Dick,
    greco-romano e os outros, claros. O claro e o escuro de hoje continuam existindo, como o tema padrão. Assim cada
    tema sai bem acabado, em vez de catorze meio prontos.
+
+**O que ficou pronto (11/11/2026) — os três primeiros temas.**
+
+No alto da página, o botão que trocava entre claro e escuro virou o **botão da paleta**. Ele abre o quadro
+**Aparência**, com uma amostra de cada tema. Clique numa e a página muda na hora; o quadro fica aberto para você
+comparar. A escolha fica guardada no navegador.
+
+| Tema | Clima | Cores | Letra dos títulos | Ornamento |
+| --- | --- | --- | --- | --- |
+| Claro e Escuro | — | o padrão de sempre | a de sempre | nenhum |
+| **Lovecraft** | escuro | verde-abissal, osso e violeta | de livro antigo, do século XVII | um céu de poucas estrelas atrás da página |
+| **Sherlock Holmes** | claro | papel de jornal, tinta, vinho e latão | Baskerville | o fio duplo dos jornais, sob o título |
+| **Moby Dick** | claro | névoa do mar, azul-profundo e cobre | a dos livros do século XIX | uma linha de ondas, sob o título |
+
+Como combinado:
+
+- **Só mudam as cores, a letra dos títulos e da sinopse, e um ornamento.** Telas, botões e números ficam onde estão;
+  o texto corrido continua na letra de sempre.
+- **Sem imagens de personagens e sem logotipos.**
+- **Todos passaram no teste de contraste**, em todas as telas, fichas e caixas, no computador e no celular.
+- **A folha de "Imprimir" não muda com o tema:** continua preta no branco.
+
+Duas coisas que você precisa saber:
+
+- **As letras dos temas vão dentro do painel.** São três fontes livres, de uso permitido. Assim o tema aparece igual
+  no notebook e no celular, sem depender do que está instalado e sem buscar nada na internet. O preço: o arquivo do
+  painel cresceu uns 200 KB (de 1,0 para 1,2 MB).
+- **Para trocar entre claro e escuro agora são dois cliques** (paleta, depois a opção), em vez de um. Foi o jeito de
+  caber tudo num botão só, sem apertar o cabeçalho no celular. Se fizer falta o clique único, eu trago de volta.
+
+**Para você olhar e dizer:**
+
+- As cores de cada tema estão no ponto, ou alguma está forte ou apagada demais? No Moby Dick, por exemplo, os
+  gráficos saem em cor de cobre: fica bom ou pesa?
+- A letra do Lovecraft é irregular de propósito, como tipo antigo. Dá para ler bem a sinopse nela?
+- Os ornamentos estão discretos o bastante?
+
+**Os próximos, na ordem combinada:** "Deserto" (inspirado em Duna), "Terras antigas" (inspirado em Tolkien), clássico
+greco-romano e cyberpunk; depois Viena de 1900, modernismo brasileiro e manuscrito medieval. Dois ou três por
+rodada, no mesmo acabamento. Se quiser outra ordem, diga.
 
 ### Parte 5 — Estímulo à leitura (gamificação)
 
