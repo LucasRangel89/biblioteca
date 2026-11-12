@@ -72,7 +72,9 @@ confere('playwright' in corpo['Preparar os testes'] and 'playwright install' in 
 testes = corpo['Rodar os testes']
 confere('tools/qa/tudo.py' in testes and all(t in testes for t in ('importador', 'busca_capas', 'auditoria_capas', 'capas_painel')),
         'os testes das capas e do painel rodam de verdade (e a suíte inteira é uma opção)', testes.strip().splitlines()[:3])
-confere('BIBLIOTECA_QA_TMP' in txt and 'runner.temp' in txt, 'os registros dos testes ficam fora do repositório')
+confere('BIBLIOTECA_QA_TMP: ${{ runner.temp }}/biblioteca-qa' in testes, 'os registros dos testes ficam fora do repositório')
+confere(not re.search(r'^    env:\n(?:      [^\n]*\n)*?      BIBLIOTECA_QA_TMP:.*runner\.', txt, flags=re.M),
+        'runner.temp não aparece no env do job: esse contexto só existe dentro dos passos; no job, o GitHub rejeita o arquivo inteiro')
 pr = corpo['Abrir o Pull Request']
 confere("if [ \"$CODIGO_TESTES\" != 0 ]; then rascunho='--draft'" in pr, 'teste falhando: o PR nasce como rascunho, para ninguém aprovar por engano')
 confere('$rascunho' in pr and 'exit 1' in pr, 'e a execução termina em vermelho')

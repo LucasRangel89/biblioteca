@@ -54,7 +54,6 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 260
     env:
-      BIBLIOTECA_QA_TMP: ${{ runner.temp }}/biblioteca-qa
       GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
     steps:
       - name: Baixar o repositório
@@ -140,6 +139,7 @@ jobs:
         id: testes
         if: steps.mudou.outputs.mudou == 'sim'
         env:
+          BIBLIOTECA_QA_TMP: ${{ runner.temp }}/biblioteca-qa
           SUITE: ${{ !inputs.suite_completa && 'importador busca_capas auditoria_capas capas_painel site' || '' }}
         run: |
           codigo=0
