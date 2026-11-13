@@ -193,25 +193,48 @@ const Notas = {
     if (!arq.size) { toast('Este arquivo está vazio.', 'aviso'); return; }
     if (arq.size > ANEXO_MAX) { toast(`O arquivo tem ${fTam(arq.size)}; o limite é de ${fTam(ANEXO_MAX)} por arquivo.`, 'aviso'); return; }
     if (!(await this.podeGuardar())) return;
+    const capa = await this.capaDoArquivoDigital(arq, b);                    // só a leitura: nada é gravado enquanto o arquivo não estiver anexado
     const k = novaChave(), nome = (arq.name || 'arquivo').slice(0, 120), mime = (arq.type || '').slice(0, 80);
     try { await Anexos.gravar({ k, livro: b.id, tipo: 'arquivo', nome, mime, tam: arq.size, dia: DB.hoje, dados: await lerArquivo(arq) }); }
     catch (e) { toast('Não foi possível guardar o arquivo neste navegador (sem espaço, ou o arquivo não pôde ser lido).', 'erro'); return; }
-    if (porId(b.id) !== b) { Anexos.apagar([k]); return; }                 // o livro saiu do painel enquanto o arquivo era lido
+    if (porId(b.id) !== b) { Anexos.apagar([k]); return; }                    // o livro saiu do painel enquanto o arquivo era lido
     if (this.id === b.id) this.guardar();
     (b.anx || (b.anx = [])).push([k, nome, arq.size, DB.hoje, mime]);
     const marcou = !b.tags.includes(TAG_ANALISE); defTag(b, TAG_ANALISE, true);
-    tocar(b); toast(marcou ? 'Arquivo anexado. O livro foi marcado com “possui análise”.' : 'Arquivo anexado.');
+    let virouCapa = false;
+    if (capa && !b.cp) {                       // o livro ganhou uma capa enquanto o arquivo era lido? então não é a nossa
+      const [kc] = await this.gravarCapa(b, capa.dados, capa.nome);
+      if (kc && b.cp) Anexos.apagar([kc]).catch(() => {});
+      else if (kc) { b.cp = kc; virouCapa = true; }
+    }
+    tocar(b); toast((marcou ? 'Arquivo anexado. O livro foi marcado com “possui análise”.' : 'Arquivo anexado.') + (virouCapa ? ' A capa que estava dentro do arquivo virou a capa do livro.' : ''));
+  },
+  /* EPUB e CBZ trazem a capa dentro do arquivo (ver 54-capa-digital): usamos a imagem, lida aqui no navegador, sem
+     internet. Só quando o livro está sem capa nenhuma — nem uma enviada, nem a do catálogo —, para nunca trocar uma
+     capa que já existe pela que vem no arquivo. Não achou nada, ou o navegador não abriu a imagem? Fica como estava, sem aviso. */
+  async capaDoArquivoDigital(arq, b) {
+    if (b.cp || temCapa(b) || !DIGITAL_CAPA.test(arq.name || '')) return null;
+    const achada = await capaDoDigital(arq); if (!achada) return null;
+    try { return { nome: 'capa de ' + achada.nome, dados: await reduzirImagem(achada.blob) }; } catch (e) { return null; }
+  },
+  /* guarda uma imagem como capa do livro: é assim que ela vale mais que a do catálogo, aparece com as capas desligadas,
+     entra no backup e pode ser tirada na ficha. Devolve [chave do anexo, motivo da recusa] — vazio quando deu certo. */
+  async gravarCapa(b, dados, nome) {
+    const k = novaChave();
+    try { await Anexos.gravar({ k, livro: b.id, tipo: 'capa', nome: String(nome || 'capa').slice(0, 120), mime: 'image/jpeg', tam: Math.round((dados.length - 23) * 0.75), dia: DB.hoje, dados }); }
+    catch (e) { return ['', 'navegador']; }
+    if (porId(b.id) !== b) { Anexos.apagar([k]).catch(() => {}); return ['', 'saiu']; }      // o livro saiu do painel enquanto a imagem era lida
+    Anexos.capas.set(k, dados);
+    return [k, ''];
   },
   async enviarCapa(arq) {
     const b = porId(this.id); if (!b) return;
     if (!(await this.podeGuardar())) return;
     let dados; try { dados = await reduzirImagem(arq); } catch (e) { toast('Não consegui abrir este arquivo como imagem. Use uma foto ou imagem em JPG, PNG ou WebP.', 'erro'); return; }
-    const k = novaChave(), antiga = b.cp;
-    try { await Anexos.gravar({ k, livro: b.id, tipo: 'capa', nome: (arq.name || 'capa').slice(0, 120), mime: 'image/jpeg', tam: Math.round((dados.length - 23) * 0.75), dia: DB.hoje, dados }); }
-    catch (e) { toast('Não foi possível guardar a imagem neste navegador (sem espaço ou armazenamento bloqueado).', 'erro'); return; }
-    if (porId(b.id) !== b) { Anexos.apagar([k]); return; }
+    const antiga = b.cp, [k, motivo] = await this.gravarCapa(b, dados, arq.name || 'capa');
+    if (!k) { if (motivo === 'navegador') toast('Não foi possível guardar a imagem neste navegador (sem espaço ou armazenamento bloqueado).', 'erro'); return; }
     if (this.id === b.id) this.guardar();
-    Anexos.capas.set(k, dados); b.cp = k; if (antiga) Anexos.apagar([antiga]).catch(() => {});
+    b.cp = k; if (antiga) Anexos.apagar([antiga]).catch(() => {});
     tocar(b); toast(antiga ? 'Capa trocada.' : 'Capa enviada.');
   },
   tirarCapa() {
