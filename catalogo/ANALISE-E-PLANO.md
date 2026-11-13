@@ -297,9 +297,127 @@ Esta seção atualiza o estado sem apagar o retrato anterior.
   exigir também a menção ao Google Books em “Seus dados”.
 - **O que não foi feito:** nenhuma busca real nova, nenhum dispatch (a API continua devolvendo 403), nenhum merge desta
   mudança, nenhuma publicação. O Google Books ainda não teve uma consulta bem-sucedida em produção.
-- **PR desta mudança:** [#16](https://github.com/LucasRangel89/biblioteca/pull/16), aberto para revisão. O CI rápido do
-  PR passou (run `43318662762`); o push inicial também tinha passado (run `43318594140`). Aguarda aprovação explícita
-  para merge.
-- **Próximo passo seguro:** depois de aprovado e mesclado, rodar `Buscar capas` em `main` com limite 40 e ler o motivo
-  no resumo. Só então medir o piloto/ISBN numa amostra de cerca de 100 livros sem capa. Gerador único de listagens e
-  revisão de `referencias/` continuam como próximos PRs da Etapa 5, para não misturar escopos.
+- **PR desta mudança:** [#16](https://github.com/LucasRangel89/biblioteca/pull/16), **mesclado** em `main` (`f8a0d50`)
+  após aprovação explícita. O CI rápido do PR passou (run `43318662762`); a publicação seguinte também passou
+  (run `43319394942`).
+- **Próximo passo seguro:** rodar `Buscar capas` em `main` com limite 40 e ler o motivo no resumo. Só então medir o
+  piloto/ISBN numa amostra de cerca de 100 livros sem capa. Gerador único de listagens e revisão de `referencias/`
+  continuam como próximos PRs da Etapa 5, para não misturar escopos.
+
+## Parte C — análise independente antes de ler “Análise crítica do repositório biblioteca.md”
+
+Data: 12/11/2026, depois do merge do PR #16 (`f8a0d50`) e da publicação bem-sucedida do site
+(run `43319394942`). Esta parte foi escrita **antes** de abrir o novo documento enviado pelo usuário; o documento
+entra depois apenas como conjunto de recomendações a comparar, não como ordem de execução.
+
+### Retrato conferido agora
+
+- Catálogo/painel: 2.614 livros, 1.564 capas, 1.050 sem capa; `catalogo/isbns.tsv` existe e está vazio; nenhuma capa
+  nova foi produzida pelo PR #16. O próximo teste real das capas continua sendo o dispatch manual com limite 40.
+- Biblioteca virtual: 38 listagens `.txte`, 2.490 linhas de inventário, 38 pastas no inventário. O importador é
+  determinístico e já sabe ler CP850, UTF-8 e UTF-16; a lacuna operacional é **produzir** as listagens no computador
+  do usuário sem depender de um `dir /b` manual por pasta.
+- Etapa 5: CI rápido e publicação condicionada estão no ar; ainda faltam gerador único de listagens, revisão de
+  `referencias/` e proteção obrigatória de `main` (esta última é configuração do GitHub, não código).
+- `referencias/`: nenhum script, workflow ou módulo do painel importa esse diretório. O protótipo Nextjs tem schema
+  Prisma só com `User`/`Post`, banco de exemplo vazio e parser que gera dados fictícios; não há dado real do usuário
+  ali que justifique migração. O HTML de inspiração e o catálogo v3 são histórico/inspiração, não fonte ativa.
+- Privacidade e custo: o painel continua estático, anotações só no navegador, capas desligáveis, sem imagem no
+  repositório e sem serviço pago. Qualquer proposta que quebre isso deve ser recusada ou redesenhada.
+
+### Decisão independente de prioridade
+
+1. **Gerador único de listagens** é o próximo maior ganho para o usuário leigo: fecha a Etapa 5 (“dois cliques, um
+   envio, um pedido”), reduz erro de encoding/nome de arquivo e não toca no catálogo nem no painel. Deve ser pequeno,
+   testável com pastas fictícias, idempotente e explícito sobre o que gerou/ignorou. Não deve tentar adivinhar título,
+   autor nem classificação: isso continua sendo trabalho do importador/inventário.
+2. **Revisão de `referencias/`** vem junto apenas como documentação/decisão de guarda: declarar o que é histórico,
+   o que não deve ser executado e o que não é fonte de dados. Não recuperar o protótipo, não migrar banco vazio.
+3. **Capas** ficam aguardando o teste real curto em `main`; não adicionar mais fonte nem expandir piloto antes de medir.
+4. Filas de pendências, leituras reais e sinopses continuam importantes, mas dependem de respostas do usuário ou de
+   lote próprio; não misturar com o gerador.
+
+### Riscos que o gerador precisa cobrir
+
+- Não sobrescrever listagem errada por engano: gerar em destino explícito, mostrar prévia com `--conferir` e só
+  gravar quando o conteúdo mudar.
+- Preservar o contrato do importador: uma listagem por pasta, nomes de arquivo/subpasta como o `dir /b` mostraria,
+  extensão `.txte`, compatível com CP850/CRLF ou UTF-8; não incluir a própria listagem nem o gerador.
+- Pastas de HQ: subpastas de série entram pelo nome; subpasta que é outra biblioteca (`novashqs/novas` →
+  `novasHQSS`) precisa de regra explícita, não heurística silenciosa.
+- Pasta nova ou subpasta sem listagem (ex.: `HQs/Mangás`) deve aparecer como decisão/aviso, não entrar calada nem
+  sumir. O gerador não deve transformar toda subpasta de série em pasta da biblioteca.
+- Windows sem Python no PATH: se houver wrapper `.bat`, ele deve ser mínimo e apontar erro claro; a lógica testável
+  fica em Python. Nenhum wrapper pode alterar catálogo, inventário ou painel.
+
+## Parte D — comparação com “Análise crítica do repositório biblioteca.md”
+
+O documento foi lido **depois** da Parte C. Ele é útil como auditoria externa e como lista de recomendações; não é
+ordem de execução. Vários achados são reais, outros já foram corrigidos nas rodadas anteriores, e alguns números
+precisam de correção no estado atual.
+
+### O que conferi e aceito
+
+- **Persistência é o maior risco de perda irreversível.** O painel grava um registro único em `localStorage`, não há
+  `BroadcastChannel`/evento `storage`, não há lembrete de backup nem cópia automática antes de importar. A cópia
+  `:falha` só cobre corrupção de leitura, não substituição por backup. Aceito como **próximo PR de produto**, com
+  testes de navegador e cuidado de migração.
+- **Exposição pública.** O README já diz que o endereço é público, mas a meta description do HTML ainda chamava o
+  painel de “pessoal e privado”. Isso é enganoso: catálogo, inventário e listagens estão no repositório público.
+  Corrigir o texto é barato e entra agora; tornar o repositório privado ou remover listagens é decisão do dono.
+- **Acessibilidade.** A busca rápida tem `role="combobox"` sem `aria-activedescendant`; as abas têm `aria-selected`
+  mas não o padrão completo de teclado/setas. São dívidas reais, para PR próprio com teste de navegador.
+- **`referencias/` é peso morto operacional.** Nenhum código ativo importa o diretório; o protótipo não tem dados
+  reais. Revisar e documentar a guarda entra agora; não recuperar o protótipo.
+- **Qualidade de dados.** 15 sem autor, 29 `#verificar`, 48 `#sem-pt`, 3 `#lido` no catálogo, sinopses ainda pequenas.
+  Continua verdadeiro; depende de filas e respostas humanas, não de mais arquitetura.
+
+### O que já está resolvido ou precisa de correção
+
+- **“CI não testa nada antes de publicar” está desatualizado.** Desde o PR #14, `publicar-site.yml` tem job
+  `conferir` que roda `tools/atualizar.py`, `git diff --exit-code`, `node --check` e os testes rápidos antes de
+  `publicar`; `verificar.yml` roda em PR e ramos de trabalho.
+- **“Histórico com 1 commit” não descreve o estado remoto atual.** Este checkout é raso (`shallow`), mas o remoto já
+  tem PRs e merges (#12 a #16). A limitação local de histórico continua afetando `posse`, `inicio` e `vistoria`.
+- **Versões das Actions.** `checkout@v7`, `upload-pages-artifact@v5` e `deploy-pages@v5` estão em uso e as execuções
+  reais recentes passaram; não há evidência atual de versão inexistente.
+- **Números de limpeza.** Antes desta rodada eram 55 arquivos `.py` em `tools/qa/` (não 80); com o novo teste do
+  gerador, 56. `referencias/` tem ~1,0 MB (não 1,2 MB). A bagunça de nomes `run*`/`func*`/`medir*` é real, mas não
+  justifica apagar testes sem inventário e substituição.
+- **Capas.** O documento cita só Open Library e Apple; o estado atual já tem Google Books como terceira fonte
+  gratuita, ISBN conferido opcional e piloto do Internet Archive só de leitura (PR #16).
+
+### O que adapto ou recuso nesta rodada
+
+- **Não fazer tudo do P0 ao mesmo tempo.** Backup/abas/persistência tocam no dado mais precioso do usuário e exigem
+  suíte de navegador; não misturo isso com gerador de listagens e revisão de referências.
+- **Não tornar o repositório privado nem remover listagens automaticamente.** Isso mudaria acesso e fluxo de
+  atualização; fica como decisão explícita do dono. Por ora, corrigir a linguagem para não prometer privacidade do
+  catálogo.
+- **Não migrar para IndexedDB, não criar ID estável agora, não refatorar JS global.** São mudanças maiores, com
+  migração e risco; ficam para desenho próprio.
+- **Não apagar `referencias/` nem testes antigos às cegas.** Documentar o que é arquivo morto e impedir uso acidental
+  é suficiente nesta rodada; remoção física pode vir depois, com histórico preservado.
+
+### Decisão final para esta rodada
+
+Preparo uma mudança pequena da **Etapa 5**: gerador único de listagens em Python (com wrapper mínimo para Windows),
+revisão documental de `referencias/`, correção da meta description pública e testes. Depois disso, o próximo PR de
+produto segue a recomendação P0 do documento: **lembrete/atalho de backup e cópia automática antes de importar**, com
+testes de navegador. A busca real curta das capas (limite 40) continua pendente de disparo manual na UI.
+
+### Registro operacional desta rodada
+
+- **Implementado:** `tools/gerar_listagens.py`, `Gerar listagens.bat`, `tools/qa/gerar_listagens.py`,
+  `referencias/LEIAME.md`, a meta description pública em `src/index.html`, o cadastro do teste novo em `tools/qa/tudo.py`
+  e os dois workflows (`verificar.yml` e `publicar-site.yml`). O nível rápido passa de cinco para **seis testes**; a
+  suíte completa, de 37 para **38**. Nenhuma listagem real, inventário, catálogo ou capa foi alterada.
+- **Conferência local:** `python3 tools/qa/gerar_listagens.py` passou com zero erros; `python3 tools/atualizar.py`
+  regenerou o painel e `--conferir` não propôs mudança; `node --check` passou nos módulos JS; os seis testes rápidos
+  passaram; YAML dos workflows e `bash -n` dos blocos `run` passaram. A suíte com navegador não foi repetida aqui
+  (sem Playwright/Chromium neste ambiente). O `.bat` foi conferido como texto/contrato, não executado em Windows real.
+- **Envio:** a rodada anterior ficou bloqueada porque a branch antiga já tinha PR mesclado/fechado. Com o Continue,
+  o trabalho foi reaplicado na branch ativa `arena/2a25f33b-biblioteca` e enviado no PR
+  [#17](https://github.com/LucasRangel89/biblioteca/pull/17). Nenhum merge ou publicação automática.
+- **O que não foi feito:** nenhum dispatch de capas, nenhuma remoção física de `referencias/` ou de testes antigos,
+  nenhuma mudança de persistência/IndexedDB/abas.

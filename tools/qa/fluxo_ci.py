@@ -2,7 +2,7 @@
 
 Não executa o GitHub Actions nem substitui a validação do YAML. Confere o desenho:
   · PRs e ramos de trabalho passam pelo nível rápido, sem permissão de escrita;
-  · a conferência exige geração em dia, sintaxe JavaScript e os cinco testes sem navegador;
+  · a conferência exige geração em dia, sintaxe JavaScript e os seis testes sem navegador;
   · a publicação depende dessa conferência, mas usa o HTML já commitado;
   · só o job de publicação recebe permissão para publicar;
   · runner.temp fica no passo, não no env do job (o GitHub rejeita o arquivo inteiro).
@@ -12,7 +12,7 @@ import ast, pathlib, re, sys
 
 QA = pathlib.Path(__file__).resolve().parent
 RAIZ = QA.parent.parent
-RAPIDOS = ('importador', 'busca_capas', 'auditoria_capas', 'fluxo_capas', 'fluxo_ci')
+RAPIDOS = ('importador', 'gerar_listagens', 'busca_capas', 'auditoria_capas', 'fluxo_capas', 'fluxo_ci')
 COMANDO = 'python3 tools/qa/tudo.py ' + ' '.join(RAPIDOS)
 SINTAXE_JS = 'for f in src/js/*.js; do node --check "$f"; done'
 erros = []
@@ -61,7 +61,7 @@ for nome, bloco in (('CI', rapido), ('site', conferir)):
     confere(re.search(r'python3 tools/atualizar\.py\n\s*git diff --exit-code', bloco) is not None,
             f'{artigo} {nome} exige que o HTML e os JSON gerados estejam em dia')
     confere(SINTAXE_JS in bloco, f'{artigo} {nome} confere a sintaxe dos módulos JavaScript')
-    confere(COMANDO in bloco, f'{artigo} {nome} roda os cinco testes rápidos, incluindo este desenho')
+    confere(COMANDO in bloco, f'{artigo} {nome} roda os seis testes rápidos, incluindo este desenho')
     confere(runner_fora_do_env_do_job(bloco), f'no {nome}, runner.temp fica no passo, não no env do job')
 
 print('PUBLICAÇÃO CONDICIONADA')
@@ -85,7 +85,7 @@ confere(not any(cmd in ci + site for cmd in ('gh pr merge', 'gh pr close', 'git 
 
 print('COMANDOS CITADOS')
 confere((RAIZ / 'tools' / 'atualizar.py').is_file() and all((QA / f'{t}.py').is_file() for t in RAPIDOS),
-        'o gerador e os cinco scripts de teste existem')
+        'o gerador do painel e os seis scripts de teste existem')
 arvore = ast.parse((QA / 'tudo.py').read_text(encoding='utf-8'))
 cadastrados = next((ast.literal_eval(n.value) for n in arvore.body if isinstance(n, ast.Assign)
                     and any(isinstance(x, ast.Name) and x.id == 'TESTES' for x in n.targets)), [])

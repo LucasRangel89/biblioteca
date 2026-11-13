@@ -47,7 +47,7 @@ jobs:
       - name: Rodar os testes sem navegador
         env:
           BIBLIOTECA_QA_TMP: ${{ runner.temp }}/biblioteca-qa
-        run: python3 tools/qa/tudo.py importador busca_capas auditoria_capas fluxo_capas fluxo_ci
+        run: python3 tools/qa/tudo.py importador gerar_listagens busca_capas auditoria_capas fluxo_capas fluxo_ci
 
   publicar:
     name: Publicar

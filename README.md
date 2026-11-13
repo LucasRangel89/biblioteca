@@ -89,6 +89,8 @@ do autor e do tipo de obra — nenhum arquivo foi aberto.
 | `src/letras/` | As letras dos temas (seis famílias de fontes livres, em dez arquivos WOFF2), com a licença de cada uma e um `LEIAME.md`. Vão dentro do painel (ver "Os temas") |
 | `tools/atualizar.py` | Faz tudo de uma vez: importa a biblioteca virtual, converte o catálogo e monta o painel |
 | `tools/importar_digital.py` | Listagens + inventário → Catálogo Mestre (seção 17 e `#tenho-digital`) e `RESUMO.md` |
+| `tools/gerar_listagens.py` | Pastas reais da biblioteca virtual → `biblioteca-virtual/listagens/*.txte`, no formato do importador. Tem prévia (`--conferir`), não apaga listagem de pasta ausente e não mexe no catálogo/inventário/painel |
+| `Gerar listagens.bat` | Atalho de Windows para o gerador único: pede a pasta raiz, mostra a prévia e pergunta antes de gravar |
 | `tools/build_catalog.py` | Catálogo Mestre + inventário → `src/catalog.json`; `catalogo/capas.tsv` → `src/capas.json` e `src/capas-fontes.json`; `catalogo/trilhas.md` → `src/trilhas.json`; `catalogo/antes-da-vistoria.tsv` → `src/antes.json`; `catalogo/sinopses.tsv` → `src/sinopses.json` (usa `parse_catalog.py`, `eixos.py` e `capas.py`). O que não bate sai como `AVISO:` |
 | `tools/build.py` | `src/` → `Biblioteca_Lucas_Dashboard.html`, com os dados e as letras dos temas (`src/letras`) dentro; confere que não sobrou referência externa |
 | `tools/capas.py` | Busca gratuita das capas na Open Library, Apple Books e Google Books → `catalogo/capas.tsv`; ISBN conferido (`catalogo/isbns.tsv`) tem prioridade. Também escolhe à mão (`--candidatos`), roda o piloto só de leitura do Internet Archive (`--piloto`) e faz a auditoria (`--auditar`). No GitHub, quem o roda é o serviço "Buscar capas", que abre um PR |
@@ -96,7 +98,7 @@ do autor e do tipo de obra — nenhum arquivo foi aberto.
 | `catalogo/capas-revisao.md` | Auditoria das capas: quantos têm capa por parte da biblioteca, eixo, tipo e origem, e a lista do que merece um olhar, com o motivo (gerado) |
 | `tools/analisar_marcadores.py` | Mede os filtros e a categorização (alcance de cada grupo, marcadores raros e amplos, pastas × eixos…). Só mostra; não grava nada |
 | `tools/qa/` | Testes automatizados |
-| `referencias/` | Material guardado só como referência: um painel de inspiração, um protótipo abandonado e `catalogo-v3-enviado-2026-11-10.md`, a "versão 3" do catálogo, de onde vieram as camadas e as trilhas (nada lê esse arquivo) |
+| `referencias/` | Material guardado só como referência: um painel de inspiração, um protótipo abandonado e `catalogo-v3-enviado-2026-11-10.md`, a "versão 3" do catálogo, de onde vieram as camadas e as trilhas. Nada ativo lê esse diretório; a fronteira e a decisão de guarda estão em `referencias/LEIAME.md` |
 
 ## Dia a dia
 
@@ -111,15 +113,22 @@ Rodar de novo sem ter mudado nada não altera nenhum arquivo.
 
 ### Entraram livros novos na biblioteca virtual
 
-1. Refaça a listagem da pasta que mudou e ponha em `biblioteca-virtual/listagens/`, com o nome da pasta
-   (no Windows, dentro da pasta: `dir /b > "nome da pasta.txte"`). Para uma pasta nova, basta uma listagem nova.
-2. `python tools/atualizar.py`.
-3. Cada arquivo novo entra no inventário com a observação `novo`, e título e autor **deduzidos do nome do arquivo**.
+1. **Gere as listagens de uma vez.** No Windows, dê dois cliques em `Gerar listagens.bat`, na pasta do repositório.
+   Digite o caminho da pasta raiz da biblioteca virtual (ex.: `D:\Biblioteca`) e aperte Enter. Responda se quer incluir
+   também a subpasta de mangás dentro de `HQs`, se existir; leia a prévia e só então responda `S` para gravar. Ele
+   cria/atualiza `biblioteca-virtual/listagens/*.txte`, uma por pasta, e não mexe no catálogo, no inventário nem no painel.
+   Pasta que não foi encontrada tem a listagem mantida; pasta vazia não apaga listagem antiga sem confirmação explícita.
+   Sem o `.bat`, o mesmo caminho é: `python tools/gerar_listagens.py --origem "D:\Biblioteca" --conferir` e, depois de
+   conferir, o mesmo comando sem `--conferir`. Para outra pasta aninhada: `--incluir "HQs/Mangás=Mangás"`.
+2. Envie a pasta `biblioteca-virtual/listagens` para o GitHub (**Add file → Upload files**) ou peça para atualizar a
+   biblioteca virtual com ela.
+3. `python tools/atualizar.py`.
+4. Cada arquivo novo entra no inventário com a observação `novo`, e título e autor **deduzidos do nome do arquivo**.
    Abra `biblioteca-virtual/inventario.tsv`, confira essas linhas (título, autor, `eixo` de 2 a 16, `genero` F, NF ou
    poesia), preencha `marcadores` (temas, dificuldade e extensão: `filosofia etica d2 e1`), apague o `novo` e rode de
    novo. Enquanto `marcadores` estiver vazia, a linha do catálogo leva só o marcador padrão da pasta, e a obra aparece
    no `RESUMO.md`, em "Sem dificuldade nem extensão".
-4. Arquivo que sumiu da listagem recebe `ausente`: a linha fica no inventário e o livro sai do catálogo.
+5. Arquivo que sumiu da listagem recebe `ausente`: a linha fica no inventário e o livro sai do catálogo.
 
 ### Entraram quadrinhos novos
 
@@ -607,14 +616,14 @@ anexos) · `60-drawer` (gaveta do livro, formulários, cotações, importação)
 ## Testes
 
 ```bash
-python tools/qa/tudo.py importador busca_capas auditoria_capas fluxo_capas fluxo_ci   # os que não precisam de navegador
+python tools/qa/tudo.py importador gerar_listagens busca_capas auditoria_capas fluxo_capas fluxo_ci   # os que não precisam de navegador
 pip install playwright pillow
 python -m playwright install chromium   # no Linux, se faltarem bibliotecas: python -m playwright install-deps chromium
-python tools/qa/tudo.py                 # os 37 testes, ~35 min; termina com "TUDO CERTO"
+python tools/qa/tudo.py                 # os 38 testes, ~35 min; termina com "TUDO CERTO"
 python tools/qa/tudo.py posse func6     # só alguns
 ```
 
-**No GitHub.** O workflow `Verificar` roda os cinco testes sem navegador em cada PR e em ramos de trabalho (exceto
+**No GitHub.** O workflow `Verificar` roda os seis testes sem navegador em cada PR e em ramos de trabalho (exceto
 `main`), depois de conferir a geração e a sintaxe JavaScript. A publicação também passa por essa conferência. Para o
 GitHub recusar o merge quando ela falhar, é preciso marcar **Rápido (sem navegador)** como verificação obrigatória na
 proteção de `main`; o workflow sozinho não muda essa configuração. A suíte completa continua sendo uma conferência
@@ -640,11 +649,12 @@ avisa no fim, em vez de dar o teste por completo. `git fetch --unshallow` traz o
 | Script | Cobre |
 | --- | --- |
 | `importador` | Leitura das listagens, arquivo novo e ausente, casamento com o catálogo, seção 17, execução repetida sem mudanças; a classificação que vem da coluna `marcadores` do inventário (e o inventário antigo, sem ela); a pasta e o nome do arquivo de cada item a verificar, no resumo; quadrinhos (subpasta de série, edição nova de série conhecida, série nova, adaptação com o título de um livro, subpasta com listagem própria); `src/catalog.json` em dia com o catálogo; `renomeados.tsv`; as trilhas (`trilhas.md` × marcadores das linhas, com os avisos; um livro da biblioteca virtual numa trilha); `antes-da-vistoria.tsv`; o HTML pronto em dia com `src/`; `analisar_marcadores.py` roda e conta o catálogo inteiro |
+| `gerar_listagens` | O gerador único de listagens (`tools/gerar_listagens.py`), sem tocar no catálogo/inventário/painel: pastas fictícias, contrato do `dir /b` e do importador, CP850/CRLF (UTF-8 quando o nome exige), subpastas de série de HQ, `novashqs/novas` → `novasHQSS`, pasta aninhada extra (`HQs/Mangás`), prévia sem gravar, repetição sem mudança, pasta ausente preservada, pasta vazia protegida, origem errada recusada, wrapper de Windows e fronteira de `referencias/` |
 | `posse` | Físico × digital × nos dois: indicadores, gaveta, formulário, filtros, cartão no celular; quadrinhos (filtro "HQ", gaveta de uma série guardada em subpasta, busca pelo nome da subpasta, os cinco botões do filtro Tipo no celular); **migração do que o painel anterior salvou** no navegador e de um backup exportado por ele; livro anotado no painel e depois corrigido no catálogo ou no inventário (os painéis antigos são tirados do histórico do Git) |
 | `busca_capas` | A busca de capas (`tools/capas.py`), sem internet. Open Library: a consulta feita para cada livro, a capa escolhida (edição em português antes da capa da obra), a segunda tentativa só pelo título. Apple Books: a consulta, o resultado que serve (título e autor conferem; caixa, trilogia, resumo e audiolivro não), o endereço da imagem, a espera quando a busca recusa por excesso de consultas. As três em ordem: livro novo passa pelas três; quem já tinha passado por alguma vai só às que faltam; uma fonte fora do ar não atrapalha as outras. O `capas.tsv` (retomar de onde parou, não mexer no que foi posto à mão, a mesma capa em volumes de uma série), a amostra de `--testar` nas fontes; o volume certo em cada casamento; o ISBN (conta de conferência e procura por ele); o Google Books (consulta, imagem em https, língua, caixa e resumo recusados, recusas e desistência); `--sem-google`; o modo `--candidatos` com o motivo de cada recusa; `src/capas.json` e `src/capas-fontes.json` em dia com `catalogo/capas.tsv` |
 | `auditoria_capas` | A auditoria das capas (`tools/auditar_capas.py`), sem internet: os números saem do mesmo cruzamento que gera `src/capas.json`; cada problema da fila (capa que o painel não mostra, capa repetida em volumes, capa da obra, casamento que hoje não se faria, autoria e título a conferir, linha que falta, linha órfã) e o que não é problema; a conferência das imagens por amostra (`--rede`); o relatório sempre igual para o mesmo catálogo, sem data nem hora e sem nada que dependa da rede; `--resumo`, `--conferir` e o `--auditar` do `capas.py`; `catalogo/capas-revisao.md` em dia |
 | `fluxo_capas` | O robô das capas (`.github/workflows/buscar-capas.yml`), lido como arquivo: só roda quando alguém manda; nunca grava no ramo em que rodou (cria `capas/…` e abre PR); a ordem buscar → conferir → amostrar → montar → auditar → testar → PR → conferência final; fonte ou teste falhando vira PR em rascunho e execução vermelha, mesmo sem mudança no `capas.tsv`; a saída da busca fica no resumo; nenhum merge automático; o site continua publicando só de `main` e o HTML versionado; os comandos e opções citados existem. Não executa o GitHub Actions: confere o desenho do fluxo |
-| `fluxo_ci` | O CI rápido (`.github/workflows/verificar.yml`) e a publicação condicionada (`.github/workflows/publicar-site.yml`), lidos como arquivo: PR e ramos de trabalho passam pela conferência; geração determinística, sintaxe JS e cinco testes sem navegador; só o job de publicação tem permissão de publicar, depois da conferência e apenas em `main`; `runner.temp` fica no passo, não no env do job. Não executa o GitHub Actions nem substitui a validação do YAML |
+| `fluxo_ci` | O CI rápido (`.github/workflows/verificar.yml`) e a publicação condicionada (`.github/workflows/publicar-site.yml`), lidos como arquivo: PR e ramos de trabalho passam pela conferência; geração determinística, sintaxe JS e seis testes sem navegador; só o job de publicação tem permissão de publicar, depois da conferência e apenas em `main`; `runner.temp` fica no passo, não no env do job. Não executa o GitHub Actions nem substitui a validação do YAML |
 | `inicio` | Como o painel abre e os dados de exemplo: primeira abertura só com o catálogo; "Ver com dados de exemplo", "Limpar dados de exemplo" e "Recomeçar"; o endereço com `?exemplo=1`; **a saída dos exemplos de fábrica** para quem usava o painel anterior — sem edições, com um e com três livros editados, no computador e no celular, e com o painel que estava no ar antes da mudança (tirado do histórico do Git) |
 | `leitura_de_fora` | "Já li" para o livro que não está no acervo (emprestado, de biblioteca, perdido): a ficha da recomendação e a do item da lista de compra oferecem o botão; a leitura conta como "de fora", o livro sai da fila de recomendações e da ordem de compra e a trilha o dá por feito; data e nota opcionais; "Não li" desfaz, também no livro que o catálogo traz como lido; a recomendação lida que vai para a lista de compra e é comprada continua lida; os botões da ficha na largura do celular |
 | `opcionais` | Só o título é obrigatório: "Novo livro", "Já tenho", "Comprei", "Já li" e "Terminei hoje" sem data, loja ou valor; o que a ficha, os indicadores, Finanças, o CSV e o backup mostram nesses casos; data futura e valor ilegível recusados |
