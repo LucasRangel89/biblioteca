@@ -4,12 +4,12 @@ Gerado por `tools/importar_digital.py`. Não edite: é refeito a cada execução
 
 ## Números
 
-- **2382 arquivos** no inventário (1161 pdf, 1065 epub, 84 cbr, 44 cbz, 13 rar, 5 mobi, 5 zip, 4 azw3, 1 txt) e **104 pastas de séries** de quadrinhos (cada uma guarda as edições de uma série), em 38 pastas.
+- **2402 arquivos** no inventário (1172 pdf, 1074 epub, 84 cbr, 44 cbz, 13 rar, 5 mobi, 5 zip, 4 azw3, 1 txt) e **104 pastas de séries** de quadrinhos (cada uma guarda as edições de uma série), em 39 pastas.
 - **2049 obras** diferentes: **1805 livros** e **244 quadrinhos**. O mesmo livro em dois formatos, ou em duas pastas, conta uma vez; uma série de quadrinhos conta uma vez, sejam quantas forem as edições.
 - **25** delas também estão na estante física (`#tenho-fisico #tenho-digital`).
 - **114** estavam entre as recomendações do catálogo e agora aparecem como `#tenho-digital`.
 - **1910** são novas no catálogo: entraram na seção 17.
-- Ficaram só no inventário, fora do catálogo: 12 apostila, 3 artigo, 8 outro, 13 periodico (linhas do inventário).
+- Ficaram só no inventário, fora do catálogo: 12 apostila, 3 artigo, 8 outro, 33 periodico (linhas do inventário).
 - A subpasta `novas`, de `novashqs`, tem listagem própria, `novasHQSS`: o que há nela está contado nessa pasta.
 
 ## Seção 17, por eixo
@@ -264,6 +264,31 @@ Título, autor ou identificação incertos (coluna `obs` = `verificar`). Os que 
 - Tesouros Medievais — sem autor · arquivo `historia\tesouros medievais.pdf`
 - Trilogia Lovecraft — sem autor · subpasta `HQs\Trilogia Lovecraft`
 
+## Arquivos novos, a revisar
+
+Entraram nesta execução ou numa anterior, com título e autor deduzidos do nome do arquivo (nas pastas de quadrinhos, também do nome da subpasta). Revise a linha no inventário (tipo, título, autor, eixo, gênero) e apague `novo` da coluna `obs`.
+
+- `Revistas/(Coleção Superinteressante)- Prato Sujo - Como a indústria manipula os alimentos para viciar você!-Editora Abril (2013).epub` → (Coleção Superinteressante)- Prato Sujo - como a Indústria Manipula os Alimentos para Viciar Você!-Editora Abril (2013) — sem autor
+- `Revistas/(Super Interessante - Coleção Mitologia) Livro 1_ Deuses. 1-Editora Abril (2011).pdf` → (Super Interessante - Coleção Mitologia) Livro 1: Deuses. 1-Editora Abril (2011) — sem autor
+- `Revistas/(Super Interessante - Coleção Mitologia) Livro 2_ Heróis. 2-Editora Abril (2011).pdf` → (Super Interessante - Coleção Mitologia) Livro 2: Heróis. 2-Editora Abril (2011) — sem autor
+- `Revistas/(Super Interessante - Coleção Mitologia) Livro 3_ Lendas. 3-Editora Abril (2011).pdf` → (Super Interessante - Coleção Mitologia) Livro 3: Lendas. 3-Editora Abril (2011) — sem autor
+- `Revistas/(Superinteressante Coleções) Salvador Nogueira (edição e textos.epub` → (Superinteressante Coleções) Salvador Nogueira (edição e Textos — sem autor
+- `Revistas/101 livros que mudaram a humanidade (Superinteressante) (Z-Library).pdf` → 101 Livros que Mudaram a Humanidade — Superinteressante
+- `Revistas/[Super Interessante] Felipe van Deursen - 3 Mil Anos de Guerra (2017, Editora Abril S. A.) - libgen.li.pdf` → 3 Mil Anos de Guerra — [Super Interessante] Felipe van Deursen
+- `Revistas/As Epidemias Na História - Revista Aventuras Na História - Grupo Perfil.pdf` → As Epidemias na História - Revista Aventuras na História — Grupo Perfil
+- `Revistas/Ciência Proibida_ As experiências científicas mais perigosas, assustadoras e cruéis já realizadas-Superinteressante (2015).epub` → Ciência Proibida: As Experiências Científicas Mais Perigosas, Assustadoras e Cruéis Já Realizadas-Superinteressante (2015) — sem autor
+- `Revistas/Cult 228 – Marx e as Crises do Capitalismo (2020).epub` → Cult 228 – Marx e as Crises do Capitalismo (2020) — sem autor
+- `Revistas/Cult 251 – Parentabilidade e Vulnerabilidades (2020).epub` → Cult 251 – Parentabilidade e Vulnerabilidades (2020) — sem autor
+- `Revistas/Cult 256 – Pulsão de Morte (Autores, Vários [Autores, Vários]) (Z-Library).epub` → Cult 256 – Pulsão de Morte — Autores, Vários [Autores, Vários]
+- `Revistas/Cult 258 – Cancelamento da Cultura, Cultura do Cancelamento (2020).epub` → Cult 258 – Cancelamento da Cultura, Cultura do Cancelamento (2020) — sem autor
+- `Revistas/Dossiê SuperInteressante_ A História do Rock-Abril (209).pdf` → Dossiê SuperInteressante: A História do Rock-Abril (209) — sem autor
+- `Revistas/Revista Mundo Estranho A rebelião da inteligência artificial (Varios) (Z-Library).pdf` → Revista Mundo Estranho a Rebelião da Inteligência Artificial — Varios
+- `Revistas/REVISTA SUPERINTERESSANTE - COMO EXPLICAR O MUNDO PARA CRIANÇAS.pdf` → Revista Superinteressante — COMO EXPLICAR O MUNDO PARA CRIANÇAS
+- `Revistas/Revista Trocados - Vol. 01 - Varios Autores.pdf` → Revista Trocados - Vol. 01 — Varios Autores
+- `Revistas/Rodrigo Rezende - Ciência Nazista-Superinteressante (2014).epub` → Rodrigo Rezende - Ciência Nazista-Superinteressante (2014) — sem autor
+- `Revistas/Salvador Nogueira - Extraterrestres - Onde eles estão e como a ciência tenta encontrá-los-Editora Abril, Super Interessante (2014).epub` → Salvador Nogueira - Extraterrestres - Onde Eles Estão e como a Ciência Tenta Encontrá-los-Editora Abril, Super Interessante (2014) — sem autor
+- `Revistas/Super Interessante - As Revoluções das Três Últimas Décadas em 16 Reportagens Históricas - E Atualizadas-Editora Abril (2017).pdf` → Super Interessante - as Revoluções das Três Últimas Décadas em 16 Reportagens Históricas - e Atualizadas-Editora Abril (2017) — sem autor
+
 ## Itens que não são livros
 
 Apostilas, revistas, artigos e afins: ficam no inventário e não entram no catálogo.
@@ -288,19 +313,39 @@ Apostilas, revistas, artigos e afins: ficam no inventário e não entram no cat�
 - outro: Linguag · pasta `Filosofia`
 - outro: Lista Livros · pasta `psicologia`
 - outro: Lo_____d - Mo_____no · pasta `HQs`
+- periodico: (Coleção Superinteressante)- Prato Sujo - como a Indústria Manipula os Alimentos para Viciar Você!-Editora Abril (2013) · pasta `Revistas`
+- periodico: (Super Interessante - Coleção Mitologia) Livro 1: Deuses. 1-Editora Abril (2011) · pasta `Revistas`
+- periodico: (Super Interessante - Coleção Mitologia) Livro 2: Heróis. 2-Editora Abril (2011) · pasta `Revistas`
+- periodico: (Super Interessante - Coleção Mitologia) Livro 3: Lendas. 3-Editora Abril (2011) · pasta `Revistas`
+- periodico: (Superinteressante Coleções) Salvador Nogueira (edição e Textos · pasta `Revistas`
+- periodico: 101 Livros que Mudaram a Humanidade · pasta `Revistas`
+- periodico: 3 Mil Anos de Guerra · pasta `Revistas`
+- periodico: As Epidemias na História - Revista Aventuras na História · pasta `Revistas`
 - periodico: Científica Ficção 003 · pasta `pasta livros`
 - periodico: Científica Ficção 004 · pasta `pasta livros`
+- periodico: Ciência Proibida: As Experiências Científicas Mais Perigosas, Assustadoras e Cruéis Já Realizadas-Superinteressante (2015) · pasta `Revistas`
 - periodico: Cult 194: Franz Kafka · pasta `pasta livros`
 - periodico: Cult 201: Psicanálise em Outros Verbetes · pasta `pasta livros`
 - periodico: Cult 222: Antonio Gramsci · pasta `pasta livros`
 - periodico: Cult 225: Michel Foucault · pasta `pasta livros`
+- periodico: Cult 228 – Marx e as Crises do Capitalismo (2020) · pasta `Revistas`
+- periodico: Cult 251 – Parentabilidade e Vulnerabilidades (2020) · pasta `Revistas`
 - periodico: Cult 251: Parentabilidade e Vulnerabilidades · pasta `pasta livros`
+- periodico: Cult 256 – Pulsão de Morte · pasta `Revistas`
 - periodico: Cult 256: Pulsão de Morte · pasta `pasta livros`
+- periodico: Cult 258 – Cancelamento da Cultura, Cultura do Cancelamento (2020) · pasta `Revistas`
+- periodico: Dossiê SuperInteressante: A História do Rock-Abril (209) · pasta `Revistas`
 - periodico: Gritos de Horror 001 · pasta `pasta livros`
 - periodico: Gritos de Horror 002 · pasta `pasta livros`
 - periodico: Gritos de Horror 003 · pasta `pasta livros`
 - periodico: Heavy Metal 08 (1977) · pasta `HQs`
 - periodico: Heavy Metal, vol. 33, nº 6 (2009) · pasta `HQs`
+- periodico: Revista Mundo Estranho a Rebelião da Inteligência Artificial · pasta `Revistas`
+- periodico: Revista Superinteressante · pasta `Revistas`
+- periodico: Revista Trocados - Vol. 01 · pasta `Revistas`
+- periodico: Rodrigo Rezende - Ciência Nazista-Superinteressante (2014) · pasta `Revistas`
+- periodico: Salvador Nogueira - Extraterrestres - Onde Eles Estão e como a Ciência Tenta Encontrá-los-Editora Abril, Super Interessante (2014) · pasta `Revistas`
+- periodico: Super Interessante - as Revoluções das Três Últimas Décadas em 16 Reportagens Históricas - e Atualizadas-Editora Abril (2017) · pasta `Revistas`
 
 ## Fora desta importação
 
@@ -308,4 +353,3 @@ O que existe na biblioteca virtual e não foi conferido arquivo por arquivo.
 
 - Edições dentro das pastas de séries: de cada uma das 104 pastas de séries de quadrinhos só o nome é conhecido. Quantas e quais edições há dentro delas não foi conferido.
 - Subpasta sem listagem: `HQs/Mangás`. Só o nome dela é conhecido; o que há dentro não entrou. Para entrar, gere a listagem dela e ponha em `biblioteca-virtual/listagens/`.
-- Arquivos que não são livro nem quadrinho (ignorados): `novasHQSS/plano_policia_penal_rs.html`.
