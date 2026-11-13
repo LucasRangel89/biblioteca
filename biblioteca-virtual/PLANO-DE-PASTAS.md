@@ -11,7 +11,8 @@ primeiro nível. Nada aqui foi movido: é leitura da lista que já existe.
 - **Só uma pasta usa subpasta**: as 105 subpastas de série dentro de `HQs`. Nos outros 38 assuntos, tudo está plano
   na raiz — e é por isso que a varredura de capas, que tentava reconhecer o livro pelo nome da pasta, se perdia: as
   pastas são categorias de prateleira, não séries.
-- **`Pasta Livros` (170) não é um assunto, é o que sobrou**: 78 % dos arquivos dela têm eixo que já tem pasta própria.
+- **`Pasta Livros` (170) não é um assunto, é o que sobrou**: 157 dos 170 arquivos já têm destino pronto — o eixo
+  conferido no inventário aponta para uma pasta que existe; os 13 restantes não têm eixo nenhum.
 - **A "mente" está em doze pastas** (psicologia, psicanalise, autoconhecimento, neurociências, psicologia analítica,
   social e cultural, TCC, clínica e psicopatologia, humanista, avaliação e psicometria, behaviorismo, e "historia
   fundamentos e introducoes psico"): 637 arquivos, e o catálogo chama 482 deles de eixo 14 ("Psicologia e
