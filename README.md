@@ -335,8 +335,9 @@ Na ficha de cada livro, a parte **Suas anotações** guarda o que é seu sobre e
 
 - **Comentários:** um campo de texto de até 5.000 caracteres, salvo sozinho enquanto você escreve.
 - **Possui análise:** uma caixa para dizer que você tem resenha, relatório ou fichamento do livro. É marcada sozinha
-  quando um arquivo é anexado e pode ser marcada ou desmarcada à mão. Em "Mais filtros" → "Suas marcas" → "possui
-  análise", filtra esses livros em qualquer guia.
+  quando você anexa um arquivo **seu** (`.txt`, `.md`, `.pdf`…) e pode ser marcada ou desmarcada à mão. Em "Mais
+  filtros" → "Suas marcas" → "possui análise", filtra esses livros em qualquer guia. Anexar o **próprio livro digital**
+  (`.epub`, `.cbz`, `.cbr`, `.mobi`, `.azw3`, `.djvu`, `.fb2`) não marca nada: é o livro, não uma análise dele.
 - **Arquivos:** "Anexar arquivo…" aceita qualquer tipo, até 5 MB cada e até 8 por livro. Os de texto (`.txt`, `.md`,
   `.csv`, `.html`…) abrem ali mesmo; todos podem ser baixados de volta ou removidos.
 - **Capa:** "Enviar capa…" põe uma imagem sua no lugar da capa do catálogo (ou do desenho com a inicial). A imagem é
@@ -346,6 +347,9 @@ Na ficha de cada livro, a parte **Suas anotações** guarda o que é seu sobre e
   (reduzida do mesmo jeito, guardada no navegador e no backup, e "Tirar a capa enviada" também a tira). Nada sai do
   computador, e nada é feito se o arquivo não trouxer capa. PDF fica de fora: não é um pacote assim, e a "capa" de lá
   seria a primeira página.
+- **Livro digital grande:** um EPUB ou CBZ acima dos 5 MB não é guardado junto do livro (o limite é do armazenamento,
+  não da leitura), mas a capa dele continua sendo lida e aplicada. Só os pedaços do arquivo onde a capa mora são
+  abertos, então o tamanho não pesa na tela.
 
 A aba **Com anotações**, nas tabelas da Visão geral e da Biblioteca, lista os livros com comentário, arquivo ou
 "possui análise"; nas tabelas, um ícone ao lado do título marca esses livros. O CSV leva as colunas "Possui análise" e
@@ -560,6 +564,13 @@ desenho com a inicial do título. Até 11/11/2026 eram 761, todas da primeira fo
 - **Ou anexe o arquivo do livro:** se for EPUB ou CBZ, a capa que vem dentro dele é lida no seu navegador e usada quando
   o livro não tem capa nenhuma (nem enviada, nem do catálogo). É o caminho mais curto para os livros cuja capa o
   catálogo não tem: não depende de internet, não espera o robô das capas e não põe imagem nenhuma no repositório.
+- **Ou varra a pasta inteira:** em "Seus dados" → "Capas dos livros" → **"Buscar capas numa pasta de arquivos…"**, você
+  escolhe a pasta onde ficam seus EPUBs e CBZs e o painel percorre todos de uma vez: reconhece o livro pelo nome do
+  arquivo (ou da pasta em que ele está) e aplica a capa que vem dentro dele. O quadro mostra o andamento e pode ser
+  parado a qualquer momento; no fim, diz quantas capas foram achadas e o que ficou de fora (nomes que não batem com um
+  só livro são deixados em paz, nunca adivinhados). São 400 livros por execução — basta rodar de novo para os demais.
+  Nada é enviado à internet, nenhum arquivo é movido ou alterado, e o que foi aproveitado entra em "Suas anotações"
+  como uma capa enviada (exporte o backup para levar junto).
 
 ### Os temas
 
@@ -619,7 +630,7 @@ Módulos: `00-util` (datas, formatos) · `10-data` (livros, posse, marcadores, t
 exemplos, armazenamento) · `20-charts` (gráficos SVG) · `30-state` (filtros, "ocultar", período, contexto, andamento
 das trilhas, ordem de compra) · `40-panels` (indicadores e painéis) · `50-table` (tabelas e CSV) · `52-listas` (a
 folha para imprimir e a lista em texto) · `54-capa-digital` (abrir EPUB e CBZ no navegador para tirar a capa de dentro)
-· `55-anexos` (comentários, capa enviada, arquivos anexados, backup com anexos) · `60-drawer` (gaveta do livro,
+· `55-anexos` (comentários, capa enviada, arquivos anexados, backup com anexos) · `56-lote-capas` (percorrer uma pasta de arquivos e aproveitar as capas deles) · `60-drawer` (gaveta do livro,
 formulários, cotações, importação) · `70-app` (navegação, inicialização).
 
 ## Testes
@@ -663,7 +674,7 @@ avisa no fim, em vez de dar o teste por completo. `git fetch --unshallow` traz o
 | `busca_capas` | A busca de capas (`tools/capas.py`), sem internet. Open Library: a consulta feita para cada livro, a capa escolhida (edição em português antes da capa da obra), a segunda tentativa só pelo título. Apple Books: a consulta, o resultado que serve (título e autor conferem; caixa, trilogia, resumo e audiolivro não), o endereço da imagem, a espera quando a busca recusa por excesso de consultas. As três em ordem: livro novo passa pelas três; quem já tinha passado por alguma vai só às que faltam; uma fonte fora do ar não atrapalha as outras. O `capas.tsv` (retomar de onde parou, não mexer no que foi posto à mão, a mesma capa em volumes de uma série), a amostra de `--testar` nas fontes; o volume certo em cada casamento; o ISBN (conta de conferência e procura por ele); o Google Books (consulta, imagem em https, língua, caixa e resumo recusados, recusas e desistência); `--sem-google`; o modo `--candidatos` com o motivo de cada recusa; `src/capas.json` e `src/capas-fontes.json` em dia com `catalogo/capas.tsv` |
 | `auditoria_capas` | A auditoria das capas (`tools/auditar_capas.py`), sem internet: os números saem do mesmo cruzamento que gera `src/capas.json`; cada problema da fila (capa que o painel não mostra, capa repetida em volumes, capa da obra, casamento que hoje não se faria, autoria e título a conferir, linha que falta, linha órfã) e o que não é problema; a conferência das imagens por amostra (`--rede`); o relatório sempre igual para o mesmo catálogo, sem data nem hora e sem nada que dependa da rede; `--resumo`, `--conferir` e o `--auditar` do `capas.py`; `catalogo/capas-revisao.md` em dia |
 | `fluxo_capas` | O robô das capas (`.github/workflows/buscar-capas.yml`), lido como arquivo: só roda quando alguém manda; nunca grava no ramo em que rodou (cria `capas/…` e abre PR); a ordem buscar → conferir → amostrar → montar → auditar → testar → PR → conferência final; fonte ou teste falhando vira PR em rascunho e execução vermelha, mesmo sem mudança no `capas.tsv`; a saída da busca fica no resumo; nenhum merge automático; o site continua publicando só de `main` e o HTML versionado; os comandos e opções citados existem. Não executa o GitHub Actions: confere o desenho do fluxo |
-| `capa_digital` | A capa que vem dentro do arquivo digital, sem navegador: EPUBs e CBZs de verdade montados pelo teste (índice do pacote, `properties="cover-image"`, `<meta name="cover">`, caminhos com `../`, `%20` e acento) e o JavaScript do painel rodando no Node — a capa anunciada escolhida, a primeira imagem do miolo recusada, o SVG e o endereço externo ignorados, o pacote truncado ou em ZIP64 devolvendo nada; o fluxo da ficha inteiro (a capa só entra em livro sem capa nenhuma, passa pelo reduzidor de 360 × 540, é gravada como capa enviada e somem as que o livro vai deixando para trás); nada de internet, nada de tela de verdade |
+| `capa_digital` | A capa que vem dentro do arquivo digital, sem navegador: EPUBs e CBZs de verdade montados pelo teste (índice do pacote, `properties="cover-image"`, `<meta name="cover">` por id e por nome de arquivo, caminhos com `../`, `%20` e acento) e o JavaScript do painel rodando no Node — a capa anunciada escolhida, a primeira imagem do miolo recusada, o SVG e o endereço externo ignorados, o pacote truncado ou em ZIP64 devolvendo nada, e a leitura por fatias conferida (num EPUB de 5,6 MB são lidos poucos KB, nunca o arquivo inteiro); o fluxo da ficha inteiro (a capa só entra em livro sem capa nenhuma, passa pelo reduzidor de 360 × 540, é gravada como capa enviada, e anexar o próprio livro não marca "possui análise"); e a varredura de pasta (nome de arquivo e de pasta reconhecidos, ambíguos e livros já com capa deixados em paz, uma capa por livro e nenhum arquivo anexado). Nada de internet, nada de tela de verdade |
 | `fluxo_ci` | O CI rápido (`.github/workflows/verificar.yml`) e a publicação condicionada (`.github/workflows/publicar-site.yml`), lidos como arquivo: PR e ramos de trabalho passam pela conferência; geração determinística, sintaxe JS e sete testes sem navegador; só o job de publicação tem permissão de publicar, depois da conferência e apenas em `main`; `runner.temp` fica no passo, não no env do job. Não executa o GitHub Actions nem substitui a validação do YAML |
 | `inicio` | Como o painel abre e os dados de exemplo: primeira abertura só com o catálogo; "Ver com dados de exemplo", "Limpar dados de exemplo" e "Recomeçar"; o endereço com `?exemplo=1`; **a saída dos exemplos de fábrica** para quem usava o painel anterior — sem edições, com um e com três livros editados, no computador e no celular, e com o painel que estava no ar antes da mudança (tirado do histórico do Git) |
 | `leitura_de_fora` | "Já li" para o livro que não está no acervo (emprestado, de biblioteca, perdido): a ficha da recomendação e a do item da lista de compra oferecem o botão; a leitura conta como "de fora", o livro sai da fila de recomendações e da ordem de compra e a trilha o dá por feito; data e nota opcionais; "Não li" desfaz, também no livro que o catálogo traz como lido; a recomendação lida que vai para a lista de compra e é comprada continua lida; os botões da ficha na largura do celular |

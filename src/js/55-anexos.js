@@ -8,6 +8,9 @@ const ANEXO_MAX = 5 * 1048576;                       // tamanho máximo de um ar
 const CAPA_MAX = [360, 540];                         // a capa enviada é reduzida para caber nisto (largura × altura, em pixels)
 const fTam = n => (n < 1024 ? `${n} B` : n < 1048576 ? `${fInt(Math.round(n / 1024))} KB` : `${fDec(n / 1048576)} MB`);
 const novaChave = () => (Date.now().toString(36) + Math.random().toString(36).slice(2, 10)).slice(0, 18);
+/* formatos que são sempre o próprio livro (e não uma resenha ou relatório): anexá-los não marca “possui análise”.
+   PDF fica de fora da lista de propósito — pode ser o livro que você tem, pode ser um documento seu. */
+const LIVRO_DIGITAL = /\.(epub|cbz|cbr|mobi|azw3|azw|djvu|fb2|lit)$/i;
 const ehTexto = (nome, mime) => /^text\//i.test(mime || '') || /\.(txt|md|markdown|csv|tsv|json|log|tex|rst|org|htm|html|xml|ya?ml)$/i.test(nome || '');
 
 const Anexos = {
@@ -189,25 +192,39 @@ const Notas = {
   },
   async anexar(arq) {
     const b = porId(this.id); if (!b) return;
-    if ((b.anx || []).length >= MAX_ANEXOS) { toast(`Cada livro guarda até ${MAX_ANEXOS} arquivos. Remova um para anexar outro.`, 'aviso'); return; }
-    if (!arq.size) { toast('Este arquivo está vazio.', 'aviso'); return; }
-    if (arq.size > ANEXO_MAX) { toast(`O arquivo tem ${fTam(arq.size)}; o limite é de ${fTam(ANEXO_MAX)} por arquivo.`, 'aviso'); return; }
+    const nome = (arq.name || 'arquivo').slice(0, 120), mime = (arq.type || '').slice(0, 80);
+    const digital = DIGITAL_CAPA.test(nome);                               // EPUB/CBZ: dá para ler a capa sem guardar o arquivo
+    const vazio = !arq.size, grande = arq.size > ANEXO_MAX, cheios = (b.anx || []).length >= MAX_ANEXOS;
+    const fora = vazio ? 'Este arquivo está vazio.'
+      : cheios ? `Cada livro guarda até ${MAX_ANEXOS} arquivos. Remova um para anexar outro.`
+      : grande ? `O arquivo tem ${fTam(arq.size)}; o limite é de ${fTam(ANEXO_MAX)} por arquivo.` : '';
+    if (fora && !(digital && !vazio)) { toast(fora, 'aviso'); return; }   // o que não é livro digital obedece às regras de sempre
     if (!(await this.podeGuardar())) return;
-    const capa = await this.capaDoArquivoDigital(arq, b);                    // só a leitura: nada é gravado enquanto o arquivo não estiver anexado
-    const k = novaChave(), nome = (arq.name || 'arquivo').slice(0, 120), mime = (arq.type || '').slice(0, 80);
-    try { await Anexos.gravar({ k, livro: b.id, tipo: 'arquivo', nome, mime, tam: arq.size, dia: DB.hoje, dados: await lerArquivo(arq) }); }
-    catch (e) { toast('Não foi possível guardar o arquivo neste navegador (sem espaço, ou o arquivo não pôde ser lido).', 'erro'); return; }
-    if (porId(b.id) !== b) { Anexos.apagar([k]); return; }                    // o livro saiu do painel enquanto o arquivo era lido
-    if (this.id === b.id) this.guardar();
-    (b.anx || (b.anx = [])).push([k, nome, arq.size, DB.hoje, mime]);
-    const marcou = !b.tags.includes(TAG_ANALISE); defTag(b, TAG_ANALISE, true);
+    const capa = await this.capaDoArquivoDigital(arq, b);                  // só a leitura, no computador: nenhum limite de tamanho a atrapalha
+    let anexado = false;
+    if (!fora) {
+      const k = novaChave();
+      try { await Anexos.gravar({ k, livro: b.id, tipo: 'arquivo', nome, mime, tam: arq.size, dia: DB.hoje, dados: await lerArquivo(arq) }); }
+      catch (e) { toast('Não foi possível guardar o arquivo neste navegador (sem espaço, ou o arquivo não pôde ser lido).', 'erro'); return; }
+      if (porId(b.id) !== b) { Anexos.apagar([k]); return; }               // o livro saiu do painel enquanto o arquivo era lido
+      if (this.id === b.id) this.guardar();
+      (b.anx || (b.anx = [])).push([k, nome, arq.size, DB.hoje, mime]);
+      anexado = true;
+    }
     let virouCapa = false;
-    if (capa && !b.cp) {                       // o livro ganhou uma capa enquanto o arquivo era lido? então não é a nossa
+    if (capa && !b.cp) {                        // o livro ganhou uma capa enquanto o arquivo era lido? então a nossa não entra
       const [kc] = await this.gravarCapa(b, capa.dados, capa.nome);
       if (kc && b.cp) Anexos.apagar([kc]).catch(() => {});
       else if (kc) { b.cp = kc; virouCapa = true; }
     }
-    tocar(b); toast((marcou ? 'Arquivo anexado. O livro foi marcado com “possui análise”.' : 'Arquivo anexado.') + (virouCapa ? ' A capa que estava dentro do arquivo virou a capa do livro.' : ''));
+    if (!anexado && !virouCapa) { toast(fora, 'aviso'); return; }          // nada mudou na ficha: o motivo, dito como sempre foi
+    const marcou = anexado && !LIVRO_DIGITAL.test(nome) && !b.tags.includes(TAG_ANALISE);   // um arquivo seu é análise; o próprio livro digital, não
+    if (marcou) defTag(b, TAG_ANALISE, true);
+    tocar(b);
+    toast((anexado ? (marcou ? 'Arquivo anexado. O livro foi marcado com “possui análise”.' : 'Arquivo anexado.')
+      : grande ? `O arquivo é grande demais para ficar guardado aqui (${fTam(arq.size)}; o limite é ${fTam(ANEXO_MAX)}) — mas a capa dele foi lida e virou a capa do livro.`
+      : `Este livro já guarda ${MAX_ANEXOS} arquivos, então ele não foi anexado — mas a capa dele foi lida e virou a capa do livro.`)
+      + (virouCapa && anexado ? ' A capa que estava dentro do arquivo virou a capa do livro.' : ''));
   },
   /* EPUB e CBZ trazem a capa dentro do arquivo (ver 54-capa-digital): usamos a imagem, lida aqui no navegador, sem
      internet. Só quando o livro está sem capa nenhuma — nem uma enviada, nem a do catálogo —, para nunca trocar uma

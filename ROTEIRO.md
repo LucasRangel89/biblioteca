@@ -989,7 +989,7 @@ e por último melhorar como as capas aparecem no painel. Quatro partes, nesta or
 | 2 | Casamento mais seguro e uma fonte nova | **Feita** (12/11/2026) — o Google ainda não respondeu nas buscas manuais; caminho gratuito mesclado no PR #16 |
 | 3 | O robô das capas abrindo um PR para revisão | **Feita** (12/11/2026) — o disparo manual funcionou (#9 e #10), mas sem capa nova; falta a busca curta de conferência |
 | 4 | As capas no painel: capa maior, aviso de outra edição, grade | **Feita** (12/11/2026) |
-| 5 | A capa que vem dentro do arquivo digital | **Em parte** (12/11/2026) — EPUB e CBZ lidos no navegador ao anexar; PDF fica de fora, por escolha sua |
+| 5 | A capa que vem dentro do arquivo digital | **Feita** (12/11/2026) — EPUB e CBZ lidos no navegador ao anexar e na varredura de pasta; PDF fica de fora, por escolha sua |
 
 ### Caminho gratuito (PR #16, mesclado em 12/11/2026)
 
@@ -1009,7 +1009,7 @@ O próximo passo seguro continua sendo uma busca curta em `main`, com **limite 4
 Google antes de repetir ou marcar os 967 como procurados. Depois disso, medir o ganho numa amostra de cerca de 100
 livros sem capa antes de expandir qualquer piloto.
 
-### Parte 5 — A capa que vem dentro do arquivo (preparada nesta branch)
+### Parte 5 — A capa que vem dentro do arquivo
 
 **Pedida em 12/11/2026, depois de o `Buscar capas` falhar de novo** (execução 43428251481: sete consultas sem
 resposta do Google Books, 43 livros ficaram para a próxima). O catálogo não tem capa para 1.050 livros — mas muitos
@@ -1022,12 +1022,29 @@ deles têm o arquivo, e o arquivo costuma trazer a capa dentro de si.
   já existe nunca é trocada pela do arquivo. "Tirar a capa enviada" desfaz o que foi extraído.
 - **EPUB e CBZ, não PDF** — escolha sua, registrada aqui. PDF não é pacote `.zip` e a "capa" de lá seria a primeira
   página, que precisa ser renderizada; fica para uma etapa própria, se um dia valer a pena.
+- **O que a primeira experiência mostrou (ainda nesta branch).** Testado no painel, três ajustes:
+  1. *o limite de 5 MB da anexação travava o livro digital grande* → o leitor passou a abrir só os pedaços do pacote
+     onde a capa mora (a cauda, o índice e a entrada da imagem), então um EPUB de dezenas de megabytes é lido sem
+     pesar na memória; se ele passa do limite, **não é guardado junto do livro, mas a capa dele continua sendo lida**;
+  2. *o card ficava marcado como "possui análise", e não é o caso* → anexar um formato que é sempre o próprio livro
+     (`.epub`, `.cbz`, `.cbr`, `.mobi`, `.azw3`, `.djvu`, `.fb2`) não põe mais essa marca. PDF continua pondo: pode ser
+     o livro, pode ser um relatório seu;
+  3. *um por um é lento* → o botão **"Buscar capas numa pasta de arquivos…"**, em "Seus dados" → "Capas dos livros":
+     você escolhe a pasta, o painel reconhece cada livro pelo nome do arquivo (ou da pasta) e aplica as capas de uma
+     vez, com quadro de andamento, botão "Parar" e resumo no fim. 400 livros por execução — para os demais, rodar de
+     novo. Nada é movido, copiado ou enviado.
+- **Como reconhece o livro:** nome do arquivo ou da pasta, sem extensão, sem numeração de edição, sem o ano, minúsculo
+  e sem acento; bate exato com o título, ou o título abre o nome do arquivo (`Ecce Homo - Friedrich Nietzsche.epub`).
+  Dois livros com o mesmo título, ou um nome que não bate com nenhum, ficam de fora e são contados no resumo — nada de
+  palpite. A primeira edição de uma série fica; as seguintes, não.
 - **Sem internet, sem loja, sem nada no repositório.** Nada é enviado a lugar nenhum: a leitura acontece no navegador
   de quem anexa o arquivo. O painel não chama `fetch` nenhum nesse caminho (o teste confere isso no arquivo).
 - **Testes.** `tools/qa/capa_digital.py` monta EPUBs e CBZs de verdade (índice, `cover-image`, `<meta name="cover">`,
-  caminhos com `../`, `%20` e acento, pacote truncado, SVG, ZIP64) e roda no Node o JavaScript do painel, incluindo o
-  fluxo da ficha com um IndexedDB imitado. Com ele, o nível rápido passa a **sete testes** e a suíte completa a
-  **39 testes**. A parte que depende de tela de verdade (o `Enviar capa…` de sempre) continua coberta por `anotacoes`.
+  caminhos com `../`, `%20` e acento, pacote truncado, SVG, ZIP64, um EPUB de 5,6 MB) e roda no Node o JavaScript do
+  painel: a escolha da capa, o fluxo da ficha com um IndexedDB imitado e a varredura de pasta com um quadro de mentirinha
+  — **91 previsões**. Confere também, no arquivo, que nada disso toca a internet ou o `localStorage`. Com ele, o nível
+  rápido passa a **sete testes** e a suíte completa a **39 testes**. A parte que depende de tela de verdade (o
+  `Enviar capa…` de sempre) continua coberta por `anotacoes`.
 
 ### Parte 4 — As capas no painel
 

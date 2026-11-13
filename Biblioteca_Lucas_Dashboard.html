@@ -3828,69 +3828,70 @@ function folhaDaTrilha(t, x) {
      adivinhamos pela primeira imagem: um EPUB tem muitas, e a primeira costuma ser do miolo.
    · CBZ — a capa é a primeira imagem da história; uma que diga "cover" (ou "capa") no nome tem prioridade.
    · PDF fica de fora: não é um pacote .zip, e a "capa" de lá seria a primeira página, que precisa ser renderizada.
-   O que der errado — pacote truncado, índice em ZIP64, imagem que não está lá — devolve null em silêncio: anexar o
-   arquivo não depende de nada daqui dar certo. */
+   Só os pedaços necessários são lidos (a cauda, o índice e a entrada da capa), então um livro de 200 MB não pesa na
+   memória e o limite de anexação não trava a extração. O que der errado — pacote truncado, índice em ZIP64, imagem
+   que não está lá — devolve null em silêncio: anexar o arquivo não depende de nada daqui dar certo. */
 const DIGITAL_CAPA = /\.(epub|cbz)$/i;                     // os formatos de que sabemos tirar a capa, pelo nome do arquivo
 const IMG_FORMATO = { jpg: 'image/jpeg', jpeg: 'image/jpeg', png: 'image/png', webp: 'image/webp', gif: 'image/gif', bmp: 'image/bmp' };
 const LIM_PACOTE = 16 * 1048576;                           // nenhuma imagem de capa precisa vir guardada num bloco maior que este
+const LIM_INDICE = 8 * 1048576;                            // tamanho máximo do índice do pacote que nos dispomos a ler
+const ZIP_FIM = 0x06054b50, ZIP_CD = 0x02014b50, ZIP_LOCAL = 0x04034b50;
 const soNomeDoCaminho = c => String(c).split('/').pop() || '';
 const formatoDaImagem = nome => IMG_FORMATO[(soNomeDoCaminho(nome).split('.').pop() || '').toLowerCase()] || '';
 
-/* o arquivo inteiro em bytes: File.arrayBuffer() é o caminho de hoje; FileReader, o reserva */
-async function bytesDoArquivo(arq) {
-  if (arq && arq.arrayBuffer) return new Uint8Array(await arq.arrayBuffer());
-  return await new Promise((res, rej) => {
-    const l = new FileReader();
-    l.onload = () => res(new Uint8Array(l.result));
-    l.onerror = () => rej(l.error || new Error('não foi possível ler o arquivo'));
-    l.readAsArrayBuffer(arq);
-  });
+/* Fonte de bytes: um File do navegador (lido em pedaços, por fatia) ou um Uint8Array (o caminho dos testes). */
+function fonteDe(arq) {
+  if (arq instanceof Uint8Array) return { tam: arq.length, pedacos: 0, ler(i, n) { this.pedacos++; return Promise.resolve(arq.subarray(Math.min(i, arq.length), Math.min(i + n, arq.length))); } };
+  return { tam: (arq && arq.size) || 0, pedacos: 0,
+    ler(i, n) { this.pedacos++; return (arq.slice ? arq.slice(i, i + n) : arq).arrayBuffer().then(b => new Uint8Array(b)); } };
 }
 
-/* O índice do fim do pacote ("end of central directory"): nome, compressão, tamanho e posição de cada arquivo. É por
-   ele que se lê um .zip sem percorrer o pacote inteiro — e é a parte que um arquivo truncado ou de outro formato não tem. */
-function listarZip(v) {
-  const dv = new DataView(v.buffer, v.byteOffset, v.byteLength);
+/* O índice do fim do pacote ("end of central directory") e, a partir dele, a lista de arquivos: nome, compressão,
+   tamanho e posição de cada um. É por ele que se lê um .zip sem percorrer o pacote inteiro — e é a parte que um
+   arquivo truncado, ou de outro formato, não tem. */
+async function listarZip(f) {
+  if (!f || !f.tam || f.tam < 22) return [];
+  const janela = Math.min(f.tam, 66000), cauda = await f.ler(f.tam - janela, janela);
+  const dv = new DataView(cauda.buffer, cauda.byteOffset, cauda.byteLength);
   let fim = -1;
-  for (let i = v.length - 22; i >= Math.max(0, v.length - 66000); i--) if (dv.getUint32(i, true) === 0x06054b50) { fim = i; break; }
+  for (let i = cauda.length - 22; i >= 0; i--) if (dv.getUint32(i, true) === ZIP_FIM) { fim = i; break; }
   if (fim < 0) return [];
   const n = dv.getUint16(fim + 10, true), ini = dv.getUint32(fim + 16, true);
-  if (n === 0xffff || ini === 0xffffffff) return [];                                 // pacote grande demais (ZIP64): não lemos
-  const dec = new TextDecoder(), out = [];                                           // nomes em UTF-8 (ou cp437: o decodificador tolera)
-  for (let p = ini, i = 0; i < n && p + 46 <= v.length; i++) {
-    if (dv.getUint32(p, true) !== 0x02014b50) break;
-    const nomeLen = dv.getUint16(p + 28, true), extraLen = dv.getUint16(p + 30, true), comLen = dv.getUint16(p + 32, true);
-    out.push({ nome: dec.decode(v.subarray(p + 46, p + 46 + nomeLen)).replace(/\\/g, '/'), metodo: dv.getUint16(p + 10, true),
-               tam: dv.getUint32(p + 20, true), ini: dv.getUint32(p + 42, true) });
+  if (n === 0xffff || ini === 0xffffffff || ini >= f.tam) return [];             // pacote grande demais (ZIP64): não lemos
+  const dec = new TextDecoder(), out = [], bruto = (f.tam - janela) + fim - ini; // o índice termina onde começa o que achamos
+  const corpo = await f.ler(ini, Math.min(Math.max(bruto, 0), LIM_INDICE));
+  const d = new DataView(corpo.buffer, corpo.byteOffset, corpo.byteLength);
+  for (let p = 0, i = 0; i < n && p + 46 <= corpo.length; i++) {
+    if (d.getUint32(p, true) !== ZIP_CD) break;
+    const nomeLen = d.getUint16(p + 28, true), extraLen = d.getUint16(p + 30, true), comLen = d.getUint16(p + 32, true);
+    out.push({ nome: dec.decode(corpo.subarray(p + 46, p + 46 + nomeLen)).replace(/\\/g, '/'), metodo: d.getUint16(p + 10, true),
+               tam: d.getUint32(p + 20, true), ini: d.getUint32(p + 42, true) });
     p += 46 + nomeLen + extraLen + comLen;
   }
   return out;
 }
 
-/* Os bytes de uma entrada, antes de descomprimir. O cabeçalho local repete o nome do arquivo e traz os campos extras,
-   e é ele que diz onde o conteúdo começa; o tamanho vem do índice (em pacote escrito às pressas o cabeçalho local vem zerado). */
-function fatiaZip(v, e) {
-  const dv = new DataView(v.buffer, v.byteOffset, v.byteLength);
-  if (!e || e.ini + 30 > v.length || dv.getUint32(e.ini, true) !== 0x04034b50) return null;
-  const ini = e.ini + 30 + dv.getUint16(e.ini + 26, true) + dv.getUint16(e.ini + 28, true);
-  if (ini + e.tam > v.length) return null;
-  return v.subarray(ini, ini + e.tam);
-}
-
-/* O conteúdo de uma entrada, descomprimido. "stored" (0) já vem pronto; "deflate" (8) é o que o navegador sabe abrir
-   com DecompressionStream — o mesmo descompressor usado para baixar arquivos, sem biblioteca nenhuma. */
-async function blocoDoZip(v, e) {
-  if (!e || !e.tam || e.tam > LIM_PACOTE) return null;
-  const bruto = fatiaZip(v, e); if (!bruto) return null;
+/* O conteúdo de uma entrada, lido do arquivo: o cabeçalho local (30 bytes) repete o nome e traz os campos extras, e é
+   ele que diz onde o conteúdo começa; o tamanho vem do índice (num pacote escrito às pressas o cabeçalho local vem
+   zerado). "stored" já vem pronto; "deflate" é o que o navegador abre com DecompressionStream — sem biblioteca. */
+async function bytesDaEntrada(f, e) {
+  if (!f || !e || !e.tam || e.tam > LIM_PACOTE || e.ini + 30 > f.tam) return null;
+  const cab = await f.ler(e.ini, 30);
+  if (cab.length < 30 || new DataView(cab.buffer, cab.byteOffset, cab.byteLength).getUint32(0, true) !== ZIP_LOCAL) return null;
+  const dv = new DataView(cab.buffer, cab.byteOffset, cab.byteLength);
+  const ini = e.ini + 30 + dv.getUint16(26, true) + dv.getUint16(28, true);
+  if (ini + e.tam > f.tam) return null;
+  const bruto = await f.ler(ini, e.tam);
+  if (bruto.length !== e.tam) return null;                                        // pacote truncado: nada é descomprimido pela metade
   if (e.metodo === 0) return bruto;
   if (e.metodo !== 8 || typeof DecompressionStream !== 'function') return null;
   try {
     const s = new Blob([bruto]).stream().pipeThrough(new DecompressionStream('deflate-raw'));
     const fora = new Uint8Array(await new Response(s).arrayBuffer());
-    return fora.length && fora.length <= 64 * 1048576 ? fora : null;                 // nada aqui precisa descomprimir mais que isto
+    return fora.length && fora.length <= 64 * 1048576 ? fora : null;               // nada aqui precisa descomprimir mais que isto
   } catch (err) { return null; }
 }
-const textoDoZip = async (v, e) => { const b = await blocoDoZip(v, e); return b ? new TextDecoder().decode(b) : ''; };
+const textoDaEntrada = async (f, e) => { const b = await bytesDaEntrada(f, e); return b ? new TextDecoder().decode(b) : ''; };
 
 /* atributos de uma etiqueta XML, em minúsculas: o índice do EPUB escreve as aspas e a ordem como quer */
 function atributosDe(tag) {
@@ -3939,28 +3940,28 @@ async function capaDoDigital(arq) {
   try {
     const nome = (arq && arq.name) || '';
     if (!DIGITAL_CAPA.test(nome)) return null;
-    const v = await bytesDoArquivo(arq);
-    if (!v || v.length < 22) return null;
-    const lista = listarZip(v); if (!lista.length) return null;
+    const f = fonteDe(arq);
+    if (f.tam < 22) return null;
+    const lista = await listarZip(f); if (!lista.length) return null;
     const caminhos = lista.map(e => e.nome);
-    const porCaminho = new Map(caminhos.map((c, i) => [c.toLowerCase(), i]));        // o pacote pode grafar as maiúsculas de outro jeito
+    const porCaminho = new Map(caminhos.map((c, i) => [c.toLowerCase(), i]));      // o pacote pode grafar as maiúsculas de outro jeito
     let alvo = '';
     if (/\.epub$/i.test(nome)) {
       let opf = '';
-      const c = porCaminho.get('meta-inf/container.xml');                            // container.xml diz onde está o índice do livro
-      if (c != null) opf = caminhoRelativo('', (/full-path\s*=\s*["']([^"']*)["']/i.exec(await textoDoZip(v, lista[c])) || [])[1] || '');
+      const c = porCaminho.get('meta-inf/container.xml');                          // container.xml diz onde está o índice do livro
+      if (c != null) opf = caminhoRelativo('', (/full-path\s*=\s*["']([^"']*)["']/i.exec(await textoDaEntrada(f, lista[c])) || [])[1] || '');
       if (!opf) { const soOpf = caminhos.filter(n => /\.opf$/i.test(n)); if (soOpf.length !== 1) return null; opf = soOpf[0]; }
       const oi = porCaminho.get(opf.toLowerCase()); if (oi == null) return null;
-      alvo = capaAnunciadaEpub(await textoDoZip(v, lista[oi]), opf);
+      alvo = capaAnunciadaEpub(await textoDaEntrada(f, lista[oi]), opf);
     } else {
       alvo = capaDoCbz(caminhos);
     }
     if (!alvo) return null;
     const i = porCaminho.get(alvo.toLowerCase()); if (i == null) return null;
     const e = lista[i]; if (!formatoDaImagem(e.nome)) return null;
-    const dados = await blocoDoZip(v, e); if (!dados) return null;
+    const dados = await bytesDaEntrada(f, e); if (!dados) return null;
     return { blob: new Blob([dados], { type: formatoDaImagem(e.nome) }), nome: soNomeDoCaminho(e.nome) };
-  } catch (err) { return null; }                                                      // arquivo danificado ou formato que não sabemos ler: segue sem capa, sem aviso
+  } catch (err) { return null; }                                                    // arquivo danificado ou formato que não sabemos ler: segue sem capa, sem aviso
 }
 
 /* ───────────────────────── anotações do usuário: comentários, capa enviada e arquivos anexados ─────────────────────────
@@ -3973,6 +3974,9 @@ const ANEXO_MAX = 5 * 1048576;                       // tamanho máximo de um ar
 const CAPA_MAX = [360, 540];                         // a capa enviada é reduzida para caber nisto (largura × altura, em pixels)
 const fTam = n => (n < 1024 ? `${n} B` : n < 1048576 ? `${fInt(Math.round(n / 1024))} KB` : `${fDec(n / 1048576)} MB`);
 const novaChave = () => (Date.now().toString(36) + Math.random().toString(36).slice(2, 10)).slice(0, 18);
+/* formatos que são sempre o próprio livro (e não uma resenha ou relatório): anexá-los não marca “possui análise”.
+   PDF fica de fora da lista de propósito — pode ser o livro que você tem, pode ser um documento seu. */
+const LIVRO_DIGITAL = /\.(epub|cbz|cbr|mobi|azw3|azw|djvu|fb2|lit)$/i;
 const ehTexto = (nome, mime) => /^text\//i.test(mime || '') || /\.(txt|md|markdown|csv|tsv|json|log|tex|rst|org|htm|html|xml|ya?ml)$/i.test(nome || '');
 
 const Anexos = {
@@ -4154,25 +4158,39 @@ const Notas = {
   },
   async anexar(arq) {
     const b = porId(this.id); if (!b) return;
-    if ((b.anx || []).length >= MAX_ANEXOS) { toast(`Cada livro guarda até ${MAX_ANEXOS} arquivos. Remova um para anexar outro.`, 'aviso'); return; }
-    if (!arq.size) { toast('Este arquivo está vazio.', 'aviso'); return; }
-    if (arq.size > ANEXO_MAX) { toast(`O arquivo tem ${fTam(arq.size)}; o limite é de ${fTam(ANEXO_MAX)} por arquivo.`, 'aviso'); return; }
+    const nome = (arq.name || 'arquivo').slice(0, 120), mime = (arq.type || '').slice(0, 80);
+    const digital = DIGITAL_CAPA.test(nome);                               // EPUB/CBZ: dá para ler a capa sem guardar o arquivo
+    const vazio = !arq.size, grande = arq.size > ANEXO_MAX, cheios = (b.anx || []).length >= MAX_ANEXOS;
+    const fora = vazio ? 'Este arquivo está vazio.'
+      : cheios ? `Cada livro guarda até ${MAX_ANEXOS} arquivos. Remova um para anexar outro.`
+      : grande ? `O arquivo tem ${fTam(arq.size)}; o limite é de ${fTam(ANEXO_MAX)} por arquivo.` : '';
+    if (fora && !(digital && !vazio)) { toast(fora, 'aviso'); return; }   // o que não é livro digital obedece às regras de sempre
     if (!(await this.podeGuardar())) return;
-    const capa = await this.capaDoArquivoDigital(arq, b);                    // só a leitura: nada é gravado enquanto o arquivo não estiver anexado
-    const k = novaChave(), nome = (arq.name || 'arquivo').slice(0, 120), mime = (arq.type || '').slice(0, 80);
-    try { await Anexos.gravar({ k, livro: b.id, tipo: 'arquivo', nome, mime, tam: arq.size, dia: DB.hoje, dados: await lerArquivo(arq) }); }
-    catch (e) { toast('Não foi possível guardar o arquivo neste navegador (sem espaço, ou o arquivo não pôde ser lido).', 'erro'); return; }
-    if (porId(b.id) !== b) { Anexos.apagar([k]); return; }                    // o livro saiu do painel enquanto o arquivo era lido
-    if (this.id === b.id) this.guardar();
-    (b.anx || (b.anx = [])).push([k, nome, arq.size, DB.hoje, mime]);
-    const marcou = !b.tags.includes(TAG_ANALISE); defTag(b, TAG_ANALISE, true);
+    const capa = await this.capaDoArquivoDigital(arq, b);                  // só a leitura, no computador: nenhum limite de tamanho a atrapalha
+    let anexado = false;
+    if (!fora) {
+      const k = novaChave();
+      try { await Anexos.gravar({ k, livro: b.id, tipo: 'arquivo', nome, mime, tam: arq.size, dia: DB.hoje, dados: await lerArquivo(arq) }); }
+      catch (e) { toast('Não foi possível guardar o arquivo neste navegador (sem espaço, ou o arquivo não pôde ser lido).', 'erro'); return; }
+      if (porId(b.id) !== b) { Anexos.apagar([k]); return; }               // o livro saiu do painel enquanto o arquivo era lido
+      if (this.id === b.id) this.guardar();
+      (b.anx || (b.anx = [])).push([k, nome, arq.size, DB.hoje, mime]);
+      anexado = true;
+    }
     let virouCapa = false;
-    if (capa && !b.cp) {                       // o livro ganhou uma capa enquanto o arquivo era lido? então não é a nossa
+    if (capa && !b.cp) {                        // o livro ganhou uma capa enquanto o arquivo era lido? então a nossa não entra
       const [kc] = await this.gravarCapa(b, capa.dados, capa.nome);
       if (kc && b.cp) Anexos.apagar([kc]).catch(() => {});
       else if (kc) { b.cp = kc; virouCapa = true; }
     }
-    tocar(b); toast((marcou ? 'Arquivo anexado. O livro foi marcado com “possui análise”.' : 'Arquivo anexado.') + (virouCapa ? ' A capa que estava dentro do arquivo virou a capa do livro.' : ''));
+    if (!anexado && !virouCapa) { toast(fora, 'aviso'); return; }          // nada mudou na ficha: o motivo, dito como sempre foi
+    const marcou = anexado && !LIVRO_DIGITAL.test(nome) && !b.tags.includes(TAG_ANALISE);   // um arquivo seu é análise; o próprio livro digital, não
+    if (marcou) defTag(b, TAG_ANALISE, true);
+    tocar(b);
+    toast((anexado ? (marcou ? 'Arquivo anexado. O livro foi marcado com “possui análise”.' : 'Arquivo anexado.')
+      : grande ? `O arquivo é grande demais para ficar guardado aqui (${fTam(arq.size)}; o limite é ${fTam(ANEXO_MAX)}) — mas a capa dele foi lida e virou a capa do livro.`
+      : `Este livro já guarda ${MAX_ANEXOS} arquivos, então ele não foi anexado — mas a capa dele foi lida e virou a capa do livro.`)
+      + (virouCapa && anexado ? ' A capa que estava dentro do arquivo virou a capa do livro.' : ''));
   },
   /* EPUB e CBZ trazem a capa dentro do arquivo (ver 54-capa-digital): usamos a imagem, lida aqui no navegador, sem
      internet. Só quando o livro está sem capa nenhuma — nem uma enviada, nem a do catálogo —, para nunca trocar uma
@@ -4228,6 +4246,120 @@ const Notas = {
       Anexos.apagar([k]).catch(() => {});
       tocar(b); toast(!b.anx && b.tags.includes(TAG_ANALISE) ? 'Arquivo removido. A marca “possui análise” continua: desmarque se não valer mais.' : 'Arquivo removido.');
     }, true);
+  },
+};
+
+/* ───────────────────────── capas para muitos livros de uma vez, lidas da própria pasta ─────────────────────────
+   Faltam capas e há arquivos sobrando na pasta. Este módulo percorre uma pasta escolhida pelo usuário, reconhece o
+   livro de cada EPUB e CBZ pelo nome (o do arquivo ou o da pasta em que ele está) e põe a capa que vem dentro do
+   arquivo no painel — todos de uma vez, sem internet: só os pedaços do pacote onde a capa mora são lidos, e nada é
+   enviado a lugar nenhum.
+   · só entra em livro que não tem capa nenhuma: quem tem capa enviada ou capa no catálogo é deixado em paz;
+   · o arquivo em si não é guardado (aqui só se aproveita a capa); se o usuário quiser o arquivo junto do livro, anexa
+     um por um na ficha;
+   · um título nunca é adivinhado: nomes que não batem, ou que batem em mais de um livro, ficam de fora e são contados;
+   · um limite por execução (LOTE_MAX) mantém o backup e o banco do navegador em tamanho saudável — basta rodar de novo.
+   O que faz o trabalho pesado está em 54-capa-digital (abrir o pacote) e em 55-anexos (guardar a capa e a
+   lista de formatos que são o próprio livro). */
+const LOTE_MAX = 400;                                                        // capas aproveitadas por execução
+const CHAVE_MIN = 10;                                                        // "um título dentro do outro" só vale a partir disto
+
+/* nome de arquivo ou de pasta → chave de comparação: sem extensão, sem numeração de edição, sem o ano, minúsculo e sem acento */
+function chaveDeNome(s) {
+  let x = String(s || '').replace(/\.[a-z0-9]{1,6}$/i, ' ');
+  x = x.replace(/[([]\s*(?:19|20)\d\d\s*[)\]]\s*$/g, ' ');
+  x = norm(x).replace(/[^a-z0-9]+/g, ' ').trim();
+  x = x.replace(/^(?:v|t|no|n|#)?\d{1,4}\s+/, '').replace(/^\d{1,4}\s*[-–]\s*/, '').replace(/\s*[-–]\s*\d{1,4}$/, '');
+  x = x.replace(/\s+\d{1,4}(?:\s+de\s+\d{1,4})?$/, '');
+  return x.replace(/\s+/g, ' ').trim();
+}
+const caminhoDoArquivo = a => String((a && (a.webkitRelativePath || a.path)) || (a && a.name) || '').replace(/\\/g, '/');
+
+/* arquivos da pasta → o que dá para aproveitar: pares {arquivo, livro}, e o que ficou de fora com o motivo */
+function planejarLote(arquivos, livros) {
+  const digitais = (arquivos || []).filter(a => a && DIGITAL_CAPA.test(a.name || '') && a.size > 0);
+  const semCapa = (livros || []).filter(b => !b.cp && !temCapa(b));
+  const chaves = semCapa.map(b => ({ b, c: chaveDeNome(b.t) })).filter(x => x.c);
+  const exatas = new Map();
+  for (const x of chaves) { const l = exatas.get(x.c) || []; l.push(x.b); exatas.set(x.c, l); }
+  const usados = new Set(), pares = [], ambigueis = [], semLivro = [], repetidos = [];
+  for (const a of digitais) {
+    const partes = caminhoDoArquivo(a).split('/'), base = partes.pop() || a.name;
+    const chavesDoArquivo = [chaveDeNome(base), partes.length ? chaveDeNome(partes.pop()) : ''].filter(Boolean);
+    let escolha = null, motivo = '';
+    for (const c of chavesDoArquivo) {                          // primeiro o que bate exatamente com um título do catálogo
+      const l = exatas.get(c) || [];
+      if (l.length === 1) { escolha = l[0]; break; }
+      if (l.length > 1) { motivo = 'mais de um livro tem este título'; break; }
+    }
+    if (!escolha && !motivo) {                                  // e, se não bate, um título dentro do outro (nomes longos o bastante)
+      for (const c of chavesDoArquivo) {
+        const batem = [...new Set(chaves.filter(x => { const [curto, longo] = x.c.length <= c.length ? [x.c, c] : [c, x.c];   // um título que abre o nome do arquivo, ou aparece dentro dele
+          return longo.startsWith(curto) ? curto.length >= 6 : curto.length >= CHAVE_MIN && longo.includes(curto);
+        }).map(x => x.b.id))];
+        if (batem.length === 1) { escolha = semCapa.find(b => b.id === batem[0]); break; }
+        if (batem.length > 1) { motivo = 'mais de um livro combina com este nome'; break; }
+      }
+    }
+    if (escolha && usados.has(escolha.id)) { repetidos.push(a.name); continue; }   // a primeira imagem da série fica, as outras não
+    if (escolha) { usados.add(escolha.id); pares.push({ arq: a, livro: escolha }); }
+    else (motivo ? ambigueis : semLivro).push({ nome: a.name, motivo });
+  }
+  return { pares, ambigueis, semLivro, repetidos, totais: { arquivos: (arquivos || []).length, digitais: digitais.length, semCapa: semCapa.length } };
+}
+
+const LoteCapas = {
+  emCurso: false, parar: false, st: null,
+  escolher() {
+    if (this.emCurso) { toast('A busca por capas já está em andamento.', 'aviso'); return; }
+    const i = document.createElement('input');
+    i.type = 'file'; i.hidden = true; i.multiple = true; i.setAttribute('aria-hidden', 'true'); i.setAttribute('webkitdirectory', ''); i.setAttribute('directory', '');
+    if (!('webkitdirectory' in i)) { toast('Este navegador não permite escolher uma pasta inteira. Na ficha de cada livro, “Anexar arquivo…” aceita o EPUB ou o CBZ dele, e a capa é lida do mesmo jeito.', 'aviso'); return; }
+    i.addEventListener('change', () => { const arqs = [...(i.files || [])]; i.remove(); this.rodar(arqs); });      // o input sai de cena: a lista fica só na memória
+    document.body.appendChild(i); i.click();
+  },
+  async rodar(arquivos) {
+    const plano = planejarLote(arquivos, DB.livros);
+    if (!plano.totais.arquivos) { toast('A pasta escolhida não tem arquivo nenhum.', 'aviso'); return; }
+    if (!plano.totais.digitais) { toast(`Nenhum EPUB ou CBZ na pasta escolhida (${plural(plano.totais.arquivos, 'arquivo', 'arquivos')}).`, 'aviso'); return; }
+    if (!plano.pares.length) {
+      toast(plano.totais.semCapa ? `Foram ${plural(plano.totais.digitais, 'livro digital', 'livros digitais')} na pasta, mas nenhum foi reconhecido entre os ${fInt(plano.totais.semCapa)} livros sem capa. Confira o nome dos arquivos.` : 'Todos os livros do painel já têm capa.', 'aviso');
+      return;
+    }
+    const lote = plano.pares.slice(0, LOTE_MAX), faltam = plano.pares.length - lote.length;
+    this.emCurso = true; this.parar = false;
+    Dlg.abrir({ titulo: 'Buscando as capas nos seus arquivos', largo: true, corpo:
+      `<p class="dlg-sub">${plural(lote.length, 'livro', 'livros')} para percorrer · a capa é lida do próprio arquivo, neste navegador, e nada é enviado à internet.</p>
+       <p class="nota" id="lt-st" role="status" aria-live="polite">Lendo…</p>
+       <p class="nota">Só entram livros sem capa: uma capa enviada por você ou vinda do catálogo nunca é trocada. O arquivo em si continua fora do painel — aqui se aproveita apenas a capa. ${faltam ? `Por enquanto são ${fInt(LOTE_MAX)} por execução: ${plural(faltam, 'livro fica', 'livros ficam')} para a próxima — basta rodar de novo.` : ''}</p>`,
+      botoes: [{ n: 'Parar', acao: () => { LoteCapas.parar = true; return false; } }, { n: 'Fechar', cls: 'pri' }],
+      aoAbrir(el) { LoteCapas.st = $('#lt-st', el); } });
+    let feitos = [], lidos = 0;
+    try {
+      for (const p of lote) {
+        if (this.parar || !this.st || !this.st.isConnected) { this.parar = true; break; }   // fechar o quadro interrompe: nada continua às escondidas
+        lidos++;
+        if (p.livro.cp) continue;                                        // o livro ganhou capa pelo caminho de sempre entretanto
+        const achada = await capaDoDigital(p.arq);
+        if (achada && !p.livro.cp) {
+          try {
+            const dados = await reduzirImagem(achada.blob);
+            const [k] = await Notas.gravarCapa(p.livro, dados, 'capa de ' + achada.nome);
+            if (k && !p.livro.cp) { p.livro.cp = k; marcarMeu(p.livro); feitos.push(p.livro.t); }
+          } catch (e) { /* imagem que o navegador não abre: o livro fica sem capa, como estava */ }
+        }
+        if (this.st) this.st.textContent = `Lidos ${fInt(lidos)} de ${fInt(lote.length)} · ${plural(feitos.length, 'capa encontrada', 'capas encontradas')}${feitos.length ? ': ' + esc(feitos[feitos.length - 1]) : ''}`;
+        if (!(lidos % 20)) salvar();                                     // o que já foi achado fica gravado, mesmo se a aba se fechar
+        await new Promise(r => setTimeout(r, 0));                        // respira: a tela não congela durante a varredura
+      }
+    } finally { this.emCurso = false; }                                // o que quer que aconteça, o painel volta a deixar buscar
+    salvar(); render(); if (Gaveta.id) desenharGaveta();
+    const resumo = `${plural(feitos.length, 'capa encontrada', 'capas encontradas')} em ${plural(lidos, 'arquivo lido', 'arquivos lidos')}`
+      + (this.parar && lidos < lote.length ? ` · parado antes do fim, ${fInt(lote.length - lidos)} ficaram para depois` : '')
+      + (plano.ambigueis.length ? ` · ${plural(plano.ambigueis.length, 'nome com mais de um livro', 'nomes com mais de um livro')} deixados em paz` : '')
+      + (plano.semLivro.length ? ` · ${plural(plano.semLivro.length, 'arquivo', 'arquivos')} sem livro correspondente` : '');
+    if (this.st) this.st.textContent = resumo + (feitos.length ? ' · exporte o backup em “Seus dados” para levar as capas junto.' : '');
+    toast(resumo + (Loja.ok ? '' : ' — nesta pré-visualização nada é gravado: as capas valem até fechar a página') + '.', feitos.length ? 'ok' : 'aviso');
   },
 };
 
@@ -4325,7 +4457,9 @@ function dlgDados() {
       <dl class="dd-n"><div><dt>Livros</dt><dd>${fInt(DB.livros.length)}</dd></div><div><dt>Editados por você</dt><dd>${fInt(meus)}</dd></div><div><dt>Cotações suas</dt><dd>${fInt(cot)}</dd></div><div><dt>Com anotações</dt><dd>${fInt(notas)}</dd></div></dl>
       <section><h3>Backup</h3><p>Guarde uma cópia em arquivo ou leve seus dados para outro navegador. O backup leva junto os comentários, as capas que você enviou e os arquivos anexados.</p><div class="dd-b"><button type="button" class="btn" data-x="exportar">${icone('baixar', 15)}Exportar backup (.json)</button><button type="button" class="btn" data-x="importar">${icone('enviar', 15)}Importar backup…</button></div></section>
       <section><h3>Capas dos livros</h3><p>As imagens das capas vêm de três catálogos de livros na internet: a <b>Open Library</b> (openlibrary.org), a <b>Apple Books</b> e o <b>Google Books</b>. Para mostrá-las, o navegador pede cada imagem a um desses sites; nada do que você anota aqui é enviado. ${fInt(DB.livros.filter(temCapa).length)} dos ${fInt(DB.livros.length)} livros têm capa encontrada. As capas que você mesmo envia, na ficha do livro, ficam guardadas neste navegador e aparecem sempre${proprias ? ` (${plural(proprias, 'enviada', 'enviadas')} até agora)` : ''}.</p>
-        <div class="dd-b"><label class="opt so dd-capas"><input type="checkbox" data-x="capas"${S.capas ? ' checked' : ''}><span>Mostrar as capas</span></label></div></section>
+        <div class="dd-b"><label class="opt so dd-capas"><input type="checkbox" data-x="capas"${S.capas ? ' checked' : ''}><span>Mostrar as capas</span></label></div>
+        <p>Um <b>EPUB</b> ou <b>CBZ</b> costuma trazer a capa dentro do arquivo. Dá para aproveitar isso sem internet: o painel abre a pasta que você escolher, reconhece o livro pelo nome do arquivo (ou da pasta) e usa a capa dele — em cada livro, do mesmo jeito que "Anexar arquivo…" faz na ficha. Ou, para muitos de uma vez:</p>
+        <div class="dd-b"><button type="button" class="btn" data-x="lote">${icone('pilha', 15)}Buscar capas numa pasta de arquivos…</button></div></section>
       <section><h3>Dados de exemplo</h3><p>${DB.exemplos ? 'Os dados de exemplo estão <b>ligados</b>: datas e valores pagos, leituras, notas, a lista de próximas aquisições e os históricos de preço são <b>simulados</b>, para mostrar como os gráficos ficam. Ao limpar, fica só o que é do catálogo e o que você editou ou registrou.' : 'O painel mostra só o que é seu: o catálogo e o que você registrou aqui. Para ver como os gráficos ficam cheios, você pode ligar os dados de exemplo (datas, valores, leituras e preços <b>simulados</b>) — eles não mexem no que você editou e saem com um clique.'}</p>
         <div class="dd-b">${DB.exemplos ? `<button type="button" class="btn" data-x="limpar">${icone('lixo', 15)}Limpar dados de exemplo</button>` : `<button type="button" class="btn" data-x="restaurar">${icone('desfazer', 15)}Ver com dados de exemplo</button>`}</div></section>
       ${Loja.falha() ? `<section><h3>Cópia recuperada</h3><p>Em uma abertura anterior os dados salvos não puderam ser lidos e o painel recomeçou do catálogo. O conteúdo original ficou guardado aqui.</p><div class="dd-b"><button type="button" class="btn" data-x="falha-baixar">${icone('baixar', 15)}Baixar cópia (.json)</button><button type="button" class="btn" data-x="falha-descartar">${icone('lixo', 15)}Descartar cópia</button></div></section>` : ''}
@@ -4336,6 +4470,7 @@ function dlgDados() {
       el.addEventListener('click', e => {
         const b = e.target.closest('[data-x]'); if (!b || b.dataset.x === 'capas') return; const x = b.dataset.x;
         if (x === 'exportar') exportarBackup();
+        else if (x === 'lote') { Dlg.fechar(); LoteCapas.escolher(); }
         else if (x === 'importar') { Dlg.fechar(); $('#arq').click(); }
         else if (x === 'falha-baixar') baixarArquivo(`biblioteca-lucas-copia-recuperada-${iso(DB.hoje)}.json`, Loja.falha() || '', 'application/json');
         else if (x === 'falha-descartar') { Loja.descartarFalha(); Dlg.fechar(); toast('Cópia descartada.'); }

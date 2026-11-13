@@ -446,3 +446,34 @@ testes de navegador. A busca real curta das capas (limite 40) continua pendente 
   não foi alterado justamente para não mexer às cegas num teste que não posso rodar.
 - **Pendente do dono do projeto:** aprovar (ou não) o merge do #19; quando o Google Books responder, rodar o
   `Buscar capas` pela interface (Actions → **Buscar capas** → **Run workflow**, limite **40**).
+
+### Registro operacional — rodada 2 da capa dentro do arquivo (feedback do teste no painel)
+
+- **O que o dono do projeto relatou** (testado na pré-visualização, 12/11/2026): a extração funcionou — *"a capa subiu
+  na mesma hora"* — mas apareceram três coisas: o **limite de 5 MB** da anexação travava antes de qualquer leitura
+  (os primeiros EPUBs nem chegavam a ser abertos), o card ficava marcado como **"possui análise"** quando o arquivo é
+  o próprio livro, e a confirmação explícita de que **livro com capa não deve ser substituído**. O pedido novo aprovado
+  foi o **botão que percorre a pasta** e extrai as capas de uma vez.
+- **Decisões desta rodada:**
+  1. **Leitura por fatias** (`54-capa-digital.js`): o pacote é aberto pela cauda (o índice do fim), depois só a entrada
+     da capa é lida. Um EPUB de 5,6 MB custa poucas dezenas de KB lidos; o arquivo nunca entra inteiro na memória.
+  2. **EPUB/CBZ acima do limite dão a capa sem serem guardados** (`55-anexos.js`): o arquivo não entra em "Suas
+     anotações" (o limite de 5 MB é do armazenamento e do backup), mas a capa é lida e aplicada, e o aviso diz os dois
+     lados. Regras de sempre intactas para os outros tipos (mensagem idêntica, conferida no `capa_digital`).
+  3. **"Possui análise" só para arquivo seu**: `.epub`, `.cbz`, `.cbr`, `.mobi`, `.azw3`, `.djvu`, `.fb2` não marcam
+     mais. **PDF continua marcando**, de propósito — pode ser o livro ou um documento seu, e a extensão sozinha não diz.
+  4. **`56-lote-capas.js`** (novo): "Seus dados" → "Capas dos livros" → **"Buscar capas numa pasta de arquivos…"**.
+     Escolhe-se a pasta (`webkitdirectory`, sem permissão especial e sem servidor); o livro é reconhecido pelo nome do
+     arquivo ou da pasta, com a numeração de edição e o ano removidos; casa exato ou título que abre o nome. Ambíguo ou
+     sem correspondência fica de fora e é contado no resumo. 400 livros por execução (o backup cresce com as capas) —
+     rodar de novo para os demais. Quadro com andamento, botão "Parar", fechar o quadro interrompe, grava a cada 20.
+- **Arquivos:** `src/js/54-capa-digital.js`, `src/js/55-anexos.js`, `src/js/56-lote-capas.js` (novo),
+  `src/js/60-drawer.js` (o botão no quadro "Seus dados"), `tools/qa/capa_digital.py`, `README.md`, `ROTEIRO.md`
+  (Etapa 11, parte 5). Nenhum dado do acervo, catálogo, inventário ou listagem foi tocado.
+- **Conferência local:** `capa_digital` com **91 previsões** executadas no Node (pacote, ficha e varredura de pasta) e
+  os sete testes rápidos `TUDO CERTO`; `node --check` em cada módulo e no pacote juntado (12 módulos);
+  `python tools/atualizar.py` → 1401 KB e `--conferir` "Nada mudou"; `git diff --check` limpo. A suíte com navegador
+  continua sem poder rodar aqui (sem Chromium) — `anotacoes` não foi alterado e suas mensagens esperadas continuam
+  valendo (PDF e `.txt`/`.md` marcam, `grande.bin` dá a mesma mensagem de sempre).
+- **Aprovação:** o merge do PR #19 foi autorizado pelo dono do projeto nesta rodada ("feito isso, pode mergear"), com a
+  condição de que a varredura de pasta estivesse pronta — está.
