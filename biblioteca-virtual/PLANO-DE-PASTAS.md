@@ -40,9 +40,10 @@ Cada arquivo dela já tem um eixo conferido, e cada eixo já tem pasta. O destin
 | *(sem eixo — ficam na pasta até serem classificados)* | 13 |
 
 A mesma limpeza vale para `pasta ficcao e literatura` (8 arquivos: 4 de ficção científica, 3 de suspense, 1 de
-literatura contemporânea) e, com julgamento, para `nao ficcao` (23, dos quais 14 são eixo 9 — Filosofia) e
-`classicos e epicos` (19, 12 deles eixo 3). No fim, ficam **duas pastas a menos** — `Pasta Livros` e
-`pasta ficcao e literatura`, que não são assunto nenhum — e o que não tem eixo à espera dele.
+literatura contemporânea), que é a mesma coisa com outro nome. `nao ficcao` (23, dos quais 14 são eixo 9 — Filosofia)
+e `classicos e epicos` (19, 12 deles eixo 3) encolhem com o mesmo critério, mas ainda têm razão de existir. No fim
+da conta, **duas pastas somem da raiz** — as duas chamadas "pasta …" — e os 13 arquivos sem eixo ficam onde estão,
+à espera de classificação.
 
 ## 2 · Quadrinhos: juntar as três pastas e subpastar as séries soltas
 
@@ -60,8 +61,8 @@ para as outras 105 séries. Somando com o passo anterior, a biblioteca passa de 
 
 ## 3 · Doze pastas de "mente" → duas, com subpastas
 
-`psicologia` (240) e `psicanalise` (141) se sustentam sozinhas, e oito autores aparecem nas duas — Jung, Lacan, Freud
-e companhia, lidos dos dois lados. Das dez pastas que sobram, sete são **abordagens com nome comprido**, não assuntos
+`psicologia` (240) e `psicanalise` (141) se sustentam sozinhas, e oito autores aparecem nas duas listas — Jung, Lacan,
+Freud e companhia, lidos dos dois lados. Das dez pastas que sobram, sete são **abordagens com nome comprido**, não assuntos
 novos (74 arquivos), e a oitava é um bloco de manuais de entrada (23). Noventa e sete arquivos que cabem como
 subpastas de `psicologia`:
 
@@ -133,8 +134,8 @@ menos para conferir no inventário (e um nome a menos no mapa de capas, que hoje
   (os passos de `reconciliar`, em `src/js/10-data.js`): primeiro pela linha do catálogo, depois por título+autor, e só então
   pelo identificador `pasta/arquivo`. Os dois primeiros não dependem de pasta nenhuma. O terceiro muda quando o
   arquivo muda de casa — é por ele que um livro cujo título foi corrigido no inventário continua achando as anotações,
-  então a arrumação se faz junto com uma rodada de `gerar_listagens` + `importar_digital`, e não depois de um backup exportado às pressas — e é por isso que se muda uma pasta por vez,
-  lendo o `RESUMO.md` no fim.
+  então a arrumação se faz junto com uma rodada de `gerar_listagens` + `importar_digital`, e não depois de um backup
+  exportado às pressas. É também o motivo de se mudar uma pasta por vez, lendo o `RESUMO.md` no fim de cada vez.
 - **O mapa que reconhece as capas usa só o NOME do arquivo** (`src/digitais.json`, embutido no painel): mover não
   desfaz nada; **renomear, sim** — o arquivo renomeado sai do mapa até a próxima geração.
 - Depois de mexer nas pastas, no computador Windows: `Gerar listagens.bat` (ou `tools/gerar_listagens.py`) e, no
