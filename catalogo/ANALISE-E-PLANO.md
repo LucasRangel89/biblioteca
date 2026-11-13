@@ -421,3 +421,28 @@ testes de navegador. A busca real curta das capas (limite 40) continua pendente 
   [#17](https://github.com/LucasRangel89/biblioteca/pull/17). Nenhum merge ou publicação automática.
 - **O que não foi feito:** nenhum dispatch de capas, nenhuma remoção física de `referencias/` ou de testes antigos,
   nenhuma mudança de persistência/IndexedDB/abas.
+
+### Registro operacional da rodada da capa dentro do arquivo
+
+- **Gatilho.** O `Buscar capas` manual (execução 43428251481) falhou de novo: sete consultas sem resposta do Google
+  Books e 43 livros empurrados para a próxima execução. Nada mudou no site. Como 1.050 livros estão sem capa e muitos
+  deles existem como arquivo, abrimos outra frente: ler a capa de dentro do próprio arquivo, no navegador.
+- **Decisão registrada:** só **EPUB e CBZ** (escolha explícita do dono do projeto). PDF fica de fora — não é pacote
+  `.zip` e a "capa" de lá seria a primeira página renderizada. Nenhuma fonte paga, nenhum raspador de loja, nenhuma
+  imagem no repositório, nenhuma chave no painel.
+- **Implementado** no PR [#19](https://github.com/LucasRangel89/biblioteca/pull/19) (branch `arena/8f7427a5-biblioteca`,
+  commit `de3280c`): `src/js/54-capa-digital.js` (novo, abre o pacote e acha a capa anunciada), `src/js/55-anexos.js`
+  (usa a imagem no lugar de nenhuma capa, pelo mesmo reduzidor e pela mesma gravação da "Enviar capa…", com o
+  `gravarCapa` compartilhado), `tools/qa/capa_digital.py` (novo teste rápido), cadastro nos `tudo.py`/`fluxo_ci.py`
+  e nos dois workflows, `README.md` e `ROTEIRO.md` (Etapa 11, parte 5, e o princípio de privacidade).
+- **Regras que valem:** a capa do arquivo só entra em livro sem capa enviada e sem capa no catálogo; SVG, endereço
+  externo, bloco acima de 16 MB, pacote truncado ou em ZIP64 devolvem nada em silêncio; o EPUB é lido pelo índice
+  anunciado (`cover-image`, `meta name="cover"`, nome "capa"/"cover") e nunca pela primeira imagem do miolo; no CBZ
+  vale a anunciada e, sem isso, a primeira imagem em ordem numérica.
+- **Conferência local:** os sete testes rápidos passaram (`TUDO CERTO`), com 54 previsões executadas no Node contra 21
+  pacotes montados pelo teste; `node --check` em cada módulo e no pacote juntado (11 módulos); `python tools/atualizar.py`
+  regenerou o painel (1390 KB) e `--conferir` não propôs mudança; `git diff --check` limpo.
+- **Não conferido aqui:** a suíte com navegador (`anotacoes` e as outras) — sem Chromium neste ambiente. O `anotacoes.py`
+  não foi alterado justamente para não mexer às cegas num teste que não posso rodar.
+- **Pendente do dono do projeto:** aprovar (ou não) o merge do #19; quando o Google Books responder, rodar o
+  `Buscar capas` pela interface (Actions → **Buscar capas** → **Run workflow**, limite **40**).
