@@ -1030,19 +1030,36 @@ deles têm o arquivo, e o arquivo costuma trazer a capa dentro de si.
      (`.epub`, `.cbz`, `.cbr`, `.mobi`, `.azw3`, `.djvu`, `.fb2`) não põe mais essa marca. PDF continua pondo: pode ser
      o livro, pode ser um relatório seu;
   3. *um por um é lento* → o botão **"Buscar capas numa pasta de arquivos…"**, em "Seus dados" → "Capas dos livros":
-     você escolhe a pasta, o painel reconhece cada livro pelo nome do arquivo (ou da pasta) e aplica as capas de uma
-     vez, com quadro de andamento, botão "Parar" e resumo no fim. 400 livros por execução — para os demais, rodar de
-     novo. Nada é movido, copiado ou enviado.
-- **Como reconhece o livro:** nome do arquivo ou da pasta, sem extensão, sem numeração de edição, sem o ano, minúsculo
-  e sem acento; bate exato com o título, ou o título abre o nome do arquivo (`Ecce Homo - Friedrich Nietzsche.epub`).
+     você escolhe a pasta, o painel reconhece cada livro e aplica as capas de uma vez, com quadro de andamento, botão
+     "Parar" e resumo no fim. 400 livros por execução — para os demais, rodar de novo. Nada é movido, copiado ou enviado.
+- **Como reconhece o livro** — na varredura de pasta, em duas etapas, e a primeira é a que vale:
+  1. *a sua lista*: `biblioteca-virtual/inventario.tsv` já diz, linha por linha, que arquivo pertence a que livro —
+     é uma ligação conferida à mão uma vez, e o painel a embute como `DIGITAIS_NOMES` (gerado por
+     `tools/build_catalog.py` em `src/digitais.json`; `tools/build.py` confere cada nome e cada posição). O nome do
+     arquivo, sem acento e em minúsculas, é olhado nesse mapa: um nome truncado (`A Fisica d - Amit Goswami (z-library…).epub`)
+     casa do mesmo jeito. Só entram no mapa os EPUBs e CBZs de livros **ainda sem capa** — um arquivo que não está lá
+     não é lido, e isso é proposital: é assim que o lote não encosta em quem já tem capa.
+  2. *o que está fora do mapa*: casamento **exato** de título (e de título+autor) com um livro sem capa, pelo nome do
+     arquivo; o nome da pasta só vale nesse mesmo modo exato, para série guardada em pasta própria. Um título que abre
+     o nome do arquivo vale (`Ecce Homo - Friedrich Nietzsche.epub`), mas **nunca pelo nome da pasta**: as pastas da
+     biblioteca são categorias de prateleira — "psicologia", "ficcao cientifica e fantasia" — e uma palavra dessas bate
+     em dezenas de títulos. Foi isso que fez uma varredura real devolver "0 capas" e 133 nomes "ambíguos".
   Dois livros com o mesmo título, ou um nome que não bate com nenhum, ficam de fora e são contados no resumo — nada de
   palpite. A primeira edição de uma série fica; as seguintes, não.
 - **Sem internet, sem loja, sem nada no repositório.** Nada é enviado a lugar nenhum: a leitura acontece no navegador
   de quem anexa o arquivo. O painel não chama `fetch` nenhum nesse caminho (o teste confere isso no arquivo).
+- **Em que ponto cada arquivo parou.** O resumo da varredura não diz só "0 capas": ele conta os estágios — capa
+  guardada, pacote sem capa dentro, pacote ilegível, capa apontando para fora do pacote, imagem que o navegador não
+  abriu, livro que já tem capa, mais de um livro com esse nome, nenhum livro com esse nome — e lista por extenso (até
+  doze) os nomes que não soubemos ligar a um livro, porque é por eles que se corrige o inventário.
 - **Testes.** `tools/qa/capa_digital.py` monta EPUBs e CBZs de verdade (índice, `cover-image`, `<meta name="cover">`,
-  caminhos com `../`, `%20` e acento, pacote truncado, SVG, ZIP64, um EPUB de 5,6 MB) e roda no Node o JavaScript do
-  painel: a escolha da capa, o fluxo da ficha com um IndexedDB imitado e a varredura de pasta com um quadro de mentirinha
-  — **91 previsões**. Confere também, no arquivo, que nada disso toca a internet ou o `localStorage`. Com ele, o nível
+  `<guide><reference type="cover">`, pacote com uma imagem só, caminhos com `../`, `%20` e acento, pacote truncado,
+  SVG, ZIP64, um EPUB de 5,6 MB) e roda no Node o JavaScript do painel: a escolha da capa, o fluxo da ficha com um
+  IndexedDB imitado e a varredura de pasta com um quadro de mentirinha — inclusive com os nomes sujos que saem de um
+  download (`(z-library.sk, 1lib.sk, z-lib.sk)`, título truncado, pasta-categoria) e o mapa do inventário no meio —
+  **144 previsões** — 115 delas executando o JavaScript do painel no Node, e o resto conferindo o arquivo: o contrato
+  do mapa dos nomes (inventário → `src/digitais.json` → painel embutido), que é o que impede o lote de casar um arquivo
+  com o livro errado. Confere também, no arquivo, que nada disso toca a internet ou o `localStorage`. Com ele, o nível
   rápido passa a **sete testes** e a suíte completa a **39 testes**. A parte que depende de tela de verdade (o
   `Enviar capa…` de sempre) continua coberta por `anotacoes`.
 

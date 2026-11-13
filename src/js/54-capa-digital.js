@@ -3,14 +3,16 @@
    aqui no navegador e devolve a imagem — sem internet, sem enviar o arquivo a lugar nenhum e sem gravar nada: quem
    grava é o módulo das anotações (55-anexos), que passa a tratar esta imagem como uma capa enviada (vale mais que a do
    catálogo, entra no backup e pode ser tirada).
-   · EPUB — a capa é a imagem que o índice do livro (o arquivo .opf) anuncia: properties="cover-image" no item, ou
-     <meta name="cover" content="…"> apontando para ele; sem anúncio, uma imagem com "capa"/"cover" no nome. Não
-     adivinhamos pela primeira imagem: um EPUB tem muitas, e a primeira costuma ser do miolo.
+   · EPUB — a capa é a imagem que o índice do livro (o arquivo .opf) anuncia: properties="cover-image" no item, o
+     <meta name="cover" content="…"> (por id do item ou pelo nome do arquivo) ou a referência type="cover" do <guide>,
+     jeito dos EPUBs antigos e dos convertidos por Calibre; sem anúncio, vale a imagem com "capa"/"cover" no nome e,
+     se o pacote tem uma imagem só, ela. Não adivinhamos pela primeira imagem de um pacote com muitas: a primeira
+     costuma ser do miolo.
    · CBZ — a capa é a primeira imagem da história; uma que diga "cover" (ou "capa") no nome tem prioridade.
    · PDF fica de fora: não é um pacote .zip, e a "capa" de lá seria a primeira página, que precisa ser renderizada.
    Só os pedaços necessários são lidos (a cauda, o índice e a entrada da capa), então um livro de 200 MB não pesa na
    memória e o limite de anexação não trava a extração. O que der errado — pacote truncado, índice em ZIP64, imagem
-   que não está lá — devolve null em silêncio: anexar o arquivo não depende de nada daqui dar certo. */
+   que não está lá — devolve { motivo: '…' } e anexar o arquivo não depende de nada daqui dar certo. */
 const DIGITAL_CAPA = /\.(epub|cbz)$/i;                     // os formatos de que sabemos tirar a capa, pelo nome do arquivo
 const IMG_FORMATO = { jpg: 'image/jpeg', jpeg: 'image/jpeg', png: 'image/png', webp: 'image/webp', gif: 'image/gif', bmp: 'image/bmp' };
 const LIM_PACOTE = 16 * 1048576;                           // nenhuma imagem de capa precisa vir guardada num bloco maior que este
@@ -92,17 +94,25 @@ function caminhoRelativo(base, ref) {
   return fora.join('/');
 }
 
-/* A imagem que o índice do EPUB (.opf) anuncia como capa, no caminho relativo a esse índice — ou '' quando não anuncia */
+/* A imagem que o índice do EPUB (.opf) anuncia como capa, no caminho relativo a esse índice — ou '' quando não anuncia.
+   Depois do properties e do <meta name="cover"> vem a referência type="cover" do <guide>: é como os EPUBs 2 e os
+   arquivos baixados anunciam a capa, e quem só olha o <meta> devolve null para um livro com a capa bem anunciada. */
 function capaAnunciadaEpub(txt, base) {
   const etiquetas = re => [...String(txt).matchAll(re)].map(m => atributosDe(m[0]));
-  const imagens = etiquetas(/<item\b[^>]*>/gi).filter(i => i.href && /^image\//i.test(i['media-type'] || ''));
+  // um item declarado image/svg+xml não concorre: o navegador não reduziria um vetor para o tamanho de capa
+  const imagens = etiquetas(/<item\b[^>]*>/gi).filter(i => i.href && /^image\//i.test(i['media-type'] || '') && !/svg/i.test(i['media-type'] || ''));
   if (!imagens.length) return '';
   const idCapa = ((etiquetas(/<meta\b[^>]*>/gi).find(m => /^cover$/i.test(m.name || '')) || {}).content || '').trim().toLowerCase();
+  const doGuia = ((etiquetas(/<reference\b[^>]*>/gi).find(m => /^cover$/i.test(m.type || '')) || {}).href || '').trim();
   const semExtensao = s => String(s).replace(/\.[a-z0-9]+$/i, '');
   const escolhida = imagens.find(i => /(^|\s)cover-image(\s|$)/i.test(i.properties || ''))
     || (idCapa ? imagens.find(i => (i.id || '').toLowerCase() === idCapa) : null)
     // quem escreve ali o nome do arquivo (com ou sem extensão), e não o id do item
     || (idCapa ? imagens.find(i => { const n = soNomeDoCaminho(i.href).toLowerCase(); return n === idCapa || semExtensao(n) === semExtensao(idCapa); }) : null)
+    // o <guide> aponta para um href, que pode ser o próprio item da lista ou um arquivo de imagem avulso
+    || (doGuia ? imagens.find(i => caminhoRelativo(base, i.href) === caminhoRelativo(base, doGuia)) : null)
+    || (doGuia && !idCapa ? (formatoDaImagem(doGuia) ? [{ href: doGuia }] : null) : null)   // muitos guias apontam para uma página, não para a imagem: nesse caso não vale
+    || (!idCapa && !doGuia && imagens.length === 1 && formatoDaImagem(imagens[0].href) ? imagens[0] : null)   // (só vale um formato que o navegador consiga reduzir)               // pacote com uma imagem só: ela é a capa
     || imagens.find(i => /(^|[^a-z])(capa|cover)([^a-z]|$)/i.test(`${i.id || ''} ${i.href || ''}`))    // o costume, quando ninguém anunciou
     || null;
   return escolhida ? caminhoRelativo(base, escolhida.href) : '';
@@ -115,14 +125,17 @@ function capaDoCbz(caminhos) {
     || imagens.slice().sort((a, b) => a.toLowerCase().localeCompare(b.toLowerCase(), 'en', { numeric: true }))[0] || '';
 }
 
-/* Arquivo (File) de um EPUB ou CBZ → { blob, nome } com a imagem da capa, ou null quando não há nada aproveitável. */
+/* Arquivo (File) de um EPUB ou CBZ → { blob, nome } com a imagem da capa, ou { motivo: '…' } quando não há nada
+   aproveitável. O motivo não serve para a ficha (que fica em silêncio) e sim para o quadro da varredura em lote, que
+   precisa dizer "este arquivo não traz capa" em vez de um "0 capas" mudo. */
 async function capaDoDigital(arq) {
+  const pacote = { motivo: 'pacote ilegível' }, vazias = { motivo: 'sem capa dentro' };
   try {
     const nome = (arq && arq.name) || '';
-    if (!DIGITAL_CAPA.test(nome)) return null;
+    if (!DIGITAL_CAPA.test(nome)) return { motivo: 'não é EPUB nem CBZ' };
     const f = fonteDe(arq);
-    if (f.tam < 22) return null;
-    const lista = await listarZip(f); if (!lista.length) return null;
+    if (f.tam < 22) return pacote;
+    const lista = await listarZip(f); if (!lista.length) return pacote;
     const caminhos = lista.map(e => e.nome);
     const porCaminho = new Map(caminhos.map((c, i) => [c.toLowerCase(), i]));      // o pacote pode grafar as maiúsculas de outro jeito
     let alvo = '';
@@ -130,16 +143,18 @@ async function capaDoDigital(arq) {
       let opf = '';
       const c = porCaminho.get('meta-inf/container.xml');                          // container.xml diz onde está o índice do livro
       if (c != null) opf = caminhoRelativo('', (/full-path\s*=\s*["']([^"']*)["']/i.exec(await textoDaEntrada(f, lista[c])) || [])[1] || '');
-      if (!opf) { const soOpf = caminhos.filter(n => /\.opf$/i.test(n)); if (soOpf.length !== 1) return null; opf = soOpf[0]; }
-      const oi = porCaminho.get(opf.toLowerCase()); if (oi == null) return null;
+      if (!opf) { const soOpf = caminhos.filter(n => /\.opf$/i.test(n)); if (soOpf.length !== 1) return vazias; opf = soOpf[0]; }
+      const oi = porCaminho.get(opf.toLowerCase()); if (oi == null) return pacote;
       alvo = capaAnunciadaEpub(await textoDaEntrada(f, lista[oi]), opf);
     } else {
       alvo = capaDoCbz(caminhos);
     }
-    if (!alvo) return null;
-    const i = porCaminho.get(alvo.toLowerCase()); if (i == null) return null;
-    const e = lista[i]; if (!formatoDaImagem(e.nome)) return null;
-    const dados = await bytesDaEntrada(f, e); if (!dados) return null;
-    return { blob: new Blob([dados], { type: formatoDaImagem(e.nome) }), nome: soNomeDoCaminho(e.nome) };
-  } catch (err) { return null; }                                                    // arquivo danificado ou formato que não sabemos ler: segue sem capa, sem aviso
+    if (!alvo) return vazias;
+    const i = porCaminho.get(alvo.toLowerCase()); if (i == null) return { motivo: 'capa fora do pacote' };
+    const e = lista[i], tipo = formatoDaImagem(e.nome);
+    if (!tipo) return vazias;
+    const dados = await bytesDaEntrada(f, e);
+    if (!dados || !dados.length) return e.tam > LIM_PACOTE ? { motivo: 'capa grande demais' } : { motivo: 'imagem que não abriu' };
+    return { blob: new Blob([dados], { type: tipo }), nome: soNomeDoCaminho(e.nome) };
+  } catch (err) { return pacote; }                                                  // arquivo danificado ou formato que não sabemos ler: segue sem capa, sem aviso
 }

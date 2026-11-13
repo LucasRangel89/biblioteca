@@ -477,3 +477,46 @@ testes de navegador. A busca real curta das capas (limite 40) continua pendente 
   valendo (PDF e `.txt`/`.md` marcam, `grande.bin` dá a mesma mensagem de sempre).
 - **Aprovação:** o merge do PR #19 foi autorizado pelo dono do projeto nesta rodada ("feito isso, pode mergear"), com a
   condição de que a varredura de pasta estivesse pronta — está.
+
+### Registro operacional — rodada 3 da capa dentro do arquivo (a varredura real não achou capa nenhuma)
+
+- **O que o dono do projeto viu (12/11/2026):** escolheu a pasta `Religião, Espiritualidade e Mitologia`, a varredura
+  percorreu os arquivos e devolveu **"0 capas encontradas"**, com `55 arquivos sem livro correspondente` e `133 nomes
+  com mais de um livro`. Nada foi aproveitado, e o quadro não dizia por quê.
+- **A causa, medida nos dados dele** (1121 arquivos `.epub`/`.cbz` no inventário): o casamento olhava o nome do
+  **arquivo e o nome da pasta** nas duas fases, inclusive na frouxa ("um título dentro do outro"). As pastas da
+  biblioteca são **categorias de prateleira** — `psicologia`, `Filosofia`, `ficcao cientifica e fantasia` — e uma
+  palavra dessas bate em dezenas de títulos: `psicologia` (10 caracteres, o mínimo da fase frouxa) abre
+  `Psicologia da criatividade`, `Psicologia das massas`, `Psicologia do bolsonarismo`…, então quase tudo da pasta virava
+  "ambíguo" e era descartado. Somava-se a isso um `break` no primeiro ambíguo, que jogava fora o casamento limpo que a
+  outra chave (o nome do arquivo) teria dado, e o fato de a imagem achada não aparecer em lugar nenhum do resumo.
+  No recorte dos 313 arquivos que interessavam (livros sem capa), a regra antiga acertava 252, perdia 27 e descartava
+  34 à toa.
+- **O conserto: o painel para de adivinhar e consulta a própria lista dele.** `biblioteca-virtual/inventario.tsv` já
+  traz, linha por linha, o par "arquivo ↔ livro" conferido à mão uma vez. `tools/build_catalog.py` (função
+  `nomes_digitais`) gera `src/digitais.json` — `{nome do arquivo normalizado: posição da linha no catálogo}` — só com
+  `.epub`/`.cbz` e só de livros **ainda sem capa**; `tools/build.py` confere cada nome e cada posição e embute o mapa
+  como `const DIGITAIS_NOMES` (325 nomes, 24 KB). Um nome que pertence a duas linhas fica fora do mapa e vira `AVISO`
+  na geração (hoje são dois box sets). Na varredura, o mapa decide primeiro; o que está fora dele passa pelo casamento
+  exato de título, e a **pasta só vale nesse modo exato** (série em pasta própria) — nunca na fase frouxa, que agora
+  olha apenas o nome do arquivo. Um arquivo sem correspondência limpa é contado e deixado em paz.
+- **O resumo diz em que ponto cada arquivo parou**: capa guardada, `sem capa dentro`, `pacote ilegível`,
+  `capa fora do pacote`, `capa grande demais`, `imagem que não abriu`, livro que já tem capa, mais de um livro, nenhum
+  livro — e lista até doze nomes que não soubemos ligar a um livro, com o motivo ao lado, porque é por eles que se
+  corrige o inventário. Para isso, `capaDoDigital` (54) passou a devolver `{ motivo: '…' }` em vez de `null`, e a ficha
+  continua ignorando o motivo (nada a dizer ali).
+- **Dois sinais de capa que faltavam no EPUB** (aparecem nos arquivos reais baixados): a referência
+  `type="cover"` do `<guide>` — o jeito dos EPUBs 2 e dos convertidos por Calibre, que não escrevem
+  `<meta name="cover">` — e um pacote com **uma imagem só**, que é a capa dela. Item declarado `image/svg+xml` continua
+  fora de concorrência, e um `<guide>` apontando para uma página (não para imagem) não dá licença de pegar o miolo.
+- **O que isso rende na prática:** o mapa alcança **261 dos 1050** livros sem capa (325 arquivos; linhas de série
+  agrupam mais de um arquivo, e a primeira capa fica), tudo numa execução só (o teto é 400). Nenhum arquivo é movido,
+  nenhuma capa existente é trocada, nada sai do navegador.
+- **Arquivos:** `tools/build_catalog.py` (novo `nomes_digitais`, `DIGITAL_LIDO`, `DEST_DIGITAIS`), `tools/build.py`
+  (valida e injeta `DIGITAIS_NOMES`), `tools/atualizar.py` (o passo novo na descrição), `src/digitais.json` (gerado,
+  versionado), `src/js/54-capa-digital.js`, `src/js/55-anexos.js`, `src/js/56-lote-capas.js`, `tools/qa/capa_digital.py`,
+  `README.md`, `ROTEIRO.md` (Etapa 11, parte 5).
+- **Conferência local:** `capa_digital` com **144 previsões** (115 no Node), `fluxo_ci` `TUDO CERTO` (sete testes);
+  `node --check` em cada módulo; `python3 tools/build_catalog.py` + `python3 tools/build.py` → 1432 KB;
+  `python3 tools/atualizar.py --conferir` → `Nada mudou.`; `git diff --check` limpo. A suíte com navegador continua sem
+  rodar aqui (o Playwright do ambiente não veio nesta rodada) — quem a executa é o CI do PR.

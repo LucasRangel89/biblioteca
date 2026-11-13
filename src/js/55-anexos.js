@@ -231,7 +231,7 @@ const Notas = {
      capa que já existe pela que vem no arquivo. Não achou nada, ou o navegador não abriu a imagem? Fica como estava, sem aviso. */
   async capaDoArquivoDigital(arq, b) {
     if (b.cp || temCapa(b) || !DIGITAL_CAPA.test(arq.name || '')) return null;
-    const achada = await capaDoDigital(arq); if (!achada) return null;
+    const achada = await capaDoDigital(arq); if (!achada || !achada.blob) return null;      // o motivo interessa à varredura de pasta (56), não aqui: na ficha, nada a dizer
     try { return { nome: 'capa de ' + achada.nome, dados: await reduzirImagem(achada.blob) }; } catch (e) { return null; }
   },
   /* guarda uma imagem como capa do livro: é assim que ela vale mais que a do catálogo, aparece com as capas desligadas,

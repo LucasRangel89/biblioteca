@@ -7,7 +7,8 @@
 Passos (cada um também roda sozinho):
   1. importar_digital.py   listagens + inventário → Catálogo Mestre (seção 17 e marcadores #tenho-digital) e RESUMO.md
   2. build_catalog.py      Catálogo Mestre + inventário → src/catalog.json; catalogo/capas.tsv → src/capas.json
-                           e src/capas-fontes.json; catalogo/trilhas.md → src/trilhas.json;
+                           e src/capas-fontes.json; biblioteca-virtual/inventario.tsv → src/digitais.json (os nomes de
+                           arquivo que o painel reconhece na varredura de pasta); catalogo/trilhas.md → src/trilhas.json;
                            catalogo/antes-da-vistoria.tsv → src/antes.json; catalogo/sinopses.tsv → src/sinopses.json
   3. build.py              src/ → Biblioteca_Lucas_Dashboard.html
 """
