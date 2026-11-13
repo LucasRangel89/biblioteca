@@ -10,6 +10,8 @@ import base64, json, pathlib, re, sys
 
 RAIZ = pathlib.Path(__file__).resolve().parent.parent
 SRC = RAIZ / 'src'
+import unicodedata
+norm_js = lambda s: ''.join(c for c in unicodedata.normalize('NFD', s) if not '\u0300' <= c <= '\u036f').lower()   # o norm de src/js/00-util.js
 SAIDA = RAIZ / 'Biblioteca_Lucas_Dashboard.html'
 
 # As letras dos temas: arquivo "familia-latin-peso-estilo.woff2" em src/letras → uma regra @font-face com o arquivo
@@ -54,12 +56,20 @@ arq_sinopses = SRC / 'sinopses.json'                    # sinopses: [posição n
 sinopses = json.loads(arq_sinopses.read_text(encoding='utf-8')) if arq_sinopses.exists() else []
 assert all(len(x) == 2 and isinstance(x[0], int) and 0 <= x[0] < len(catalogo) and isinstance(x[1], str) and x[1] for x in sinopses), 'src/sinopses.json não acompanha src/catalog.json: rode tools/build_catalog.py'
 assert len({x[0] for x in sinopses}) == len(sinopses), 'src/sinopses.json tem duas sinopses para a mesma linha'
+arq_digitais = SRC / 'digitais.json'                        # nome de arquivo → linha do catálogo: é assim que a varredura de
+digitais = json.loads(arq_digitais.read_text(encoding='utf-8')) if arq_digitais.exists() else {}   # pasta reconhece um EPUB/CBZ
+assert isinstance(digitais, dict) and all(isinstance(k, str) and k.strip() == k and k == norm_js(k) and k.endswith(('.epub', '.cbz'))
+                                          and isinstance(v, int) and 0 <= v < len(catalogo) for k, v in digitais.items()), \
+    'src/digitais.json: nomes normalizados (como o norm do painel) e posições dentro de src/catalog.json — rode tools/build_catalog.py'
+# (a coerência "este nome é deste livro" é do tools/build_catalog.py: é ele que lê o inventário e casa com o catálogo)
+
 dados = ('const CATALOGO = ' + json.dumps(catalogo, ensure_ascii=False, separators=(',', ':')) + ';\n'
          + 'const CAPAS = ' + json.dumps(capas, ensure_ascii=False, separators=(',', ':')) + ';\n'
          + 'const CAPAS_FONTES = ' + json.dumps(fontes_capas, ensure_ascii=False) + ';\n'
          + 'const TRILHAS_DADOS = ' + json.dumps(trilhas, ensure_ascii=False, separators=(',', ':')) + ';\n'
          + 'const CLASSE_ANTES = ' + json.dumps(antes, ensure_ascii=False, separators=(',', ':')) + ';\n'
-         + 'const SINOPSES = ' + json.dumps(sinopses, ensure_ascii=False, separators=(',', ':')) + ';')
+         + 'const SINOPSES = ' + json.dumps(sinopses, ensure_ascii=False, separators=(',', ':')) + ';\n'
+         + 'const DIGITAIS_NOMES = ' + json.dumps(digitais, ensure_ascii=False, separators=(',', ':')) + ';')
 pacote = '(function () {\n"use strict";\n' + dados + '\n' + js + '\n})();'
 for proibido in ('</script', '<!--'):
     assert proibido not in pacote.lower(), f'sequência insegura em script embutido: {proibido}'
@@ -72,4 +82,4 @@ html = html.replace('/*__CSS__*/', css.strip()).replace('/*__JS__*/', pacote)
 externos = [u for u in re.findall(r'(?:src|href)=["\'](https?://[^"\']+)', html)]
 assert not externos, f'recursos externos no HTML estático: {externos}'
 with open(SAIDA, 'w', encoding='utf-8', newline='\n') as f: f.write(html)   # sempre com \n: o arquivo sai igual em qualquer sistema
-print(f'{SAIDA.name}  {SAIDA.stat().st_size/1024:.0f} KB  ({len(catalogo)} livros, {sum(1 for c in capas if c)} capas, {len(trilhas)} trilhas, {len(sinopses)} sinopses, {len(letras)} letras, {len(fontes)} módulos JS)')
+print(f'{SAIDA.name}  {SAIDA.stat().st_size/1024:.0f} KB  ({len(catalogo)} livros, {sum(1 for c in capas if c)} capas, {len(digitais)} arquivos reconhecíveis, {len(trilhas)} trilhas, {len(sinopses)} sinopses, {len(letras)} letras, {len(fontes)} módulos JS)')

@@ -18,6 +18,8 @@ Também gera:
 - src/antes.json (catalogo/antes-da-vistoria.tsv): [posição da linha, eixo, "marcadores"] que a linha tinha no painel
   publicado antes da vistoria de 10/11/2026 — só nas linhas em que a vistoria trocou ou tirou alguma coisa;
 - src/sinopses.json (catalogo/sinopses.tsv): [posição da linha, "sinopse"] dos livros que já têm sinopse.
+- src/digitais.json (biblioteca-virtual/inventario.tsv): {nome do arquivo: posição da linha} de todos os
+  EPUBs e CBZs dos livros ainda sem capa — é assim que o painel reconhece um arquivo na varredura de pasta.
 """
 import csv, hashlib, json, pathlib, re, sys, unicodedata
 sys.path.insert(0, str(pathlib.Path(__file__).parent))
@@ -37,6 +39,7 @@ ANTES = RAIZ / 'catalogo' / 'antes-da-vistoria.tsv'
 DEST_ANTES = RAIZ / 'src' / 'antes.json'
 SINOPSES = RAIZ / 'catalogo' / 'sinopses.tsv'
 DEST_SINOPSES = RAIZ / 'src' / 'sinopses.json'
+DEST_DIGITAIS = RAIZ / 'src' / 'digitais.json'          # nome do arquivo → linha do catálogo (ver o quadro de capas)
 SINOPSE_MIN, SINOPSE_MAX = 140, 400          # caracteres: as duas amostras aprovadas têm 251 e 281
 _ABREV = {'dr', 'dra', 'sr', 'sra', 'prof', 'st', 'vol', 'séc', 'cap', 'ed', 'p', 'pe'}
 AUTOR_FIX = {
@@ -104,6 +107,43 @@ def dados_digitais(books, avisos):
 def _norm(s):
     """A normalização que o painel usa para comparar nomes (norm, em src/js/00-util.js): sem acentos e em minúsculas."""
     return ''.join(c for c in unicodedata.normalize('NFD', s or '') if not '\u0300' <= c <= '\u036f').lower()
+
+
+DIGITAL_LIDO = ('.epub', '.cbz')         # os formatos de que o painel sabe tirar a capa (src/js/54-capa-digital.js)
+
+
+def nomes_digitais(books, capas, avisos=None):
+    """{nome do arquivo (sem acentos, em minúsculas): posição da linha do catálogo}, dos EPUBs e CBZs conhecidos.
+
+    É a própria lista de arquivos do dono do projeto dizendo "este arquivo é deste livro": o inventário já foi conferido
+    à mão, então o painel reconhece o arquivo por ele, em vez de adivinhar pelo título (e as pastas dele são categorias
+    de prateleira — "Filosofia", "ficcao cientifica e fantasia" — que não significam nada para um casamento).
+    · nomes que pertencem a mais de uma linha ficam de fora: não servem para reconhecer nenhuma delas (mesma regra dos
+      identificadores em dados_digitais) — por isso o dono é contado antes de qualquer filtro de capa;
+    · só entram os formatos que têm capa dentro (DIGITAL_LIDO) e as linhas ainda sem capa: é o que o lote pode
+      aproveitar; um arquivo fora do mapa não é lido, e o resumo diz isso em palavras;
+    · o mapa vai embutido no painel (const DIGITAIS_NOMES), por isso é normalizado aqui do mesmo jeito que o norm() do
+      navegador. Quem lê é src/js/56-lote-capas.js."""
+    avisos = [] if avisos is None else avisos
+    if not digital.INVENTARIO.exists():
+        return {}
+    obras = digital.obras_do_inventario(digital.ler_inventario(digital.INVENTARIO))
+    ligadas, _ = digital.casar(obras, books)
+    dono = {}
+    for i, lista in ligadas.items():
+        for o in lista:
+            for r in o['linhas']:
+                if r['formato'] == digital.FORMATO_PASTA:
+                    continue                                       # série: o arquivo mora numa subpasta, não nesta linha
+                nome = _norm(r['arquivo']).strip()
+                if nome.lower().endswith(DIGITAL_LIDO):
+                    dono.setdefault(nome, set()).add(i)
+    ambiguo = sorted(n for n, s in dono.items() if len(s) > 1)
+    if ambiguo:
+        avisos.append(f'{len(ambiguo)} nome(s) de arquivo pertencem a mais de uma linha do catálogo e ficam fora do mapa: '
+                      + '; '.join(ambiguo[:3]) + ('…' if len(ambiguo) > 3 else ''))
+    return {n: i for n, (i,) in ((n, tuple(s)) for n, s in sorted(dono.items()) if len(s) == 1)
+            if i < len(capas) and not capas[i]}
 
 
 def nomes_antigos(linhas, avisos):
@@ -325,6 +365,11 @@ if __name__ == '__main__':
     with open(DEST_FONTES, 'w', encoding='utf-8', newline='\n') as f:
         f.write(json.dumps(fontes, ensure_ascii=False))
     print(len(fontes), 'origens de capa ->', DEST_FONTES, DEST_FONTES.stat().st_size, 'bytes')
+    mapa = nomes_digitais(parse(SRC.read_text(encoding='utf-8')), lista, avisos)
+    assert all(0 <= v < len(data) for v in mapa.values()) and all(k.endswith(DIGITAL_LIDO) for k in mapa), 'src/digitais.json: nome ou posição fora do catálogo'
+    with open(DEST_DIGITAIS, 'w', encoding='utf-8', newline='\n') as f:
+        f.write(json.dumps(mapa, ensure_ascii=False, separators=(',', ':')))
+    print(len(mapa), 'arquivos digitais sem capa ->', DEST_DIGITAIS, DEST_DIGITAIS.stat().st_size, 'bytes')
     trilhas = ler_trilhas(parse(SRC.read_text(encoding='utf-8')), avisos)
     with open(DEST_TRILHAS, 'w', encoding='utf-8', newline='\n') as f:
         f.write(json.dumps(trilhas, ensure_ascii=False, separators=(',', ':')))

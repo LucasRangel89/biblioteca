@@ -11,19 +11,23 @@ código que vai no painel, no Node, sem navegador:
   · do pacote são lidos só a cauda, o índice e a entrada da capa: um livro de vários megabytes não entra inteiro na
     memória e o limite de anexação (5 MB) não trava a extração;
   · o que não é .epub/.cbz não é tocado; pacote truncado, índice em ZIP64, imagem ausente, SVG ou endereço externo
-    devolvem nada — em silêncio, sem erro e sem rede;
+    devolvem nada — em silêncio, sem erro e sem rede —, mas com o MOTIVO, que é o que o quadro da varredura conta;
+   · o EPUB anuncia a capa de três maneiras: properties="cover-image", <meta name="cover"> e a referência type="cover"
+     do <guide> (o jeito dos livros convertidos por Calibre); com uma imagem só no pacote, ela é a capa;
   · o fluxo da ficha: a capa só entra em livro sem capa nenhuma (nem enviada, nem do catálogo), passa pelo reduzidor
     da "Enviar capa…" e é gravada como capa enviada (vale com as capas desligadas, entra no backup, sai com "Tirar a
     capa enviada"); anexar um arquivo que É o livro não marca "possui análise";
-  · a varredura de pasta: reconhece o livro pelo nome do arquivo ou da pasta, deixa de lado ambíguos e livros que já
-    têm capa, e não anexa arquivo nenhum.
+  · a varredura de pasta: reconhece o livro primeiro pelo mapa do inventário (DIGITAIS_NOMES), depois pelo casamento
+    exato de título, deixa de lado ambíguos e livros que já têm capa, e não anexa arquivo nenhum;
+  · a pasta da biblioteca é categoria de prateleira, não série: ela nunca entra na fase de "um título dentro do outro",
+    que é o que fazia um lote inteiro virar "mais de um livro" sem nada ser lido.
 
 O JavaScript executado aqui é o dos arquivos do painel, lido como está no repositório (mesma ordem do gerador). O que o
 Node não tem — a tela e o banco do navegador — é imitado pelo mínimo: uma imagem que abre com o tamanho pedido, um
 canvas que devolve um JPEG falso, um IndexedDB e um quadro de diálogo de mentirinha. O teste falha se alguém tentar
 ir à internet.
 """
-import pathlib, re, shutil, subprocess, sys, zipfile
+import json, pathlib, re, shutil, subprocess, sys, unicodedata, zipfile
 
 QA = pathlib.Path(__file__).resolve().parent
 RAIZ = QA.parent.parent
@@ -113,6 +117,34 @@ with zipfile.ZipFile(FIX / 'sem-capa.epub', 'w') as z:
     esqueleto(z, manifest=item('p1', 'images/001.png') + item('p2', 'images/002.png'))
     gravar(z, 'OEBPS/images/001.png', OUTRA)
     gravar(z, 'OEBPS/images/002.png', OUTRA)
+# o <guide type="cover"> é como os EPUBs 2 e os convertidos por Calibre anunciam a capa: sem <meta name="cover">
+with zipfile.ZipFile(FIX / 'guia.epub', 'w') as z:
+    gravar(z, 'mimetype', 'application/epub+zip', comprimido=False)
+    gravar(z, 'META-INF/container.xml', '<?xml version="1.0"?><container><rootfiles><rootfile full-path="OEBPS/package.opf"'
+           ' media-type="application/oebps-package+xml"/></rootfiles></container>')
+    gravar(z, 'OEBPS/package.opf', '<?xml version="1.0"?><package xmlns="http://www.idpf.org/2007/opf" version="2.0"><metadata/>'
+           '<manifest>' + item('c1', 'images/frente.jpg', 'image/jpeg') + item('t1', 'text/cap1.xhtml', 'application/xhtml+xml')
+           + '</manifest><spine toc="ncx"/><guide><reference type="cover" title="Cover" href="images/frente.jpg"/></guide></package>')
+    gravar(z, 'OEBPS/text/cap1.xhtml', '<html xmlns="http://www.w3.org/1999/xhtml"><body><p>miolo</p></body></html>')
+    gravar(z, 'OEBPS/images/frente.jpg', CAPA)
+# o guia apontando para uma PÁGINA (é o que muitos conversores fazem): não é licença de pegar a primeira imagem do miolo
+with zipfile.ZipFile(FIX / 'guia-pagina.epub', 'w') as z:
+    gravar(z, 'mimetype', 'application/epub+zip', comprimido=False)
+    gravar(z, 'META-INF/container.xml', '<?xml version="1.0"?><container><rootfiles><rootfile full-path="OEBPS/package.opf"'
+           ' media-type="application/oebps-package+xml"/></rootfiles></container>')
+    gravar(z, 'OEBPS/package.opf', '<?xml version="1.0"?><package xmlns="http://www.idpf.org/2007/opf" version="2.0"><metadata/>'
+           '<manifest>' + item('i1', 'images/001.png') + item('t1', 'text/cap1.xhtml', 'application/xhtml+xml')
+           + '</manifest><spine toc="ncx"/><guide><reference type="cover" href="text/cap1.xhtml"/></guide></package>')
+    gravar(z, 'OEBPS/text/cap1.xhtml', '<html xmlns="http://www.w3.org/1999/xhtml"><body><p>miolo</p></body></html>')
+    gravar(z, 'OEBPS/images/001.png', OUTRA)
+# pacote com uma imagem só, sem anúncio: ela é a capa (é o que sai de um conversor simples)
+with zipfile.ZipFile(FIX / 'imagem-unica.epub', 'w') as z:
+    esqueleto(z, manifest=item('i1', 'images/img001.png'))
+    gravar(z, 'OEBPS/images/img001.png', CAPA)
+# a capa anunciada está no pacote, mas não é uma imagem que o navegador consiga abrir
+with zipfile.ZipFile(FIX / 'capa-quebrada.epub', 'w') as z:
+    esqueleto(z, manifest=item('c1', 'images/frente.png', props='cover-image'))
+    gravar(z, 'OEBPS/images/frente.png', b'eu queria ser um png')
 # o índice aponta para fora da pasta dele (../../), e o pacote tem a imagem na raiz
 with zipfile.ZipFile(FIX / 'para-cima.epub', 'w') as z:
     esqueleto(z, opf='Livro/miolo/content.opf', manifest=item('c', '../../imagens/acima.png', props='cover-image'))
@@ -190,9 +222,11 @@ const tabela = { put: r => { banco.set(r.k, r); return pedido(); }, get: k => pe
 const dbFalso = { transaction: () => { const tx = { objectStore: () => tabela }; setTimeout(() => tx.oncomplete && tx.oncomplete(), 0); return tx; } };
 
 const ltSt = { textContent: '', isConnected: true };   // a linha de progresso do quadro da varredura
-const $ = sel => (sel === '#lt-st' ? ltSt : null);
+const ltFora = { hidden: true, innerHTML: '', isConnected: true };      // a lista dos arquivos que ficaram de fora
+const $ = sel => (sel === '#lt-st' ? ltSt : sel === '#lt-fora' ? ltFora : null);
 let dlgAberto = null;
-const Dlg = { abrir(o) { dlgAberto = o; if (o.aoAbrir) o.aoAbrir({ querySelector: s => (s === '#lt-st' ? ltSt : null) }); }, fechar() { dlgAberto = null; } };
+const Dlg = { abrir(o) { dlgAberto = o; if (o.aoAbrir) o.aoAbrir({ querySelector: s => (s === '#lt-st' ? ltSt : s === '#lt-fora' ? ltFora : null) }); }, fechar() { dlgAberto = null; } };
+const mapaDoInventario = {};                             // o DIGITAIS_NOMES de mentirinha: cada bloco põe o que precisa
 
 const livros = [];
 let avisos = [];
@@ -214,10 +248,10 @@ const temCapa = b => !!b._img;                          // como no painel: o cat
 
 const fonte = ['54-capa-digital.js', '55-anexos.js', '56-lote-capas.js'].map(f => fs.readFileSync(path.join(RAIZ, 'src', 'js', f), 'utf8')).join('\n');
 const rodar = new Function('DB', 'porId', 'tocar', 'toast', 'render', 'desenharGaveta', 'Gaveta', '$', 'MAX_ANEXOS', 'MAX_COMENTARIO', 'TAG_ANALISE',
-  'defTag', 'marcarMeu', 'derivar', 'salvar', 'fInt', 'fDec', 'esc', 'plural', 'norm', 'Loja', 'temCapa', 'document', 'Image', 'URL', 'FileReader', 'bancoFalso', 'Dlg',
+  'defTag', 'marcarMeu', 'derivar', 'salvar', 'fInt', 'fDec', 'esc', 'plural', 'norm', 'Loja', 'temCapa', 'document', 'Image', 'URL', 'FileReader', 'bancoFalso', 'Dlg', 'DIGITAIS_NOMES',
   fonte + '\nAnexos.banco = Promise.resolve(bancoFalso); return { Notas, Anexos, LoteCapas, planejarLote, chaveDeNome, capaDoDigital, fonteDe, listarZip, bytesDaEntrada, textoDaEntrada, caminhoRelativo, capaAnunciadaEpub, capaDoCbz, reduzirImagem, DIGITAL_CAPA, LIVRO_DIGITAL, LOTE_MAX };');
 const M = rodar(DB, porId, tocar, toast, render, desenharGaveta, Gaveta, $, MAX_ANEXOS, MAX_COMENTARIO, TAG_ANALISE,
-  defTag, marcarMeu, derivar, salvar, fInt, fDec, esc, plural, norm, Loja, temCapa, document, Image, URL, FileReader, dbFalso, Dlg);
+  defTag, marcarMeu, derivar, salvar, fInt, fDec, esc, plural, norm, Loja, temCapa, document, Image, URL, FileReader, dbFalso, Dlg, mapaDoInventario);
 
 const espera = () => new Promise(r => setTimeout(r, 60));
 const bytesDo = nome => fs.readFileSync(path.join(FIX, nome));
@@ -232,7 +266,8 @@ function arquivoFake(nome, apelido) {
            slice(a, b) { fatias.push([a, b]); return { arrayBuffer: async () => pedaco(a, b) }; },
            arrayBuffer: async () => pedaco(0, buf.length) };
 }
-const escolhido = async arq => { const r = await M.capaDoDigital(arq); return r ? r.nome : null; };
+const escolhido = async arq => { const r = await M.capaDoDigital(arq); return r && r.blob ? r.nome : null; };
+const motivoDo = async arq => { const r = await M.capaDoDigital(arq); return (r && r.motivo) || 'veio capa'; };
 const porNome = (nome, apelido) => arquivoFake(nome, apelido);
 
 /* ---------- o que o módulo escolhe ---------- */
@@ -249,7 +284,17 @@ ok(await escolhido(porNome('opf-unico.epub')) === 'capa.png', 'EPUB sem containe
 ok(await escolhido(porNome('dois-opf.epub')) === null, 'EPUB sem container.xml e com dois índices: não adivinhamos qual é o livro', await escolhido(porNome('dois-opf.epub')));
 ok(await escolhido(porNome('svg.epub')) === null, 'capa anunciada em SVG: não serve, o navegador não a reduziria para o tamanho de capa', await escolhido(porNome('svg.epub')));
 ok(await escolhido(porNome('sumico.epub')) === null, 'a imagem anunciada não está no pacote: nada é feito', await escolhido(porNome('sumico.epub')));
+ok(await escolhido(porNome('guia.epub')) === 'frente.jpg', 'a referência type="cover" do <guide> é entendida (EPUBs 2 e livros do Calibre)', await escolhido(porNome('guia.epub')));
+ok(await escolhido(porNome('guia-pagina.epub')) === null, 'o guia apontando para uma página não é licença de pegar a primeira imagem do miolo', await escolhido(porNome('guia-pagina.epub')));
+ok(await escolhido(porNome('imagem-unica.epub')) === 'img001.png', 'EPUB com uma imagem só no pacote: ela é a capa', await escolhido(porNome('imagem-unica.epub')));
 ok(await escolhido(porNome('Capa MAIÚSCULA.EPUB')) === 'frente.png', 'o nome do livro digital vale em qualquer grafia (Capa MAIÚSCULA.EPUB)', await escolhido(porNome('Capa MAIÚSCULA.EPUB')));
+console.log('POR QUE NÃO VEIO CAPA');
+ok(await motivoDo(porNome('sem-capa.epub')) === 'sem capa dentro', 'livro sem capa dentro do pacote: o motivo diz isso, em vez de um nada mudo', await motivoDo(porNome('sem-capa.epub')));
+ok(await motivoDo(porNome('guia-pagina.epub')) === 'sem capa dentro', 'pacote que só tem miolo: sem capa dentro', await motivoDo(porNome('guia-pagina.epub')));
+ok(await motivoDo(porNome('sumico.epub')) === 'capa fora do pacote', 'a capa anunciada não está no pacote: o motivo diz isso', await motivoDo(porNome('sumico.epub')));
+ok(await motivoDo(porNome('dois-opf.epub')) === 'sem capa dentro', 'dois índices e nenhum container.xml: nada é adivinhado, e o motivo é dito', await motivoDo(porNome('dois-opf.epub')));
+ok((await motivoDo(porNome('ruim.epub'))) === 'pacote ilegível', 'pacote que não abre: ilegível, e o arquivo fica em paz', await motivoDo(porNome('ruim.epub')));
+ok(await motivoDo(porNome('livro.epub.pdf')) === 'não é EPUB nem CBZ', 'PDF não é aberto, e a razão é dita', await motivoDo(porNome('livro.epub.pdf')));
 
 console.log('CBZ');
 ok(await escolhido(porNome('ordem.cbz')) === '001.jpg', 'a primeira imagem da história, na ordem dos números (001 antes de 010)', await escolhido(porNome('ordem.cbz')));
@@ -444,6 +489,7 @@ ok(plano.ambigueis.length === 1 && /mais de um/.test(plano.ambigueis[0].motivo) 
    'título que bate em dois livros é deixado em paz, e o motivo fica registrado', plano.ambigueis);
 ok(plano.pares.every(p => !p.livro._img) && plano.semLivro.some(x => x.nome === 'Um Livro Que Ninguém Tem.epub'),
    'livro que já tem capa do catálogo não é tocado: fica entre os que não acharam livro', plano.pares.map(p => p.livro.t));
+ok(plano.semLivro.some(x => /Um Livro Que Ninguém Tem/.test(x.nome)) && !plano.comCapa.length, 'um nome fora do mapa é contado como sem livro, não como erro', plano.semLivro.map(x => x.nome));
 ok(!plano.pares.some(p => p.livro.t === 'Série Nova' && p.arq.name !== 'A Série Nova 004.cbz'),
    'a primeira imagem da série fica; as outras edições são contadas à parte', plano.repetidos);
 ok(plano.repetidos.length === 1 && plano.repetidos[0] === 'A Série Nova 007.cbz', 'a segunda edição da série é contada como repetida', plano.repetidos);
@@ -469,7 +515,73 @@ ok(avisos.length === 1 && /Nenhum EPUB ou CBZ na pasta/.test(avisos[0]) && dlgAb
    'pasta sem livro digital: só o aviso, sem abrir quadro nenhum', avisos);
 banco.clear(); avisos = [];
 await M.LoteCapas.rodar([{ name: 'Desconhecido Totalmente.xyz.epub', size: 1000, slice: (a, b) => ({ arrayBuffer: async () => new ArrayBuffer(0) }) }]);
-ok(avisos.length === 1 && /nenhum foi reconhecido/.test(avisos[0]), 'nada reconhecido entre os livros sem capa: o aviso explica', avisos);
+ok(avisos.length === 1 && /nenhum corresponde a um dos/.test(avisos[0]) && /inventario[.]tsv/.test(avisos[0]),
+   'nada reconhecido entre os livros sem capa: o aviso explica e aponta a lista', avisos);
+
+/* ---------- o mapa do inventário: o que o nome do arquivo não diz, a lista dele diz ---------- */
+console.log('O MAPA DO INVENTARIO');
+DB.livros.length = 0;
+const estante = [
+  novoLivro('c0', { t: 'A Física da Alma', a: 'Amit Goswami' }),                 // nome truncado e sujo: só o mapa casa
+  novoLivro('c1', { t: 'A Mente e o Cérebro' }),                                  // casamento exato pelo título
+  novoLivro('c2', { t: 'A Mente' }),                                              // não leva nada: o outro bate inteiro
+  novoLivro('c3', { t: 'Chakras e Mediunidade' }),                                // título dentro do nome do arquivo
+  novoLivro('c4', { t: 'As Grandes Histórias da Mitologia', _img: 777 }),          // já tem capa: nada é trocado
+  novoLivro('c5', { t: 'Psicologia da Inteligência' }),
+  novoLivro('c6', { t: 'Psicologia das Massas' }),
+  novoLivro('c7', { t: 'O Livro Sem Capa Dentro' }),                             // casado, mas o pacote não traz capa
+];
+const sujo = (nome, pasta, pacote) => Object.assign(arquivoFake(pacote || (/\\.cbz$/i.test(nome) ? 'ordem.cbz' : 'meta.epub')),
+  { name: nome, webkitRelativePath: pasta + '/' + nome });
+mapaDoInventario[norm('A Fisica d - Amit Goswami (z-library.sk, 1lib.sk, z-lib.sk).epub')] = 0;
+mapaDoInventario[norm('box trilogia kingsbridge os pilares da terra (ken follett).epub')] = 4;
+mapaDoInventario[norm('o livro sem capa dentro (autoria desconhecida).epub')] = 7;
+const loteInv = [
+  sujo('A Fisica d - Amit Goswami (z-library.sk, 1lib.sk, z-lib.sk).epub', 'Religião, Espiritualidade e Mitologia'),
+  sujo('A Mente e o Cérebro.epub', 'psicologia'),
+  sujo('Apostila de Chakras e Mediunidade (autoria desconhecida).epub', 'psicologia'),
+  sujo('Algum Livro Qualquer de Uma Pasta Cheia de Mentes.epub', 'psicologia'),
+  sujo('box trilogia kingsbridge os pilares da terra (ken follett).epub', 'Religião, Espiritualidade e Mitologia'),
+  sujo('o livro sem capa dentro (autoria desconhecida).epub', 'psicologia', 'sem-capa.epub'),   // casou, mas o pacote não traz capa
+];
+const planoInv = M.planejarLote(loteInv, DB.livros);
+const porIdInv = Object.fromEntries(planoInv.pares.map(p => [p.livro.id, p.arq.name]));
+ok(planoInv.pares.length === 4 && porIdInv.c0 && porIdInv.c1 && porIdInv.c3 && porIdInv.c7,
+   'quatro livros aproveitados: o mapa reconhece o nome truncado, e o título continua valendo', planoInv.pares.map(p => p.livro.id));
+ok(planoInv.pares.filter(p => p.certo).length === 2, 'dois vieram direto da lista da biblioteca virtual, sem palpite', planoInv.pares.filter(p => p.certo).map(p => p.livro.id));
+ok(planoInv.ambigueis.length === 0, 'a categoria da prateleira não vira ambiguidade: "psicologia" deixa de casar com tudo que começa por "Psicologia…"', planoInv.ambigueis);
+ok(planoInv.semLivro.length === 1 && /Algum Livro Qualquer/.test(planoInv.semLivro[0].nome) && /nenhum livro sem capa/.test(planoInv.semLivro[0].motivo),
+   'o que não está no mapa e não bate com nenhum título fica em paz, contado como está', planoInv.semLivro);
+ok(planoInv.comCapa.length === 1 && /box trilogia/.test(planoInv.comCapa[0]) && !planoInv.pares.some(p => p.livro.id === 'c4'),
+   'livro que já tem capa é reconhecido pelo nome e não é tocado', [planoInv.comCapa, Object.keys(porIdInv)]);
+ok(estante.filter(b => b.id === 'c2').every(b => !b.cp) && !planoInv.pares.some(p => p.livro.id === 'c2'),
+   'o título que é pedaço de outro não leva a capa do vizinho', planoInv.pares.map(p => p.livro.id));
+
+console.log('O RESUMO POR ESTAGIO');
+banco.clear(); M.Anexos.capas.clear(); avisos = []; ltSt.textContent = ''; ltFora.hidden = true; ltFora.innerHTML = '';
+await M.LoteCapas.rodar(loteInv);
+ok(/3 capas encontradas em 4 arquivos lidos/.test(ltSt.textContent) && !/4 capas/.test(ltSt.textContent),
+   'o quadro separa o que foi lido do que virou capa', ltSt.textContent);
+ok(/1 arquivo · sem capa dentro/.test(ltSt.textContent), 'a varredura diz quantos casaram mas não traziam capa', ltSt.textContent);
+ok(/1 arquivo de livro que já tem capa/.test(ltSt.textContent),
+   'e diz os que já tinham capa, sem misturar as duas coisas', ltSt.textContent);
+ok(/fora, sem livro certo/.test(ltFora.innerHTML) && /Algum Livro Qualquer/.test(ltFora.innerHTML),
+   'os nomes que não soubemos ligar a um livro aparecem, para a lista ser corrigida', ltFora.innerHTML);
+ok([...banco.values()].filter(x => x.tipo === 'capa').length === 3 && estante.filter(b => b.cp).length === 3,
+   'as três capas do lote do inventário são gravadas, e mais nada', [banco.size, estante.filter(b => b.cp).map(b => b.id)]);
+ok(estante.find(b => b.id === 'c4')._img === 777 && !estante.find(b => b.id === 'c4').cp, 'a capa que já estava lá continua a mesma', estante.find(b => b.id === 'c4')._img);
+
+/* um pacote cuja imagem o navegador não abre: o estágio diz isso, e o livro fica sem capa como estava */
+console.log('A IMAGEM QUE NÃO ABRE');
+const antes = imagem; imagem = { w: 0, h: 0 };
+DB.livros.forEach(b => { b.cp = ''; });          // a estante volta ao estado de antes: o que se testa aqui é o que acontece quando a imagem não abre
+banco.clear(); M.Anexos.capas.clear(); avisos = []; ltSt.textContent = '';
+await M.LoteCapas.rodar([sujo('A Mente e o Cérebro.epub', 'psicologia')]);
+imagem = antes;
+ok(/0 capas encontradas em 1 arquivo lido/.test(ltSt.textContent) && /1 arquivo · imagem que não abriu/.test(ltSt.textContent),
+   'imagem que não abre é contada como tal, e não como "nenhum livro"', ltSt.textContent);
+ok(banco.size === 0 && !estante.find(b => b.id === 'c2').cp, 'e o livro fica sem capa, como estava', [banco.size, estante.find(b => b.id === 'c2').cp]);
+
 
 console.log('ERROS: ' + erros.length);
 for (const e of erros) console.log('   ' + e);
@@ -488,7 +600,7 @@ else:
     print(saida.rstrip())
     confere(r.returncode == 0 and bool(re.search(r'^ERROS: 0$', saida, flags=re.M)), 'o JavaScript do painel extrai a capa, faz a ficha e percorre a pasta', (r.returncode, saida[-900:]))
     n = len([l for l in saida.splitlines() if l.startswith(('ok', 'FALHOU'))])
-    confere(n >= 55, 'a checagem executou as %d previsões do teste (pacote, ficha e pasta)' % n, n)
+    confere(n >= 110, 'a checagem executou as %d previsões do teste (pacote, ficha e pasta)' % n, n)
 
 print('O QUE FICA NO ARQUIVO (o desenho do fluxo)')
 mod = (RAIZ / 'src' / 'js' / '54-capa-digital.js').read_text(encoding='utf-8')
@@ -528,6 +640,32 @@ confere('Este navegador não permite escolher uma pasta inteira' in lote,
         'num navegador sem escolha de pasta, o caminho da ficha continua indicado')
 confere('54-capa-digital' in (RAIZ / 'README.md').read_text(encoding='utf-8') and '56-lote-capas' in (RAIZ / 'README.md').read_text(encoding='utf-8'),
         'o README conhece os módulos novos')
+
+# ─────────── o mapa dos nomes: o contrato entre o inventário, o gerador e o painel ───────────
+print('O MAPA DOS NOMES (inventário → src/digitais.json → painel)')
+norm_js = lambda s: ''.join(c for c in unicodedata.normalize('NFD', s) if not '\u0300' <= c <= '\u036f').lower()
+mapa = json.loads((RAIZ / 'src' / 'digitais.json').read_text(encoding='utf-8'))
+cat = json.loads((RAIZ / 'src' / 'catalog.json').read_text(encoding='utf-8'))
+capas = json.loads((RAIZ / 'src' / 'capas.json').read_text(encoding='utf-8'))
+linhas = [l.split('\t') for l in (RAIZ / 'biblioteca-virtual' / 'inventario.tsv').read_text(encoding='utf-8').splitlines()[1:]]
+reais = {norm_js(r[1]).strip() for r in linhas if len(r) > 2 and r[2].lower() in ('epub', 'cbz')}
+confere(len(mapa) > 250 and set(mapa) <= reais,
+        'todo nome do mapa é um arquivo que existe na biblioteca virtual, grafado como o painel o normaliza', len(mapa))
+confere(all(k == norm_js(k).strip() for k in mapa), 'as chaves já estão na forma que o norm do painel produz (passar o norm duas vezes não muda nada)')
+confere(all(k.endswith(('.epub', '.cbz')) for k in mapa), 'só EPUB e CBZ entram no mapa: PDF e os outros formatos ficam de fora')
+confere(all(isinstance(v, int) and 0 <= v < len(cat) and not capas[v] for v in mapa.values()),
+        'o mapa só aponta para linhas do catálogo que ainda não têm capa — por isso o lote não encosta em quem já tem')
+html = (RAIZ / 'Biblioteca_Lucas_Dashboard.html').read_text(encoding='utf-8')
+confere('const DIGITAIS_NOMES = ' + json.dumps(mapa, ensure_ascii=False, separators=(',', ':')) + ';' in html,
+        'o painel embute o mapa inteiro: nada é lido do disco nem da internet na hora de reconhecer um arquivo')
+confere("const mapa = (typeof DIGITAIS_NOMES === 'object' && DIGITAIS_NOMES) || {};" in lote and 'const i = mapa[norm(base)];' in lote,
+        'a varredura consulta o mapa pelo nome do arquivo, antes de qualquer heurística')
+confere('nunca pelo nome da pasta' in lote and 'const c = chavesDoArquivo[0];' in lote,
+        'a fase de "um título dentro do outro" olha só o nome do arquivo: a pasta é categoria de prateleira')
+confere("if (l.length > 1 && !motivo) motivo =" in lote,
+        'um nome ambíguo não descarta o que a outra chave teria casado limpo')
+confere("return { blob: new Blob([dados], { type: tipo }), nome: soNomeDoCaminho(e.nome) };" in mod and "if (!alvo) return vazias;" in mod,
+        'o que não virou capa devolve o motivo, e é ele que o resumo conta')
 
 shutil.rmtree(PACOTE, ignore_errors=True)
 print('ERROS:', len(erros))
