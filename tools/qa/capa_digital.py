@@ -557,6 +557,14 @@ ok(planoInv.comCapa.length === 1 && /box trilogia/.test(planoInv.comCapa[0]) && 
 ok(estante.filter(b => b.id === 'c2').every(b => !b.cp) && !planoInv.pares.some(p => p.livro.id === 'c2'),
    'o título que é pedaço de outro não leva a capa do vizinho', planoInv.pares.map(p => p.livro.id));
 
+/* a pasta é maior que o teto: nada é perdido de vista, o que passa de 400 é lido na próxima execução */
+const estanteCheia = [];
+for (let i = 0; i < 410; i++) estanteCheia.push({ id: 'k' + i, t: 'Livro Único n' + i, a: 'Autor', tags: [], leit: '', notas: {}, u: 0 });
+const loteGrande = estanteCheia.map((b, i) => ({ name: b.t + '.epub', size: 4000, webkitRelativePath: 'Biblioteca/' + b.t + '.epub' }));
+const planoGrande = M.planejarLote(loteGrande, estanteCheia);
+ok(planoGrande.pares.length === 410 && planoGrande.totais.digitais === 410 && !planoGrande.semLivro.length,
+   'pasta com mais arquivos que o teto: os 410 são planejados, e o corte de 400 é só de leitura', [planoGrande.pares.length, planoGrande.totais]);
+
 console.log('O RESUMO POR ESTAGIO');
 banco.clear(); M.Anexos.capas.clear(); avisos = []; ltSt.textContent = ''; ltFora.hidden = true; ltFora.innerHTML = '';
 await M.LoteCapas.rodar(loteInv);
@@ -629,6 +637,8 @@ confere(anx.count('async gravarCapa(b, dados, nome)') == 1 and "await this.grava
         '"Enviar capa…" e a capa do arquivo usam a mesma gravação — não há segunda maneira de guardar uma capa')
 confere("const LOTE_MAX = 400;" in lote and 'plano.pares.slice(0, LOTE_MAX)' in lote,
         'a varredura tem limite por execução (o backup cresce com as capas)')
+confere('const lote = plano.pares.slice(0, LOTE_MAX), faltam =' in lote and "faltam ? ` · ${plural(faltam, 'livro fica', 'livros ficam')} para a próxima" in lote,
+        'pasta maior que o teto: o resumo do fim diz quantos ficaram para a próxima execução, e não só a nota de cima')
 confere(not re.search(r'\bfetch\s*\(|XMLHttpRequest|localStorage|indexedDB|tipo:\s*\'arquivo\'', lote),
         'a varredura não vai à internet, não grava nada direto e não anexa arquivo nenhum')
 confere('if (p.livro.cp) continue;' in lote and 'marcarMeu(p.livro); feitos.push' in lote,

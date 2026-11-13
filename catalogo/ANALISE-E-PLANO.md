@@ -516,7 +516,25 @@ testes de navegador. A busca real curta das capas (limite 40) continua pendente 
   (valida e injeta `DIGITAIS_NOMES`), `tools/atualizar.py` (o passo novo na descrição), `src/digitais.json` (gerado,
   versionado), `src/js/54-capa-digital.js`, `src/js/55-anexos.js`, `src/js/56-lote-capas.js`, `tools/qa/capa_digital.py`,
   `README.md`, `ROTEIRO.md` (Etapa 11, parte 5).
-- **Conferência local:** `capa_digital` com **144 previsões** (115 no Node), `fluxo_ci` `TUDO CERTO` (sete testes);
+- **Conferência local:** `capa_digital` com **146 previsões** (116 no Node), `fluxo_ci` `TUDO CERTO` (sete testes);
   `node --check` em cada módulo; `python3 tools/build_catalog.py` + `python3 tools/build.py` → 1432 KB;
   `python3 tools/atualizar.py --conferir` → `Nada mudou.`; `git diff --check` limpo. A suíte com navegador continua sem
   rodar aqui (o Playwright do ambiente não veio nesta rodada) — quem a executa é o CI do PR.
+
+### Registro operacional — o teto de 400 (pergunta do dono do projeto, 13/11/2026)
+
+- **Pergunta:** "e se a pasta tiver mais que 400?" O teto corta a **leitura**, não a varredura: a pasta é percorrida
+  inteira, tudo o que é reconhecido entra no plano, e só os 400 primeiros são abertos — o resto fica para a próxima
+  execução, sem nada perdido de vista e sem nada adivinhado.
+- **O ajuste (PR #21):** o aviso existia, mas só numa parte do painel — a nota miúda do alto do quadro dizia
+  "400 por execução: N ficam para a próxima", e a linha de resumo do fim, que é o que se lê quando a varredura acaba,
+  ficava muda sobre isso. O resumo passou a fechar com `· N livros ficam para a próxima execução (o teto é de 400 por
+  vez)`, e o comentário do `LOTE_MAX` diz agora "livros LIDOS por execução — a pasta é percorrida inteira". O README e
+  o ROTEIRO (Etapa 11, parte 5) dizem o mesmo. Repetir a varredura é o caminho normal: os que já receberam capa saem
+  da lista sozinhos, porque passam a ter capa — não há estado nenhum a limpar entre uma execução e outra.
+- **Teste:** um plano com 410 livros e 410 arquivos confere que todos os 410 são planejados (nada é perdido de
+  vista) e que o corte é só de leitura; outra checagem confere no arquivo que o resumo do fim carrega o "ficam para a
+  próxima". `capa_digital` sobe para **146 previsões** (116 no Node).
+- **Antes disto:** o PR #20 (o casamento pelo inventário, os estágios do resumo e o `<guide>`) foi mesclado com
+  aprovação explícita do dono do projeto e publicado em `https://lucasrangel89.github.io/biblioteca/`
+  (`main` em `9b3e0b8`; o `Publicar o site` rodou em 37s e o HTML publicado é o do repositório).
