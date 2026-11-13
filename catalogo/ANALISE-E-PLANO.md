@@ -417,7 +417,7 @@ testes de navegador. A busca real curta das capas (limite 40) continua pendente 
   passaram; YAML dos workflows e `bash -n` dos blocos `run` passaram. A suíte com navegador não foi repetida aqui
   (sem Playwright/Chromium neste ambiente). O `.bat` foi conferido como texto/contrato, não executado em Windows real.
 - **Envio:** a rodada anterior ficou bloqueada porque a branch antiga já tinha PR mesclado/fechado. Com o Continue,
-  o trabalho foi reaplicado na branch ativa `arena/2a25f33b-biblioteca` e segue para PR próprio. Nenhum merge ou
-  publicação automática.
+  o trabalho foi reaplicado na branch ativa `arena/2a25f33b-biblioteca` e enviado no PR
+  [#17](https://github.com/LucasRangel89/biblioteca/pull/17). Nenhum merge ou publicação automática.
 - **O que não foi feito:** nenhum dispatch de capas, nenhuma remoção física de `referencias/` ou de testes antigos,
   nenhuma mudança de persistência/IndexedDB/abas.
