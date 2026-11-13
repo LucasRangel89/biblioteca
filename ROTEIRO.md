@@ -71,9 +71,12 @@ O painel abre em <https://lucasrangel89.github.io/biblioteca/>, no computador ou
 
 Isto não é uma etapa: pode ser feito a qualquer momento.
 
-1. Na pasta que mudou, rode o `gerador de nomes.bat` para refazer a listagem.
-2. No GitHub, abra `biblioteca-virtual/listagens`, clique em **Add file → Upload files** e envie a listagem, com o
-   mesmo nome da anterior.
+1. Gere as listagens de uma vez: dois cliques em `Gerar listagens.bat`, na raiz do repositório, informe a pasta raiz da
+   biblioteca virtual, leia a prévia e confirme. Sem o `.bat`: `python tools/gerar_listagens.py --origem "D:\Biblioteca"
+   --conferir` e, depois de conferir, o mesmo comando sem `--conferir`. Enquanto esta mudança não estiver mesclada, o
+   caminho antigo continua valendo: dentro da pasta que mudou, `dir /b > "nome da pasta.txte"`.
+2. No GitHub, abra `biblioteca-virtual/listagens`, clique em **Add file → Upload files** e envie as listagens novas ou
+   alteradas, com o mesmo nome das anteriores.
 3. Peça: "atualize a biblioteca virtual".
 
 Sem listagem nova não há o que atualizar: o catálogo já está igual às listagens guardadas.
@@ -186,7 +189,7 @@ listagem e o que não é livro.
 | O quê | Por quê |
 | --- | --- |
 | As edições dentro das 104 pastas de séries | A listagem só traz o nome da pasta. O catálogo sabe que você tem *Akira*; não sabe quantos volumes |
-| Subpasta `Mangás` (dentro de HQs) | Não tem listagem. Se quiser que entre, rode o `gerador de nomes.bat` dentro dela e envie |
+| Subpasta `Mangás` (dentro de HQs) | Não tem listagem. Quando o gerador único da etapa 5 estiver no ar, responda `S` à pergunta de mangás no `Gerar listagens.bat` (ou use `--incluir "HQs/Mangás=Mangás"`) e envie a listagem |
 | 4 arquivos compactados com o nome cortado: `BTN - Si______ra` (3 partes) e `Lo_____d - Mo_____no` | Não dá para saber o que são sem abrir |
 | 2 revistas *Heavy Metal* | São periódicos; ficam só no inventário, como as outras revistas |
 | `Revistas`, `Didáticos`, `Psicologia Aplicada e Popularização` | Estão vazias |
@@ -311,25 +314,39 @@ em que a biblioteca virtual for atualizada.
 
 ## Etapa 5 — Rotina à prova de erro
 
-**Por quê.** Hoje os testes rodam a pedido; nada impede que uma mudança futura quebre o painel sem ninguém notar. E
-atualizar as listagens pede um `gerador de nomes.bat` em cada pasta.
+**Em parte** (12/11/2026). A conferência automática já está no ar; o gerador único e a revisão de `referencias/` estão
+preparados nesta branch, ainda sem merge/publicação.
 
-**O que será feito:** os testes passam a rodar sozinhos no GitHub a cada mudança; um único arquivo gera todas as
-listagens de uma vez; o material antigo guardado em `referencias/` é revisto.
+**Por quê.** Atualizar as listagens pedia um `gerador de nomes.bat` em cada pasta, e uma mudança futura podia quebrar o
+painel sem ninguém notar.
 
 **No ar desde 12/11/2026 (PR #14):** `.github/workflows/verificar.yml` roda em PR e ramos de trabalho: confere que
-`python tools/atualizar.py` não muda nada, roda `node --check` e os cinco testes sem navegador. A publicação do site
-ganhou um job `conferir` antes de `publicar`; se a geração ou os testes rápidos falharem, o site não publica. Pedidos
-manuais de publicação também ficam restritos a `main`. O teste `tools/qa/fluxo_ci.py` confere esse desenho. A suíte
-completa, agora com 37 testes, continua separada, para não transformar todo PR em 35 minutos de espera.
+`python tools/atualizar.py` não muda nada, roda `node --check` e os testes sem navegador. A publicação do site ganhou
+um job `conferir` antes de `publicar`; se a geração ou os testes rápidos falharem, o site não publica. Pedidos manuais
+de publicação também ficam restritos a `main`. O teste `tools/qa/fluxo_ci.py` confere esse desenho.
 
-**Ainda falta:** marcar `Rápido (sem navegador)` como verificação obrigatória na proteção de `main` (configuração
-do GitHub, não algo que o workflow possa ligar sozinho); um único arquivo gerar todas as listagens da biblioteca
-virtual; revisar `referencias/`.
+**Preparado nesta branch:**
 
-**De você:** ajustar a proteção de `main` e, quando o gerador único estiver pronto, testá-lo uma vez no seu computador.
+- `tools/gerar_listagens.py` e `Gerar listagens.bat`: um único gerador para todas as pastas da biblioteca virtual, com
+  prévia (`--conferir`), confirmação antes de gravar, CP850/CRLF (UTF-8 quando o nome exige), subpastas de série de HQ,
+  `novashqs/novas` → `novasHQSS` e a pasta aninhada opcional `HQs/Mangás`. Não apaga listagem de pasta ausente, não
+  sobrescreve listagem antiga por pasta vazia sem `--forcar` e não mexe no catálogo, inventário ou painel.
+- `tools/qa/gerar_listagens.py`: teste com pastas fictícias e o contrato do importador. Com ele, o nível rápido passa a
+  **seis testes** e a suíte completa a **38 testes**.
+- `referencias/LEIAME.md`: o que é histórico/inspiração, o que não deve ser executado e o que não é fonte de dados.
+  Nada foi apagado às cegas; o protótipo Next.js continua abandonado.
+- A meta description do painel deixa de dizer “pessoal e privado”: o catálogo é público; anotações, leituras e preços
+  ficam só no navegador de quem os registrou.
 
-**Pronta quando** atualizar a biblioteca virtual for: dois cliques, um envio, um pedido.
+**Ainda falta:** revisão/merge desta mudança; marcar `Rápido (sem navegador)` como verificação obrigatória na proteção
+de `main` (configuração do GitHub, não algo que o workflow possa ligar sozinho); testar o `.bat` uma vez no Windows do
+usuário.
+
+**De você:** ajustar a proteção de `main` e, quando esta mudança estiver no ar, dar dois cliques em `Gerar listagens.bat`,
+conferir a prévia, enviar `biblioteca-virtual/listagens` e pedir “atualize a biblioteca virtual”.
+
+**Pronta quando** atualizar a biblioteca virtual for: dois cliques, um envio, um pedido. O gerador fecha a parte local;
+falta a validação no computador do usuário e a proteção obrigatória de `main`.
 
 ## Etapa 6 — Melhorias do painel
 
@@ -968,14 +985,14 @@ e por último melhorar como as capas aparecem no painel. Quatro partes, nesta or
 | Parte | O que é | Em que pé está |
 | --- | --- | --- |
 | 1 | Auditoria e fila de revisão | **Feita** (12/11/2026) |
-| 2 | Casamento mais seguro e uma fonte nova | **Feita** (12/11/2026) — o Google ainda não respondeu nas buscas manuais; caminho gratuito em revisão |
+| 2 | Casamento mais seguro e uma fonte nova | **Feita** (12/11/2026) — o Google ainda não respondeu nas buscas manuais; caminho gratuito mesclado no PR #16 |
 | 3 | O robô das capas abrindo um PR para revisão | **Feita** (12/11/2026) — o disparo manual funcionou (#9 e #10), mas sem capa nova; falta a busca curta de conferência |
 | 4 | As capas no painel: capa maior, aviso de outra edição, grade | **Feita** (12/11/2026) |
 
-### Caminho gratuito em revisão (12/11/2026)
+### Caminho gratuito (PR #16, mesclado em 12/11/2026)
 
-O projeto continua **totalmente gratuito**: ISBNdb e qualquer serviço pago ficam fora. A mudança preparada nesta
-rodada faz três coisas, sem publicar nada sozinha:
+O projeto continua **totalmente gratuito**: ISBNdb e qualquer serviço pago ficam fora. A mudança mesclada no PR #16
+(`f8a0d50`) faz três coisas, sem publicar nada sozinha:
 
 1. **ISBN conferido, opcional.** `catalogo/isbns.tsv` começa vazio. Só entra o número que você conferiu no exemplar,
    com título e autor copiados do catálogo e a fonte da conferência. Open Library e Google procuram esse número
