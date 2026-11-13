@@ -145,7 +145,8 @@ menos para conferir no inventário (e um nome a menos no mapa de capas, que hoje
 ## Por onde começar, se for um pouco de cada vez
 
 1. duplicatas (item 5) — nada muda de lugar, só sobra menos;
-2. esvaziar `Pasta Livros` e `pasta ficcao e literatura` (item 1) — 178 arquivos, nenhum precisa de decisão nova;
+2. esvaziar `Pasta Livros` e `pasta ficcao e literatura` (item 1) — 165 arquivos acham casa pelo eixo que já têm,
+   e os 13 sem eixo ficam parados; nenhuma decisão criativa;
 3. quadrinhos numa prateleira só (item 2) — 57 arquivos, e é o padrão que a estante já usa;
 4. decidir a coleção "Em 90 Minutos" (item 4) — 61 arquivos, é gosto;
 5. subpastas de assunto (item 3) — começa pelo código (o gerador descer em subpasta de livro), depois a mudança.
