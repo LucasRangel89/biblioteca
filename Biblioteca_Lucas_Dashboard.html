@@ -4282,7 +4282,7 @@ const Notas = {
    · um limite por execução (LOTE_MAX) mantém o backup e o banco do navegador em tamanho saudável — basta rodar de novo.
    O que faz o trabalho pesado está em 54-capa-digital (abrir o pacote) e em 55-anexos (guardar a capa e a
    lista de formatos que são o próprio livro). */
-const LOTE_MAX = 400;                                                        // capas aproveitadas por execução
+const LOTE_MAX = 400;                                                        // livros LIDOS por execução — a pasta é percorrida inteira
 const CHAVE_MIN = 10;                                                        // "um título dentro do outro" só vale a partir disto
 const LOTE_FASES = ['sem capa dentro', 'pacote ilegível', 'capa fora do pacote', 'capa grande demais', 'imagem que não abriu'];
                                                                              // os motivos que capaDoDigital devolve, na ordem em que aparecem no resumo
@@ -4404,6 +4404,7 @@ const LoteCapas = {
       .filter(m => fases[m]).map(m => `${plural(fases[m], 'arquivo', 'arquivos')} · ${m}`);
     const resumo = `${plural(feitos.length, 'capa encontrada', 'capas encontradas')} em ${plural(lidos, 'arquivo lido', 'arquivos lidos')}`
       + (this.parar && lidos < lote.length ? ` · parado antes do fim, ${fInt(lote.length - lidos)} ficaram para depois` : '')
+      + (faltam ? ` · ${plural(faltam, 'livro fica', 'livros ficam')} para a próxima execução (o teto é de ${fInt(LOTE_MAX)} por vez)` : '')
       + (plano.comCapa.length ? ` · ${plural(plano.comCapa.length, 'arquivo', 'arquivos')} de livro que já tem capa` : '')
       + (plano.repetidos.length ? ` · ${plural(plano.repetidos.length, 'arquivo repetido', 'arquivos repetidos')} (o mesmo livro mais de uma vez)` : '')
       + (plano.ambigueis.length ? ` · ${plural(plano.ambigueis.length, 'nome com mais de um livro', 'nomes com mais de um livro')} deixados em paz` : '')

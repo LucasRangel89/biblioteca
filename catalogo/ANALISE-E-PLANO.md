@@ -516,13 +516,40 @@ testes de navegador. A busca real curta das capas (limite 40) continua pendente 
   (valida e injeta `DIGITAIS_NOMES`), `tools/atualizar.py` (o passo novo na descrição), `src/digitais.json` (gerado,
   versionado), `src/js/54-capa-digital.js`, `src/js/55-anexos.js`, `src/js/56-lote-capas.js`, `tools/qa/capa_digital.py`,
   `README.md`, `ROTEIRO.md` (Etapa 11, parte 5).
-- **Registro operacional — o arquivo que muda de casa (13/11, rodada seguinte).** As ferramentas de pastas passaram a
-  acompanhar uma arrumação em vez de desfazê-la: o gerador desce em subpasta de pasta de livro e grava o caminho
-  (`analitica/Livro.epub`), o inventário recebe a subpasta na coluna `pasta`, e o importador remaneja a linha conferida
-  do arquivo que mudou de lugar — `ausente` + linha `novo` só quando o nome não bate com uma linha só. Nada foi movido:
-  o que mudou foi o que acontece quando o dono move. O detalhe (o que liberar, a ressalva do `--sem-subpastas`, os casos
-  não feitos) está na **Etapa 11, parte 6** do `ROTEIRO.md`.
-- **Conferência local:** `capa_digital` com **144 previsões** (115 no Node), `fluxo_ci` `TUDO CERTO` (sete testes);
+- **Conferência local:** `capa_digital` com **146 previsões** (116 no Node), `fluxo_ci` `TUDO CERTO` (sete testes);
   `node --check` em cada módulo; `python3 tools/build_catalog.py` + `python3 tools/build.py` → 1432 KB;
   `python3 tools/atualizar.py --conferir` → `Nada mudou.`; `git diff --check` limpo. A suíte com navegador continua sem
   rodar aqui (o Playwright do ambiente não veio nesta rodada) — quem a executa é o CI do PR.
+
+### Registro operacional — o teto de 400 (pergunta do dono do projeto, 13/11/2026)
+
+- **Pergunta:** "e se a pasta tiver mais que 400?" O teto corta a **leitura**, não a varredura: a pasta é percorrida
+  inteira, tudo o que é reconhecido entra no plano, e só os 400 primeiros são abertos — o resto fica para a próxima
+  execução, sem nada perdido de vista e sem nada adivinhado.
+- **O ajuste (PR #21):** o aviso existia, mas só numa parte do painel — a nota miúda do alto do quadro dizia
+  "400 por execução: N ficam para a próxima", e a linha de resumo do fim, que é o que se lê quando a varredura acaba,
+  ficava muda sobre isso. O resumo passou a fechar com `· N livros ficam para a próxima execução (o teto é de 400 por
+  vez)`, e o comentário do `LOTE_MAX` diz agora "livros LIDOS por execução — a pasta é percorrida inteira". O README e
+  o ROTEIRO (Etapa 11, parte 5) dizem o mesmo. Repetir a varredura é o caminho normal: os que já receberam capa saem
+  da lista sozinhos, porque passam a ter capa — não há estado nenhum a limpar entre uma execução e outra.
+- **Teste:** um plano com 410 livros e 410 arquivos confere que todos os 410 são planejados (nada é perdido de
+  vista) e que o corte é só de leitura; outra checagem confere no arquivo que o resumo do fim carrega o "ficam para a
+  próxima". `capa_digital` sobe para **146 previsões** (116 no Node).
+- **Antes disto:** o PR #20 (o casamento pelo inventário, os estágios do resumo e o `<guide>`) foi mesclado com
+  aprovação explícita do dono do projeto e publicado em `https://lucasrangel89.github.io/biblioteca/`
+  (`main` em `9b3e0b8`; o `Publicar o site` rodou em 37s e o HTML publicado é o do repositório).
+
+### Registro operacional — o arquivo que muda de casa (13/11/2026)
+
+- **O que a arrumação de pastas pedia:** `tools/gerar_listagens.py` desce nas subpastas de uma pasta de livro e grava o
+  caminho (`analitica/Livro.epub`); o inventário recebe a subpasta na coluna `pasta`, sem coluna nova, e a estante
+  continua sendo o primeiro nível — é dela que vêm o eixo, o gênero e os marcadores padrão, e é ela que conta como pasta.
+- **O que não se perde mais:** o importador remaneja a linha conferida do arquivo que mudou de lugar — para a subpasta,
+  para outra estante, ou de volta — em vez de marcá-lo `ausente` e criar uma linha `novo` com título deduzido.
+  `ausente` + `novo` só quando o nome não bate com uma linha só: com dois candidatos, o robô não escolhe. O `RESUMO.md`
+  conta os que mudaram de pasta, na execução em que mudaram, e a tela diz `· 4 mudaram de pasta`.
+- **Conferido na cópia dos dados reais:** quatro arquivos mudando de casa deixaram exatamente quatro linhas
+  diferentes, e nelas apenas a coluna `pasta`; catálogo, contagem de obras e a execução seguinte, imóveis.
+  `--sem-subpastas` existe para a subpasta que não é estante nenhuma. **Nada foi movido no acervo do dono.**
+- **Antes disto:** o PR #21 (o teto de 400 dito também no resumo do fim) foi mesclado com aprovação explícita do dono
+  do projeto. O detalhe desta rodada — o que ela libera, os casos não feitos — está na **Etapa 11, parte 6** do `ROTEIRO.md`.
