@@ -573,8 +573,8 @@ desenho com a inicial do título. Até 11/11/2026 eram 761, todas da primeira fo
   quadro mostra o andamento e pode ser parado a qualquer momento; no fim, diz em que ponto cada arquivo parou — capa
   achada, pacote que não traz capa dentro, pacote que não abriu, livro que já tinha capa, mais de um livro com esse nome,
   nenhum livro com esse nome — e lista os nomes que não soubemos ligar a um livro, para a lista ser corrigida. Nada é
-  adivinhado e nada é trocado: um arquivo sem correspondência limpa fica em paz. São 400 livros por execução — basta
-  rodar de novo para os demais.
+  adivinhado e nada é trocado: um arquivo sem correspondência limpa fica em paz. A pasta é percorrida inteira; o teto é de leitura — 400 livros
+  por execução, e o resumo diz quantos ficaram para a próxima (basta rodar de novo).
   Nada é enviado à internet, nenhum arquivo é movido ou alterado, e o que foi aproveitado entra em "Suas anotações"
   como uma capa enviada (exporte o backup para levar junto).
 

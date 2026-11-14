@@ -1031,7 +1031,8 @@ deles têm o arquivo, e o arquivo costuma trazer a capa dentro de si.
      o livro, pode ser um relatório seu;
   3. *um por um é lento* → o botão **"Buscar capas numa pasta de arquivos…"**, em "Seus dados" → "Capas dos livros":
      você escolhe a pasta, o painel reconhece cada livro e aplica as capas de uma vez, com quadro de andamento, botão
-     "Parar" e resumo no fim. 400 livros por execução — para os demais, rodar de novo. Nada é movido, copiado ou enviado.
+     "Parar" e resumo no fim. A pasta é lida inteira; o teto é de leitura — 400 livros por execução, e o resumo diz quantos
+     ficaram para a próxima. Nada é movido, copiado ou enviado.
 - **Como reconhece o livro** — na varredura de pasta, em duas etapas, e a primeira é a que vale:
   1. *a sua lista*: `biblioteca-virtual/inventario.tsv` já diz, linha por linha, que arquivo pertence a que livro —
      é uma ligação conferida à mão uma vez, e o painel a embute como `DIGITAIS_NOMES` (gerado por
@@ -1057,7 +1058,7 @@ deles têm o arquivo, e o arquivo costuma trazer a capa dentro de si.
   SVG, ZIP64, um EPUB de 5,6 MB) e roda no Node o JavaScript do painel: a escolha da capa, o fluxo da ficha com um
   IndexedDB imitado e a varredura de pasta com um quadro de mentirinha — inclusive com os nomes sujos que saem de um
   download (`(z-library.sk, 1lib.sk, z-lib.sk)`, título truncado, pasta-categoria) e o mapa do inventário no meio —
-  **144 previsões** — 115 delas executando o JavaScript do painel no Node, e o resto conferindo o arquivo: o contrato
+  **146 previsões** — 116 delas executando o JavaScript do painel no Node, e o resto conferindo o arquivo: o contrato
   do mapa dos nomes (inventário → `src/digitais.json` → painel embutido), que é o que impede o lote de casar um arquivo
   com o livro errado. Confere também, no arquivo, que nada disso toca a internet ou o `localStorage`. Com ele, o nível
   rápido passa a **sete testes** e a suíte completa a **39 testes**. A parte que depende de tela de verdade (o
