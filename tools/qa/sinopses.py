@@ -10,7 +10,8 @@ Confere que:
   · cada sinopse segue o combinado: duas ou três frases, de 140 a 400 caracteres, com a fonte e a data; as duas amostras
     aprovadas pelo dono (A Metamorfose e O Físico) estão como ele aprovou;
   · pendência não tem sinopse, diz o motivo e aparece na lista de pendências do ROTEIRO.md;
-  · os lotes 1 e 2 estão completos: estante, prioridades (#top) e recomendações ainda não adquiridas das seções 1 a 5;
+  · os lotes 1 e 2 estão completos (estante, prioridades (#top) e recomendações ainda não adquiridas das seções 1 a 5), e o
+    lote 3 tirou as 94 linhas que faltavam nas seções 1 a 6;
   · o leitor do arquivo avisa do que está errado em vez de deixar passar (livro que não existe, linha repetida, sinopse
     longa, de uma frase só, sem fonte), e acha o livro também pelo nome antigo;
   · src/sinopses.json e o painel pronto estão em dia com o arquivo;
@@ -110,10 +111,11 @@ ok('as duas amostras aprovadas pelo dono estão como ele aprovou', all(da.get(t)
 roteiro = (RAIZ / 'ROTEIRO.md').read_text(encoding='utf-8')
 ok('…e são as mesmas que o ROTEIRO.md mostra', all(' '.join(s.split()) in ' '.join(roteiro.replace('\n> ', ' ').split()) for s in AMOSTRAS.values()))
 
-print('C. Pendências e os lotes 1 e 2')
+print('C. Pendências e os lotes 1, 2 e 3')
 ok('pendência não tem sinopse e diz o motivo ("pendente: …")', all(r['fonte'].startswith('pendente: ') and len(r['fonte']) > 40 for r in PEND), [r['titulo'] for r in PEND if not r['fonte'].startswith('pendente: ')])
 ok('cada pendência está na lista de pendências do ROTEIRO.md', bool(PEND) and all(f'*{r["titulo"]}*' in roteiro for r in PEND), [r['titulo'] for r in PEND if f'*{r["titulo"]}*' not in roteiro])
 pesquisados = {POS[norm(r['titulo'], r['autor'])] for r in LINHAS if norm(r['titulo'], r['autor']) in POS}
+pesquisados_previos = {POS[norm(r['titulo'], r['autor'])] for r in LINHAS if r['data'] != '2026-11-14' and norm(r['titulo'], r['autor']) in POS}
 estante = [i for i, r in enumerate(CAT) if r[3] == 0]; top = [i for i, r in enumerate(CAT) if r[3] != 0 and 'top' in r[2].split()]
 ok('lote 1: os 97 livros da estante foram pesquisados', len(estante) == 97 and set(estante) <= pesquisados, [CAT[i][0] for i in estante if i not in pesquisados][:5])
 ok('lote 1: as 53 prioridades (#top) que não estão na estante também', len(top) == 53 and set(top) <= pesquisados, [CAT[i][0] for i in top if i not in pesquisados][:5])
@@ -125,6 +127,11 @@ lote2 = [POS[norm(r['titulo'], r['autor'])] for r in LINHAS if r['data'] == '202
 ok('lote 2: todas as recomendações ainda não adquiridas das seções 1 a 5 foram pesquisadas', set(recs_1_5) <= pesquisados, [CAT[i][0] for i in recs_1_5 if i not in pesquisados][:5])
 ok('…sem repetir as prioridades e a amostra que já estavam antes', len(lote2) == 143 and set(lote2) <= set(recs_1_5) and not (set(lote2) & set(top)), len(lote2))
 ok('a tabela de lotes dá o lote 2 como feito, com o número de livros de hoje', re.search(r'\| 2 \|[^\n]*\| %d \| Feito[^\n]*\b%d sinopses\b' % (len(lote2), len(lote2)), roteiro) is not None)
+secoes_1_6 = [i for i, r in enumerate(CAT) if 1 <= r[3] <= 6]
+lote3 = [POS[norm(r['titulo'], r['autor'])] for r in LINHAS if r['data'] == '2026-11-14' and norm(r['titulo'], r['autor']) in POS]
+ok('lote 3: as seções 1 a 6 não têm mais nenhum livro sem linha', set(secoes_1_6) <= pesquisados, [CAT[i][0] for i in secoes_1_6 if i not in pesquisados][:5])
+ok('…com as 94 linhas novas, todas nas seções 1 a 6, sem repetir as de antes', len(lote3) == 94 and set(lote3) <= set(secoes_1_6) and not (set(lote3) & pesquisados_previos), len(lote3))
+ok('a tabela de lotes dá o lote 3 como feito, com o número de livros de hoje', re.search(r'\| 3 \|[^\n]*\| %d \| Feito[^\n]*\b%d sinopses\b' % (len(lote3), len([r for r in COM if POS[norm(r['titulo'], r['autor'])] in set(lote3)])), roteiro) is not None)
 restantes = [i for i, r in enumerate(CAT) if 1 <= r[3] <= 16 and i not in pesquisados]
 ok('…e o que ainda falta nas recomendações continua certo na tabela', re.search(r'\| 3 a 5 \|[^\n]*\| %d \| A fazer' % len(restantes), roteiro) is not None, len(restantes))
 

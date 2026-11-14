@@ -21,7 +21,7 @@ Este arquivo é atualizado ao fim de cada rodada. Para saber em que pé as coisa
 | 7 | A versão 3 do catálogo: camadas e trilhas de leitura | **Feita** (11/11/2026) |
 | 8 | Análise dos filtros, trilhas personalizadas e novas recomendações | **Feita** (11/11/2026) — das oito propostas, três viraram a etapa 9; cinco esperam a sua decisão (lista abaixo) |
 | 9 | Filtros que dizem quantos livros têm e somam dentro do grupo; grupo da psicologia; conserto das caixas que não cabiam na tela | **Feita** (11/11/2026) |
-| 10 | As suas ideias: ocultar categorias, imprimir e copiar listas, sinopses, temas visuais, estímulo à leitura | **Em parte** (12/11/2026) — ocultar e imprimir estão prontos; sinopses dos lotes 1 e 2 (292 livros); seis temas prontos (Lovecraft, Sherlock Holmes, Moby Dick, Deserto, Terras antigas, Clássico greco-romano); a guia de leitura continua aguardando a aprovação do desenho abaixo |
+| 10 | As suas ideias: ocultar categorias, imprimir e copiar listas, sinopses, temas visuais, estímulo à leitura | **Em parte** (12/11/2026) — ocultar e imprimir estão prontos; sinopses dos lotes 1, 2 e o começo do 3 (386 livros); seis temas prontos (Lovecraft, Sherlock Holmes, Moby Dick, Deserto, Terras antigas, Clássico greco-romano); a guia de leitura continua aguardando a aprovação do desenho abaixo |
 | 11 | Mais capas: auditoria, casamento e fontes, robô que abre PR e capas no painel | **Em parte** (12/11/2026) — as quatro partes estão no ar; o Google Books não respondeu nas execuções #9 e #10. Caminho gratuito em revisão: ISBN conferido opcional, chave Google opcional e piloto do Internet Archive só de leitura; nenhuma capa nova entrou |
 
 A ordem pode mudar: as etapas que faltam não dependem umas das outras. Se alguma interessar mais, peça por ela.
@@ -651,7 +651,7 @@ não se perder entre uma conversa e outra. Para retomar, basta dizer "vamos para
 | --- | --- | --- |
 | 1 | Ocultar categorias | **Feita** (11/11/2026) |
 | 2 | Imprimir e copiar listas | **Feita** (11/11/2026) |
-| 3 | Sinopse na ficha de cada livro | Combinada, com o estilo aprovado por você (11/11/2026); falta fazer, um lote por rodada |
+| 3 | Sinopse na ficha de cada livro | **Em andamento** (14/11/2026) — estilo aprovado por você (11/11/2026); saíram os lotes 1 e 2 e o começo do 3: **386 sinopses** no painel e duas pendências suas |
 | 4 | Temas visuais | Combinada, com as três decisões tomadas (11/11/2026); falta fazer, poucos temas por rodada |
 | 5 | Estímulo à leitura (gamificação) | Direção combinada com as suas respostas; falta você aprovar o desenho |
 
@@ -770,7 +770,8 @@ amostras têm 281 e 251), com a fonte e a data anotadas no arquivo.
 | --- | --- | --- | --- |
 | 1 | Os 97 da estante e as 53 prioridades (`#top`) que não estão nela | 150 | Feito em 11/11/2026: 148 sinopses e 2 pendências |
 | 2 | As recomendações ainda não adquiridas das seções 1 a 5, sem repetir as prioridades do lote 1 | 143 | Feito em 12/11/2026: 143 sinopses, nenhuma pendência nova |
-| 3 a 5 | O restante das recomendações: as já adquiridas nas seções 1 a 5 e as que faltam nas seções 6 a 16 | 410 | A fazer |
+| 3 | Comecei pelo que faltava nas seções 1 a 6, na ordem do catálogo | 94 | Feito em 14/11/2026: 94 sinopses, nenhuma pendência nova |
+| 3 a 5 | O resto dos lotes 3 a 5: as recomendações das seções 7 a 16 | 316 | A fazer |
 | 6 em diante | Os livros digitais (seção 17), um eixo de cada vez — você escolhe por onde começar | 1.910 | A fazer |
 
 Esta tabela é atualizada a cada lote. Se quiser outra ordem — um autor, um eixo, uma trilha na frente —, é só dizer.
@@ -797,6 +798,26 @@ As 12 prioridades que já estavam no lote 1 e a amostra *A Metamorfose*, que voc
 
 Nenhuma pendência nova: as 143 obras puderam ser confirmadas. O catálogo não mudou — título, autor, posse e marcadores
 continuam como estavam. As duas pendências abaixo são as do lote 1 e continuam precisando de uma resposta sua.
+
+**Lote 3 — o que saiu (14/11/2026).** O lote 3 era o restante das recomendações: 410 livros nas seções 1 a 16. Nesta
+rodada saíram os **94** que faltavam nas **seções 1 a 6**, na ordem do catálogo, e o painel passou a ter **386**
+sinopses: pré-história e origens (4), ficção científica, fantasia e distopia (22), clássicos universais e romances de
+ideias (8), América Latina, Brasil e lusofonia (8), ficção contemporânea e mundial (6) e romances históricos (46).
+As seções 1 a 6 estão completas. Faltam as seções 7 a 16 — **316 livros**, que são o resto dos lotes 3 a 5. Se preferir
+outra ordem — um eixo, uma trilha, uma prateleira inteira —, é só dizer.
+
+- **86 de obra bem conhecida**, escritas a partir do que é estabelecido sobre elas;
+- **8 conferidas fora daqui** — obras recentes, traduções com o título diferente no catálogo e títulos em inglês. O
+  endereço consultado está na linha de cada livro em `catalogo/sinopses.tsv`.
+
+Nenhuma conta o final e nenhuma é cópia de contracapa. Duas coisas para você saber:
+
+- *O Médico de Córdoba* (Herbert Le Porrier) tinha `#verificar` no catálogo, e a busca confirmou: o livro existe, é
+  `El médico de Córdoba`, do médico e romancista Herbert Le Porrier, sobre Moisés Maimônides. A sinopse está no
+  painel; a etiqueta `#verificar` continua na linha do catálogo, porque quem a pôs foi você — diga se quer que eu a tire.
+- Oito linhas têm o endereço consultado na coluna `fonte` — *Torto Arado*, *O Avesso da Pele*, *O Médico de Córdoba*,
+  *O Crepúsculo e a Aurora*, *O Desconsolado*, *O Último Judeu*, *A Escolha da Dra. Cole* e *O Viajante*. Valem uma
+  conferida sua.
 
 **Pendências do lote 1 — dois livros ficaram sem sinopse**, porque não deu para confirmar que livro é. No painel, a ficha deles
 segue como antes, sem nada no lugar:
@@ -895,8 +916,8 @@ Duas coisas que você precisa saber:
 
 Como combinado, **Deserto** é inspirado em Duna e **Terras antigas** em Tolkien, sem usar o nome das obras protegidas,
 personagens ou logotipos. Cada um nasceu com um clima só. As três letras novas são livres (SIL OFL 1.1), vão dentro do
-painel com as licenças e não são buscadas na internet. O arquivo passou de cerca de 1,2 MB para **1,37 MB**, já contando
-também as sinopses do lote 2.
+painel com as licenças e não são buscadas na internet. O arquivo passou de cerca de 1,2 MB para **1,37 MB** com os temas e as
+sinopses dos lotes 1 e 2, e o começo do lote 3 acrescentou mais **32 KB**: uns 340 bytes por sinopse dentro do arquivo.
 
 - Os três passaram pela conferência de contraste e pelas mesmas medidas de tela, ficha e celular dos anteriores.
 - Com oito opções no quadro **Aparência**, a lista agora rola quando não cabe inteira. Ao abrir, a escolha guardada
