@@ -82,18 +82,25 @@ seus arquivos são eixo 16 (escrita criativa, parentalidade, contar histórias) 
 `Neurociencias e psicologia biologica`, que é eixo 10 em 30 dos seus 36 arquivos, faz mais sentido como
 `psicologia/neurociencias` do que como pasta de primeiro nível.
 
-**Atenção, e é a única coisa que precisa de código:** `tools/gerar_listagens.py` não desce em subpasta de pasta de
-livro: ele olha só os filhos diretos de cada pasta e, em pasta de livro, ignora subpasta (o texto do próprio gerador
-diz "em pastas de livros, subpastas não entram: são outras pastas da biblioteca"). **Enquanto isso não muda, criar
-`psicologia/analitica/` e meter livros lá dentro faz o importador marcar aqueles arquivos como `ausente`** — eles
-somem do catálogo. O atalho de hoje, `--incluir "psicologia/analitica=..."`, piora: a subpasta vira listagem própria e,
-no inventário, uma pasta-mestre nova — o contrário do que se quer.
+**Isto era a única coisa que precisava de código, e o código foi feito** (rodada de 13/11, `ROTEIRO.md`, Etapa 11
+parte 6). `tools/gerar_listagens.py` desce nas subpastas de uma pasta de livro e grava o caminho do arquivo
+(`analitica/Livro.epub`); o inventário recebe a subpasta na coluna `pasta` — `psicologia/analitica` —, sem coluna nova,
+e `id_arquivo` continua sendo `pasta/arquivo`. A estante continua sendo `psicologia`: é dela que vêm o eixo, o gênero e
+os marcadores padrão, e é ela que conta como pasta.
 
-Portanto: o item 2 (quadrinhos) pode ser feito hoje, sem tocar em código. O item 3 e as subpastas de assunto pedem
-primeiro uma rodada em `tools/gerar_listagens.py` + `tools/importar_digital.py`: a listagem passar a gravar o caminho
-com a subpasta (`psicologia/analitica/Livro.epub`), o inventário ganhar a subpasta na coluna `pasta`, e `id_arquivo`
-continuar sendo `pasta/arquivo` — nada do que foi conferido à mão é reescrito. É uma rodada pequena e eu faço se você
-quiser; sem ela, a arrumação de assunto tem que ficar no primeiro nível.
+E o importador **acompanha o arquivo que mudou de casa**: como o nome é o mesmo, a linha conferida do inventário é
+remanejada (só a coluna `pasta` muda) em vez de virar `ausente` mais uma linha `novo`. Foi conferido no acervo inteiro:
+quatro arquivos movidos, quatro linhas diferentes, e nelas apenas a pasta. Renomear continua sendo outra coisa — aí o
+arquivo sai do mapa de capas até a próxima geração.
+
+O atalho antigo, `--incluir "psicologia/analitica=..."`, não é mais necessário (e ainda é ruim: a subpasta viria
+listagem própria e pasta-mestre nova no inventário). Se numa pasta sua houver uma subpasta que não é estante nenhuma —
+um "pra ver depois" que você não quer no catálogo —, rode o gerador com `--sem-subpastas` e a listagem volta a ser só o
+primeiro nível.
+
+Portanto: o item 2 (quadrinhos) e este item 3 podem ser feitos com `mv` + `Gerar listagens.bat` +
+`python tools/importar_digital.py` + `python tools/atualizar.py`, uma pasta por vez, lendo o `RESUMO.md` no fim de cada
+vez — é lá que aparece a seção "Arquivos que mudaram de pasta".
 
 ## 4 · Coleção não é assunto: "Em 90 Minutos" está em três pastas
 
@@ -149,4 +156,4 @@ menos para conferir no inventário (e um nome a menos no mapa de capas, que hoje
    e os 13 sem eixo ficam parados; nenhuma decisão criativa;
 3. quadrinhos numa prateleira só (item 2) — 57 arquivos, e é o padrão que a estante já usa;
 4. decidir a coleção "Em 90 Minutos" (item 4) — 61 arquivos, é gosto;
-5. subpastas de assunto (item 3) — começa pelo código (o gerador descer em subpasta de livro), depois a mudança.
+5. subpastas de assunto (item 3) — o código já está feito; é mover uma pasta de cada vez e regerar as listagens.

@@ -9,7 +9,9 @@
 O que faz:
   · procura as pastas da biblioteca dentro de --origem (cada pasta imediata vira uma listagem);
   · gera `biblioteca-virtual/listagens/<nome>.txte`, no formato que tools/importar_digital.py já lê;
-  · em pastas de quadrinhos, inclui o nome das subpastas de série; em pastas de livros, não;
+  · em pastas de quadrinhos, inclui o nome das subpastas de série; em pastas de livros, desce nas subpastas e grava
+    o caminho inteiro (`analitica/Livro.epub`), que é como o importador aprende que o arquivo mora numa subpasta;
+    com --sem-subpastas, ele fica só nos arquivos do primeiro nível, como era antes;
   · conhece a subpasta que é outra biblioteca (`novashqs/novas` → `novasHQSS`);
   · com --incluir-conhecidas, também gera a pasta aninhada já conhecida `HQs/Mangás`, se ela existir;
     com --incluir, aceita outra pasta aninhada, ex.: `HQs/Mangás=Mangás`;
@@ -20,8 +22,12 @@ O que faz:
 No Windows, o arquivo `Gerar listagens.bat` na raiz do repositório faz a mesma coisa com dois cliques:
 primeiro mostra a prévia, pergunta se pode incluir a subpasta conhecida de mangás e depois pergunta se pode gravar.
 
-A listagem é só o nome dos arquivos e subpastas, como `dir /b`. Título, autor, eixo e marcadores continuam
-sendo trabalho do importador e do inventário; este script não tenta adivinhar nada disso.
+O que entra numa subpasta de pasta de livro são só os arquivos de livro dela: pasta de sistema, pasta escondida e
+arquivo que não é livro (nota, imagem, .txt) ficam de fora, para o lixo de um acervo não virar linha de inventário.
+
+A listagem é só o nome dos arquivos e subpastas, como `dir /b`, com o caminho quando o arquivo está em subpasta.
+Título, autor, eixo e marcadores continuam sendo trabalho do importador e do inventário; este script não tenta
+adivinhar nada disso.
 """
 import argparse, os, pathlib, sys, tempfile
 
@@ -31,6 +37,7 @@ import importar_digital as imp                                  # noqa: E402
 
 DESTINO = imp.LISTAGENS
 IGNORAR = {'gerador de nomes.bat', 'gerar listagens.bat', 'gerar_listagens.py', 'desktop.ini', 'thumbs.db', '.ds_store'}
+SISTEMA = {'__macosx', '$recycle.bin', 'system volume info', 'lost+found', '@eadir', '#recycler', '.trash'}
 EXTRAS_CONHECIDAS = ('HQs/Mangás=Mangás',)
 CODIFICACOES = {'cp850': 'cp850', 'utf8': 'utf-8', 'utf-8': 'utf-8'}
 
@@ -41,10 +48,32 @@ def nome_ignorado(nome):
     return n in IGNORAR or n.endswith(('.txte', '.bat'))
 
 
-def entradas_da_pasta(pasta, listagem, subpastas_proprias):
+def subpasta_ignorada(nome):
+    """Uma subpasta que não é estante de livro: pasta escondida ou de sistema (lixo do macOS, lixeira do Windows)."""
+    return nome.lower() in SISTEMA or nome.startswith('.')
+
+
+def arquivos_em_subpasta(pai):
+    """Os arquivos de livro de uma subpasta, como caminhos relativos a ela: `Skinner - Sobre o Comportamento.epub`
+    dentro de `analitica/skinner` vira `skinner/Skinner - Sobre o Comportamento.epub`. Só o que tem extensão de
+    livro; nada segue ligação simbólica (`followlinks=False`), para um laço não repetir a pasta sem fim."""
+    out = []
+    for atual, subs, arqs in os.walk(pai, followlinks=False):
+        subs[:] = sorted(sub for sub in subs if not subpasta_ignorada(sub))
+        for arq in arqs:
+            if not imp.extensao(arq) or nome_ignorado(arq):
+                continue
+            rel = pathlib.Path(os.path.relpath(os.path.join(atual, arq), pai)).as_posix()
+            out.append('/'.join(pathlib.PurePosixPath(rel).parts))
+    return sorted(out, key=lambda s: (s.lower(), s))
+
+
+def entradas_da_pasta(pasta, listagem, subpastas_proprias, descer=True):
     """Nomes que o `dir /b` mostraria para esta pasta da biblioteca, já sem listagem/gerador.
-    Em pasta de quadrinhos, subpasta de série entra pelo nome; subpasta com listagem própria fica de fora
-    (ela é gerada como outra listagem). Em pasta de livros, subpastas não entram: são outras pastas da biblioteca."""
+    Em pasta de quadrinhos, subpasta de série entra pelo nome, e o que há dentro dela não é conferido; em pasta de
+    livros, desce-se na subpasta e o arquivo vem com o caminho (`analitica/Livro.epub`) — com `descer=False`, as
+    subpastas ficam de fora, como antes. Subpasta com listagem própria não entra em nenhum dos dois casos: ela é
+    gerada como outra listagem."""
     pasta = pathlib.Path(pasta)
     hq = imp.pasta_de_hq(listagem)
     proprias = {sub for (pai, sub), alvo in subpastas_proprias.items() if pai == listagem}
@@ -54,8 +83,12 @@ def entradas_da_pasta(pasta, listagem, subpastas_proprias):
         if nome_ignorado(nome):
             continue
         if filho.is_dir():
-            if hq and nome not in proprias:
+            if nome in proprias:
+                continue
+            if hq:
                 nomes.append(nome)
+            elif descer and not subpasta_ignorada(nome):
+                nomes += [f'{nome}/{livro}' for livro in arquivos_em_subpasta(filho)]
             continue
         if filho.is_file():
             nomes.append(nome)
@@ -161,7 +194,8 @@ def _gravar_atomico(caminho, dados):
             os.unlink(temp)
 
 
-def gerar(origem, destino=DESTINO, conferir=False, codificacao='cp850', incluir=(), forcar=False, incluir_conhecidas=False):
+def gerar(origem, destino=DESTINO, conferir=False, codificacao='cp850', incluir=(), forcar=False, incluir_conhecidas=False,
+          descer=True):
     """Gera (ou só confere) as listagens. Devolve um relatório com novas, alteradas, inalteradas, vazias,
     esvaziadas, sem_pasta e utf8. Não apaga listagem de pasta ausente. Recusa origem que não parece a biblioteca
     quando já há listagens conhecidas, a menos que --forcar. Pasta vazia que sobrescreveria listagem não vazia
@@ -175,7 +209,7 @@ def gerar(origem, destino=DESTINO, conferir=False, codificacao='cp850', incluir=
         raise ValueError('nenhuma pasta encontrada casa com as listagens que já existem; confira --origem '
                          '(ou use --forcar se for mesmo uma biblioteca nova)')
     relatorio = {'novas': [], 'alteradas': [], 'inalteradas': [], 'vazias': [], 'esvaziadas': [], 'utf8': [],
-                 'sem_pasta': sorted(set(existentes) - set(mapa), key=str.lower)}
+                 'sub': {}, 'sem_pasta': sorted(set(existentes) - set(mapa), key=str.lower)}
     subpastas_proprias = dict(imp.subpastas_listadas(set(mapa) | set(existentes)))
     for valor in incluir:                                         # pasta aninhada que também é biblioteca não é série da pasta pai
         caminho_rel, nome_listagem = parse_incluir(valor)
@@ -188,7 +222,10 @@ def gerar(origem, destino=DESTINO, conferir=False, codificacao='cp850', incluir=
                 subpastas_proprias[(caminho_rel.parts[0], caminho_rel.parts[1])] = nome_listagem
     pendentes = []
     for nome, pasta in mapa.items():
-        entradas = entradas_da_pasta(pasta, nome, subpastas_proprias)
+        entradas = entradas_da_pasta(pasta, nome, subpastas_proprias, descer)
+        de_sub = sum('/' in e for e in entradas)
+        if de_sub:
+            relatorio['sub'][nome] = de_sub                             # o que a descida em subpastas acrescentou
         caminho = destino / f'{nome}.txte'
         atuais = linhas_existentes(caminho)
         if atuais is not None and set(atuais) == set(entradas):
@@ -225,10 +262,11 @@ def gerar(origem, destino=DESTINO, conferir=False, codificacao='cp850', incluir=
 def texto_relatorio(rel, conferir=False):
     acao = 'gravaria' if conferir else 'gravou'
     L = [f'Listagens: {len(rel["novas"])} nova(s), {len(rel["alteradas"])} alterada(s), {len(rel["inalteradas"])} sem mudança.']
+    nota = lambda nome: (f'  ({rel["sub"][nome]} em subpastas)' if rel.get('sub', {}).get(nome) else '')
     for nome in rel['novas']:
-        L.append(f'  nova: {nome}.txte')
+        L.append(f'  nova: {nome}.txte{nota(nome)}')
     for nome in rel['alteradas']:
-        L.append(f'  {acao}: {nome}.txte')
+        L.append(f'  {acao}: {nome}.txte{nota(nome)}')
     for nome in rel['vazias']:
         L.append(f'  pasta vazia (não sobrescrita sem --forcar): {nome}.txte')
     for nome in rel.get('esvaziadas', []):
@@ -250,10 +288,12 @@ def main(argv=None):
     ap.add_argument('--incluir-conhecidas', action='store_true', help='inclui as pastas aninhadas já conhecidas que existirem (hoje: HQs/Mangás)')
     ap.add_argument('--utf8', action='store_true', help='grava em UTF-8 em vez de CP850 (o importador lê os dois)')
     ap.add_argument('--forcar', action='store_true', help='permite origem sem pastas conhecidas e sobrescrita por pasta vazia')
+    ap.add_argument('--sem-subpastas', action='store_true',
+                    help='não desce em subpasta de pasta de livro (o que havia antes): só o primeiro nível entra na listagem')
     args = ap.parse_args(argv)
     try:
         rel = gerar(args.origem, args.destino, args.conferir, 'utf-8' if args.utf8 else 'cp850',
-                    args.incluir, args.forcar, args.incluir_conhecidas)
+                    args.incluir, args.forcar, args.incluir_conhecidas, not args.sem_subpastas)
     except (ValueError, OSError, UnicodeError, LookupError) as e:
         print(f'Não foi possível gerar: {e}')
         return 2

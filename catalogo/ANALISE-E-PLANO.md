@@ -538,3 +538,18 @@ testes de navegador. A busca real curta das capas (limite 40) continua pendente 
 - **Antes disto:** o PR #20 (o casamento pelo inventário, os estágios do resumo e o `<guide>`) foi mesclado com
   aprovação explícita do dono do projeto e publicado em `https://lucasrangel89.github.io/biblioteca/`
   (`main` em `9b3e0b8`; o `Publicar o site` rodou em 37s e o HTML publicado é o do repositório).
+
+### Registro operacional — o arquivo que muda de casa (13/11/2026)
+
+- **O que a arrumação de pastas pedia:** `tools/gerar_listagens.py` desce nas subpastas de uma pasta de livro e grava o
+  caminho (`analitica/Livro.epub`); o inventário recebe a subpasta na coluna `pasta`, sem coluna nova, e a estante
+  continua sendo o primeiro nível — é dela que vêm o eixo, o gênero e os marcadores padrão, e é ela que conta como pasta.
+- **O que não se perde mais:** o importador remaneja a linha conferida do arquivo que mudou de lugar — para a subpasta,
+  para outra estante, ou de volta — em vez de marcá-lo `ausente` e criar uma linha `novo` com título deduzido.
+  `ausente` + `novo` só quando o nome não bate com uma linha só: com dois candidatos, o robô não escolhe. O `RESUMO.md`
+  conta os que mudaram de pasta, na execução em que mudaram, e a tela diz `· 4 mudaram de pasta`.
+- **Conferido na cópia dos dados reais:** quatro arquivos mudando de casa deixaram exatamente quatro linhas
+  diferentes, e nelas apenas a coluna `pasta`; catálogo, contagem de obras e a execução seguinte, imóveis.
+  `--sem-subpastas` existe para a subpasta que não é estante nenhuma. **Nada foi movido no acervo do dono.**
+- **Antes disto:** o PR #21 (o teto de 400 dito também no resumo do fim) foi mesclado com aprovação explícita do dono
+  do projeto. O detalhe desta rodada — o que ela libera, os casos não feitos — está na **Etapa 11, parte 6** do `ROTEIRO.md`.

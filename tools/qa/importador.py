@@ -2,7 +2,8 @@
 repetir não muda nada; arquivo novo, arquivo ausente, marcador posto à mão, correção no inventário e --conferir;
 a classificação (temas, dificuldade, extensão) que vem da coluna `marcadores` do inventário;
 quadrinhos: subpasta de série, edição nova de série conhecida, série nova, adaptação com o título de um livro,
-subpasta que é outra pasta com listagem própria.
+subpasta que é outra pasta com listagem própria; e as subpastas de assunto das pastas de livro: o caminho com
+subpasta na listagem, e o arquivo que muda de casa levando a linha conferida do inventário junto.
 E a conversão do catálogo para o painel (tools/build_catalog.py): src/catalog.json em dia; nomes antigos das linhas
 corrigidas (catalogo/renomeados.tsv); trilhas de leitura (catalogo/trilhas.md); classificação de antes da vistoria
 (catalogo/antes-da-vistoria.tsv); e o HTML pronto com tudo isso dentro. Não precisa de navegador."""
@@ -201,6 +202,71 @@ roda()
 r = next((x for x in imp.ler_inventario(imp.INVENTARIO) if x['pasta'] == 'novashqs' and x['arquivo'] == 'novas'), None)
 confere(bool(r) and (r['formato'], r['tipo'], r['obs']) == ('pasta', 'hq', 'novo') and 'novashqs/novas' in ler('RESUMO.md'),
         'sem a listagem da subpasta, "novas" volta ao inventário, marcada "novo": não some sem aviso')
+
+# 8b ▸ subpasta de pasta de livro: o caminho entra na listagem, e a linha do inventário acompanha o arquivo
+poesia_arq = next(l for l in imp.ler_listagens(tmp / 'listagens')['poesia'] if '/' not in l and imp.extensao(l))
+arq_list = tmp / 'listagens' / 'poesia.txte'
+cruas = imp.ler_texto(arq_list).replace('\r', '').split('\n')
+linhas = [re.sub(r'[\x00-\x1f]', ' ', l.replace('\x07', '•')).strip() for l in cruas if l.strip()]   # limpo como o importador lê
+
+
+def relista(linhas):
+    arq_list.write_bytes(('\r\n'.join(linhas) + '\r\n').encode('cp850'))
+    return roda()
+
+
+antes_l = next(r for r in imp.ler_inventario(imp.INVENTARIO) if r['pasta'] == 'poesia' and r['arquivo'] == poesia_arq)
+medida = ('titulo', 'autor', 'eixo', 'genero', 'marcadores', 'catalogo', 'obs')
+n_obras = len(livros())
+relista([f'No arquivo\\{poesia_arq}' if l == poesia_arq else l for l in linhas])     # barra do Windows, de propósito
+depois = next(r for r in imp.ler_inventario(imp.INVENTARIO) if r['arquivo'] == poesia_arq)
+confere(depois['pasta'] == 'poesia/No arquivo' and all(depois[k] == antes_l[k] for k in medida) and len(livros()) == n_obras,
+        'o arquivo que foi para uma subpasta leva a linha conferida do inventário com ele: só a coluna `pasta` muda')
+print('DEPOIS:', {k: depois[k] for k in medida})
+print('ANTES :', {k: antes_l[k] for k in medida})
+print('OBRAS :', len(livros()), n_obras)
+print('NUMEROS:', [l for l in ler('RESUMO.md').splitlines() if 'arquivos** no invent' in l])
+res = ler('RESUMO.md')
+confere('## Arquivos que mudaram de pasta' in res and f'- `{poesia_arq}` · de `poesia` para `poesia/No arquivo`' in res
+        and '1 deles dentro de subpasta da própria pasta' in res, 'o resumo conta o que mudou de casa e o que está em subpasta')
+relista([poesia_arq if l == f'No arquivo\\{poesia_arq}' else l for l in linhas])
+depois = next(r for r in imp.ler_inventario(imp.INVENTARIO) if r['arquivo'] == poesia_arq)
+confere(depois['pasta'] == 'poesia' and all(depois[k] == antes_l[k] for k in medida),
+        'o caminho de volta (da subpasta para a pasta) é conferido do mesmo jeito')
+relista(linhas)
+confere(roda('--conferir').count('Mudaria') == 0 and 'Nada mudou.' in roda(), 'a listagem de volta ao primeiro nível fecha o ciclo')
+
+def linha_inv(pasta, arquivo, **extra):
+    r = dict(pasta=pasta, arquivo=arquivo, formato='epub', tipo='livro', titulo='Título de ' + arquivo, autor='Um Autor',
+             catalogo='', eixo='8', genero='poesia', marcadores='d1 e1', obs='')
+    r.update(extra)
+    return r
+
+
+inv = [linha_inv('psicologia', 'Livro A.epub'), linha_inv('psicologia', 'Livro B.epub'),
+       linha_inv('psicologia/velha', 'Livro C.epub')]
+novos, aus, volta, sem_lis, mov = imp.sincronizar(inv, {'psicologia': ['analitica/Livro A.epub', 'analitica/Livro B.epub'],
+                                                         'Filosofia': ['Livro C.epub']})
+confere(not novos and not aus and len(mov) == 3 and [x['pasta'] for x in inv[:3]] == ['psicologia/analitica'] * 2 + ['Filosofia'],
+        'para dentro da subpasta, para a subpasta e para outra pasta: a linha muda de `pasta` e nada mais' + str([x['pasta'] for x in inv]))
+confere(all(not imp.tem_obs(x, 'novo') and not imp.tem_obs(x, 'ausente') for x in inv), 'nenhuma dessas linhas foi reescrita pelo robô')
+novos2, aus2, _, _, mov2 = imp.sincronizar(inv, {'psicologia': ['analitica/Livro A.epub', 'analitica/Livro B.epub'],
+                                                 'Filosofia': ['Livro C.epub']})
+confere(not novos2 and not aus2 and not mov2, 'rodar de novo sobre o mesmo caminho não muda nada')
+
+amb = [linha_inv('psicologia', 'Gêmeo.epub'), linha_inv('psicologia/velha', 'Gêmeo.epub')]
+novos3, aus3, _, _, mov3 = imp.sincronizar(amb, {'psicologia': ['No arquivo/Gêmeo.epub']})
+confere(len(novos3) == 1 and len(aus3) == 2 and not mov3 and novos3[0]['pasta'] == 'psicologia/No arquivo'
+        and novos3[0]['obs'] == 'novo', 'dois candidatos com o mesmo nome: o robô não escolhe — entra um novo e os dois ficam ausentes')
+N = imp.contar([linha_inv('psicologia', 'Um.epub'), linha_inv('psicologia/analitica', 'Dois.epub'),
+                dict(linha_inv('psicologia/analitica', 'Tres.epub'), formato='pasta', tipo='hq')], {})
+confere(N['pastas'] == 1 and N['subpastas'] == 1 and N['arquivos'] == 2,
+        'a subpasta não vira pasta nova na conta, e é contada à parte' + str({k: N[k] for k in ('pastas', 'subpastas', 'arquivos')}))
+r = imp._linha_nova('poesia/No arquivo', 'Livro de Estreia - Autor.epub', {})
+confere((r['pasta'], r['arquivo'], r['eixo'], r['genero']) == ('poesia/No arquivo', 'Livro de Estreia - Autor.epub', '8', 'poesia'),
+        'quem chega numa subpasta recebe o eixo e o gênero da estante, não uma estante nova')
+confere(imp.tags_da_pasta(dict(pastas=['classicos e epicos/Contos gregos'], genero='F', t='Ilíada')) == ['classico'],
+        'a classificação padrão da estante vale para um arquivo em subpasta igual a um no primeiro nível')
 
 # 9 ▸ o que vai para o painel: src/catalog.json em dia, e o nome antigo das linhas corrigidas no catálogo
 confere(json_em_dia and not avisos_json, 'src/catalog.json está em dia com o catálogo e o inventário, sem avisos' + (': ' + ' | '.join(avisos_json) if avisos_json else ''))

@@ -138,6 +138,23 @@ def pasta_de_hq(nome):
     return nome in PASTAS_HQ or any(p in k for p in ('hq', 'manga', 'quadrinho', 'gibi'))
 
 
+def raiz(pasta):
+    """A pasta de primeiro nível de um caminho da biblioteca virtual: `psicologia/analitica` → `psicologia`.
+    A coluna `pasta` do inventário guarda onde o arquivo está, com a subpasta quando ele mora numa; o que dá a
+    classificação padrão ao arquivo é a pasta de cima, a que corresponde a uma estante e a uma listagem."""
+    return str(pasta).strip().split('/', 1)[0].strip()
+
+
+def divide_linha(listagem, linha):
+    """A linha de uma listagem vira o par (pasta, arquivo) do inventário.
+    `analitica/Livro.epub` na listagem `psicologia` → (`psicologia/analitica`, `Livro.epub`); `Livro.epub` →
+    (`psicologia`, `Livro.epub`). Barra do Windows vale igual. Em pasta de quadrinhos a subpasta não vem com caminho:
+    ela é a linha dela (`100 Balas`), e o que há dentro não é conferido arquivo por arquivo."""
+    texto = str(linha).strip().replace('\\', '/').strip('/')
+    sub, _, base = texto.rpartition('/')
+    return (f'{listagem}/{sub}' if sub else str(listagem), base)
+
+
 def extensao(nome):
     """Extensão de um arquivo de livro ('pdf', 'cbr'…); '' para uma subpasta e para arquivos de outro tipo."""
     m = re.search(r'\.([A-Za-z0-9]{2,5})$', nome)
@@ -169,10 +186,11 @@ def subpastas_listadas(nomes):
 
 
 def ler_listagens(pasta=LISTAGENS):
-    """{nome da listagem: [linhas]} — os arquivos de livro de cada pasta e, nas pastas de quadrinhos, também as subpastas
-    (cada uma guarda uma série). Ficam de fora o .bat, as próprias listagens e os arquivos de outro tipo; nas pastas de
-    livros, também as subpastas (são outras pastas da biblioteca, cada uma com a sua listagem); nas de quadrinhos, a
-    subpasta que tem listagem própria (ver `subpastas_listadas`)."""
+    """{nome da listagem: [linhas]} — os arquivos de livro de cada pasta, com o caminho quando o arquivo mora numa
+    subpasta (`analitica/Livro.epub`) e, nas pastas de quadrinhos, o nome das subpastas de série (cada uma guarda uma
+    série). Ficam de fora o .bat, as próprias listagens e os arquivos de outro tipo; nas pastas de livros, o nome solto
+    de uma subpasta (a listagem gravada por tools/gerar_listagens.py traz o caminho do arquivo, não a pasta — o que tem
+    listagem própria é outra pasta da biblioteca, ver `subpastas_listadas`)."""
     arquivos = _arquivos_de_listagem(pasta)
     proprias = subpastas_listadas({arq.stem for arq in arquivos})
     out = collections.OrderedDict()
@@ -323,9 +341,10 @@ def series_de_hq(inventario):
 
 
 def _linha_nova(pasta, nome, series):
-    """A linha de inventário de um arquivo (ou de uma subpasta de quadrinhos) que apareceu na listagem."""
-    if not pasta_de_hq(pasta):
-        eixo, genero, _ = PASTAS.get(pasta, (None, '', ''))
+    """A linha de inventário de um arquivo (ou de uma subpasta de quadrinhos) que apareceu na listagem. `pasta` é o
+    caminho onde o arquivo está; eixo, gênero e marcadores padrão vêm da pasta de primeiro nível, a da estante."""
+    if not pasta_de_hq(raiz(pasta)):
+        eixo, genero, _ = PASTAS.get(raiz(pasta), (None, '', ''))
         titulo, autor = deduzir(nome)
         return dict(pasta=pasta, arquivo=nome, formato=extensao(nome), tipo='livro', titulo=titulo, autor=autor,
                     catalogo='', eixo=str(eixo or ''), genero=genero, marcadores='', obs='novo')
@@ -340,30 +359,60 @@ def _linha_nova(pasta, nome, series):
 
 
 def sincronizar(inventario, listagens):
-    """Compara inventário e listagens. Altera o inventário no lugar e devolve (novos, ausentes, de_volta, pastas_sem_listagem)."""
-    conhecidos = {(r['pasta'], r['arquivo']) for r in inventario}
-    series = series_de_hq(inventario)
-    novos, ausentes, de_volta = [], [], []
-    for pasta, nomes in listagens.items():
-        for nome in nomes:
-            if (pasta, nome) in conhecidos:
-                continue
-            conhecidos.add((pasta, nome))
-            r = _linha_nova(pasta, nome, series)
-            inventario.append(r)
-            novos.append(r)
-    sem_listagem = sorted({r['pasta'] for r in inventario} - set(listagens), key=str.lower)
+    """Compara inventário e listagens. Altera o inventário no lugar e devolve
+    (novos, ausentes, de_volta, pastas_sem_listagem, mudaram_de_pasta).
+
+    A linha do inventário é o par (pasta, arquivo). Um arquivo que muda de casa dentro da biblioteca — para uma
+    subpasta da própria pasta, ou para outra pasta — continua com o mesmo nome: a linha dele é remanejada (só a
+    coluna `pasta` muda) em vez de virar `ausente` mais uma linha nova `novo`. Assim arrumar as pastas não desfaz o
+    que foi conferido à mão. Um nome que serve a mais de uma linha sem arquivo é caso de escolha, e o robô não
+    escolhe: a linha antiga fica `ausente`, o arquivo entra `novo`, e os dois aparecem no resumo.
+    """
+    por_par = {}
     for r in inventario:
-        if r['pasta'] not in listagens:
+        por_par.setdefault((r['pasta'], r['arquivo']), r)
+    series = series_de_hq(inventario)
+    entradas = [divide_linha(listagem, linha) for listagem, linhas in listagens.items() for linha in linhas]
+    nas_listas = set(entradas)
+    usadas = {par for par in por_par if par in nas_listas}
+    com_listagem = set(listagens)                          # uma pasta sem listagem não empresta nem pede linha
+    sobrando = collections.Counter(r['arquivo'] for r in inventario
+                                   if (r['pasta'], r['arquivo']) not in usadas and raiz(r['pasta']) in com_listagem)
+    novos, movidos = [], []
+    for pasta, nome in entradas:
+        par = (pasta, nome)
+        if par in por_par:
             continue
-        presente = r['arquivo'] in listagens[r['pasta']]
+        if sobrando.get(nome) == 1:
+            candidatas = [x for x in inventario if x['arquivo'] == nome and (x['pasta'], x['arquivo']) not in usadas
+                          and raiz(x['pasta']) in com_listagem]
+            if len(candidatas) == 1:
+                antiga = candidatas[0]
+                par_antigo = (antiga['pasta'], nome)
+                antiga['pasta'] = pasta
+                por_par.pop(par_antigo, None)
+                por_par[par] = antiga
+                usadas.discard(par_antigo)
+                usadas.add(par)
+                sobrando[nome] = 0
+                movidos.append((antiga, par_antigo[0]))
+                continue
+        por_par[par] = r = _linha_nova(pasta, nome, series)
+        novos.append(r)
+        inventario.append(r)
+    sem_listagem = sorted({raiz(r['pasta']) for r in inventario} - set(listagens), key=str.lower)
+    ausentes, de_volta = [], []
+    for r in inventario:
+        if raiz(r['pasta']) not in listagens:
+            continue                                        # pasta sem listagem: nada foi conferido nela
+        presente = (r['pasta'], r['arquivo']) in nas_listas
         if not presente and not tem_obs(r, 'ausente'):
             _muda_obs(r, 'ausente', True)
             ausentes.append(r)
         elif presente and tem_obs(r, 'ausente'):
             _muda_obs(r, 'ausente', False)
             de_volta.append(r)
-    return novos, ausentes, de_volta, sem_listagem
+    return novos, ausentes, de_volta, sem_listagem, movidos
 
 
 # ───────────────────────── obras ─────────────────────────
@@ -421,7 +470,7 @@ def casar(obras, livros):
 def tags_da_pasta(o):
     """Os marcadores padrão de uma obra ainda não classificada: os da pasta (ou pastas) em que ela está."""
     tags, ficcao = [], lambda g: g in ('F', 'poesia', 'HQ')
-    for pasta in o['pastas']:
+    for pasta in dict.fromkeys(raiz(p) for p in o['pastas']):   # a subpasta não muda a classificação padrão
         _, genero_pasta, da_pasta = PASTAS.get(pasta, (None, '', ''))
         if genero_pasta and o['genero'] and ficcao(genero_pasta) != ficcao(o['genero']):
             continue                                            # livro guardado na pasta "errada": o marcador da pasta não vale
@@ -553,14 +602,16 @@ def contar(inventario, obras):
     hq = sum(o['genero'] == 'HQ' for o in obras.values())
     return {'arquivos': sum(r['formato'] != FORMATO_PASTA for r in ativos),
             'series': sum(r['formato'] == FORMATO_PASTA and r['tipo'] == 'hq' for r in ativos),
-            'pastas': len({r['pasta'] for r in ativos}), 'obras': len(obras), 'livros': len(obras) - hq, 'hq': hq}
+            'pastas': len({raiz(r['pasta']) for r in ativos}),
+            'subpastas': sum('/' in r['pasta'] and r['formato'] != FORMATO_PASTA for r in ativos),
+            'obras': len(obras), 'livros': len(obras) - hq, 'hq': hq}
 
 
 def _plural(n, um, varios):
     return f'{n} {um if n == 1 else varios}'
 
 
-def texto_resumo(inventario, obras, rel, listagens, sem_listagem, outros=()):
+def texto_resumo(inventario, obras, rel, listagens, sem_listagem, outros=(), movidos=()):
     ativos = [r for r in inventario if not tem_obs(r, 'ausente')]
     por_tipo = collections.Counter()
     for r in ativos:
@@ -574,7 +625,8 @@ def texto_resumo(inventario, obras, rel, listagens, sem_listagem, outros=()):
          '## Números', '',
          f'- **{N["arquivos"]} arquivos** no inventário ({", ".join(f"{n} {e}" for e, n in fmt.most_common())})'
          + (f' e **{_plural(N["series"], "pasta", "pastas")} de séries** de quadrinhos (cada uma guarda as edições de uma série)' if N['series'] else '')
-         + f', em {N["pastas"]} pastas.',
+         + f', em {N["pastas"]} pastas'
+         + (f' — {N["subpastas"]} deles dentro de subpasta da própria pasta' if N['subpastas'] else '') + '.',
          f'- **{N["obras"]} obras** diferentes: **{_plural(N["livros"], "livro", "livros")}** e **{_plural(N["hq"], "quadrinho", "quadrinhos")}**. O mesmo livro em dois '
          'formatos, ou em duas pastas, conta uma vez; uma série de quadrinhos conta uma vez, sejam quantas forem as edições.',
          f'- **{len(rel["fisico_e_digital"])}** delas também estão na estante física (`#tenho-fisico #tenho-digital`).',
@@ -616,6 +668,10 @@ def texto_resumo(inventario, obras, rel, listagens, sem_listagem, outros=()):
     aus = [r for r in inventario if tem_obs(r, 'ausente')]
     lista('Arquivos ausentes', 'Estão no inventário, mas não aparecem mais na listagem da pasta. Se o arquivo foi apagado de propósito, apague a linha.',
           [f'- `{r["pasta"]}/{r["arquivo"]}` — {r["titulo"]}' for r in aus])
+    lista('Arquivos que mudaram de pasta', 'Nesta execução, o nome do arquivo é o mesmo, mas ele estava em outro lugar: a linha do inventário '
+          'foi remanejada para onde o arquivo está agora (uma subpasta, ou outra pasta da biblioteca). '
+          'Título, autor, eixo, gênero e marcadores não foram tocados.',
+          [f'- `{r["arquivo"]}` · de `{de}` para `{r["pasta"]}`' for r, de in movidos])
     naolivro = sorted({(r['tipo'], r['titulo'], r['pasta']) for r in ativos if r['tipo'] not in TIPOS_CATALOGO and not _subpasta_sem_listagem(r)})
     lista('Itens que não são livros', 'Apostilas, revistas, artigos e afins: ficam no inventário e não entram no catálogo.',
           [f'- {tp}: {t} · pasta `{p}`' for tp, t, p in naolivro])
@@ -654,7 +710,7 @@ def main(argv):
     inventario = ler_inventario(INVENTARIO)
     if not inventario and not listagens:
         sys.exit(f'Não encontrei nem o inventário ({INVENTARIO}) nem as listagens ({LISTAGENS}).')
-    novos, ausentes, de_volta, sem_listagem = sincronizar(inventario, listagens)
+    novos, ausentes, de_volta, sem_listagem, movidos = sincronizar(inventario, listagens)
     obras = obras_do_inventario(inventario)
     md = CATALOGO.read_text(encoding='utf-8')
     novo_md, rel = atualizar_catalogo(md, obras)
@@ -662,14 +718,19 @@ def main(argv):
     mudou = [nome for nome, alterado in (
         (INVENTARIO.name, gravar(INVENTARIO, texto_inventario(inventario), conferir)),
         (CATALOGO.name, gravar(CATALOGO, novo_md, conferir)),
-        (RESUMO.name, gravar(RESUMO, texto_resumo(inventario, obras, rel, listagens, sem_listagem, outros_arquivos(LISTAGENS)), conferir)),
+        (RESUMO.name, gravar(RESUMO, texto_resumo(inventario, obras, rel, listagens, sem_listagem, outros_arquivos(LISTAGENS), movidos), conferir)),
     ) if alterado]
 
     N = contar(inventario, obras)
     print(f'Inventário: {N["arquivos"]} arquivos' + (f' e {_plural(N["series"], "pasta", "pastas")} de séries de quadrinhos' if N['series'] else '')
           + f', {N["obras"]} obras diferentes ({_plural(N["livros"], "livro", "livros")}' + (f' e {_plural(N["hq"], "quadrinho", "quadrinhos")}' if N['hq'] else '') + ')'
           + (f' · {len(novos)} arquivo(s) novo(s)' if novos else '') + (f' · {len(ausentes)} ausente(s)' if ausentes else '')
-          + (f' · {len(de_volta)} de volta' if de_volta else ''))
+          + (f' · {len(de_volta)} de volta' if de_volta else '')
+          + (f' · {len(movidos)} mudaram de pasta' if movidos else ''))
+    for r, de in movidos[:40]:
+        print(f'   mudou de pasta: {r["arquivo"]}  →  {de}  ▸  {r["pasta"]}')
+    if len(movidos) > 40:
+        print(f'   … e mais {len(movidos) - 40} (lista completa em {RESUMO.name})')
     for r in novos[:40]:
         print(f'   novo: {r["pasta"]}/{r["arquivo"]}  →  {r["titulo"]} — {r["autor"] or "sem autor"}'
               + ('' if tem_obs(r, 'novo') else '  (mais uma edição de uma série que já estava no inventário)'))
