@@ -89,7 +89,7 @@ do autor e do tipo de obra — nenhum arquivo foi aberto.
 | `src/letras/` | As letras dos temas (seis famílias de fontes livres, em dez arquivos WOFF2), com a licença de cada uma e um `LEIAME.md`. Vão dentro do painel (ver "Os temas") |
 | `tools/atualizar.py` | Faz tudo de uma vez: importa a biblioteca virtual, converte o catálogo e monta o painel |
 | `tools/importar_digital.py` | Listagens + inventário → Catálogo Mestre (seção 17 e `#tenho-digital`) e `RESUMO.md` |
-| `tools/gerar_listagens.py` | Pastas reais da biblioteca virtual → `biblioteca-virtual/listagens/*.txte`, no formato do importador. Tem prévia (`--conferir`), não apaga listagem de pasta ausente e não mexe no catálogo/inventário/painel |
+| `tools/gerar_listagens.py` | Pastas reais da biblioteca virtual → `biblioteca-virtual/listagens/*.txte`, no formato do importador. Desce nas subpastas de uma pasta de livro, tem prévia (`--conferir`), não apaga listagem de pasta ausente e não mexe no catálogo/inventário/painel |
 | `Gerar listagens.bat` | Atalho de Windows para o gerador único: pede a pasta raiz, mostra a prévia e pergunta antes de gravar |
 | `tools/build_catalog.py` | Catálogo Mestre + inventário → `src/catalog.json`; `catalogo/capas.tsv` → `src/capas.json` e `src/capas-fontes.json`; `catalogo/trilhas.md` → `src/trilhas.json`; `catalogo/antes-da-vistoria.tsv` → `src/antes.json`; `catalogo/sinopses.tsv` → `src/sinopses.json` (usa `parse_catalog.py`, `eixos.py` e `capas.py`). O que não bate sai como `AVISO:` |
 | `tools/build.py` | `src/` → `Biblioteca_Lucas_Dashboard.html`, com os dados e as letras dos temas (`src/letras`) dentro; confere que não sobrou referência externa |
@@ -118,6 +118,9 @@ Rodar de novo sem ter mudado nada não altera nenhum arquivo.
    também a subpasta de mangás dentro de `HQs`, se existir; leia a prévia e só então responda `S` para gravar. Ele
    cria/atualiza `biblioteca-virtual/listagens/*.txte`, uma por pasta, e não mexe no catálogo, no inventário nem no painel.
    Pasta que não foi encontrada tem a listagem mantida; pasta vazia não apaga listagem antiga sem confirmação explícita.
+   Em pasta de **livro**, ele desce nas subpastas: o arquivo de dentro entra com o caminho (`analitica/Livro.epub`), e a
+   prévia diz quantos vieram de subpasta (`gravaria: psicologia.txte (23 em subpastas)`). `--sem-subpastas` volta a
+   listar só o primeiro nível. Em pasta de quadrinho nada mudou: a subpasta continua sendo a série, contada pelo nome.
    Sem o `.bat`, o mesmo caminho é: `python tools/gerar_listagens.py --origem "D:\Biblioteca" --conferir` e, depois de
    conferir, o mesmo comando sem `--conferir`. Para outra pasta aninhada: `--incluir "HQs/Mangás=Mangás"`.
 2. Envie a pasta `biblioteca-virtual/listagens` para o GitHub (**Add file → Upload files**) ou peça para atualizar a
@@ -129,6 +132,22 @@ Rodar de novo sem ter mudado nada não altera nenhum arquivo.
    novo. Enquanto `marcadores` estiver vazia, a linha do catálogo leva só o marcador padrão da pasta, e a obra aparece
    no `RESUMO.md`, em "Sem dificuldade nem extensão".
 5. Arquivo que sumiu da listagem recebe `ausente`: a linha fica no inventário e o livro sai do catálogo.
+
+### Mudou um arquivo de pasta
+
+Arrumar as pastas — pôr livros dentro de uma subpasta da própria estante, ou mover um arquivo para outra estante — não
+custa nada conferido, desde que a arrumação seja refeita na ordem de sempre: `Gerar listagens.bat`, `python tools/atualizar.py`.
+
+- **A linha do inventário acompanha o arquivo.** O nome é o mesmo, então o importador remaneja a linha: só a coluna
+  `pasta` muda (`poesia` → `poesia/No arquivo`), e título, autor, eixo, gênero, marcadores e a ligação com a linha do
+  catálogo ficam como estavam. Nada é reescrito por palpite: se dois arquivos do inventário têm o mesmo nome e nenhum
+  deles está na listagem, ele não escolhe um — o arquivo entra como `novo` e as duas linhas antigas ficam `ausentes`.
+- **Onde ele conta:** o `RESUMO.md` ganha a seção "Arquivos que mudaram de pasta" (só na execução em que mudaram), e a
+  tela mostra `· 4 mudaram de pasta` com cada um dos nomes.
+- **O painel não perde as anotações por causa disso**: `reconciliar` religa primeiro pela linha do catálogo e depois por
+  título+autor, que não dependem de pasta. Uma pasta por vez, lendo o resumo no fim de cada vez, é como se faz.
+- **Renomear é outra coisa**: o nome do arquivo é o que liga o livro ao mapa de capas (`src/digitais.json`); renomeado,
+  ele sai do mapa até a próxima geração.
 
 ### Entraram quadrinhos novos
 
@@ -158,7 +177,7 @@ Corrija a linha no inventário e rode `python tools/atualizar.py`. As colunas:
 
 | Coluna | Conteúdo |
 | --- | --- |
-| `pasta`, `arquivo`, `formato` | de onde veio (não mexa: é como o arquivo é reconhecido). `formato` = `pasta` é a subpasta de uma série de quadrinhos |
+| `pasta`, `arquivo`, `formato` | de onde veio (não mexa: é como o arquivo é reconhecido). `pasta` é o caminho até o arquivo, com a subpasta quando ele mora numa; `formato` = `pasta` é a subpasta de uma série de quadrinhos |
 | `tipo` | `livro` ou `hq` entram no catálogo; `apostila`, `periodico`, `artigo` e `outro` ficam só no inventário |
 | `titulo`, `autor` | como devem aparecer. Linhas com o mesmo título e o mesmo autor são a mesma obra (dois formatos de um livro; as edições de uma série) |
 | `catalogo` | quando o livro já existe no catálogo com outro título (outra tradução, um volume de série), o título de lá |
@@ -674,8 +693,8 @@ avisa no fim, em vez de dar o teste por completo. `git fetch --unshallow` traz o
 
 | Script | Cobre |
 | --- | --- |
-| `importador` | Leitura das listagens, arquivo novo e ausente, casamento com o catálogo, seção 17, execução repetida sem mudanças; a classificação que vem da coluna `marcadores` do inventário (e o inventário antigo, sem ela); a pasta e o nome do arquivo de cada item a verificar, no resumo; quadrinhos (subpasta de série, edição nova de série conhecida, série nova, adaptação com o título de um livro, subpasta com listagem própria); `src/catalog.json` em dia com o catálogo; `renomeados.tsv`; as trilhas (`trilhas.md` × marcadores das linhas, com os avisos; um livro da biblioteca virtual numa trilha); `antes-da-vistoria.tsv`; o HTML pronto em dia com `src/`; `analisar_marcadores.py` roda e conta o catálogo inteiro |
-| `gerar_listagens` | O gerador único de listagens (`tools/gerar_listagens.py`), sem tocar no catálogo/inventário/painel: pastas fictícias, contrato do `dir /b` e do importador, CP850/CRLF (UTF-8 quando o nome exige), subpastas de série de HQ, `novashqs/novas` → `novasHQSS`, pasta aninhada extra (`HQs/Mangás`), prévia sem gravar, repetição sem mudança, pasta ausente preservada, pasta vazia protegida, origem errada recusada, wrapper de Windows e fronteira de `referencias/` |
+| `importador` | Leitura das listagens, arquivo novo e ausente, casamento com o catálogo, seção 17, execução repetida sem mudanças; a classificação que vem da coluna `marcadores` do inventário (e o inventário antigo, sem ela); a pasta e o nome do arquivo de cada item a verificar, no resumo; quadrinhos (subpasta de série, edição nova de série conhecida, série nova, adaptação com o título de um livro, subpasta com listagem própria); o arquivo que muda de pasta levando a linha conferida do inventário junto (subpasta, outra estante, e o caminho de volta); `src/catalog.json` em dia com o catálogo; `renomeados.tsv`; as trilhas (`trilhas.md` × marcadores das linhas, com os avisos; um livro da biblioteca virtual numa trilha); `antes-da-vistoria.tsv`; o HTML pronto em dia com `src/`; `analisar_marcadores.py` roda e conta o catálogo inteiro |
+| `gerar_listagens` | O gerador único de listagens (`tools/gerar_listagens.py`), sem tocar no catálogo/inventário/painel: pastas fictícias, contrato do `dir /b` e do importador, CP850/CRLF (UTF-8 quando o nome exige), subpastas de série de HQ, `novashqs/novas` → `novasHQSS`, pasta aninhada extra (`HQs/Mangás`), descida em subpasta de pasta de livro (com o caminho na listagem, e só o que é livro: pasta de sistema e escondida ficam de fora), prévia sem gravar, repetição sem mudança, pasta ausente preservada, pasta vazia protegida, origem errada recusada, `--sem-subpastas`, wrapper de Windows e fronteira de `referencias/` |
 | `posse` | Físico × digital × nos dois: indicadores, gaveta, formulário, filtros, cartão no celular; quadrinhos (filtro "HQ", gaveta de uma série guardada em subpasta, busca pelo nome da subpasta, os cinco botões do filtro Tipo no celular); **migração do que o painel anterior salvou** no navegador e de um backup exportado por ele; livro anotado no painel e depois corrigido no catálogo ou no inventário (os painéis antigos são tirados do histórico do Git) |
 | `busca_capas` | A busca de capas (`tools/capas.py`), sem internet. Open Library: a consulta feita para cada livro, a capa escolhida (edição em português antes da capa da obra), a segunda tentativa só pelo título. Apple Books: a consulta, o resultado que serve (título e autor conferem; caixa, trilogia, resumo e audiolivro não), o endereço da imagem, a espera quando a busca recusa por excesso de consultas. As três em ordem: livro novo passa pelas três; quem já tinha passado por alguma vai só às que faltam; uma fonte fora do ar não atrapalha as outras. O `capas.tsv` (retomar de onde parou, não mexer no que foi posto à mão, a mesma capa em volumes de uma série), a amostra de `--testar` nas fontes; o volume certo em cada casamento; o ISBN (conta de conferência e procura por ele); o Google Books (consulta, imagem em https, língua, caixa e resumo recusados, recusas e desistência); `--sem-google`; o modo `--candidatos` com o motivo de cada recusa; `src/capas.json` e `src/capas-fontes.json` em dia com `catalogo/capas.tsv` |
 | `auditoria_capas` | A auditoria das capas (`tools/auditar_capas.py`), sem internet: os números saem do mesmo cruzamento que gera `src/capas.json`; cada problema da fila (capa que o painel não mostra, capa repetida em volumes, capa da obra, casamento que hoje não se faria, autoria e título a conferir, linha que falta, linha órfã) e o que não é problema; a conferência das imagens por amostra (`--rede`); o relatório sempre igual para o mesmo catálogo, sem data nem hora e sem nada que dependa da rede; `--resumo`, `--conferir` e o `--auditar` do `capas.py`; `catalogo/capas-revisao.md` em dia |

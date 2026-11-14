@@ -1009,6 +1009,40 @@ O próximo passo seguro continua sendo uma busca curta em `main`, com **limite 4
 Google antes de repetir ou marcar os 967 como procurados. Depois disso, medir o ganho numa amostra de cerca de 100
 livros sem capa antes de expandir qualquer piloto.
 
+### Parte 6 — O arquivo que muda de casa leva a linha junto (as ferramentas das pastas)
+
+- **Por que esta rodada.** A análise das pastas (`biblioteca-virtual/PLANO-DE-PASTAS.md`, parte 5 desta etapa) parava
+  numa frase: criar `psicologia/analitica/` e meter livros lá dentro fazia o importador marcar aqueles arquivos como
+  `ausente` — eles somiam do catálogo, com o título e o autor conferidos à mão junto. O gerador olhava só os filhos
+  diretos de cada pasta e ignorava subpasta de pasta de livro.
+- **O gerador desce.** `tools/gerar_listagens.py` entra nas subpastas de uma pasta de livro e grava o caminho
+  (`analitica/Livro.epub`), recursivamente. Da subpasta só entram arquivos de livro: pasta escondida, `__MACOSX`,
+  `$RECYCLE.BIN`, `Thumbs.db` e o lixo de acervo não viram linha, e nada segue ligação simbólica (`followlinks=False`),
+  para um laço não repetir a pasta sem fim. Em pasta de quadrinhos nada mudou — a subpasta continua sendo a série,
+  contada pelo nome, e o que há dentro dela não é conferido. `--sem-subpastas` volta ao comportamento antigo, e a prévia
+  conta a descida: `gravaria: psicologia.txte (23 em subpastas)`.
+- **A subpasta entra na coluna `pasta` do inventário**, não numa coluna nova: `psicologia/analitica` é onde o arquivo
+  está; a estante (`psicologia`) continua sendo a que dá eixo, gênero e marcadores padrão, a que conta como pasta no
+  resumo e a que casa com uma listagem. `divide_linha` e `raiz`, no importador, são os dois sentidos desse caminho.
+  O `id_arquivo` do painel continua sendo `pasta/arquivo`.
+- **E o importador acompanha o arquivo.** Um nome que some de um lugar e aparece noutro da mesma biblioteca é o mesmo
+  livro: a linha é remanejada (só a coluna `pasta` muda) em vez de virar `ausente` + uma linha `novo` com título
+  deduzido do nome. Com dois candidatos de mesmo nome ele não escolhe: um entra novo, os outros ficam ausentes, e os
+  dois casos aparecem no `RESUMO.md` ("Arquivos que mudaram de pasta" é a seção nova). Conferido no acervo inteiro:
+  mover quatro arquivos — dois para subpasta da estante, um para dentro de `psicologia/analitica`, um de `pasta livros`
+  para `psicologia` — deixou exatamente quatro linhas diferentes, e nelas só a coluna `pasta`; catálogo, contagem de
+  obras e o `#tenho-digital` de cada um intocados, e a segunda execução, imóvel.
+- **O que isso libera.** Os itens 1, 2 e 3 do plano de pastas (esvaziar a `Pasta Livros`, juntar os quadrinhos numa
+  prateleira só, subpastas de assunto) passam a ser `mv` + `Gerar listagens.bat` + `importar_digital.py`, um lote por
+  vez. Mover arquivo continua sendo decisão e tarefa do dono: nesta rodada nada foi movido.
+- **Testes.** `tools/qa/importador.py` ganhou um bloco que faz o arquivo mudar de casa de verdade na cópia temporária
+  (para a subpasta, para outra estante, e de volta — com a linha conferida conferida campo a campo, e o resumo lido no
+  arquivo) e chama `sincronizar` direto para os casos de um e dois candidatos; `tools/qa/gerar_listagens.py` ganhou a
+  descida, a subpasta de sistema, o `--sem-subpastas` e a nota da prévia, além do contrato com o importador (o caminho
+  com subpasta vira `pasta` do inventário sem coluna nova). Os sete testes do nível rápido passam, e o
+  `python3 tools/atualizar.py --conferir` dos dados reais continua dizendo `Nada mudou.` — sem subpasta criada,
+  nenhuma listagem muda. A suíte com navegador continua rodando só no CI.
+
 ### Parte 5 — A capa que vem dentro do arquivo
 
 **Pedida em 12/11/2026, depois de o `Buscar capas` falhar de novo** (execução 43428251481: sete consultas sem

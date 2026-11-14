@@ -32,16 +32,22 @@ origem, destino = tmp / 'biblioteca', tmp / 'listagens'
 toca(origem / 'poesia', 'Coração - Autora.epub', 'capa.jpg', 'poesia.txte', 'gerador de nomes.bat')
 (origem / 'poesia' / 'Outra pasta').mkdir()
 (origem / 'poesia' / 'Outra pasta' / 'nao entra.txt').write_bytes(b'x')
+toca(origem / 'poesia' / 'No arquivo', 'Poema em Prosa.txt', 'imagem.jpg')
+toca(origem / 'poesia' / 'No arquivo' / 'Mais fundo', 'Prosador - Autor.epub')
+toca(origem / 'poesia' / '.cache', 'Do Lixo.epub')
+toca(origem / 'poesia' / '__MACOSX', '._Lixo.epub')
 toca(origem / 'HQs', 'solto.cbr', 'HQs.txte')
 (origem / 'HQs' / '100 Balas').mkdir()
+toca(origem / 'HQs' / '100 Balas', '100 Balas #01.cbz')
 (origem / 'HQs' / 'Akira').mkdir()
 toca(origem / 'HQs' / 'Mangás', 'naruto.cbz')
 toca(origem / 'novashqs', 'solto.cbz')
 toca(origem / 'novashqs' / 'novas', '1984 (em quadrinhos).pdf')
 (origem / 'Vazia').mkdir()
 destino.mkdir()
-# mesma lista da poesia, em outra ordem e com acento em CP850: o gerador deve preservar os bytes
-antigo_poesia = 'capa.jpg\r\nCoração - Autora.epub\r\n'.encode('cp850')
+# a mesma lista da poesia, com o que vem das subpastas, em outra ordem e com acento em CP850: os bytes são preservados
+antigo_poesia = ('Coração - Autora.epub\r\nOutra pasta/nao entra.txt\r\nNo arquivo/Poema em Prosa.txt\r\n'
+                'No arquivo/Mais fundo/Prosador - Autor.epub\r\ncapa.jpg\r\n').encode('cp850')
 (destino / 'poesia.txte').write_bytes(antigo_poesia)
 (destino / 'Sumiu.txte').write_bytes('arquivo antigo.pdf\r\n'.encode('cp850'))
 (destino / 'Vazia.txte').write_bytes('tinha coisa.pdf\r\n'.encode('cp850'))
@@ -54,10 +60,18 @@ confere(G.mapa_de_pastas(origem, incluir_conhecidas=True) == mapa,
 sem_mangas = tmp / 'sem-mangas'; (sem_mangas / 'HQs').mkdir(parents=True)
 confere('Mangás' not in G.mapa_de_pastas(sem_mangas, incluir_conhecidas=True),
         '--incluir-conhecidas não reclama quando a pasta extra não existe')
-confere(G.entradas_da_pasta(origem / 'poesia', 'poesia', {}) == ['capa.jpg', 'Coração - Autora.epub'],
-        'pasta de livros: arquivos entram, subpasta e a própria listagem/gerador ficam de fora')
+confere(G.entradas_da_pasta(origem / 'poesia', 'poesia', {}) == ['capa.jpg', 'Coração - Autora.epub',
+                                                                 'No arquivo/Mais fundo/Prosador - Autor.epub',
+                                                                 'No arquivo/Poema em Prosa.txt', 'Outra pasta/nao entra.txt'],
+        'pasta de livros: o primeiro nível entra pelo nome e o que está em subpasta entra com o caminho; a listagem e o gerador ficam de fora')
+confere(G.entradas_da_pasta(origem / 'poesia', 'poesia', {}, descer=False) == ['capa.jpg', 'Coração - Autora.epub'],
+        'descer=False (--sem-subpastas) fica só no primeiro nível, como era antes')
+confere(G.arquivos_em_subpasta(origem / 'poesia' / 'No arquivo') == ['Mais fundo/Prosador - Autor.epub', 'Poema em Prosa.txt'],
+        'da subpasta só entram os livros: imagem e lixo de pasta não viram linha')
+confere(G.subpasta_ignorada('.cache') and G.subpasta_ignorada('__MACOSX') and not G.subpasta_ignorada('No arquivo'),
+        'pasta escondida e pasta de sistema não são estante de livro')
 confere(G.entradas_da_pasta(origem / 'HQs', 'HQs', {('HQs', 'Mangás'): 'Mangás', ('novashqs', 'novas'): 'novasHQSS'}) == ['100 Balas', 'Akira', 'solto.cbr'],
-        'pasta de HQ: subpastas de série entram pelo nome; Mangás, que ganhou listagem própria, não é série')
+        'pasta de HQ: subpasta de série entra pelo nome e o arquivo dentro dela não; Mangás, que ganhou listagem própria, não é série')
 confere(G.entradas_da_pasta(origem / 'novashqs', 'novashqs', imp.SUBPASTAS_LISTADAS) == ['solto.cbz'],
         'novashqs/novas não vira série: é a listagem novasHQSS')
 confere(G.parse_incluir('HQs\\Mangás=Mangás') == (pathlib.Path('HQs/Mangás'), 'Mangás'),
@@ -85,6 +99,7 @@ confere(codigo == 0 and 'Nada foi gravado' in s.getvalue() and (destino / 'poesi
 rel = G.gerar(origem, destino, incluir=['HQs/Mangás=Mangás'])
 confere(rel['inalteradas'] == ['poesia'] and (destino / 'poesia.txte').read_bytes() == antigo_poesia,
         'mesma lista de nomes preserva os bytes existentes, sem trocar ordem/encoding à toa', rel)
+confere(rel['sub'] == {'poesia': 3}, 'o relatório conta quantos arquivos vieram de subpasta', rel.get('sub'))
 confere(set(rel['novas']) == {'HQs', 'Mangás', 'novashqs', 'novasHQSS'} and rel['vazias'] == ['Vazia'] and rel['sem_pasta'] == ['Sumiu'],
         'gera as novas, não sobrescreve pasta vazia sem --forcar e mantém listagem de pasta ausente', rel)
 bruto = (destino / 'poesia.txte').read_bytes()
@@ -94,6 +109,10 @@ confere(bruto == antigo_poesia and (destino / 'HQs.txte').read_bytes().decode('c
 confere((destino / 'Mangás.txte').read_bytes().decode('cp850').splitlines() == ['naruto.cbz']
         and (destino / 'novasHQSS.txte').read_bytes().decode('cp850').splitlines() == ['1984 (em quadrinhos).pdf'],
         'Mangás e novasHQSS ganham listagem própria')
+confere(sorted((destino / 'poesia.txte').read_bytes().decode('cp850').splitlines()) == sorted(antigo_poesia.decode('cp850').splitlines())
+        and 'imagem.jpg' not in (destino / 'poesia.txte').read_text(encoding='cp850')
+        and 'Do Lixo' not in (destino / 'poesia.txte').read_text(encoding='cp850'),
+        'a listagem gravada carrega os caminhos das subpastas, sem a imagem nem a pasta de sistema')
 lidas = imp.ler_listagens(destino)
 confere(lidas['HQs'] == ['100 Balas', 'Akira', 'solto.cbr'] and lidas['novasHQSS'] == ['1984 (em quadrinhos).pdf']
         and 'Mangás' not in lidas['HQs'] and lidas['Mangás'] == ['naruto.cbz'],
@@ -115,6 +134,14 @@ rel5 = G.gerar(origem, destino, incluir=['HQs/Mangás=Mangás'])
 confere(not rel5['novas'] and not rel5['alteradas'] and not rel5['utf8']
         and (destino / 'Unicode.txte').read_bytes() == antes_unicode and not list(destino.glob('*.tmp')),
         'a listagem UTF-8 também fica imóvel na repetição, sem temporário sobrando', rel5)
+toca(origem / 'poesia' / 'No arquivo', 'Outro Poema.epub')
+s = io.StringIO()
+with contextlib.redirect_stdout(s): codigo = G.main(['--origem', str(origem), '--destino', str(destino), '--incluir', 'HQs/Mangás=Mangás', '--conferir'])
+confere(codigo == 0 and '(4 em subpastas)' in s.getvalue(), 'a prévia diz quantos arquivos da pasta vêm de subpasta', s.getvalue().strip())
+s = io.StringIO()
+with contextlib.redirect_stdout(s): codigo = G.main(['--origem', str(origem), '--destino', str(destino), '--sem-subpastas', '--conferir'])
+confere(codigo == 0 and 'poesia.txte' in s.getvalue() and 'subpastas)' not in s.getvalue(),
+        '--sem-subpastas pela linha de comando: a prévia mostra a listagem sem os caminhos de subpasta', s.getvalue().strip())
 s = io.StringIO()
 with contextlib.redirect_stdout(s): codigo = G.main(['--origem', str(origem), '--destino', str(destino), '--incluir-conhecidas', '--conferir'])
 confere(codigo == 0 and 'Nada foi gravado' in s.getvalue(), '--incluir-conhecidas funciona pela linha de comando')
@@ -136,6 +163,18 @@ ativos = [p for p in list((RAIZ / 'tools').rglob('*.py')) + list((RAIZ / 'src').
           if p.is_file() and p.suffix in ('.py', '.js', '.html', '.css', '.yml') and 'referencias/' in p.read_text(encoding='utf-8', errors='ignore')
           and p.resolve() != (QA / 'gerar_listagens.py').resolve()]
 confere(not ativos, 'nenhum código ativo importa ou lê referencias/', [str(p.relative_to(RAIZ)) for p in ativos])
+
+confere(imp.divide_linha('poesia', 'No arquivo/Outro Poema.epub') == ('poesia/No arquivo', 'Outro Poema.epub')
+        and imp.divide_linha('poesia', 'No arquivo\\Mais fundo\\Prosador - Autor.epub') == ('poesia/No arquivo/Mais fundo', 'Prosador - Autor.epub')
+        and imp.raiz('poesia/No arquivo') == 'poesia',
+        'o importador lê o caminho com subpasta como pasta do arquivo, e a estante continua sendo o primeiro nível')
+r = imp._linha_nova('poesia/No arquivo', 'Livro de Estreia.epub', {})
+confere((r['pasta'], r['arquivo'], r['eixo'], r['genero'], r['obs']) == ('poesia/No arquivo', 'Livro de Estreia.epub', '8', 'poesia', 'novo'),
+        'um arquivo em subpasta recebe a classificação padrão da estante, não vira estante nova')
+corpo = imp.texto_inventario([dict(pasta='poesia/No arquivo', arquivo='Dois.epub', formato='epub', tipo='livro', titulo='Dois',
+                                  autor='B', catalogo='', eixo='8', genero='poesia', marcadores='', obs='')])
+confere(corpo.splitlines()[0] == '\t'.join(imp.COLUNAS) and 'poesia/No arquivo\tDois.epub' in corpo,
+        'o caminho com subpasta cabe na coluna `pasta` do inventário, sem coluna nova')
 
 shutil.rmtree(tmp, ignore_errors=True)
 print('ERROS:', len(erros))

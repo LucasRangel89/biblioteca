@@ -516,6 +516,12 @@ testes de navegador. A busca real curta das capas (limite 40) continua pendente 
   (valida e injeta `DIGITAIS_NOMES`), `tools/atualizar.py` (o passo novo na descrição), `src/digitais.json` (gerado,
   versionado), `src/js/54-capa-digital.js`, `src/js/55-anexos.js`, `src/js/56-lote-capas.js`, `tools/qa/capa_digital.py`,
   `README.md`, `ROTEIRO.md` (Etapa 11, parte 5).
+- **Registro operacional — o arquivo que muda de casa (13/11, rodada seguinte).** As ferramentas de pastas passaram a
+  acompanhar uma arrumação em vez de desfazê-la: o gerador desce em subpasta de pasta de livro e grava o caminho
+  (`analitica/Livro.epub`), o inventário recebe a subpasta na coluna `pasta`, e o importador remaneja a linha conferida
+  do arquivo que mudou de lugar — `ausente` + linha `novo` só quando o nome não bate com uma linha só. Nada foi movido:
+  o que mudou foi o que acontece quando o dono move. O detalhe (o que liberar, a ressalva do `--sem-subpastas`, os casos
+  não feitos) está na **Etapa 11, parte 6** do `ROTEIRO.md`.
 - **Conferência local:** `capa_digital` com **144 previsões** (115 no Node), `fluxo_ci` `TUDO CERTO` (sete testes);
   `node --check` em cada módulo; `python3 tools/build_catalog.py` + `python3 tools/build.py` → 1432 KB;
   `python3 tools/atualizar.py --conferir` → `Nada mudou.`; `git diff --check` limpo. A suíte com navegador continua sem
