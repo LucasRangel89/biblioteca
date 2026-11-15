@@ -857,7 +857,7 @@ volumes. Se você quiser os três separados na estante virtual, é dizer — mex
 quatro seções finais das recomendações, na ordem do catálogo: ciência, tecnologia e inteligência artificial (33 livros),
 psicologia, psicanálise e vida psíquica (22), religião, espiritismo, umbanda e misticismo oriental (50) e escrita, cinema,
 arte e criação de filhos (11). As **607** recomendações das seções 1 a 16 têm agora uma linha cada no arquivo — **606 com
-sinopse** e uma pendência, *A Tragédia e a Farsa*, logo abaixo. Das 123 linhas das seções 13 a 16, sete já tinham vindo do
+sinopse** e uma pendência, *A Tragédia e a Farsa*, logo abaixo. Dos 123 livros das seções 13 a 16, sete já tinham linha do
 lote 1 (prioridades e livros com exemplar em casa: Sagan, Kuhn, Kahneman, Becker, *O Livro dos Espíritos*, *Nosso Lar* e a
 *Bhagavad Gita*). Nenhuma conta o final e nenhuma é cópia de contracapa.
 
