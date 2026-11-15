@@ -261,7 +261,8 @@ novo. Depois de mexer, `python tools/atualizar.py`: o que não bate — livro qu
 sinopse longa demais ou de uma frase só, falta de fonte — sai como `AVISO: sinopses.tsv: …`.
 
 O trabalho é feito em lotes; a tabela dos lotes e a lista de pendências estão no `ROTEIRO.md` (etapa 10, parte 3).
-Em 12/11/2026 estão prontos os lotes 1 e 2: **292 sinopses** e duas pendências de identificação da estante.
+Em 14/11/2026 estão prontos os lotes 1 e 2 e o começo do 3, que cobriu as seções 1 a 6: **386 sinopses** e duas
+pendências de identificação da estante, ambas esperando uma resposta sua.
 
 ### Chegou um livro na estante
 
