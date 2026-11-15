@@ -11,8 +11,8 @@ Confere que:
     aprovadas pelo dono (A Metamorfose e O Físico) estão como ele aprovou;
   · pendência não tem sinopse, diz o motivo e aparece na lista de pendências do ROTEIRO.md;
   · os lotes 1 e 2 estão completos (estante, prioridades (#top) e recomendações ainda não adquiridas das seções 1 a 5), o
-    lote 3 tirou as 94 linhas que faltavam nas seções 1 a 6, o lote 4, as 90 linhas das seções 7 a 9 e o lote 5, as 110
-    linhas das seções 10 a 12;
+    lote 3 tirou as 94 linhas que faltavam nas seções 1 a 6, o lote 4, as 90 linhas das seções 7 a 9, o lote 5, as 110
+    linhas das seções 10 a 12 e o lote 6, as 116 linhas das seções 13 a 16;
   · o leitor do arquivo avisa do que está errado em vez de deixar passar (livro que não existe, linha repetida, sinopse
     longa, de uma frase só, sem fonte), e acha o livro também pelo nome antigo;
   · src/sinopses.json e o painel pronto estão em dia com o arquivo;
@@ -112,7 +112,7 @@ ok('as duas amostras aprovadas pelo dono estão como ele aprovou', all(da.get(t)
 roteiro = (RAIZ / 'ROTEIRO.md').read_text(encoding='utf-8')
 ok('…e são as mesmas que o ROTEIRO.md mostra', all(' '.join(s.split()) in ' '.join(roteiro.replace('\n> ', ' ').split()) for s in AMOSTRAS.values()))
 
-print('C. Pendências e os lotes 1 a 5')
+print('C. Pendências e os lotes 1 a 6')
 ok('pendência não tem sinopse e diz o motivo ("pendente: …")', all(r['fonte'].startswith('pendente: ') and len(r['fonte']) > 40 for r in PEND), [r['titulo'] for r in PEND if not r['fonte'].startswith('pendente: ')])
 ok('cada pendência está na lista de pendências do ROTEIRO.md', bool(PEND) and all(f'*{r["titulo"]}*' in roteiro for r in PEND), [r['titulo'] for r in PEND if f'*{r["titulo"]}*' not in roteiro])
 pesquisados = {POS[norm(r['titulo'], r['autor'])] for r in LINHAS if norm(r['titulo'], r['autor']) in POS}
@@ -145,8 +145,15 @@ antes5 = {POS[norm(r['titulo'], r['autor'])] for r in LINHAS if r['data'] != '20
 ok('lote 5: as seções 10 a 12 não têm mais nenhum livro sem linha', set(secoes_10_12) <= pesquisados, [CAT[i][0] for i in secoes_10_12 if i not in pesquisados][:5])
 ok('…com as 110 linhas novas, todas nas seções 10 a 12, sem repetir as de antes', len(lote5) == 110 and set(lote5) <= set(secoes_10_12) and not (set(lote5) & antes5), len(lote5))
 ok('a tabela de lotes dá o lote 5 como feito, com o número de livros de hoje', re.search(r'\| 5 \|[^\n]*\| %d \| Feito[^\n]*\b%d sinopses\b' % (len(lote5), len([r for r in COM if POS[norm(r['titulo'], r['autor'])] in set(lote5)])), roteiro) is not None)
+secoes_13_16 = [i for i, r in enumerate(CAT) if 13 <= r[3] <= 16]
+lote6 = [POS[norm(r['titulo'], r['autor'])] for r in LINHAS if r['data'] == '2026-11-17' and norm(r['titulo'], r['autor']) in POS]
+antes6 = {POS[norm(r['titulo'], r['autor'])] for r in LINHAS if r['data'] != '2026-11-17' and norm(r['titulo'], r['autor']) in POS}
+ok('lote 6: as seções 13 a 16 não têm mais nenhum livro sem linha', set(secoes_13_16) <= pesquisados, [CAT[i][0] for i in secoes_13_16 if i not in pesquisados][:5])
+ok('…com as 116 linhas novas, todas nas seções 13 a 16, sem repetir as de antes', len(lote6) == 116 and set(lote6) <= set(secoes_13_16) and not (set(lote6) & antes6), len(lote6))
+ok('a tabela de lotes dá o lote 6 como feito, com o número de livros de hoje', re.search(r'\| 6 \|[^\n]*\| %d \| Feito[^\n]*\b%d sinopses\b' % (len(lote6), len([r for r in COM if POS[norm(r['titulo'], r['autor'])] in set(lote6)])), roteiro) is not None)
 restantes = [i for i, r in enumerate(CAT) if 1 <= r[3] <= 16 and i not in pesquisados]
-ok('…e o que ainda falta nas recomendações continua certo na tabela', re.search(r'\| 6 \|[^\n]*\| %d \| A fazer' % len(restantes), roteiro) is not None, len(restantes))
+ok('as recomendações (seções 1 a 16) têm todas uma linha no arquivo', not restantes, [CAT[i][0] for i in restantes][:5])
+ok('…e a tabela de lotes abre o lote 7 em diante com os 1.910 da seção 17', re.search(r'\| 7 em diante \|[^\n]*\| 1\.910 \| A fazer', roteiro) is not None)
 
 print('D. O leitor do arquivo (tools/build_catalog.py)')
 av = []; dados = bc.build([]); lidas = bc.ler_sinopses(dados, av)
@@ -175,7 +182,7 @@ m = re.search(r'^const SINOPSES = (\[.*\]);$', html, re.M)
 ok('as sinopses estão dentro do painel, iguais às de src/sinopses.json (se falhar: python tools/build.py)', m is not None and json.loads(m.group(1)) == lidas)
 
 # ───────────── a ficha ─────────────
-SEM = next(r[0] for i, r in enumerate(CAT) if 1 <= r[3] <= 16 and i not in pesquisados and 'tenho-digital' not in r[2].split() and 'tenho-fisico' not in r[2].split())      # recomendação que ainda não foi pesquisada
+SEM = next(r[0] for i, r in enumerate(CAT) if 1 <= r[3] <= 16 and i not in {POS[norm(x['titulo'], x['autor'])] for x in COM} and 'tenho-digital' not in r[2].split() and 'tenho-fisico' not in r[2].split())      # recomendação sem sinopse no painel (hoje, a pendência do lote 5)
 SEM_DIG = next(r[0] for i, r in enumerate(CAT) if r[3] == 17 and i not in pesquisados)                                                                                       # livro digital, idem
 with sync_playwright() as p:
     b = p.chromium.launch()

@@ -21,10 +21,13 @@ Este arquivo é atualizado ao fim de cada rodada. Para saber em que pé as coisa
 | 7 | A versão 3 do catálogo: camadas e trilhas de leitura | **Feita** (11/11/2026) |
 | 8 | Análise dos filtros, trilhas personalizadas e novas recomendações | **Feita** (11/11/2026) — das oito propostas, três viraram a etapa 9; cinco esperam a sua decisão (lista abaixo) |
 | 9 | Filtros que dizem quantos livros têm e somam dentro do grupo; grupo da psicologia; conserto das caixas que não cabiam na tela | **Feita** (11/11/2026) |
-| 10 | As suas ideias: ocultar categorias, imprimir e copiar listas, sinopses, temas visuais, estímulo à leitura | **Em parte** (12/11/2026) — ocultar e imprimir estão prontos; sinopses dos lotes 1 a 5 (585 livros); seis temas prontos (Lovecraft, Sherlock Holmes, Moby Dick, Deserto, Terras antigas, Clássico greco-romano); a guia de leitura continua aguardando a aprovação do desenho abaixo |
+| 10 | As suas ideias: ocultar categorias, imprimir e copiar listas, sinopses, temas visuais, estímulo à leitura | **Em parte** (12/11/2026) — ocultar e imprimir estão prontos; sinopses dos lotes 1 a 6 (**701 no painel** — todas as recomendações têm linha); seis temas prontos (Lovecraft, Sherlock Holmes, Moby Dick, Deserto, Terras antigas, Clássico greco-romano); a guia de leitura continua aguardando a aprovação do desenho abaixo |
 | 11 | Mais capas: auditoria, casamento e fontes, robô que abre PR e capas no painel | **Em parte** (12/11/2026) — as quatro partes estão no ar; o Google Books não respondeu nas execuções #9 e #10. Caminho gratuito em revisão: ISBN conferido opcional, chave Google opcional e piloto do Internet Archive só de leitura; nenhuma capa nova entrou |
 
 A ordem pode mudar: as etapas que faltam não dependem umas das outras. Se alguma interessar mais, peça por ela.
+
+**O que depende de você** — decisões, conferidas na estante e respostas — está reunido em [`PENDENCIAS.md`](PENDENCIAS.md),
+por ordem de impacto, cada item com o esforço que dá e o lugar onde se resolve.
 
 **Onde procurar cada arquivo.** Nas listas de pendências deste roteiro, cada arquivo vem com a **pasta** e o **nome
 exato**, escritos assim: `pasta\nome do arquivo`. A pasta é a da sua biblioteca virtual, com o mesmo nome da listagem
@@ -651,7 +654,7 @@ não se perder entre uma conversa e outra. Para retomar, basta dizer "vamos para
 | --- | --- | --- |
 | 1 | Ocultar categorias | **Feita** (11/11/2026) |
 | 2 | Imprimir e copiar listas | **Feita** (11/11/2026) |
-| 3 | Sinopse na ficha de cada livro | **Em andamento** (16/11/2026) — estilo aprovado por você (11/11/2026); saíram os lotes 1 a 5: **585 sinopses** no painel e três pendências suas |
+| 3 | Sinopse na ficha de cada livro | **Em andamento** (17/11/2026) — estilo aprovado por você (11/11/2026); saíram os lotes 1 a 6: **701 sinopses** no painel — as 607 recomendações do catálogo têm linha, e só falta a biblioteca virtual — e três pendências suas |
 | 4 | Temas visuais | Combinada, com as três decisões tomadas (11/11/2026); falta fazer, poucos temas por rodada |
 | 5 | Estímulo à leitura (gamificação) | Direção combinada com as suas respostas; falta você aprovar o desenho |
 
@@ -773,7 +776,7 @@ amostras têm 281 e 251), com a fonte e a data anotadas no arquivo.
 | 3 | Comecei pelo que faltava nas seções 1 a 6, na ordem do catálogo | 94 | Feito em 14/11/2026: 94 sinopses, nenhuma pendência nova |
 | 4 | As seções 7 (horror e ficção estranha), 8 (poesia) e 9 (filosofia), na ordem do catálogo | 90 | Feito em 15/11/2026: 90 sinopses, nenhuma pendência nova |
 | 5 | As seções 10 (mente, consciência e neurociência), 11 (política, poder e economia) e 12 (sociedade, antropologia e história), na ordem do catálogo | 110 | Feito em 16/11/2026: 109 sinopses e 1 pendência |
-| 6 | O resto das recomendações: as seções 13 a 16, na ordem do catálogo | 116 | A fazer |
+| 6 | O resto das recomendações: as seções 13 a 16, na ordem do catálogo | 116 | Feito em 17/11/2026: 116 sinopses, nenhuma pendência nova |
 | 7 em diante | Os livros digitais (seção 17), um eixo de cada vez — você escolhe por onde começar | 1.910 | A fazer |
 
 Esta tabela é atualizada a cada lote. Se quiser outra ordem — um autor, um eixo, uma trilha na frente —, é só dizer.
@@ -840,8 +843,8 @@ carta desesperada é Catalina — os dois detalhes valem a sua leitura, porque s
 **Lote 5 — o que saiu (16/11/2026).** Entraram mais **109 sinopses** e uma linha de pendência, e o painel passou a ter
 **585**. A rodada cobriu as três seções seguintes, na ordem do catálogo: mente, consciência e neurociência (21 livros),
 política, poder, autoritarismo e economia (38) e sociedade, antropologia, cultura e história (51). As seções 1 a 12
-estão completas — 470 livros de recomendação com linha no arquivo. Faltam as seções 13 a 16: **116 livros**, que são o
-lote 6. Nenhuma conta o final e nenhuma é cópia de contracapa.
+estão completas — 470 livros de recomendação com linha no arquivo. Faltavam as seções 13 a 16: **116 livros**, que o
+lote 6 abaixo cobriu. Nenhuma conta o final e nenhuma é cópia de contracapa.
 
 - **102 de obra bem conhecida**, escritas a partir do que é estabelecido sobre elas;
 - **7 conferidas fora daqui** — obras recentes, livros brasileiros sem edição fácil de achar e títulos cujo nome no
@@ -849,6 +852,27 @@ lote 6. Nenhuma conta o final e nenhuma é cópia de contracapa.
 
 Uma linha cobre a *Escravidão* inteira, porque o catálogo tem uma linha só para a trilogia: a sinopse apresenta os três
 volumes. Se você quiser os três separados na estante virtual, é dizer — mexo no catálogo e refaço as três sinopses.
+
+**Lote 6 — o que saiu (17/11/2026).** Entraram mais **116 sinopses**, e o painel passou a ter **701**. A rodada cobriu as
+quatro seções finais das recomendações, na ordem do catálogo: ciência, tecnologia e inteligência artificial (33 livros),
+psicologia, psicanálise e vida psíquica (22), religião, espiritismo, umbanda e misticismo oriental (50) e escrita, cinema,
+arte e criação de filhos (11). As **607** recomendações das seções 1 a 16 têm agora uma linha cada no arquivo — **606 com
+sinopse** e uma pendência, *A Tragédia e a Farsa*, logo abaixo. Das 123 linhas das seções 13 a 16, sete já tinham vindo do
+lote 1 (prioridades e livros com exemplar em casa: Sagan, Kuhn, Kahneman, Becker, *O Livro dos Espíritos*, *Nosso Lar* e a
+*Bhagavad Gita*). Nenhuma conta o final e nenhuma é cópia de contracapa.
+
+- **108 de obra bem conhecida**, escritas a partir do que é estabelecido sobre elas;
+- **8 conferidas fora daqui** — livros de 2024 a 2026, edições brasileiras recentes e uma atribuição a conferir. O endereço
+  consultado está na coluna `fonte` de cada linha.
+
+Uma coisa que a conferência desta rodada achou e que é para você (está no [`PENDENCIAS.md`](PENDENCIAS.md), item 6):
+*O Espírito da Intimidade* figura no catálogo como Malidoma Patrice Somé, mas a edição brasileira com esse subtítulo é
+assinada por **Sobonfu Somé** — os dois foram casados e ambos mestres dagara. A sinopse foi escrita sobre o livro sem
+nomear o autor; a linha espera a sua conferida na lombada, e aí acerto o catálogo.
+
+O que falta de sinopse é agora só a biblioteca virtual: **1.910 livros** na seção 17, nenhum com linha. É o lote 7 em
+diante — um eixo por vez, quando você quiser. Antes dele, porém, vale a vistoria da etapa 4 (dificuldade e extensão dos
+digitais são estimativas) e a escolha do primeiro eixo; o guia põe essas duas em ordem de impacto.
 
 **Pendências — três livros ficaram sem sinopse**, porque não deu para confirmar que livro é. No painel, a ficha deles
 segue como antes, sem nada no lugar:
@@ -952,7 +976,7 @@ Duas coisas que você precisa saber:
 Como combinado, **Deserto** é inspirado em Duna e **Terras antigas** em Tolkien, sem usar o nome das obras protegidas,
 personagens ou logotipos. Cada um nasceu com um clima só. As três letras novas são livres (SIL OFL 1.1), vão dentro do
 painel com as licenças e não são buscadas na internet. O arquivo passou de cerca de 1,2 MB para **1,37 MB** com os temas e as
-sinopses dos lotes 1 e 2; os lotes 3 e 4 acrescentaram mais **67 KB** juntos e o lote 5, mais **43 KB** — uns 380 bytes
+sinopses dos lotes 1 e 2; os lotes 3 e 4 acrescentaram mais **67 KB** juntos, o lote 5 mais **43 KB** e o lote 6 mais **46 KB** — uns 380 bytes
 por sinopse dentro do arquivo.
 
 - Os três passaram pela conferência de contraste e pelas mesmas medidas de tela, ficha e celular dos anteriores.
