@@ -21,7 +21,7 @@ Este arquivo é atualizado ao fim de cada rodada. Para saber em que pé as coisa
 | 7 | A versão 3 do catálogo: camadas e trilhas de leitura | **Feita** (11/11/2026) |
 | 8 | Análise dos filtros, trilhas personalizadas e novas recomendações | **Feita** (11/11/2026) — das oito propostas, três viraram a etapa 9; cinco esperam a sua decisão (lista abaixo) |
 | 9 | Filtros que dizem quantos livros têm e somam dentro do grupo; grupo da psicologia; conserto das caixas que não cabiam na tela | **Feita** (11/11/2026) |
-| 10 | As suas ideias: ocultar categorias, imprimir e copiar listas, sinopses, temas visuais, estímulo à leitura | **Em parte** (12/11/2026) — ocultar e imprimir estão prontos; sinopses dos lotes 1 a 4 (476 livros); seis temas prontos (Lovecraft, Sherlock Holmes, Moby Dick, Deserto, Terras antigas, Clássico greco-romano); a guia de leitura continua aguardando a aprovação do desenho abaixo |
+| 10 | As suas ideias: ocultar categorias, imprimir e copiar listas, sinopses, temas visuais, estímulo à leitura | **Em parte** (12/11/2026) — ocultar e imprimir estão prontos; sinopses dos lotes 1 a 5 (585 livros); seis temas prontos (Lovecraft, Sherlock Holmes, Moby Dick, Deserto, Terras antigas, Clássico greco-romano); a guia de leitura continua aguardando a aprovação do desenho abaixo |
 | 11 | Mais capas: auditoria, casamento e fontes, robô que abre PR e capas no painel | **Em parte** (12/11/2026) — as quatro partes estão no ar; o Google Books não respondeu nas execuções #9 e #10. Caminho gratuito em revisão: ISBN conferido opcional, chave Google opcional e piloto do Internet Archive só de leitura; nenhuma capa nova entrou |
 
 A ordem pode mudar: as etapas que faltam não dependem umas das outras. Se alguma interessar mais, peça por ela.
@@ -651,7 +651,7 @@ não se perder entre uma conversa e outra. Para retomar, basta dizer "vamos para
 | --- | --- | --- |
 | 1 | Ocultar categorias | **Feita** (11/11/2026) |
 | 2 | Imprimir e copiar listas | **Feita** (11/11/2026) |
-| 3 | Sinopse na ficha de cada livro | **Em andamento** (15/11/2026) — estilo aprovado por você (11/11/2026); saíram os lotes 1, 2, 3 e 4: **476 sinopses** no painel e duas pendências suas |
+| 3 | Sinopse na ficha de cada livro | **Em andamento** (16/11/2026) — estilo aprovado por você (11/11/2026); saíram os lotes 1 a 5: **585 sinopses** no painel e três pendências suas |
 | 4 | Temas visuais | Combinada, com as três decisões tomadas (11/11/2026); falta fazer, poucos temas por rodada |
 | 5 | Estímulo à leitura (gamificação) | Direção combinada com as suas respostas; falta você aprovar o desenho |
 
@@ -772,8 +772,9 @@ amostras têm 281 e 251), com a fonte e a data anotadas no arquivo.
 | 2 | As recomendações ainda não adquiridas das seções 1 a 5, sem repetir as prioridades do lote 1 | 143 | Feito em 12/11/2026: 143 sinopses, nenhuma pendência nova |
 | 3 | Comecei pelo que faltava nas seções 1 a 6, na ordem do catálogo | 94 | Feito em 14/11/2026: 94 sinopses, nenhuma pendência nova |
 | 4 | As seções 7 (horror e ficção estranha), 8 (poesia) e 9 (filosofia), na ordem do catálogo | 90 | Feito em 15/11/2026: 90 sinopses, nenhuma pendência nova |
-| 4 e 5 | O resto dos lotes 4 e 5: as recomendações das seções 10 a 16 | 226 | A fazer |
-| 6 em diante | Os livros digitais (seção 17), um eixo de cada vez — você escolhe por onde começar | 1.910 | A fazer |
+| 5 | As seções 10 (mente, consciência e neurociência), 11 (política, poder e economia) e 12 (sociedade, antropologia e história), na ordem do catálogo | 110 | Feito em 16/11/2026: 109 sinopses e 1 pendência |
+| 6 | O resto das recomendações: as seções 13 a 16, na ordem do catálogo | 116 | A fazer |
+| 7 em diante | Os livros digitais (seção 17), um eixo de cada vez — você escolhe por onde começar | 1.910 | A fazer |
 
 Esta tabela é atualizada a cada lote. Se quiser outra ordem — um autor, um eixo, uma trilha na frente —, é só dizer.
 
@@ -804,8 +805,8 @@ continuam como estavam. As duas pendências abaixo são as do lote 1 e continuam
 rodada saíram os **94** que faltavam nas **seções 1 a 6**, na ordem do catálogo, e o painel passou a ter **386**
 sinopses: pré-história e origens (4), ficção científica, fantasia e distopia (22), clássicos universais e romances de
 ideias (8), América Latina, Brasil e lusofonia (8), ficção contemporânea e mundial (6) e romances históricos (46).
-As seções 1 a 6 ficaram completas. Faltavam 316 livros nas seções 7 a 16 — o lote 4 abaixo tirou 90 deles,
-e sobram 226. Se preferir outra ordem — um eixo, uma trilha, uma prateleira inteira —, é só dizer.
+As seções 1 a 6 ficaram completas. Faltavam 316 livros nas seções 7 a 16 — os lotes 4 e 5 tiraram 200
+deles, e sobram 116. Se preferir outra ordem — um eixo, uma trilha, uma prateleira inteira —, é só dizer.
 
 - **86 de obra bem conhecida**, escritas a partir do que é estabelecido sobre elas;
 - **8 conferidas fora daqui** — obras recentes, traduções com o título diferente no catálogo e títulos em inglês. O
@@ -822,8 +823,8 @@ Nenhuma conta o final e nenhuma é cópia de contracapa. Duas coisas para você 
 
 **Lote 4 — o que saiu (15/11/2026).** Entraram mais **90 sinopses**, e o painel passou a ter **476**. A rodada cobriu
 as três seções seguintes do catálogo, na ordem: horror e ficção estranha (47 livros), poesia (3) e filosofia (40). As
-seções 1 a 9 estão completas — 360 livros de recomendação, todos com linha no arquivo. Faltam as seções 10 a 16: **226
-livros**, que são o resto dos lotes 4 e 5. Nenhuma pendência nova.
+seções 1 a 9 estão completas — 360 livros de recomendação, todos com linha no arquivo. Faltavam as seções 10 a 16:
+**226 livros**, que o lote 5 abaixo reduziu a 116. Nenhuma pendência nova.
 
 - **66 de obra bem conhecida**, escritas a partir do que é estabelecido sobre elas;
 - **24 conferidas fora daqui** — obras recentes, livros sem edição brasileira confirmada e títulos cujo nome no
@@ -836,13 +837,30 @@ as linhas do catálogo não foram tocadas. Duas correções que a conferência f
 Castelo*, quem pôs o veneno no açucareiro não é quem a cidade acusa, e em *Gótico Mexicano* a prima que escreve a
 carta desesperada é Catalina — os dois detalhes valem a sua leitura, porque são os que a contracapa mais citada erra.
 
-**Pendências do lote 1 — dois livros ficaram sem sinopse**, porque não deu para confirmar que livro é. No painel, a ficha deles
+**Lote 5 — o que saiu (16/11/2026).** Entraram mais **109 sinopses** e uma linha de pendência, e o painel passou a ter
+**585**. A rodada cobriu as três seções seguintes, na ordem do catálogo: mente, consciência e neurociência (21 livros),
+política, poder, autoritarismo e economia (38) e sociedade, antropologia, cultura e história (51). As seções 1 a 12
+estão completas — 470 livros de recomendação com linha no arquivo. Faltam as seções 13 a 16: **116 livros**, que são o
+lote 6. Nenhuma conta o final e nenhuma é cópia de contracapa.
+
+- **102 de obra bem conhecida**, escritas a partir do que é estabelecido sobre elas;
+- **7 conferidas fora daqui** — obras recentes, livros brasileiros sem edição fácil de achar e títulos cujo nome no
+  catálogo é o original em inglês. O endereço consultado está na coluna `fonte` de cada linha.
+
+Uma linha cobre a *Escravidão* inteira, porque o catálogo tem uma linha só para a trilogia: a sinopse apresenta os três
+volumes. Se você quiser os três separados na estante virtual, é dizer — mexo no catálogo e refaço as três sinopses.
+
+**Pendências — três livros ficaram sem sinopse**, porque não deu para confirmar que livro é. No painel, a ficha deles
 segue como antes, sem nada no lugar:
 
 - *Noite do Sul* (Erico Verissimo) — não achei livro dele com este título. Pode ser *Noite*, a novela de 1954. **O que
   está escrito na lombada?**
 - *A Arte de Envelhecer* (no catálogo, Irvin D. Yalom, "autoria conforme a prateleira — conferir") — o livro que achei
   com este título é de Schopenhauer, pela Martins Fontes. **Quem aparece como autor na capa?**
+- *A Tragédia e a Farsa* (Flávio Henrique Calheiros Casimiro), do lote 5 — a linha já estava marcada `#verificar` no
+  catálogo, e a busca não fechou: o nome lembra a frase de Marx sobre a tragédia e a farsa (no *18 Brumário*), mas o
+  autor anotado é outro. **O que está escrito na capa?** Se for um livro brasileiro sobre política recente, escrevo a
+  sinopse na hora.
 
 **Para você conferir, sem pressa** — aqui a sinopse foi escrita, mas com uma ressalva:
 
@@ -934,7 +952,8 @@ Duas coisas que você precisa saber:
 Como combinado, **Deserto** é inspirado em Duna e **Terras antigas** em Tolkien, sem usar o nome das obras protegidas,
 personagens ou logotipos. Cada um nasceu com um clima só. As três letras novas são livres (SIL OFL 1.1), vão dentro do
 painel com as licenças e não são buscadas na internet. O arquivo passou de cerca de 1,2 MB para **1,37 MB** com os temas e as
-sinopses dos lotes 1 e 2; os lotes 3 e 4 acrescentaram mais **67 KB** juntos, uns 370 bytes por sinopse dentro do arquivo.
+sinopses dos lotes 1 e 2; os lotes 3 e 4 acrescentaram mais **67 KB** juntos e o lote 5, mais **43 KB** — uns 380 bytes
+por sinopse dentro do arquivo.
 
 - Os três passaram pela conferência de contraste e pelas mesmas medidas de tela, ficha e celular dos anteriores.
 - Com oito opções no quadro **Aparência**, a lista agora rola quando não cabe inteira. Ao abrir, a escolha guardada
