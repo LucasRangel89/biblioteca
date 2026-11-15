@@ -1,392 +1,334 @@
-# Pendências do dono — o guia de execução
+# Pendências do dono — as perguntas, uma por vez
 
-Isto é só o que **depende de você**: decisões que eu não posso tomar e conferidas que só a sua estante, o seu
-computador ou a sua conta no GitHub respondem. Nada aqui é trabalho meu disfarçado: cada item diz **o que é** (explicado
-sem jargão), **como proceder** (passo a passo, com o que digitar) e **o que acontece depois**.
+Isto é o que **depende de você** para o projeto andar. Todo item tem a pergunta escrita antes de qualquer explicação,
+e a resposta pronta logo abaixo. Responder é copiar a frase e, quando for o caso, trocar uma palavra.
 
-Cada item traz no topo **esforço** (o tempo que leva), **lugar** (onde se resolve) e **destrava** (o que fica
-liberado quando você responder). A numeração é estável: item fechado sai com a data e os números dos demais não
-mudam entre rodadas.
+Silêncio também é resposta: **todo item sem resposta fica exatamente como está hoje** — nada quebra, nada é adivinhado
+no seu lugar.
 
-**O que você NÃO precisa fazer:** abrir o catálogo mestre, editar arquivo ou mexer no painel. Tudo que está escrito
-aqui como "responda" chega a mim por aqui mesmo, e a execução é minha. Uma exceção: os cliques do GitHub (item 14) e
-o botão do painel (itens 10 a 12) só existem na sua tela.
+**Você não precisa abrir arquivo nenhum para responder.** O catálogo mestre é gerado por programa: ninguém edita ele à
+mão, nem eu. Os números mudam num arquivo que eu mesmo mantenho (`biblioteca-virtual/inventario.tsv`) e o painel se
+refaz sozinho. Sua parte é dizer o que sabe; a minha é escrever. As duas únicas coisas que só existem na sua tela são
+os cliques do GitHub (item 14) e o painel aberto (itens 10, 11 e 12).
 
-## Antes dos itens, quatro palavras deste arquivo
-
-| Palavra | O que significa nesta casa |
-| --- | --- |
-| **Eixo** | Um dos 16 temas do catálogo (psicologia, horror, filosofia…). Cada livro tem um; a pasta onde o arquivo mora nem sempre acerta. |
-| **Dificuldade e extensão** | Duas etiquetas de cada livro: *leve/média/exigente* e *curta (até ~250 p.)/média/longa (500+ ou série)*. Para os 1.910 digitais, alguém (eu) as chutou a partir do título — ninguém abriu os arquivos. |
-| **`#verificar`** | Etiqueta numa linha do catálogo quando o título ou o autor pode estar errado. Ela segura o dado de virar "fato" e some só com aval do dono. No painel, essas linhas aparecem no botão **A verificar**. |
-| **Pendência** | Linha no arquivo de buscas sem sinopse, com o motivo. Hoje são 3 livros (itens 6 e 8 explicam). |
-
-## Por onde começar, se for hoje
-
-Dá para zerar meia carga em cinco minutos, sem levantar da cadeira: itens **2, 9, 14 e 15** são um número ou um sim/não
-cada um. Os outros pedem uma conferida (estante: **6**; computador: **5, 13**; painel: **10, 11, 12**) ou uma leitura
-de decisão (**1, 3, 4, 7, 8**). No fim tem um modelo pronto para responder tudo de uma vez.
+**Cinco itens não levantam você da cadeira:** 2, 9, 14, 15 e, se quiser, o 3 inteiro. Os outros pedem a estante
+(itens 5 e 6) ou o painel aberto (11 e 12). No fim tem um bloco para copiar e responder tudo de uma vez.
 
 ---
 
-## 1. A vistoria por amostragem — "a régua dos digitais está certa?"
+## 1. Os 40 livros sorteados — resposta no arquivo, não aqui
 
-- **Esforço:** 10 minutos de lápis, quando a lista chegar · **Lugar:** aqui ou no papel, como preferir
-- **Destrava:** a confiança de tudo que usa dificuldade/extensão/eixo nos digitais — os filtros da biblioteca
-  virtual, as trilhas, o "quanto você tem de cada assunto" e o lote 7 das sinopses (item 2).
+- **Feito hoje (17/11):** você disse "pode fazer a amostragem", a tabela está pronta em **`catalogo/AMOSTRAGEM.md`**.
 
-**O que é isto.** Em 11/11, eu classifiquei os 1.910 livros digitais (eixo, dificuldade, extensão) **sem abrir um
-arquivo**, a partir do título e do autor. Em livro famoso, erro pouco; em PDF obscuro da sua pasta, é palpite. A
-amostragem é o jeito barato de medir esse erro: eu escolho 40 livros ao acaso, monto uma tabela com o que está
-gravado para cada um, e você — que conhece a própria estante — só diz onde está certo e onde está errado. Conforme o que as 40 mostrarem, eu ajusto a
-régua e reaplico onde o erro for de sistema; se estiverem todas certas, o problema é menor do que parece.
+**O que foi pedido, em duas frases.** Os 1.910 arquivos digitais ganharam três etiquetas quando entraram no catálogo:
+sobre o que é o livro, se é leve ou exigente, e se é curto ou longo. Eu bati o olho em título e autor e classifiquei
+sem abrir arquivo. Para saber onde eu errei, sorteei 40 e escrevi, linha por linha, o que está gravado e em que
+arquivo. Você conhece a sua estante melhor do que eu; só você consegue dizer "essa aí está errada".
 
-**Como proceder.**
+**Como responder.** Abra o `catalogo/AMOSTRAGEM.md` (o painel abre igual a qualquer `.md`). Para cada uma das 40
+linhas, mande uma frase: `7: tudo certo` ou `12: é horror, não ficção científica`. O que você não comentar eu trato
+como certo. Não precisa abrir livro nenhum — só se uma linha lhe parecer suspeita, e aí o nome do arquivo está na
+coluna do lado.
 
-1. Responda **"faz a amostragem"**. Nada mais — hoje isto ainda não existe.
-2. Eu leio o catálogo, sorteio 40 livros digitais e escrevo a tabela em `catalogo/AMOSTRAGEM.md`: uma linha por
-   livro, com o arquivo exato, e o eixo / dificuldade / extensão gravados. Exemplo do formato (dados fictícios):
+**Depois das suas respostas:** eu corrijo as 40, conto quantos dos outros 1.870 livros têm o mesmo tipo de erro e
+corrijo o padrão. Só então abro o lote 7 das sinopses (item 2), porque ele usa essa régua.
 
-   | # | Livro | Arquivo | Eixo | Dif. | Ext. |
-   | --- | --- | --- | --- | --- | --- |
-   | 7 | Duna | `Terror e horror\Duna.pdf` | Ficção científica | Média | Longa |
+---
 
-3. Para cada linha, você responde só o desvio: "7: tudo certo", "7: é média, não longa". Se desconfiar do arquivo,
-   abra-o e responda o que viu na página de rosto. Pode responder tudo de uma vez ou em pedaços.
-4. Eu corrijo as 40, estimo quantos acertos iguais existem nas outras 1.870, aplico e registro o retrato novo.
-
-**Enquanto isso**, o plano B (de graça, mas mais lento e enviesado): pegar ~30 livros que você conhece bem e me dizer
-onde a régua errou. A etapa 4 do `ROTEIRO.md` tem o combinado inteiro.
-
-**Na mesma viagem** (era da etapa 4 e continua sem resposta):
-
-| A dúvida | Onde olhar | Como responder |
-| --- | --- | --- |
-| *O Chamado de Cthulhu*, *Nas Montanhas da Loucura* e *A Sombra sobre Innsmouth* estão em qual dos seus dois Lovecraft de papel? | O sumário de *Contos (H.P. Lovecraft)* e o de *Lovecraft: Medo Clássico*, na estante | "os três estão no Contos" |
-| *O Horror de Dunwich* e *Um Sussurro nas Trevas*, hoje listados como recomendações sem edição, estão num desses dois livros também? | Os mesmos sumários | "os dois estão no Contos, marque como tenho" |
-| Os dois arquivos de Rafael B. Correa são o mesmo livro? | Abra `autoconhecimento e desenvolvimento pessoal\persuasopnlehipnoseaplicadasseduo.pdf` e `autoconhecimento e desenvolvimento pessoal\Rafael B. Correa - Psicologia, PNL e Hipnose Aplicada a Sedução.pdf` | "é o mesmo, fica um" ou "são dois" |
-
-## 2. O primeiro eixo do lote 7 — por onde as sinopses dos 1.910 digitais começam
+## 2. As resenhas curtas dos livros digitais: por qual tema eu começo
 
 - **Esforço:** dois minutos · **Lugar:** aqui
-- **Destrava:** o lote 7. Sem o seu "por aqui", ele não começa — 1.910 livros rendem ~17 rodadas de 110 (umas 20 se cada lote couber num
-eixo só), e a ordem muda tudo.
 
-**O que é isto.** As recomendações (seções 1 a 16) terminaram em 17/11 com o lote 6. O que falta de sinopse é só a
-biblioteca virtual, que tem 1.910 livros e nenhuma linha no arquivo. Cada eixo tem este peso na seção 17:
+**A pergunta.** Falta escrever a resenha de 1.910 livros (a biblioteca virtual não tem nenhuma; das 607
+recomendações, 606 têm e uma espera a resposta do item 6). Não dá para fazer de uma vez — são ~17 rodadas de 110. **Por onde eu começo?**
 
-| Eixo | Digitais | Lotes de ~110 |
-| --- | ---: | ---: |
-| 14. Psicologia, psicanálise e comportamento | 399 | 4 |
-| 2. Ficção científica, fantasia e distopia | 307 | 3 |
-| 13. Ciência, tecnologia e futuro | 224 | 2 |
-| 9. Filosofia, ética e existência | 180 | 2 |
-| 11. Política, poder, autoritarismo e economia | 157 | 2 |
-| 7. Horror, weird fiction e mistério | 117 | 1 |
-| 12. Sociedade, antropologia, cultura e história | 101 | 1 |
-| 4. América Latina, Brasil e lusofonia | 89 | 1 |
-| 15. Espiritualidade, espiritismo e mistérios da consciência | 83 | 1 |
-| 10. Mente, consciência e neurociência | 65 | 1 |
-| 16. Artes, escrita, cinema e parentalidade | 57 | 1 |
-| 5. Ficção contemporânea e mundial | 49 | <1 |
-| 3. Clássicos universais e romances de ideias | 41 | <1 |
-| 6. Romances históricos | 32 | <1 |
-| 8. Poesia e cartas | 9 | <1 |
+**Responda com uma destas:**
+- `lote 7 pelo horror` → 117 livros digitais do eixo de horror, uma rodada e está fechado;
+- `comece pela ficção científica` → são 307, três rodadas;
+- `pelos 81 das trilhas` → os digitais que já estão em trilhas de leitura; hoje metade de uma trilha tem resenha e
+  a outra metade não, e isso fica feio na tela;
+- `escolhe você` → eu sigo a ordem dos temas, do maior para o menor;
+- nada → o lote 7 fica parado.
 
-Os 242 quadrinhos digitais estão espalhados pelos eixos de ficção (por isso eles não aparecem na tabela). Uma
-alternativa que fecha lacuna estrutural: os **81 que já estão em trilhas** — uma trilha que mistura estante e
-biblioteca virtual hoje fica com metade das fichas mudas: nenhum digital tem sinopse.
+**O peso de cada tema na biblioteca virtual:** psicologia 399 · ficção científica e fantasia 307 · ciência e futuro
+224 · filosofia 180 · política e economia 157 · horror 117 · sociedade e história 101 · Brasil e lusofonia 89 ·
+espiritualidade 83 · mente e neurociência 65 · artes e escrita 57 · ficção contemporânea 49 · clássicos 41 · romances
+históricos 32 · poesia 9. Os 242 quadrinhos não aparecem porque estão espalhados pelos temas de ficção.
 
-**Como responder:** "lote 7 pelo eixo 7 (horror)" — ou "pelos 81 das trilhas" — ou "escolhe você",
-decida você". Se não responder nada, o lote 7 fica parado; nada quebra.
+---
 
-## 3. As cinco propostas da etapa 8 que esperam um sim ou um não
+## 3. Cinco mudanças no painel que esperam o seu sim
 
-- **Esforço:** cinco linhas suas · **Lugar:** aqui
-- **Destrava:** o fechamento da etapa 8 e a fila do que eu construo a seguir.
+- **Esforço:** cinco palavras suas · **Lugar:** aqui
 
-**O que são.** A análise dos filtros (em `catalogo/ANALISE-DOS-FILTROS.md`) terminou em oito propostas; três já
-viraram a etapa 9. As cinco que faltam, ditas sem jargão:
+**A pergunta.** Da análise dos filtros saíram oito ideias; três já estão no ar. **Quais das outras cinco eu posso
+executar?**
 
-- **Proposta 4 — dividir o "Temas".** Hoje "Temas" é um cesto só com tudo, de "introdução" a "Rússia":
-  a lista é longa e um botão pode significar área, assunto ou "é uma biografia?". A proposta é partir em três cestos
-  — áreas, assuntos e forma. Trabalho pequeno, muda o uso diário do filtro.
-- **Proposta 5 — consertar nomes que enganam.** "Policial" e "mistério" hoje são botões separados achando quase os
-  mesmos livros; "espiritualidade" **não** traz kardecismo nem umbanda (estão no eixo, mas o nome do botão faz você
-  não procurar ali). Envolve renomear/misturar etiquetas que já existem — por isso precisa do seu aval explícito
-  (combinado: "marcador se acrescenta; não se tira sem aviso").
-- **Proposta 6 — "ficção literária" como marcador.** 97 romances do catálogo não têm gênero nem tema nenhum; hoje
-  são invisíveis a qualquer filtro de assunto. Um marcador os agrupa. Aditivo, sem risco.
-- **Proposta 7 — clima e papel para os romances digitais.** "Clima" e "papel" (o livro faz o quê em você) só
-  existem em parte da estante. Estender aos ~400 romances digitais é trabalho grande de leitura/atuação minha — e o
-  valor real depende do item 1, senão chuto em cima de chute.
-- **Proposta 8 — já virou o item 1 deste guia.**
+**Responda com `pode` ou `não` em cada uma:**
 
-**Como responder:** "pode fazer 4, 5 e 6; a 7 depois do 1" — ou "explica melhor a 5". Cada "pode" vira uma PR
-testada como tudo aqui.
+- **4. Quebrar o botão "Temas" em três.** Hoje ele é um saco só: "introdução", "Rússia" e "é uma biografia?" estão no
+  mesmo lugar, misturados. Ideia: três botões — sobre o que é, sobre qual assunto, e de que tipo é o livro.
+- **5. Consertar nomes que induzem ao engano.** "Policial" e "mistério" acham os mesmos 22 livros. "Espiritualidade"
+  não traz kardecismo nem umbanda: os livros estão no catálogo, mas você não olharia ali. Só trocar o nome dos botões;
+  nenhum livro sai de lugar.
+- **6. Um marcador para "ficção literária".** 97 romances (Flaubert, Sebald, Stoner) não têm assunto nenhum
+  marcado: nenhum filtro os encontra. Um marcador agrupa os 97. É acréscimo puro.
+- **7. Clima e função nos romances digitais.** Nos livros da estante existe "o que o livro faz em você" (luto,
+  culpa, medo); na biblioteca virtual não. Dá para estender, mas o valor real depende das respostas do item 1 — sem
+  ele, eu chuto em cima do chute. Minha sugestão: `a 7 depois do 1`.
+- **8.** Já foi executado: é a amostragem do item 1.
 
-## 4. O desenho da gamificação — aprovar ou apontar mudança
+**Sem resposta, nada muda nos filtros.** Cada "pode" vira uma entrega testada, igual a tudo que já foi feito aqui.
 
-- **Esforço:** uma leitura de 10 minutos e um "aprova" · **Lugar:** aqui (o desenho está no `ROTEIRO.md`, etapa 10, parte 5 — leia lá ou aqui embaixo)
-- **Destrava:** a guia de leitura, última peça grande da etapa 10, parada desde 12/11 porque combinamos que nada
-  sai sem você aprovar o desenho.
+---
 
-**O que é isto.** Um painel à parte ("Guia de leitura"), que se desliga, contando **páginas lidas** — porque você
-achou página mais justo que livro. O desenho fechado a partir das suas quatro respostas tem seis peças:
+## 4. O guia de páginas lidas: aprova o desenho?
 
-1. **Meta do ano em páginas**, escolhida e alterável por você a qualquer hora, sem histórico ("mudei porque desanimei"
-   não fica registrado).
-2. **Ritmo que não cobra.** Atrasou? Ele recalcula a partir de hoje ("umas 12 páginas por dia até dezembro") — nada
-   de vermelho, nada de sequência perdida.
-3. **De onde vêm as páginas.** Do campo "páginas" quando você preencheu; senão de uma estimativa curta/média/longa,
-   sempre escrita como estimativa; o livro em andamento conta o pedaço lido.
-4. **Marcos que só se ganham.** Trilha completa, primeiro exigente do ano, um longo, um que estava parado. Nenhum se perde.
-5. **As palavras seguem o tema visual.** No Sherlock, "caso encerrado"; no Moby Dick, "léguas". Padrão = tom sóbrio.
-6. **A "cartela do ano"** ficou para depois, se um dia você quiser.
+- **Esforço:** dez minutos de leitura e um "aprova" · **Lugar:** aqui
 
-**Como proceder:** leia a versão completa na parte 5; responda **"aprova, constrói"** ou aponte ("o item 3 não;
-estime só pelo campo preenchido"). Aprovar não te obriga a usar: a guia nasce desligada.
+**A pergunta.** Você quer um canto do painel que conta **páginas** (você achou mais justo que contar livros). O
+desenho está pronto e nada é construído sem o seu aval. **Aprova, ou o que eu mudo?**
 
-## 5. Os 12 arquivos importados que ainda não têm nome e autor certos
+**O desenho, em seis linhas.**
+1. Meta do ano em páginas, escolhida por você e trocável a qualquer hora, sem guardar histórico de mudanças.
+2. Ritmo que não cobra: atrasou, ele recalcula a partir do dia seguinte. Nada vermelho, nada de "sequência perdida".
+3. As páginas vêm do campo "páginas" quando você preencheu; senão de uma estimativa por tamanho, sempre escrita como
+   estimativa; livro em andamento conta o pedaço lido.
+4. Conquistas que só se ganham: trilha completa, primeiro exigente do ano, um longo, um que estava parado há meses.
+5. As palavras acompanham o tema do livro: no Sherlock, "caso encerrado"; no Moby Dick, "léguas".
+6. A "cartela do ano" fica para depois, se um dia você quiser.
 
-- **Esforço:** ~30 minutos · **Lugar:** no computador (abrir a primeira página de cada arquivo)
-- **Destrava:** fecha a etapa 1; o botão "a verificar" do painel esvazia quase todo; e autor certo é o que
-  destrava capa (149 das 191 na fila do item 12 dependem disto) e sinopse no lote 7.
+**Responda com** `aprova, constrói` ou aponte: `o item 3 não; estima só pelo campo preenchido`. Aprovar não te
+obriga a usar: o guia nasce desligado.
 
-**O que é isto.** Quando a biblioteca virtual entrou no catálogo, o nome de cada arquivo virou título e autor. Em 36
-arquivos isso não bastava; 24 eu resolvi por pesquisa (etapa 1, 10/11). **Sobraram estes 12** — onze que
-ficaram com `#verificar` porque o arquivo pode ser de qualquer um com aquele título, e um que pode nem ser livro.
-Abrir a página de rosto (10 segundos cada) resolve qualquer um deles.
+---
 
-| O arquivo (abra) | O que eu preciso saber |
+## 5. Doze arquivos que não dizem quem os escreveu
+
+- **Esforço:** ~30 minutos · **Lugar:** no computador
+
+**A pergunta.** Na importação, 36 arquivos viraram "livro" com o nome do arquivo no lugar do autor; 24 eu descobri
+pesquisando. **Sobraram estes 12, que só você pode identificar** — abrir a primeira página de cada um leva dez
+segundos.
+
+**Como proceder:** abra, olhe a página de rosto, cole as respostas aqui, uma linha por arquivo. Não precisa escrever
+bonito: `manipulacao.pdf → autor tal, título tal` chega.
+
+| O arquivo (abra) | O que preciso saber |
 | --- | --- |
-| `Filosofia\LINGUAGEM E COGNIÇÃO.pdf` | Autor |
-| `Sociedade e politica\engenhariasocial.pdf` | Autor e título completo |
-| `autoconhecimento e desenvolvimento pessoal\manipulacao.pdf` | Autor e título completo |
-| `autoconhecimento e desenvolvimento pessoal\manualdoxaveco-comoconquistarumamulher.pdf` | Autor |
-| `autoconhecimento e desenvolvimento pessoal\linguagem-ossegredosdaseduopelaforadaspalavras.pdf` | Autor |
-| `historia\tesouros medievais.pdf` | Autor |
-| `psicologia social e cultural\psicologia e sociologia.pdf` | Autor |
-| `psicologia\El proceso de envejecimiento.pdf` | Autor |
-| `historia fundamentos e introducoes psico\Introdução à Psicologia 6ª Edição.pdf` | Autor (há mais de um livro com esse título) |
-| `tecnologia e informacao\Análise e projeto de sistemas ( etc.) (Z-Library).epub` | Autor (há mais de um com esse título) |
-| `Terror e horror\Antarktos Ciclo - Edgar Allan Poe.pdf` | É a antologia *The Antarktos Cycle* (Poe, Verne, Lovecraft)? Em que língua está? |
-| `ciencias\Einstein, Freud e Relações Internacionais ( PDFDrive ).pdf` | É um livro ou um artigo/revista de ~20 páginas? |
+| `Filosofia\LINGUAGEM E COGNIÇÃO.pdf` | autor |
+| `Sociedade e politica\engenhariasocial.pdf` | autor e título completo |
+| `autoconhecimento e desenvolvimento pessoal\manipulacao.pdf` | autor e título completo |
+| `autoconhecimento e desenvolvimento pessoal\manualdoxaveco-comoconquistarumamulher.pdf` | autor |
+| `autoconhecimento e desenvolvimento pessoal\linguagem-ossegredosdaseduopelaforadaspalavras.pdf` | autor |
+| `historia\tesouros medievais.pdf` | autor |
+| `psicologia social e cultural\psicologia e sociologia.pdf` | autor |
+| `psicologia\El proceso de envejecimiento.pdf` | autor |
+| `historia fundamentos e introducoes psico\Introdução à Psicologia 6ª Edição.pdf` | autor (há mais de um livro com esse título) |
+| `tecnologia e informacao\Análise e projeto de sistemas ( etc.) (Z-Library).epub` | autor (há mais de um com esse título) |
+| `Terror e horror\Antarktos Ciclo - Edgar Allan Poe.pdf` | é a antologia *The Antarktos Cycle* (Poe, Verne, Lovecraft)? em que língua está? |
+| `ciencias\Einstein, Freud e Relações Internacionais ( PDFDrive ).pdf` | é um livro ou um artigo de ~20 páginas? |
 
-**Como proceder:** abra cada arquivo (os `.pdf`/`.epub` nas pastas da sua biblioteca virtual), olhe a primeira página,
-e cole as respostas aqui, uma linha por arquivo: "manipulacao.pdf é 'Manipulação', de Fulano X". O último, se for
-artigo, vira "só no inventário" (combinado da etapa 2) e eu tiro a linha.
+**O último, se não for livro:** você responde "é artigo" e eu tiro a linha do catálogo — combinado antigo: o que não
+é livro fica só na lista de arquivos, não vira livro.
 
-**Formato que funciona para tudo no guia:** não precisa escrever bonito; "arquivo → autor/título" chega.
+**Destrava:** fecha a etapa 1, o botão "a verificar" do painel esvazia quase todo, e uns 11 livros saem da fila das
+capas (item 12), que trava no autor.
 
-## 6. As quatro lombadas contra o catálogo
+---
 
-- **Esforço:** 5 minutos com os quatro livros na mão · **Lugar:** na estante
-- **Destrava:** fecha o registro das sinopses (a única pendência das 607 recomendações é uma destas quatro), põe o
-  catálogo a dizer a verdade em quatro linhas, e libera três sinopses novas que hoje não posso escrever sem chutar.
+## 6. Quatro nomes que a busca não confirmou
 
-**O que é isto.** Quatro linhas do catálogo têm título ou autor que a busca não confirmou — o combinado aqui é: na
-dúvida fica marcado, não fica chutado. Cada linha abaixo diz o que procurei, o que achei, e a frase que resolve.
+- **Esforço:** cinco minutos com os quatro livros na mão · **Lugar:** na estante
 
-| O que está no catálogo | O que a busca mostrou | **Responda com:** |
+**A pergunta.** Quatro linhas do catálogo têm um título ou um autor que não bate com nada que existe publicado. Só a
+lombada responde. **O que está escrito nelas?**
+
+| O que está no catálogo | O que encontrei | Responda com |
 | --- | --- | --- |
-| *Noite do Sul* (Érico Veríssimo) | Ele não tem livro com esse título; tem a novela ***Noite*** (1954) | o título exato da lombada |
-| *A Arte de Envelhecer* (Yalom, "autoria conforme a prateleira — conferir") | Com esse título só achei Schopenhauer (Martins Fontes); Yalom tem *A Arte de Envelhecer*? Não confirmei | quem está escrito na capa |
-| *A Tragédia e a Farsa* (Flávio Henrique Calheiros Casimiro) | O nome lembra a frase de Marx (*18 Brumário*), mas o autor anotado não bate com nada publicado que achei | capa/olho do livro; com o título certo a sinopse sai na hora |
-| *O Espírito da Intimidade* (Malidoma Patrice Somé) | A edição brasileira com esse subtítulo é assinada por **Sobonfu** Somé — foram casados, ambos dagara, e há livro com esse nome dos dois; escrevi a sinopse no painel sem nomear autor para não errar por você | o sobrenome/nome na lombada |
+| *Noite do Sul* (Érico Veríssimo) | ele não tem livro com esse título; tem a novela ***Noite*** (1954) | `o título é ___` |
+| *A Arte de Envelhecer* (Yalom, com a nota "conferir") | com esse título só achei Schopenhauer; não confirmei um Yalom assim | `na capa está ___` |
+| *A Tragédia e a Farsa* (Flávio Henrique Calheiros Casimiro) | o nome lembra uma frase de Marx, mas esse autor não aparece em edição nenhuma que eu achei | `capa: ___` (com o nome certo, a resenha sai na hora) |
+| *O Espírito da Intimidade* (Malidoma Patrice Somé) | a edição brasileira com esse subtítulo é assinada por **Sobonfu** Somé — foram casados; escrevi a resenha sem cravar autor para não errar por você | `é Malidoma` / `é Sobonfu` |
 
-Os dois primeiros são da estante (seção 0) e os outros dois de recomendações. Resolvidos, eu: arrumo a linha do
-catálogo onde for o caso, escrevo as sinopses que faltam e o painel acompanha sozinho.
+Os dois primeiros são livros da estante, os outros dois são recomendações. **Enquanto isso**, as linhas ficam com a nota de
+conferência, e as resenhas das duas primeiras continuam sem ser escritas: não por falta de material — porque eu não
+sei de que livro estou falando.
 
-## 7. Três correções de título/autor esperando o seu sinal
+---
+
+## 7. Três erros de grafia que eu corrijo com o seu "pode"
 
 - **Esforço:** um "pode" · **Lugar:** aqui
-- **Destrava:** o catálogo deixa de grafar três livros errados; fichas do painel, trilhas e buscas ganham as linhas certas.
 
-**O que é isto.** A busca das últimas rodadas achou três linhas onde o catálogo diz algo que nenhuma edição diz.
-Mexer no nome de um livro **não é meu por padrão** (o painel reencontra as suas anotações pelo nome antigo, mas o
-seu aval é o combinado). Cada uma:
+**A pergunta.** A busca das últimas rodadas achou três linhas onde o catálogo grafa um livro que nenhuma edição
+grafia assim. Não troco nome de livro por conta própria porque é pelo nome que o painel reencontra as suas anotações.
 
-- *Apocalipse: A Batalha do Fim* (Eduardo Spohr) — o livro dele é ***A Batalha do Apocalipse***. Já escrevi a
-  sinopse por esse. **"pode acertar o título"**.
-- *Se Liga na Filosofia* — o catálogo lista "Globo Livros" como **autor**; Globo é a **editora**, o autor é Marcus
-  Weeks. **"pode corrigir"**.
-- *O Mundo do Avesso* (Letícia Cesarino) — a edição real é ***Mundo ao avesso: verdade e política na era
-  digital*** (UBU, 2022); a sinopse do lote 5 já é desse livro, e o catálogo continua grafando *O Mundo do Avesso*.
-  **"alinhe com a lombada"** (diga se a sua é "O Mundo do Avesso", que aí deixo como está e só anoto o nome real na linha).
+- *Apocalipse: A Batalha do Fim* (Eduardo Spohr) → o livro é ***A Batalha do Apocalipse***. Responda `pode`.
+- *Se Liga na Filosofia* → o catálogo lista "Globo Livros" como autor; Globo é a **editora**, o autor é Marcus Weeks.
+  Responda `pode`.
+- *O Mundo do Avesso* (Letícia Cesarino) → a edição real é ***Mundo ao avesso: verdade e política na era digital***
+  (UBU, 2022). A resenha que já está no painel é desse livro. Responda `alinhe com a lombada` — ou, se a sua edição
+  tem mesmo o título curto, `deixa como está e só anota o nome real`.
 
-## 8. A etiqueta `#verificar`: o que fazer com a fila de 29
+**Sem resposta**, as três ficam grafadas como hoje, com a resenha no lugar.
 
-- **Esforço:** dois minutos aqui · **Lugar:** aqui
-- **Destrava:** define quando a fila zera. Hoje ela é o aviso de que o dado pode estar errado — e ela não some sozinha,
-  é combinado da casa.
+---
 
-**O que é isto.** 29 linhas do catálogo estão marcadas `#verificar`: 3 nas recomendações (*A Guerra do Fogo*,
-*O Médico de Córdoba*, *A Tragédia e a Farsa*), 3 na estante, 23 na biblioteca virtual. Três **já têm sinopse**
-porque a busca confirmou o livro (Guerra do Fogo, Médico e *Coraline* — esta só espera você dizer se o exemplar da
-estante é a HQ ou o romance ilustrado, e é por isso que ela também está no item 6); a etiqueta nelas é só sobre a
-*edição*. Das outras 26, 11 somem com as respostas do item 5, e o resto vem dos itens 6 e da conferida das
-importações — ninguém precisa caçar etiqueta solta.
-
-**Como proceder — três decisões, cada uma uma frase:**
-
-1. **Tiro as etiquetas já superadas?** (Médico: a busca achou *El médico de Córdoba*, de Herbert Le Porrier, e a
-   etiqueta é de antes disso; Guerra do Fogo idem; Coraline só depende do parágrafo do item 6 sobre HQ-ou-romance.)
-   Responda: **"tira as duas"** (Médico e Guerra) — ou "deixa todas até eu conferir".
-2. **Os 23 dos digitais:** baixa o lote deles em bloco depois da vistoria dos itens 1 e 5 (**"baixa em bloco"**), ou
-   você prefere confirmar um por um na tela antes (**"um por um"**).
-3. **A regra para o futuro:** arquivo novo importado entra com `#verificar` sempre, ou só quando o nome do arquivo é
-   vago? ("sempre" é o padrão atual — pode manter sem responder.)
-
-## 9. A trilogia *Escravidão*: uma linha no catálogo ou três?
+## 8. A fila dos "a verificar": quais eu baixo agora
 
 - **Esforço:** dois minutos · **Lugar:** aqui
-- **Destrava:** se separar: crio duas linhas no catálogo, refaço as três sinopses, e o inventário das pastas passa a
-  contar volumes — o que afeta "tenho em digital", trilhas e a sua estante virtual inteira para esse autor.
 
-**O que é isto.** A trilogia *Escravidão*, de Laurentino Gomes (Globa livros, 2019-2021), tem **uma linha** só no
-catálogo — "Escravidão (trilogia)" — e a sinopse do lote 5 apresenta os três volumes juntos. No painel, é "um livro". A pergunta é o que você quer ver:
-três volumes com "li" individual, ou a obra inteira como um item.
+**A pergunta.** 29 linhas do catálogo estão marcadas "a verificar" (3 na estante, 3 nas recomendações, 23 na
+biblioteca virtual) porque algo nelas pode estar errado. **O que já está resolvido eu baixo da fila, ou espera?**
 
-**Como responder:** **"separa em três"** (me diga se tem um, dois ou os três em papel e se os volumes digitais têm um
-ou três arquivos na pasta) ou **"deixa como uma linha"**. Silêncio = uma linha, como hoje.
+1. Três delas **já têm resenha** e a etiqueta só fala da edição: *A Guerra do Fogo* e *O Médico de Córdoba* (a busca
+   confirmou os dois) e *Coraline* (só espera você dizer se o seu exemplar é a HQ ou o romance ilustrado).
+   → `tira as duas` ou `deixa todas até eu conferir`.
+2. Os 23 da biblioteca virtual somem conforme o item 1 e o item 5 andam.
+   → `baixa em bloco quando acabar a vistoria` ou `confiro um por um antes`.
+3. E para o futuro, quando entrar arquivo novo: entra sempre marcado "a verificar", ou só quando o nome do arquivo
+   não diz o que é? → `sempre` (é como está hoje) ou `só quando for vago`.
 
-## 10. A sua lista de leituras (a etapa 3 só espera isto)
+---
 
-- **Esforço:** 20 minutos, ou uma tarde para zerar a estante inteira · **Lugar:** no painel (o arquivo, se preferir)
-- **Destrava:** fecha a etapa 3, e — se você aprovar o item 4 — é o material que a gamificação conta. Sem lista, a
-  conta de páginas do ano começa de zero; com ela, começa da sua vida real.
+## 9. A trilogia *Escravidão*: uma ficha ou três?
 
-**O que é isto.** O painel hoje sabe o que você **tem**; não sabe o que você **leu**. A etapa 3 ("trocar os dados de
-exemplo pelos seus") terminou menos o registro de leituras próprias, e a decisão da vez é só o caminho:
+- **Esforço:** dois minutos · **Lugar:** aqui
 
-**Como proceder — um dos dois:**
+**A pergunta.** Os três volumes de Laurentino Gomes hoje são **uma linha** no catálogo, com uma resenha que apresenta
+os três juntos e um "li" só. **Você quer ver os volumes separados?**
 
-- **Painel:** para cada livro lido, abra a ficha e marque o estado **"já li"** (o mesmo que o botão Ocultar usa); a
-  data, se quiser, vai no comentário ou fica como estava. Tudo fica salvo **no seu navegador** e o backup leva junto.
-- **Planilha:** me mande um `.csv` (ou o que tiver) com título/autor/data, e eu gero um arquivo de importação que
-  você confere antes de aplicar — nada entra no catálogo sem você ver a lista.
+→ `separa em três` (diga se tem um, dois ou três em papel e se na pasta digital há um arquivo ou três) ou
+`deixa como uma ficha`. Sem resposta, fica uma ficha como está.
 
-Silêncio também decide: "fica para depois" mantém a etapa 3 como está.
+**Se separar:** crio duas linhas novas, refaço as três resenhas, e o painel passa a contar volumes — o que mexe em
+"tenho em digital", nas trilhas e no seu inventário inteiro desse autor.
 
-## 11. Os três temas visuais novos: olhar, dizer, e escolher a próxima ordem
+---
 
-- **Esforço:** 5 minutos · **Lugar:** no painel, com **Aparência** aberta
-- **Destrava:** o terceiro bloco de temas (cyberpunk; depois Viena de 1900, modernismo brasileiro e manuscrito
-  medieval — dois a três por rodada, combinado).
+## 10. O que você já leu
 
-**O que é isto.** Seis temas existem; os três de 12/11 (**Deserto**, **Terras antigas**, **Clássico
-greco-romano**) esperam o parecer que fecha a parte 4 da etapa 10. Não é prova, são três perguntas:
+- **Esforço:** 20 minutos, ou uma tarde para zerar a estante · **Lugar:** no painel
 
-1. As cores estão no ponto? (Abra **Deserto** e depois **Moby Dick**: os gráficos saem em cor de cobre — pesa?)
-2. A letra do **Lovecraft** é irregular de propósito, tipo antigo: a sinopse continua legível para você?
-3. Os ornamentos (o sulco na areia, a linha de folhas, o meandro) estão discretos o bastante?
+**A pergunta.** O painel sabe o que você **tem**; não sabe o que você **leu**. Isso é a única sobra da etapa 3, e é a
+matéria-prima do guia de páginas do item 4. **Por qual dos dois caminhos?**
 
-**Como ver:** abra o painel → botão **Aparência** → escolha o tema → abra um livro → olhe título, sinopse e gráficos
-→ alterne claro/escuro → repita para os três. **Como responder:** "cores ok, letra ok, ornamentos ok — siga com
-cyberpunk" (ou aponte o que trocar; ou "a ordem dos próximos sou eu: faça X antes").
+- **No painel:** abra a ficha do livro e marque **"já li"**; se quiser anotar quando, escreva no comentário. Tudo fica
+  no seu navegador e vai junto no backup.
+- **Por arquivo:** me mande uma planilha (o que você tiver: título, autor, quando leu) e eu monto um arquivo de
+  importação que **você confere antes de aplicar**. Nada entra no catálogo sem você ver a lista.
 
-## 12. A fila das capas: 191 para revisar, 1.050 sem nada
+Sem resposta, a etapa 3 continua onde está e a contagem de páginas do ano começa do zero.
 
-- **Esforço:** vinte minutos para escolher por onde ir; uma tarde para zerar (dá para fatiar) · **Lugar:** no painel + `catalogo/capas-revisao.md` aberto ao lado
-- **Destrava:** as **901** capas que faltam aos digitais (só 1.009 de 1.910 têm) e as **187** que faltam aos
-  quadrinhos (58 de 245 é o pior grupo da casa). Os **83** sem capa porque o autor do catálogo não é certo dependem
-  dos itens 5 e 6 — não adianta procurar capa de um livro sem dono certo.
+---
 
-**O que é isto.** `catalogo/capas-revisao.md` (eu gero, você lê) lista, para cada livro com capa suspeita, **o
-motivo** e **o que fazer**. São três filaços:
+## 11. Os três temas visuais novos
 
-- **32** com capa achada na Open Library que **pode ser de outra edição ou língua** — a revisão é olho: a capa que
-  está no painel bate com o seu exemplar? Se duvidar de alguma, eu monto a lista das 32 com a capa atual e a
-  alternativa lado a lado, e você decide linha a linha.
-- **149** na fila "autoria a conferir": **83** sem autor certo ("Vários autores", tradições, orgs.) e **66** com o
-  nome entre parênteses. A busca de capa **travou no autor**, não na internet. Uns 11 saem com o item 5; os outros
-  somem quando a biblioteca virtual inteira tiver autor e título confirmados.
-- **30** com título cortado ou sem número de volume — idem: nome certo na linha, capa sai atrás.
+- **Esforço:** cinco minutos · **Lugar:** no painel, com **Aparência** aberta
 
-**Como proceder (escolha um caminho, aqui):** **"começa pelos 32"** (eu monto a comparação capa atual × alternativa e
-você decide uma a uma), **"sorteia 10 das 32"** (para você ver se vale a tarde) ou **"a fila espera"** (nada quebra;
-só faltam imagens).
+**A pergunta.** Três temas de 12/11 — **Deserto**, **Terras antigas** e **Clássico greco-romano** — esperam o seu
+parecer para a rodada continuar. **Estão bons, e o que faço em seguida?**
 
-## 13. O que ficou de fora do catálogo: quatro arquivos, duas revistas e o gerador
+**Para ver:** abra o painel → **Aparência** → escolha o tema → abra um livro → olhe título, resenha e os gráficos →
+alterne claro/escuro → repita com os outros dois.
 
-- **Esforço:** hoje, zero; depois do gerador, ~40 minutos no computador · **Lugar:** aqui, e uma passada no computador
-- **Destrava:** a etapa 2 fecha de vez; 104 pastas de séries de quadrinhos entram como volumes (hoje o catálogo sabe
-  que você tem *Akira*, não quantos volumes); a subpasta `Mangás` deixa de ser buraco.
+As três perguntas: as cores pesam (abra **Deserto** com o Moby Dick: os gráficos saem cor de cobre)? A letra irregular
+do **Lovecraft** deixa a resenha legível? Os ornamentos (o sulco na areia, a linha de folhas, o meandro) estão
+discretos o bastante?
 
-**O que é isto.** Na etapa 2 você já decidiu as regras (HQ entra como série; não-livro fica só no inventário).
-Faltam três pontas. Uma é minha, e só você manda fazer:
+→ `cores ok, letra ok, ornamentos ok, segue com cyberpunk` — ou diga o que trocar, ou `a ordem dos próximos sou eu:
+faça ___ antes`.
 
-1. **O gerador único de listagens não existe ainda** (etapa 5). Responda **"faz o gerador"** quando quiser que eu o
-   construa; depois a sua parte passa a ser rodar o `Gerar listagens.bat` e responder **`S`** à pergunta de mangás
-   (ou `--incluir "HQs/Mangás=Mangás"`), e me mandar a listagem nova — aí os mangás entram na próxima importação.
-   A subpasta `novas` de NovasHQs se atualiza igual, com a listagem `novasHQSS` reenviada com esse nome.
-2. **Os 4 compactados de nome cortado** — `BTN - Si______ra` (3 partes) e `Lo_____d - Mo_____no`. Diga o que são
-   (tente abrir; o nome do arquivo foi mutilado ao baixar) — ou "ficam fora" e eu anoto a decisão.
-3. **As 2 revistas *Heavy Metal***: estão fora como periódicos (combinado). Só confirme se quer que fiquem só no
-   inventário mesmo — um "confirmado" resolve.
+---
 
-## 14. Proteger o `main` no GitHub — os cliques são seus
+## 12. A fila das capas
 
-- **Esforço:** dez minutos · **Lugar:** no GitHub, duas telas
-- **Destrava:** fecha a etapa 5 na parte que é sua; a partir daí **nada** — nem eu — entra no `main` sem PR com o
-  CI verde. O robô de capas e os testes passam a ter essa garantia no papel.
+- **Esforço:** vinte minutos para escolher o caminho · **Lugar:** no painel, com `catalogo/capas-revisao.md` aberto ao lado
 
-**O que é isto.** Hoje eu abro a PR, o CI roda, mas o merge depende só de você clicar — a proteção acrescenta a trava
-de que PR sem teste verde não pode ser mesclada por ninguém. Só o dono do repositório mexe nisso.
+**A pergunta.** Faltam capas em 1.050 livros e há 191 suspeitas. **Por onde eu começo — ou a fila espera?**
 
-**Como proceder, no navegador, logado na sua conta:**
+As três filas:
+- **32** capas achadas na Open Library que podem ser de outra edição ou de outro país. A revisão é no olho: a capa no
+  painel bate com o seu exemplar? Se quiser, monto a lista das 32 com a capa de hoje e a alternativa escritas lado a
+  lado, e você decide linha por linha.
+- **149** travadas no autor (83 sem autor certo: "Vários autores", tradições, organizadores). A busca não falhou na
+  internet, falhou no nome. Uns 11 caem com o item 5; o resto acompanha a vistoria.
+- **30** com título cortado ou sem número de volume. Nome certo na linha, capa sai atrás.
 
-1. Abra `github.com/LucasRangel89/biblioteca` → aba **Settings**.
-2. No menu esquerdo, **Branches** → **Add branch protection rule**.
-3. **Branch name pattern:** `main`.
-4. Marque **Require a pull request before merging** e, expandindo, **Require status checks to pass before merging**
-   → escolha **Rápido (sem navegador)** — é o único check que o `verificar.yml` publica hoje; se nascer um job com
-   navegador para PRs, a lista é atualizada junto.
-5. **Create**. Se quiser que nem você furar sem confirmação, marque **Include administrators** — eu deixaria marcado.
+→ `começa pelos 32` · `sorteia 10 dos 32` (para você ver se vale a tarde) · `a fila espera` (não quebra nada; só
+faltam imagens). **Obs.:** os 901 digitais e os 187 quadrinhos sem capa nenhuma não estão nessa fila — neles a busca
+não achou nada, e não há o que revisar até haver autor e título certos.
 
-Ou responda **"fica sem proteção"** que a etapa encerra assim mesmo — a decisão é sua, não há pressão aqui. (A outra
-sobra da etapa 5, o gerador de listagens, é item 13 — minha de fazer, sua de pedir.)
+---
 
-## 15. Os retratos datados (VISTORIA, AMOSTRAGEM): guardar ao lado ou por cima?
+## 13. O que ficou fora da contagem: quatro arquivos, duas revistas e um botão que não existe
+
+- **Esforço:** hoje, zero; depois, ~40 minutos no computador · **Lugar:** aqui e no computador
+
+**A pergunta.** As regras você já bateu o martelo (quadrinho entra como série; o que não é livro fica só na lista de
+arquivos). Faltam três pontas.
+
+1. **O botão que gera a lista das pastas ainda não existe.** É ele que permite atualizar o catálogo quando entram
+   arquivos novos. → `faz o gerador` quando você quiser que eu o construa. Depois a sua parte passa a ser dar dois
+   cliques no `.bat`, responder `S` à pergunta sobre mangás e me mandar a listagem nova.
+2. **Quatro arquivos compactados com o nome cortado no download:** `BTN - Si______ra` (3 partes) e
+   `Lo_____d - Mo_____no`. → tente abrir e me diga o que são, ou `ficam fora` e eu registro a decisão.
+3. **Duas revistas *Heavy Metal*** ficaram fora por serem periódico. → um `confirmado` fecha isso.
+
+---
+
+## 14. Travar o `main` no GitHub
+
+- **Esforço:** dez minutos · **Lugar:** no GitHub, uma tela
+
+**A pergunta.** Hoje eu abro o pedido de mudança, o teste roda, mas o "entra" depende só de um clique seu. A trava
+acrescenta: sem teste verde, não entra — nem por você. Isso é conta de dono, não minha.
+
+**Onde clicar:** `github.com/LucasRangel89/biblioteca` → **Settings** → **Branches** → **Add branch protection
+rule** → **Branch name pattern** = `main` → marque **Require a pull request before merging**, e dentro dela
+**Require status checks to pass before merging** → escolha **Rápido (sem navegador)** (é o único teste que o robô
+publica hoje) → **Create**. Se quiser que nem você fure a regra sem confirmar, marque também **Include
+administrators**.
+
+→ ou responda `fica sem proteção` e a etapa encerra assim mesmo, sem discussão.
+
+---
+
+## 15. Os relatórios com data: guardar todos ou só o de hoje
 
 - **Esforço:** um minuto · **Lugar:** aqui
-- **Destrava:** define a política para `catalogo/VISTORIA.md` e os relatórios de amostragem futuros — é higiene, não
-  urgência.
 
-**O que é isto.** Combinamos que o relatório da vistoria de 10/11 "é um retrato daquela data; não é refeito". O item
-1 vai gerar retratos novos. Falta dizer como arquivá-los: **ao lado** (um `AMOSTRAGEM-AAAA-MM-DD.md` por rodada,
-comparáveis entre si — minha sugestão) ou **por cima** (um arquivo só, sempre atual, e o histórico fica no Git).
+**A pergunta.** Combinamos que o retrato da vistoria de 10/11 não é refeito. Os próximos relatórios (a amostragem de
+hoje, os que virem depois) precisam de uma política: **um arquivo por data**, comparáveis entre si (minha sugestão),
+ou **sempre o mesmo arquivo atualizado**, com o histórico só no Git?
+
+→ `ao lado` ou `por cima`. Sem resposta, continuo gerando um por data, como o `catalogo/AMOSTRAGEM.md` de hoje.
 
 ---
 
 ## Modelo para responder tudo de uma vez
 
-Copie, complete, mande. O que ficar em branco fica quieto — nada se perde, nada se adivinha:
+Copie, complete, mande. Linha em branco = fica como está:
 
 ```
-1: faz a amostragem | aguardo a tabela
-   dúvidas da etapa 4: Cthulhu está no ___ | os dois do Correa são o mesmo? sim/não
-2: lote 7 pelo eixo ___ (ou: pelos 81 das trilhas)
-3: propostas: 4 ___ 5 ___ 6 ___ 7 ___  (pode/não/explica)
-4: gamificação: aprova / muda: ___
+2: lote 7 por ___
+3: propostas: 4 ___ 5 ___ 6 ___ 7 ___
+4: guia de páginas: aprova / muda: ___
 5: arquivos: manipulacao.pdf é ___ ; engenhariasocial.pdf é ___ ; … (12 linhas)
-6: lombadas: Noite do Sul → ___ | Arte de Envelhecer → ___ | Tragédia e a Farsa → ___ | Espírito da Intimidade → Malidoma/Sobonfu
-7: correções: Apocalipse ___ Se Liga na Filosofia ___ Mundo ao avesso ___
-8: etiquetas: tiro as duas? ___ | dos 23 digitais: bloco/um-por-um ___
-9: Escravidão: separa/uma ___ volumes digitais: ___
-10: leituras: painel/planilha ___
+6: lombadas: Noite do Sul ___ | Arte de Envelhecer ___ | Tragédia e a Farsa ___ | Espírito da Intimidade Malidoma/Sobonfu
+7: grafias: Spohr ___ Se Liga na Filosofia ___ Mundo ao avesso ___
+8: fila "a verificar": tiro as duas ___ | os 23 digitais: bloco/um por um ___ | arquivo novo: sempre/só se for vago ___
+9: Escravidão: uma ficha / três ___ volumes digitais: ___
+10: leituras: painel / planilha ___
 11: temas: cores ___ letra ___ ornamentos ___ | próximos: ___
-12: capas: pelos 32 / sorteio 10 / espera ___
-13: gerador: faz/quando ___ | os 4 cortados são ___ | Heavy Metal confirmado fora ___
+12: capas: pelos 32 / sorteia 10 / espera ___
+13: gerador: faz / quando ___ | os 4 cortados são ___ | Heavy Metal confirmado fora ___
 14: main: protejo aqui / fica sem ___
-15: retratos: ao lado / por cima ___
+15: relatórios: um por data / só o atual ___
+1: as 40 linhas do catalogo/AMOSTRAGEM.md: 1 ___ 2 ___ 3 ___ …
 ```
 
-**O ciclo depois:** você responde → eu executo o que for meu e abro PR com QA (nada entra no `main` sem você
-mergear) → os itens respondidos saem deste arquivo com a data → o que restar continua com o mesmo número. Este guia
-é o único lugar onde suas pendências moram; o `ROTEIRO.md` é a memória do projeto inteiro.
-
-**O que eu faço depois dos seus sims:** as propostas 4 a 7, a guia de leitura, o bloco novo de temas, o lote 7
-inteiro (rodadas de ~110 até os 1.910 acabarem), a varredura das capas e o gerador de listagens, se você pedir o
-item 13. Nada disso depende de mais nada seu além do que está nas tabelas acima.
+**O ciclo:** você responde → eu executo o que é meu e abro o pedido de mudança com os testes → nada entra no `main`
+sem você clicar → os itens respondidos saem deste arquivo com a data, e os números dos outros não mudam. A memória
+completa do projeto está no `ROTEIRO.md`; este arquivo é só o que espera você.

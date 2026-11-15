@@ -15,7 +15,7 @@ Este arquivo é atualizado ao fim de cada rodada. Para saber em que pé as coisa
 | 1 | Conferir o que foi importado | **Quase pronta** — falta só o que depende de você (lista abaixo, com a pasta e o nome de cada arquivo) |
 | 2 | Decidir o que ficou de fora (quadrinhos, subpastas) | **Feita** (10/11/2026) — ficaram 12 perguntas para você (lista abaixo) |
 | 3 | Trocar os dados de exemplo pelos seus | **Em parte** (10/11/2026) — o painel já abre sem nada inventado; falta a sua lista de leituras |
-| 4 | Classificar os livros digitais: a vistoria dos marcadores | **Feita** (11/11/2026) — falta a sua conferência por amostragem e duas dúvidas (lista abaixo) |
+| 4 | Classificar os livros digitais: a vistoria dos marcadores | **Feita** (11/11/2026) — a conferência por amostragem foi sorteada e escrita em 17/11 (`catalogo/AMOSTRAGEM.md`); espera as suas 40 respostas |
 | 5 | Rotina à prova de erro | **Em parte** (12/11/2026) — CI rápido e publicação condicionada no ar (PR #14); falta o gerador único de listagens, a revisão de `referencias/` e a proteção de `main` |
 | 6 | Melhorias do painel | **Em parte** (12/11/2026) — endereço próprio, guia Finanças, capas (agora de três fontes gratuitas), só o título obrigatório, suas anotações, ordem de compra |
 | 7 | A versão 3 do catálogo: camadas e trilhas de leitura | **Feita** (11/11/2026) |
@@ -291,9 +291,11 @@ título obscuro, é um palpite informado.
 
 **De você:**
 
-1. **Conferir por amostragem.** A etapa 8 propõe um jeito mais rápido: eu sorteio 40 livros e você responde, para
-   cada um, se o eixo, a dificuldade e a extensão estão certos. Enquanto isso não acontece, vale o de antes: pegue uns
-   30 livros que você conhece e diga onde a régua errou ("o livro tal é longo, não médio").
+1. **Conferir por amostragem.** **Feito em 17/11/2026**, depois que o dono respondeu "pode fazer a amostragem": as
+   40 livros sorteados (semente 20261117) estão em `catalogo/AMOSTRAGEM.md`, gerado por `python tools/amostragem.py`,
+   com o tema, a dificuldade e o tamanho gravados e o nome exato do arquivo de cada um. Agora espera as respostas dele
+   — uma linha por número, só o desvio. O plano B (pegar uns 30 livros conhecidos e dizer onde a régua errou) ficou
+   sem efeito.
 2. **Duas dúvidas:**
 
 | A dúvida | O que olhar |
@@ -504,7 +506,7 @@ O relatório inteiro está em `catalogo/ANALISE-DOS-FILTROS.md`. Em resumo:
 | 5 | Acertar os nomes que enganam: "policial" e "mistério" são o mesmo; "espiritualidade" não inclui espiritismo nem umbanda | Pequeno |
 | 6 | Um marcador para a ficção literária (97 romances não têm gênero nem tema) | Pequeno |
 | 7 | Levar "clima" e "papel" aos cerca de 400 romances digitais | Grande |
-| 8 | Conferência por amostragem: eu sorteio 40 livros, você diz se eixo, dificuldade e extensão estão certos | Dez minutos seus |
+| 8 | Conferência por amostragem: eu sorteio 40 livros, você diz se eixo, dificuldade e extensão estão certos | **Feita a tabela (17/11)** — `catalogo/AMOSTRAGEM.md`; espera as 40 respostas do dono |
 
 **As propostas 1, 2 e 3 foram feitas: são a etapa 9.** As outras cinco continuam em aberto. Para pedir: "pode fazer
 as propostas 4 e 6", por exemplo.
@@ -589,7 +591,8 @@ isso é você. Elas sobem na lista quando fecham uma trilha — *Análise*, por 
 
 1. Dizer quais das propostas que restam (4 a 8) valem a pena.
 2. Olhar as trilhas novas e as recomendações, e pedir o que quiser tirar, trocar ou acrescentar.
-3. A conferência por amostragem (proposta 8), quando tiver dez minutos.
+3. ~~A conferência por amostragem (proposta 8)~~ — a tabela saiu em 17/11 (`catalogo/AMOSTRAGEM.md`); agora são dez
+   minutos dele quando responder as 40 linhas.
 
 **Pronta quando** o relatório, as trilhas e as recomendações estiverem no catálogo e no painel. Estão.
 
