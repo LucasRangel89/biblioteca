@@ -71,10 +71,11 @@ const ICONE_FMT = { fisico: 'livro', ebook: 'tablet', audio: 'fone' };
 const VISOES = {
   geral: { n: 'Visão geral', c: 'Geral', d: 'Panorama da biblioteca, das leituras e das recomendações', ic: 'painel' },
   biblioteca: { n: 'Biblioteca', c: 'Biblioteca', d: 'Estante física e biblioteca virtual, e as suas leituras', ic: 'estante' },
-  recs: { n: 'Recomendações', c: 'Recomend.', d: 'O catálogo de leituras sugeridas, por eixo, tema e fôlego', ic: 'bussola' },
+  trilhas: { n: 'Trilhas', c: 'Trilhas', d: 'Percursos de leitura para explorar o acervo e acompanhar seu progresso', ic: 'rota' },
+  recs: { n: 'Recomendações', c: 'Sugestões', d: 'O catálogo de leituras sugeridas, por eixo, tema e fôlego', ic: 'bussola' },
   // tudo o que é dinheiro mora daqui para baixo: nada de valores na Visão geral nem na Biblioteca
   financas: { n: 'Finanças', c: 'Finanças', d: 'Quanto foi investido, onde, e o custo da lista de compra', ic: 'carteira' },
-  desejos: { n: 'Próximas aquisições', c: 'Aquisições', d: 'Lista de compra com prioridade, preço-alvo e melhor oferta', ic: 'sacola' },
+  desejos: { n: 'Próximas aquisições', c: 'Compras', d: 'Lista de compra com prioridade, preço-alvo e melhor oferta', ic: 'sacola' },
   precos: { n: 'Preços', c: 'Preços', d: 'Histórico de cotações por loja, alertas e variações', ic: 'etiqueta' },
 };
 const ORDEM_VISOES = Object.keys(VISOES);

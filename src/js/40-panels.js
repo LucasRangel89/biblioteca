@@ -331,24 +331,62 @@ function pTemas() {
 const frasesTrilha = x => [x.tenho === x.n ? 'tenho todos os ' + x.n : `tenho ${x.tenho} de ${x.n}`, x.lidos ? `li ${x.lidos}` : '', x.faltam.length ? (x.faltam.length === 1 ? 'falta 1' : 'faltam ' + x.faltam.length) : x.tenho < x.n ? 'nenhum por comprar' : '', x.esc ? plural(x.esc, 'oculto', 'ocultos') : ''].filter(Boolean).join(' · ');
 // barra da trilha: lidos (cheio), em casa mas não lidos (claro) e o que falta (vazio)
 const barraTrilha = x => { const lidos = x.livros.filter(b => b.leit === 'lido').length, casa = x.livros.filter(b => b.col === 'acervo' && b.leit !== 'lido').length; return `<span class="tr-b" aria-hidden="true"><i class="l" style="width:${x.n ? (lidos / x.n * 100).toFixed(1) : 0}%"></i><i class="c" style="width:${x.n ? (casa / x.n * 100).toFixed(1) : 0}%"></i></span>`; };
+// O progresso e a posse são coisas diferentes: ter todos não significa ter lido todos.
+const progressoTrilha = x => x.n && !x.esc && x.lidos === x.n ? 'concluida' : x.lidos || x.livros.some(b => b.leit === 'lendo') ? 'andamento' : 'nao-iniciada';
+const prontaParaComecar = x => progressoTrilha(x) === 'nao-iniciada' && !!proximoDaTrilha(x);
+function pAtalhoTrilhas() {
+  return { id: 'trilhas-atalho', w: 'p-5 m-6', tit: 'Trilhas de leitura', montar(k) {
+    k.corpo.innerHTML = `<p class="nota">Explore percursos de leitura com livros do acervo e recomendações.</p><p><button type="button" class="btn" data-ir="trilhas">Ver todas as trilhas ${icone('dir', 14)}</button></p>`;
+    return c => { k.sub.textContent = `${plural(c.trilhas.length, 'roteiro disponível', 'roteiros disponíveis')} · abra a guia Trilhas`; };
+  } };
+}
 function pTrilhas(w, id) {
-  return { id: id || 'trilhas', w: w || 'p-5 m-6', tit: 'Trilhas de leitura', montar(k) {
+  return { id: id || 'trilhas', w: w || 'p-12', tit: 'Trilhas de leitura', montar(k) {
     segmento(k.tools, [['ordem', 'Na ordem'], ['perto', 'Falta pouco'], ['agora', 'Começar agora']], 'trilhas');
-    k.corpo.classList.add('lista', 'rolavel', 'enche');
+    const filtros = document.createElement('div'); filtros.className = 'tr-filtros';
+    filtros.innerHTML = `<label>Buscar<input type="search" data-tr-f="q" placeholder="Trilha, livro, autor ou tema" autocomplete="off"></label>
+      <label>Eixo dos livros<select data-tr-f="eixo"><option value="">Todos os eixos</option>${EIXOS.slice(1).map((e, i) => `<option value="${i + 1}">${esc(e.n)}</option>`).join('')}</select></label>
+      <label>Tema dos livros<select data-tr-f="tema"><option value="">Todos os temas</option></select></label>
+      <label>Dificuldade<select data-tr-f="dif"><option value="">Todas</option><option value="1">Leve (d1)</option><option value="2">Média (d2)</option><option value="3">Exigente (d3)</option></select></label>
+      <label>Posse<select data-tr-f="posse"><option value="">Todas</option><option value="todos">Todos no acervo</option><option value="faltam">Com livros visíveis fora do acervo</option><option value="nenhum">Nenhum no acervo</option></select></label>
+      <label>Leitura<select data-tr-f="progresso"><option value="">Todas</option><option value="nao-iniciada">Não iniciadas</option><option value="andamento">Em andamento</option><option value="concluida">Concluídas</option><option value="agora">Prontas para começar</option></select></label>
+      <button type="button" class="btn sm" data-tr-limpar>Limpar</button>`;
+    k.el.insertBefore(filtros, k.corpo);
+    const valores = () => Object.fromEntries([...filtros.querySelectorAll('[data-tr-f]')].map(e => [e.dataset.trF, e.value]));
+    filtros.addEventListener('input', e => { if (e.target.matches('input')) render(); });
+    filtros.addEventListener('change', e => { if (e.target.matches('select')) render(); });
+    filtros.addEventListener('click', e => { if (e.target.closest('[data-tr-limpar]')) { filtros.querySelectorAll('[data-tr-f]').forEach(el => { el.value = ''; }); render(); } });
+    k.corpo.classList.add('lista', 'tr-lista-ampla');
     k.corpo.addEventListener('click', e => { const b = e.target.closest('[data-trilha]'); if (!b) return; const t = TRILHAS.find(x => x.tag === b.dataset.trilha); if (t) dlgTrilha(t); });
     legendaFixa(k.pe, [['lidos', 'var(--good)'], ['no acervo, por ler', 'var(--c2)'], ['faltam', 'var(--line-2)']]);
     const cobertura = document.createElement('span'); cobertura.className = 'nota'; k.pe.appendChild(cobertura);
     return c => {
-      const xs = c.trilhas.slice(), perto = S.ui.trilhas === 'perto';
-      // "falta pouco": primeiro as que ainda pedem compra, da que falta menos para a que falta mais; as completas vão para o fim
-      if (perto) xs.sort((a, z) => (a.faltam.length ? 0 : 1) - (z.faltam.length ? 0 : 1) || a.faltam.length - z.faltam.length || z.n - a.n || a.t.n - z.t.n);
+      const todas = c.trilhas, selectTema = filtros.querySelector('[data-tr-f=tema]'), temaAtual = selectTema.value;
+      const temas = [...new Set(todas.flatMap(x => x.livros.flatMap(tagsTema)))].sort((a, b) => rotTag(a).localeCompare(rotTag(b), 'pt-BR'));
+      setHtml(selectTema, '<option value="">Todos os temas</option>' + temas.map(t => `<option value="${esc(t)}">${esc(rotTag(t))}</option>`).join(''));
+      selectTema.value = temas.includes(temaAtual) ? temaAtual : '';
+      const f = valores(), q = norm(f.q.trim());
+      const xs = todas.filter(x => {
+        const busca = [x.t.nome, x.t.desc, ...x.livros.flatMap(b => [b.t, b.a, ...tagsTema(b).map(rotTag)])].join(' ');
+        if (q && !norm(busca).includes(q)) return false;
+        if (f.eixo && !x.livros.some(b => b.eixo === +f.eixo)) return false;
+        if (f.tema && !x.livros.some(b => tagsTema(b).includes(f.tema))) return false;
+        if (f.dif && !x.livros.some(b => b._d === +f.dif)) return false;
+        if (f.posse === 'todos' && (!x.n || x.esc || x.tenho !== x.n)) return false;
+        if (f.posse === 'faltam' && x.tenho >= x.n) return false;
+        if (f.posse === 'nenhum' && (x.tenho || !x.n || x.esc)) return false;
+        if (f.progresso === 'agora' && !prontaParaComecar(x)) return false;
+        if (f.progresso && f.progresso !== 'agora' && progressoTrilha(x) !== f.progresso) return false;
+        return true;
+      });
+      if (S.ui.trilhas === 'perto') xs.sort((a, z) => (a.faltam.length ? 0 : 1) - (z.faltam.length ? 0 : 1) || a.faltam.length - z.faltam.length || z.n - a.n || a.t.n - z.t.n);
       if (S.ui.trilhas === 'agora') xs.sort((a, z) => Number(!!proximoDaTrilha(z)) - Number(!!proximoDaTrilha(a)) || a.t.n - z.t.n);
-      const completas = xs.filter(x => !x.faltam.length).length;
-      const emTrilha = new Set(xs.flatMap(x => x.livros.filter(b => b.col === 'acervo').map(b => b.id)));
+      const emTrilha = new Set(todas.flatMap(x => x.livros.filter(b => b.col === 'acervo').map(b => b.id)));
       const acervo = DB.livros.filter(b => b.col === 'acervo' && !oculto(b, true)).length;
       cobertura.textContent = `Acervo visível em trilhas: ${emTrilha.size} de ${acervo} livros distintos${acervo ? ` (${(100 * emTrilha.size / acervo).toFixed(1).replace('.', ',')}%)` : ''}.`;
-      k.sub.textContent = `${plural(xs.length, 'roteiro', 'roteiros')} com os livros em ordem · ${completas ? plural(completas, 'já completo', 'já completos') + ' · ' : ''}clique para abrir`;
-      setHtml(k.corpo, xs.length ? xs.map(x => `<button type="button" class="li tr" data-trilha="${x.t.tag}" title="${esc(x.t.nome)}"><span class="tr-n">${x.t.n}</span><span class="li-m"><b>${esc(x.t.curto)}</b><span>${frasesTrilha(x)}</span></span>${barraTrilha(x)}</button>`).join('') : vazioHtml('Este catálogo não traz trilhas de leitura.'));
+      k.sub.textContent = `${xs.length} de ${todas.length} roteiros · eixo, tema e dificuldade: ao menos um livro visível correspondente a cada filtro. Os filtros globais de livros não se aplicam aqui; regras de ocultação continuam valendo e podem ser alteradas nas outras guias.`;
+      setHtml(k.corpo, xs.length ? xs.map(x => { const proximo = proximoDaTrilha(x), extra = TRILHAS_LIVRES.has(x.t.tag) ? 'Coleção de escolha livre' : proximo ? 'Próximo disponível: ' + proximo.t : progressoTrilha(x) === 'concluida' ? 'Leitura concluída' : 'Próximo na ordem indisponível ou oculto';
+        return `<button type="button" class="li tr" data-trilha="${x.t.tag}" title="${esc(x.t.nome)}"><span class="tr-n">${x.t.n}</span><span class="li-m"><b>${esc(x.t.nome)}</b><span>${frasesTrilha(x)}</span><span>${esc(extra)}</span></span>${barraTrilha(x)}</button>`; }).join('') : vazioHtml('Nenhuma trilha corresponde aos filtros. Experimente limpar ou mudar a busca.'));
     };
   } };
 }
@@ -619,6 +657,22 @@ const VIS = {
     valores: c => ({ investido: K.investido(c), medio: K.medio(c), cesta: K.cesta(c), oport: K.oport(c) }),
     paineis: () => [pEvolucao(true), pAquisicoes(true, 'p-4 m-6'), pOrigens(true), pRanking('p-6 m-6'), pCesta('p-12')],
   },
+  trilhas: {
+    kpis: [
+      { k: 'roteiros', n: 'Roteiros', ic: 'rota', cor: 'var(--c2)' }, { k: 'concluidas', n: 'Leituras concluídas', ic: 'livro', cor: 'var(--c6)' },
+      { k: 'andamento', n: 'Em andamento', ic: 'pilha', cor: 'var(--c3)' }, { k: 'prontas', n: 'Prontas para começar', ic: 'raio', cor: 'var(--c4)' },
+    ],
+    valores(c) {
+      const ts = c.trilhas;
+      return {
+        roteiros: { v: ts.length, sub: 'inclui coleções de escolha livre' },
+        concluidas: { v: ts.filter(x => progressoTrilha(x) === 'concluida').length, sub: 'todos os livros marcados como lidos' },
+        andamento: { v: ts.filter(x => progressoTrilha(x) === 'andamento').length, sub: 'ao menos um livro lido ou em leitura' },
+        prontas: { v: ts.filter(prontaParaComecar).length, sub: 'não iniciadas com primeiro livro no acervo' },
+      };
+    },
+    paineis: () => [pTrilhas()],
+  },
   recs: {
     kpis: [
       { k: 'recs', n: 'Recomendações na fila', ic: 'bussola', cor: 'var(--c4)' }, { k: 'top', n: 'Prioridades', ic: 'estrela', cor: 'var(--c3)' },
@@ -634,7 +688,7 @@ const VIS = {
         pend: { v: semPt + verif, cmp: '', sub: `${fInt(semPt)} sem edição em PT · ${fInt(verif)} a verificar` },
       };
     },
-    paineis: () => [pEixos('recs', 'p-7'), pMatriz(), pCompra(), pTrilhas(), pTipoRecs(), pTemas(), pSugestoes()],
+    paineis: () => [pEixos('recs', 'p-7'), pMatriz(), pCompra(), pAtalhoTrilhas(), pTipoRecs(), pTemas(), pSugestoes()],
   },
   desejos: {
     kpis: [

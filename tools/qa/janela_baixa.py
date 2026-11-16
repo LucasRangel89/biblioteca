@@ -69,7 +69,7 @@ with sync_playwright() as p:
         caixas = [('Novo livro', lambda: js('#b-novo')),
                   ('Editar livro', lambda: (ir('biblioteca'), js('#p-tab-biblioteca tbody tr[data-id]'), js('#gv-acoes [data-acao=editar]'))),
                   ('Seus dados', lambda: js('#b-dados')),
-                  ('Trilha 1', lambda: (ir('recs'), js('#p-trilhas .li'))),
+                  ('Trilha 1', lambda: (ir('trilhas'), js('#p-trilhas .li'))),
                   ('Registrar cotação', lambda: (ir('desejos'), js('#p-tab-desejos tbody tr[data-id]'), js('#gaveta [data-acao=cotar]'))),
                   ('Registrar compra', lambda: (ir('desejos'), js('#p-tab-desejos tbody tr[data-id]'), js('#gaveta [data-acao=comprei]')))]
         ruins = {}; altas = 0
