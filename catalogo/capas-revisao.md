@@ -8,8 +8,8 @@ Nada aqui consulta a internet. Para saber se as imagens ainda abrem: `python too
 
 ## Resumo
 
-- 2.614 livros no catálogo · 1.564 com capa (60%) · 1.050 sem capa
-- 189 livros na fila de revisão · 0 ainda sem linha no capas.tsv · 0 linhas de livros que saíram do catálogo
+- 2.616 livros no catálogo · 1.564 com capa (60%) · 1.052 sem capa
+- 189 livros na fila de revisão · 2 ainda sem linha no capas.tsv · 0 linhas de livros que saíram do catálogo
 
 ## De onde vêm as capas
 
@@ -20,13 +20,14 @@ Nada aqui consulta a internet. Para saber se as imagens ainda abrem: `python too
 | `edicao` | 752 | Open Library: capa da edição com o nosso título |
 | `sem-autor` | 83 | Não procurada: sem autor certo |
 | `obra` | 32 | Open Library: capa da obra (pode ser de outra edição) |
+| (sem linha) | 2 | Ainda não procurada |
 
 ## Por parte da biblioteca
 
 | Parte | Livros | Com capa | Sem capa | Com capa (%) |
 |---|---|---|---|---|
 | Estante física | 97 | 61 | 36 | 63% |
-| Recomendações | 607 | 494 | 113 | 81% |
+| Recomendações | 609 | 494 | 115 | 81% |
 | Biblioteca virtual | 1.910 | 1.009 | 901 | 53% |
 
 ## Por eixo temático
@@ -46,7 +47,7 @@ Da pior para a melhor cobertura: onde vale a pena procurar primeiro.
 | 9. Filosofia, ética e existência (não ficção) | 235 | 155 | 80 | 66% |
 | 1. Pré-história, neandertais e origens | 18 | 12 | 6 | 67% |
 | 7. Horror, weird fiction e mistério | 178 | 119 | 59 | 67% |
-| 6. Romances históricos | 88 | 61 | 27 | 69% |
+| 6. Romances históricos | 90 | 61 | 29 | 68% |
 | 5. Ficção contemporânea e mundial | 84 | 64 | 20 | 76% |
 | 3. Clássicos universais e romances de ideias | 95 | 76 | 19 | 80% |
 | 8. Poesia e cartas | 15 | 12 | 3 | 80% |
@@ -56,7 +57,7 @@ Da pior para a melhor cobertura: onde vale a pena procurar primeiro.
 
 | Tipo | Livros | Com capa | Sem capa | Com capa (%) |
 |---|---|---|---|---|
-| Ficção | 741 | 592 | 149 | 80% |
+| Ficção | 743 | 592 | 151 | 80% |
 | Não ficção | 1.583 | 889 | 694 | 56% |
 | Poesia | 22 | 16 | 6 | 73% |
 | Quadrinhos e mangás | 245 | 58 | 187 | 24% |
@@ -297,7 +298,7 @@ quebrado, depois o que pode estar errado, por último o que é pendência do cat
 | Psicologia e Sociologia | (autor não informado) | Biblioteca virtual · eixo 14 | (sem capa) | marcado #verificar no catálogo |
 | Ruído | (autor não informado) | Biblioteca virtual · eixo 14 | (sem capa) | marcado #verificar no catálogo |
 
-## Sem capa: onde estão (1.050 livros)
+## Sem capa: onde estão (1.052 livros)
 
 Não é erro: é o que ainda falta. Quem já passou pelas fontes e não foi achado precisa de outra fonte ou de
 uma escolha à mão; quem está sem autor certo precisa de correção no Catálogo Mestre antes de qualquer busca.
@@ -306,6 +307,7 @@ uma escolha à mão; quem está sem autor certo precisa de correção no Catálo
 |---|---|---|
 | Procurada na Open Library e na Apple, sem resultado | 967 | outra fonte, ou escolher à mão |
 | Não procurada: sem autor certo | 83 | corrigir o autor no catálogo |
+| Ainda não procurada | 2 | rodar a busca |
 
 ### Sem autor certo (83)
 
@@ -396,6 +398,15 @@ Estes dependem do catálogo, não da busca: com o autor certo, a próxima execu�
 | O Livro das Religiões | Vários autores | Biblioteca virtual · eixo 15 |
 | Zen em Quadrinhos | Tsai Chih Chung | Biblioteca virtual · eixo 15 |
 | O Livro da Literatura | Vários autores | Biblioteca virtual · eixo 16 |
+
+## Ainda sem linha no capas.tsv (2)
+
+Livros novos no catálogo: a próxima busca de capas olha para eles.
+
+| Livro | Autor | Onde |
+|---|---|---|
+| Trindade (Guerra das Rosas, vol. 2) | Conn Iggulden | Recomendações |
+| Tragam os Corpos | Hilary Mantel | Recomendações |
 
 ## Como corrigir uma capa
 

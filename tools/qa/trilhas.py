@@ -15,7 +15,7 @@ Os números esperados são um retrato do catálogo atual; se o catálogo mudar, 
 """
 from caminhos import PAINEL_LIMPO, TMP
 from relogio import fixa
-import csv, io, json
+import csv, io, json, os, sys
 from playwright.sync_api import sync_playwright
 
 CHAVE = 'biblioteca-lucas:v1'
@@ -39,7 +39,8 @@ def ok(nome, cond, extra=''):
 
 
 with sync_playwright() as p:
-    b = p.chromium.launch()
+    executavel = os.environ.get('BIBLIOTECA_QA_CHROMIUM')
+    b = p.chromium.launch(**({'executable_path': executavel, 'args': ['--no-sandbox']} if executavel else {}))
     ctx = b.new_context(viewport={'width': 1440, 'height': 900}, locale='pt-BR', timezone_id='America/Sao_Paulo', accept_downloads=True)
     pg = ctx.new_page(); fixa(pg)
     pg.on('console', lambda m: errs.append(f'[{m.type}] {m.text}') if m.type in ('error', 'warning') else None)
@@ -63,15 +64,15 @@ with sync_playwright() as p:
     ir('recs'); ts = pg.evaluate(TRILHAS)
     paineis = pg.evaluate("() => [...document.querySelectorAll('#v-recs .card')].map(c => c.id)")
     ok('Recomendações ganhou "O que comprar primeiro" e "Trilhas de leitura"', paineis == ['p-eixos-recs', 'p-matriz', 'p-compra', 'p-trilhas', 'p-tipo-recs', 'p-temas', 'p-sugestoes', 'p-tab-recs'], paineis)
-    ok('as 36 trilhas, na ordem do catálogo: as 20 do arquivo e as 16 novas', [t[0] for t in ts] == [str(i) for i in range(1, 37)] and ts[0][1] == 'Antes da Palavra' and ts[19][1] == 'Sexta à Noite' and ts[20][1] == 'Formação do Terapeuta' and ts[35][1] == 'Terreiro e Encruzilhada', [t[1] for t in ts])
+    ok('as 68 trilhas, na ordem do catálogo', [t[0] for t in ts] == [str(i) for i in range(1, 69)] and ts[0][1] == 'Antes da Palavra' and ts[19][1] == 'Sexta à Noite' and ts[20][1] == 'Formação do Terapeuta' and ts[35][1] == 'Terreiro e Encruzilhada', [t[1] for t in ts])
     ok('cada uma diz quanto já está no acervo e quanto falta', trilha('Divã e Martelo')[2] == 'tenho 7 de 8 · falta 1' and trilha('Das Estrelas à Rede')[2] == 'tenho 9 de 10 · falta 1' and trilha('Cidades Estranhas')[2] == 'tenho 4 de 11 · faltam 7', (trilha('Divã e Martelo'), trilha('Cidades Estranhas')))
     ok('livro lido que não está no acervo conta como feito, não como falta', trilha('Aço e Fé')[2] == 'tenho 7 de 8 · li 1 · nenhum por comprar' and trilha('Bisturi e Fé')[2] == 'tenho 3 de 8 · li 1 · faltam 4', (trilha('Aço e Fé'), trilha('Bisturi e Fé')))
     sub = pg.inner_text('#p-trilhas .card-s'); leg = pg.evaluate("() => [...document.querySelectorAll('#p-trilhas .card-f .leg')].map(l => l.textContent)")
-    ok('o subtítulo conta as completas e a legenda explica a barra', sub == '36 roteiros com os livros em ordem · 4 já completos · clique para abrir' and leg == ['lidos', 'no acervo, por ler', 'faltam'], (sub, leg))
+    ok('o subtítulo conta as completas e a legenda explica a barra', sub == '68 roteiros com os livros em ordem · 31 já completos · clique para abrir' and leg == ['lidos', 'no acervo, por ler', 'faltam'], (sub, leg))
     seg = pg.evaluate("() => [...document.querySelectorAll('#p-trilhas .seg button')].map(b => [b.textContent, b.getAttribute('aria-pressed')])")
-    ok('abre "Na ordem"', seg == [['Na ordem', 'true'], ['Falta pouco', 'false']], seg)
+    ok('abre "Na ordem"', seg == [['Na ordem', 'true'], ['Falta pouco', 'false'], ['Começar agora', 'false']], seg)
     pg.click('#p-trilhas .seg button[data-v=perto]'); pg.wait_for_timeout(500); ts = pg.evaluate(TRILHAS)
-    ok('"Falta pouco": primeiro as que estão mais perto de fechar; a que não pede compra vai para o fim', [t[1] for t in ts[:4]] == ['Freud Explica, Lacan Complica', 'Das Estrelas à Rede', 'Labirintos de Borges', 'Divã e Martelo'] and ts[-1][1] == 'Plantão Noturno', [(t[1], t[2]) for t in ts[:4]] + [ts[-1][1]])
+    ok('"Falta pouco": primeiro as que estão mais perto de fechar; a que não pede compra vai para o fim', [t[1] for t in ts[:4]] == ['Freud Explica, Lacan Complica', 'Rosas e Espadas', 'Das Estrelas à Rede', 'Labirintos de Borges'] and ts[-1][1] == 'Portas de Entrada', [(t[1], t[2]) for t in ts[:4]] + [ts[-1][1]])
     pg.wait_for_timeout(500); pg.reload(); pg.wait_for_timeout(1500)
     ok('a escolha fica guardada', pg.evaluate(TRILHAS)[0][1] == 'Freud Explica, Lacan Complica' and pg.get_attribute('#p-trilhas .seg button[data-v=perto]', 'aria-pressed') == 'true')
     pg.click('#p-trilhas .seg button[data-v=ordem]'); pg.wait_for_timeout(500)
@@ -97,7 +98,7 @@ with sync_playwright() as p:
     ok('a trilha mostra "Na lista de compra" e não oferece mais o botão', itens[7][2] == 'Na lista de compra' and bot == ['Fechar'], (itens[7], bot))
     pg.click('#dlg .tr-l li:nth-child(8) .li'); pg.wait_for_timeout(700)
     pg.click('#gv-acoes [data-acao=comprei]'); pg.wait_for_timeout(500); pg.click('#dlg footer .pri'); pg.wait_for_timeout(800); fechar()
-    ok('comprado o último, a trilha fecha', trilha('Divã e Martelo')[2] == 'tenho todos os 8' and pg.inner_text('#p-trilhas .card-s') == '36 roteiros com os livros em ordem · 5 já completos · clique para abrir', (trilha('Divã e Martelo'), pg.inner_text('#p-trilhas .card-s')))
+    ok('comprado o último, a trilha fecha', trilha('Divã e Martelo')[2] == 'tenho todos os 8' and pg.inner_text('#p-trilhas .card-s') == '68 roteiros com os livros em ordem · 32 já completos · clique para abrir', (trilha('Divã e Martelo'), pg.inner_text('#p-trilhas .card-s')))
     abrir_trilha('Divã e Martelo')
     ok('e a trilha aberta diz o mesmo', pg.inner_text('#dlg .tr-res b') == 'Tenho todos os 8' and pg.evaluate(NA_TRILHA)[7][2] == 'Tenho', pg.inner_text('#dlg .tr-res'))
     pg.click('#dlg [data-tr-tabela]'); pg.wait_for_timeout(900)
@@ -115,9 +116,9 @@ with sync_playwright() as p:
 
     print('CAMADAS NA FICHA E NOS FILTROS')
     abrir('O Nome da Rosa', 'O Nome da Rosa'); cam = pg.evaluate(CAMADAS)
-    ok('a ficha mostra por que ler: pergunta, clima, papel e ponte', cam == {'Pergunta central': ['fé e dúvida'], 'Clima da leitura': ['cerebral'], 'Papel na biblioteca': ['ponte entre áreas'], 'Ponte entre áreas': ['ciência e fé']}, cam)
+    ok('a ficha mostra por que ler: pergunta, clima, papel e ponte', cam == {'Pergunta central': ['fé e dúvida'], 'Clima da leitura': ['cerebral'], 'Papel na biblioteca': ['ponte entre áreas'], 'Ponte entre áreas': ['ciência e fé'], 'Trilha de leitura': ['Catedrais e Cortes 7º de 11']}, cam)
     dicas = pg.evaluate("() => [...document.querySelectorAll('#gv-camadas dd .tag')].map(t => t.title)")
-    ok('cada camada explica o que reúne ao passar o mouse', dicas == ['Fé, ceticismo, Deus e o sagrado', 'Jogo de ideias, estrutura e quebra-cabeça intelectual', 'Cruza áreas diferentes e abre caminhos para outras leituras', 'Onde a ciência encontra (ou questiona) o sagrado'], dicas)
+    ok('cada camada explica o que reúne ao passar o mouse', dicas == ['Fé, ceticismo, Deus e o sagrado', 'Jogo de ideias, estrutura e quebra-cabeça intelectual', 'Cruza áreas diferentes e abre caminhos para outras leituras', 'Onde a ciência encontra (ou questiona) o sagrado', 'Abrir a trilha: Catedrais e Cortes: o romance histórico que sobe de nível'], dicas)
     soltos = pg.evaluate("() => [...document.querySelectorAll('#gaveta .gv-tags .tag')].map(t => t.dataset.tag)")
     ok('as camadas não se repetem entre os marcadores comuns', soltos == ['romance-historico', 'medieval', 'misterio', 'filosofia'], soltos)
     pg.click('#gv-camadas [data-tag=clima-cerebral]'); pg.wait_for_timeout(900)
@@ -126,7 +127,7 @@ with sync_playwright() as p:
     ok('clicar numa camada fecha a ficha e filtra por ela', pg.evaluate(GAVETA) == '' and pg.evaluate(ATIVOS) == ['Clima: cerebral'] and pg.evaluate(TOAST) == 'Filtrando por #clima-cerebral.' and 0 < n < 60, (pg.evaluate(ATIVOS), n))
     pg.click('#pw-mais .pop-b'); pg.wait_for_timeout(300)
     grupos = pg.evaluate("() => [...document.querySelectorAll('#f-tags .tg-g')].map(g => [g.querySelector('.pop-r').textContent, g.querySelectorAll('.chip').length])")
-    ok('os filtros ganharam as camadas, as trilhas e as marcas do usuário', grupos == [['Gêneros', 31], ['Temas', 52], ['Psicologia: abordagens e áreas', 10], ['Época e origem', 9], ['Afinidades', 6], ['Perguntas centrais', 12], ['Clima da leitura', 10], ['Papel na biblioteca', 6], ['Pontes entre áreas', 8], ['Cenários', 9], ['Trilhas de leitura', 36], ['Pendências', 2], ['Suas marcas', 1]], grupos)
+    ok('os filtros ganharam as camadas, as trilhas e as marcas do usuário', grupos == [['Gêneros', 31], ['Temas', 52], ['Psicologia: abordagens e áreas', 10], ['Época e origem', 9], ['Afinidades', 6], ['Perguntas centrais', 12], ['Clima da leitura', 10], ['Papel na biblioteca', 6], ['Pontes entre áreas', 8], ['Cenários', 9], ['Trilhas de leitura', 68], ['Pendências', 2], ['Suas marcas', 1]], grupos)
     clima = pg.evaluate("() => { const g = [...document.querySelectorAll('#f-tags .tg-g')].find(g => g.querySelector('.pop-r').textContent === 'Clima da leitura'); return [...g.querySelectorAll('.chip')].map(c => [c.querySelector('span').textContent, c.title, c.getAttribute('aria-pressed')]); }")
     ok('dentro do grupo o rótulo é curto, com a explicação na dica; o filtro ativo aparece marcado', clima[4] == ['Cerebral', 'Jogo de ideias, estrutura e quebra-cabeça intelectual', 'true'] and clima[0] == ['Claustrofóbico', 'Opressivo, fechado, sem saída', 'false'], clima[:5])
     pg.fill('#f-tagq', 'martelo'); pg.wait_for_timeout(300)
@@ -148,14 +149,14 @@ with sync_playwright() as p:
     ok('oito recomendações, da 1ª à 8ª, começando por "A Estrada"', [o['pos'] for o in oc] == [f'{i}º' for i in range(1, 9)] and [o['t'] for o in oc[:3]] == ['A Estrada', 'Em Busca de Sentido', 'Realismo Capitalista'], [(o['pos'], o['t']) for o in oc])
     ok('cada uma com o motivo', oc[0]['motivos'] == 'prioridade sua (#top) · trilha “Sexta à Noite”: faltam 5 de 10 · porta de entrada da área · leitura-relâmpago' and all(o['motivos'] for o in oc), oc[0]['motivos'])
     ok('e um botão com nome próprio para levar à lista de compra', oc[0]['botao'] == 'Quero comprar: A Estrada' and all(o['botao'] == 'Quero comprar: ' + o['t'] for o in oc), oc[0]['botao'])
-    ok('o rodapé conta as recomendações por comprar e avisa que a ordem não olha preços', pe == '486 recomendações por comprar · a ordem não olha preços' and pg.is_visible('#p-compra [data-oc-tudo]'), pe)
+    ok('o rodapé conta as recomendações por comprar e avisa que a ordem não olha preços', pe == '488 recomendações por comprar · a ordem não olha preços' and pg.is_visible('#p-compra [data-oc-tudo]'), pe)
     pg.click('#p-compra .oc-l:first-child .li'); pg.wait_for_timeout(700)
     f = pg.evaluate("() => { const d = document.querySelector('#gaveta .f-oc'); return d ? d.innerText.replace(/\\s+/g, ' ') : null; }")
-    ok('a ficha da recomendação traz a posição e os motivos', pg.evaluate(GAVETA) == 'A Estrada' and f == 'Ordem de compra sugerida 1º de 486 prioridade sua (#top) · trilha “Sexta à Noite”: faltam 5 de 10 · porta de entrada da área · leitura-relâmpago', f)
+    ok('a ficha da recomendação traz a posição e os motivos', pg.evaluate(GAVETA) == 'A Estrada' and f == 'Ordem de compra sugerida 1º de 488 prioridade sua (#top) · trilha “Sexta à Noite”: faltam 5 de 10 · porta de entrada da área · leitura-relâmpago', f)
     fechar()
     pg.click('#p-compra .oc-l:first-child .oc-b'); pg.wait_for_timeout(800); oc = pg.evaluate(COMPRA, 'p-compra'); g = guardado('A Estrada')
     ok('o botão leva o livro para as próximas aquisições (prioridade alta, por ter #top)', pg.evaluate(TOAST) == 'Adicionado. Defina um preço-alvo em “Editar”.' and g.get('col') == 'desejo' and g.get('prio') == 1, (pg.evaluate(TOAST), g.get('col'), g.get('prio')))
-    ok('ele sai da ordem e a fila anda', [o['t'] for o in oc[:2]] == ['Em Busca de Sentido', 'Realismo Capitalista'] and oc[0]['pos'] == '1º' and pg.inner_text('#p-compra .oc-n').startswith('485 recomendações por comprar'), [(o['pos'], o['t']) for o in oc[:3]])
+    ok('ele sai da ordem e a fila anda', [o['t'] for o in oc[:2]] == ['Em Busca de Sentido', 'Realismo Capitalista'] and oc[0]['pos'] == '1º' and pg.inner_text('#p-compra .oc-n').startswith('487 recomendações por comprar'), [(o['pos'], o['t']) for o in oc[:3]])
     ok('a trilha dele também muda os motivos dos vizinhos? não: na lista de compra ele ainda falta', 'trilha “Sexta à Noite”: faltam 5 de 10' in oc[0]['motivos'], oc[0]['motivos'])
     # a recomendação que fecha uma trilha sobe, e o motivo diz isso
     pg.click('#p-compra [data-oc-tudo]'); pg.wait_for_timeout(900)
@@ -173,11 +174,11 @@ with sync_playwright() as p:
     linhas_csv = list(csv.reader(io.StringIO(open(d.value.path(), encoding='utf-8-sig').read()), delimiter=';'))
     cab = linhas_csv[0]; l1 = dict(zip(cab, linhas_csv[1]))
     ok('o CSV leva a posição, os motivos, as camadas e as anotações', cab == ['Título', 'Autor', 'Ordem de compra', 'Motivos da ordem', 'Eixo', 'Tipo', 'Dificuldade', 'Extensão', 'Temas', 'Pendência', 'Camadas e trilhas', 'Possui análise', 'Comentários', 'Inclusão']
-       and l1['Título'] == 'Em Busca de Sentido' and l1['Ordem de compra'] == '1' and l1['Motivos da ordem'].startswith('prioridade sua (#top)') and 'trilha: Sexta à Noite' in l1['Camadas e trilhas'] and 'papel: porta de entrada' in l1['Camadas e trilhas'] and len(linhas_csv) == 489, (len(linhas_csv), cab, l1))
+       and l1['Título'] == 'Em Busca de Sentido' and l1['Ordem de compra'] == '1' and l1['Motivos da ordem'].startswith('prioridade sua (#top)') and 'trilha: Sexta à Noite' in l1['Camadas e trilhas'] and 'papel: porta de entrada' in l1['Camadas e trilhas'] and len(linhas_csv) == 491, (len(linhas_csv), cab, l1))
     # com filtro: só o que está no recorte, com a posição geral
     pg.click('#pw-eixo .pop-b'); pg.wait_for_timeout(300); pg.locator('#pop-eixo .opt', has_text='Espiritualidade').click(); pg.wait_for_timeout(700); pg.keyboard.press('Escape'); pg.wait_for_timeout(300)
     oc = pg.evaluate(COMPRA, 'p-compra'); pe = pg.inner_text('#p-compra .oc-n')
-    ok('com um eixo filtrado, o quadro mostra só as recomendações dele, com a posição geral', oc[0]['t'] == 'O Livro dos Espíritos' and [int(o['pos'][:-1]) for o in oc] == sorted(int(o['pos'][:-1]) for o in oc) and int(oc[-1]['pos'][:-1]) > 8 and pe.endswith('no recorte · 485 recomendações por comprar · a ordem não olha preços'), ([(o['pos'], o['t']) for o in oc[:3]], pe))
+    ok('com um eixo filtrado, o quadro mostra só as recomendações dele, com a posição geral', oc[0]['t'] == 'O Livro dos Espíritos' and [int(o['pos'][:-1]) for o in oc] == sorted(int(o['pos'][:-1]) for o in oc) and int(oc[-1]['pos'][:-1]) > 8 and pe.endswith('no recorte · 487 recomendações por comprar · a ordem não olha preços'), ([(o['pos'], o['t']) for o in oc[:3]], pe))
     pg.click('#f-ativos .ativo'); pg.wait_for_timeout(600)
 
     print('PRÓXIMAS AQUISIÇÕES')
@@ -215,3 +216,6 @@ with sync_playwright() as p:
     pg.screenshot(path=f'{TMP}/shots/trilhas-tel-ficha.png')
     b.close()
 print('FALHAS:', falhas); print('ERROS:', len(errs) + len(falhas)); [print('  ', x[:300]) for x in errs[:10]]
+
+if errs or falhas:
+    sys.exit(1)

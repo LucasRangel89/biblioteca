@@ -83,7 +83,7 @@ do autor e do tipo de obra — nenhum arquivo foi aberto.
 | `catalogo/renomeados.tsv` | O nome antigo de cada linha da estante ou das recomendações que teve título ou autor corrigido (ver "Corrigir o título ou o autor…") |
 | `catalogo/capas.tsv` | A capa de cada livro: o número da imagem na Open Library, o endereço da imagem na Apple Books ou no Google Books, ou vazio quando não foi achada (ver "As capas") |
 | `catalogo/isbns.tsv` | Opcional e começa vazio: ISBN conferido no exemplar, com título, autor e fonte da conferência. A busca automática nunca inventa nem aproveita ISBN de outra edição (ver "As capas") |
-| `catalogo/trilhas.md` | As 36 trilhas de leitura: nome, marcador, descrição e os livros, em ordem (ver "Trilhas de leitura") |
+| `catalogo/trilhas.md` | Trilhas de leitura: nome, marcador, descrição e livros; fonte dos marcadores gerados (ver "Trilhas de leitura") |
 | `catalogo/ANALISE-DOS-FILTROS.md` | Análise e meta-análise dos filtros e da categorização, de 11/11/2026: o que cada filtro alcança, quanto confiar em cada dado, o que foi corrigido e o que fica proposto (as propostas 1 a 3 já foram feitas; as notas **[depois]** dizem o que mudou). Os números saem de `tools/analisar_marcadores.py` |
 | `catalogo/VISTORIA.md` | Relatório da vistoria dos marcadores de 10/11/2026: o que foi conferido, o que mudou e as dúvidas que ficaram. É um retrato daquela data; não é refeito pelas ferramentas |
 | `catalogo/antes-da-vistoria.tsv` | A classificação que 289 linhas tinham antes da vistoria. O painel precisa dela para atualizar os livros de quem já tinha anotações (ver "Quando a classificação muda no catálogo"). **Não apague nem refaça** |
@@ -218,28 +218,32 @@ Uma ou duas frases dizendo o que a trilha percorre.
 2. Título do Segundo Livro | Autor
 ```
 
-Cada livro da lista leva também o marcador da trilha na sua linha do catálogo — as duas coisas têm de bater. Para pôr
-ou tirar um livro, mude a lista **e** o marcador; `python tools/atualizar.py` avisa (`AVISO: trilhas.md: …`) quando um
-livro está na lista sem o marcador, tem o marcador sem estar na lista, ou não é uma linha do catálogo. O título é
-escrito como no catálogo.
+A lista é a fonte dos marcadores de trilha: mude somente `trilhas.md`, execute `python tools/atualizar.py --conferir`
+para revisar adições e remoções e depois `python tools/atualizar.py` para gerar catálogo, dados e painel. Cada item precisa
+corresponder unicamente a título e autor; se não corresponder, a atualização para antes de gravar. O script não altera
+as outras tags nem o inventário para aplicar trilhas. Tags de trilha antigas no inventário são ignoradas na geração.
 
-São 36 trilhas. As 20 primeiras vieram da "versão 3" do catálogo e só têm livros das seções 0 a 16. As de 21 a 36
-foram montadas em 11/11/2026 a partir do acervo e têm livros da biblioteca virtual: nesses, o marcador da trilha vai
-na coluna `marcadores` do inventário, como o resto da classificação deles — e não na linha da seção 17, que é gerada.
+São 68 trilhas. As 20 primeiras vieram da "versão 3" e foram preservadas; as de 21 a 36 foram montadas a partir do
+acervo; as posteriores incluem novas propostas, listas curtas e alternativas de Roma e cérebro. Uma mesma obra pode
+entrar em mais de uma trilha. Para uma revisão somente de leitura, execute
+`python tools/revisar_trilhas.py --abaixo-posse 0.67`: o relatório mostra posse, sobreposições, sinopses, saltos de
+dificuldade e títulos com volume a conferir. Ele não decide se uma série está completa nem compra ou reordena livros.
 
 ### Entraram recomendações novas
 
-Acrescente a linha no fim da tabela da seção do eixo (1 a 16), com tipo, temas, dificuldade e extensão:
-`| Título | Autor | #NF #psicologia #d1 #e2 |`. Use o título da edição brasileira; só leva `#sem-pt` o livro que não
-tem edição em português. Depois, `python tools/atualizar.py` e, para a capa, o serviço "Buscar capas" (ver "As capas").
-Se o livro já estiver na biblioteca virtual, o importador avisa: a linha ganha `#tenho-digital` em vez de repetir.
+Não edite o Catálogo Mestre à mão. Acrescente em `catalogo/recomendacoes-adicionais.tsv` uma linha com título, autor,
+seção (1 a 16), tags separadas por espaços e fonte. Use o título da edição brasileira e inclua tipo, temas, dificuldade
+e extensão; só use `sem-pt` quando não houver edição em português. Rode `python tools/atualizar.py --conferir` e depois
+`python tools/atualizar.py`; para capas, veja "As capas". As novas recomendações são incorporadas ao catálogo gerado.
 
 ### Corrigir o título ou o autor de um livro da estante ou de uma recomendação
 
-1. Corrija a linha no catálogo.
+1. Para livros digitais, corrija o inventário, não o Catálogo Mestre gerado. Para linhas das seções 0–16, inclusive
+   recomendações já incorporadas, ainda é necessário um mecanismo de correção de origem: alterar o TSV de
+   recomendações adicionais não remove automaticamente a linha antiga. Não edite o catálogo à mão.
 2. Acrescente uma linha a `catalogo/renomeados.tsv`, com as quatro colunas separadas por tabulação: título antigo,
    autor antigo, título novo, autor novo — escritos como estavam e como ficaram no catálogo.
-3. `python tools/atualizar.py`.
+3. `python tools/atualizar.py --conferir`, revise o resultado e rode `python tools/atualizar.py`.
 
 O passo 2 existe por causa do que fica guardado no navegador. O painel liga as suas anotações (leitura, nota, preço)
 a uma linha do catálogo pelo título e pelo autor; se um dos dois muda, a ligação se perde, e um livro que você já
@@ -397,9 +401,11 @@ vale exportar um backup de vez em quando.
 - **Por que ler** (na ficha): as camadas do livro — a pergunta central, o clima, o papel na biblioteca, as pontes e o
   cenário — e as trilhas de que ele faz parte, com a posição nelas. Cada camada é um filtro: um toque mostra os
   outros livros com a mesma marca. O nome de uma trilha abre a trilha.
-- **Trilhas de leitura** (guia Recomendações): as 36 trilhas, com o que você já tem e já leu de cada uma e uma barra
-  de andamento. Abrir uma trilha mostra os livros na ordem, o que falta comprar e um atalho para vê-los na tabela.
-  "Falta" o livro que não está no acervo nem foi lido.
+- **Trilhas de leitura** (guia Recomendações): os roteiros, com posse, leitura e barra de andamento. A ficha mostra
+  porta de entrada, dificuldade, tempo aproximado por faixas de extensão, sugestões relacionadas e o próximo livro
+  disponível na ordem. O modo “Começar agora” prioriza trilhas cujo primeiro não lido está no acervo. Em coleções de
+  escolha livre não há próximo livro obrigatório. A estimativa parte de 30 páginas por dia, permite ajustar o ritmo na
+  ficha e não é contagem real; séries podem ser mais longas. "Falta" é o livro que não está no acervo nem foi lido.
 - **Temas e camadas** (guia Recomendações): os marcadores mais frequentes de cada grupo, à escolha. Clicar numa
   barra filtra por ela; as outras barras do grupo continuam à vista, porque dentro do grupo os marcadores somam.
 - **O que comprar primeiro** (guias Recomendações e Próximas aquisições): as recomendações que você ainda não tem, na
