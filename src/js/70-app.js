@@ -16,7 +16,7 @@ function montarVisao(v) {
   const grade = document.createElement('div'); grade.className = 'grade'; sec.appendChild(grade);
   const reg = { kpis: Kpis(kp, def.kpis), at: [] };
   for (const p of def.paineis()) { const k = cartao(p); grade.appendChild(k.el); reg.at.push(p.montar(k)); }
-  const t = Tabela(v); grade.appendChild(t.el); reg.at.push(c => t.atualizar(c));
+  if (TABELAS[v]) { const t = Tabela(v); grade.appendChild(t.el); reg.at.push(c => t.atualizar(c)); }
   REG[v] = reg;
 }
 function render() {
@@ -24,7 +24,7 @@ function render() {
   const c = CTX = contexto();
   REG[v].kpis(VIS[v].valores(c));
   for (const f of REG[v].at) f(c);
-  pintarFora(); pintarCasca(c); pintarContagens(c);
+  pintarFora(); pintarCasca(c); if (TABELAS[v]) pintarContagens(c);
   const aberto = $('.pop-w.aberto'); if (aberto) (aberto.id === 'pw-tema' ? posicionarTema : posicionarPop)(aberto);      // um número novo num botão pode ter empurrado a barra
   $$('.rolavel', $('#v-' + v)).forEach(marcarRolagem);
 }
@@ -39,6 +39,8 @@ function irPara(v, inicial) {
   $('#titulo').innerHTML = `<span class="t-l">${esc(VISOES[v].n)}</span><span class="t-c">${esc(v === 'desejos' ? 'Aquisições' : VISOES[v].n)}</span>`; $('#descricao').textContent = VISOES[v].d;
   document.title = `${VISOES[v].n} · Biblioteca do Lucas`;
   $('#filtros').classList.toggle('sem-acervo', v === 'recs');
+  // Os filtros globais são de livros; trilhas usa filtros próprios sobre roteiros completos.
+  $('#filtros').hidden = v === 'trilhas';
   sincronizarFiltros(); render();
   if (!inicial) { window.scrollTo(0, 0); const sec = $('#v-' + v); sec.classList.remove('entra'); void sec.offsetWidth; sec.classList.add('entra'); salvar(); }
 }
@@ -277,7 +279,7 @@ function pintarCasca(c) {
   }
   av.hidden = !mostrar;
   if (mostrar && DB.exemplos) setHtml(av, `<span class="av-i">${icone('info', 18)}</span><div><b>Seu catálogo é real; o movimento é de exemplo.</b><p>Os ${fInt(DB.livros.filter(b => b.sec >= 0).length)} títulos, autores, marcadores, eixos, a estante física e a biblioteca virtual vieram do seu catálogo. Datas e valores pagos, leituras, a lista de próximas aquisições e os históricos de preço são <b>simulados</b> para dar vida aos gráficos, e os preços não vêm das lojas: entram por cotações que você registra.</p></div><div class="av-a"><button type="button" class="btn sm" data-av="dados">Gerenciar dados</button><button type="button" class="btn sm pri" data-av="ok">Entendi</button></div>`);
-  $('#rodape-n').textContent = `${plural(DB.livros.length, 'livro', 'livros')}${FORA.livros ? ' · ' + plural(FORA.livros, 'oculto', 'ocultos') : ''} · ${c.I.tudo ? 'todo o histórico' : c.I.rot}${nFiltros() ? ' · ' + plural(nFiltros(), 'filtro ativo', 'filtros ativos') : ''}`;
+  $('#rodape-n').textContent = `${plural(DB.livros.length, 'livro', 'livros')}${FORA.livros ? ' · ' + plural(FORA.livros, 'oculto', 'ocultos') : ''}${S.visao === 'trilhas' ? ' · filtros próprios de trilhas' : ' · ' + (c.I.tudo ? 'todo o histórico' : c.I.rot) + (nFiltros() ? ' · ' + plural(nFiltros(), 'filtro ativo', 'filtros ativos') : '')}`;
 }
 /* ───────── temas ───────── */
 // o tema em uso: o escolhido ou, sem escolha, o padrão que acompanha o sistema (claro ou escuro)

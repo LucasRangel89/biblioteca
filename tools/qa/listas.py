@@ -277,7 +277,7 @@ with sync_playwright() as p:
 
     print('K. Trilhas')
     pg = abre(b, PAINEL_LIMPO, area=True)
-    ir('recs')
+    ir('trilhas')
     tr = next(t for t in TRILHAS if t[0] == 'trilha-lovecraft-widows-bay'); livros = [[CAT[i][0], CAT[i][1]] for i in tr[3]]
     pg.click(f'#p-trilhas [data-trilha="{tr[0]}"]'); pg.wait_for_timeout(500)
     links = pg.evaluate("() => [...document.querySelectorAll('#dlg.on .tr-a button')].map(b => [b.textContent, !!b.title, Math.round(b.getBoundingClientRect().height)])")
@@ -300,8 +300,10 @@ with sync_playwright() as p:
     ok('…e o painel confirma, com a ficha ainda aberta', pg.evaluate(TOASTS)[-1:] == [f'Lista copiada: {len(livros)} livros. Agora é só colar onde quiser.'] and pg.locator('#dlg.on .tr-l').count() == 1, pg.evaluate(TOASTS))
     pg.keyboard.press('Escape'); pg.wait_for_timeout(300)
     # um livro da trilha oculto
+    ir('recs')
     pg.click('#pw-fora .pop-b'); pg.wait_for_timeout(300); pg.check('#pop-fora input[data-fora=sit][value="sem-pt"]'); pg.wait_for_timeout(500); pg.keyboard.press('Escape'); pg.wait_for_timeout(300)
     some = [CAT[i][0] for i in tr[3] if 'sem-pt' in MARCAS[i]]
+    ir('trilhas')
     pg.click(f'#p-trilhas [data-trilha="{tr[0]}"]'); pg.wait_for_timeout(500)
     f = imprime('#dlg.on [data-tr-imprimir]'); acabou()
     ok(f'com um livro da trilha oculto ({some[0]}): ele não entra, a numeração segue, e a folha avisa', len(some) == 1 and [l[1] for l in f['folha']['linhas']] == [t for t, _ in livros if t not in some]
@@ -317,7 +319,7 @@ with sync_playwright() as p:
     ok('os três botões cabem numa linha, dentro do cartão, sem rolagem para o lado', cel['dentro'] and cel['linha'] == 1 and cel['rola'] <= 0, cel)
     ok('"Imprimir" e "Copiar" ficam só com o desenho (o nome vai para o leitor de tela), com tamanho para o dedo', [x[:1] + x[3:] for x in cel['bts']] == [['imprimir', 'Imprimir a lista', ''], ['copiar', 'Copiar a lista como texto', ''], ['csv', 'CSV', 'CSV']] and all(x[1] >= 36 and x[2] >= 32 for x in cel['bts']), cel['bts'])
     pg.screenshot(path=str(TMP / 'shots' / 'listas-celular.png'))
-    pg.click('#nav-m [data-ir=recs]'); pg.wait_for_timeout(800)
+    pg.click('#nav-m [data-ir=trilhas]'); pg.wait_for_timeout(800)
     pg.evaluate(f"() => document.querySelector('#p-trilhas [data-trilha=\"{tr[0]}\"]').click()"); pg.wait_for_timeout(500)
     tl = pg.evaluate("() => { const r = e => e.getBoundingClientRect(), c = r(document.querySelector('#dlg.on .dlg-c')); return { bts: [...document.querySelectorAll('#dlg.on .tr-a button')].map(b => [b.textContent, Math.round(r(b).height), r(b).left >= c.left && r(b).right <= c.right]), rola: document.querySelector('#dlg.on .dlg-c').scrollWidth - document.querySelector('#dlg.on .dlg-c').clientWidth }; }")
     ok('na ficha da trilha, os três atalhos cabem na largura da caixa', [x[0] for x in tl['bts']] == ['ver na tabela', 'imprimir', 'copiar'] and all(x[2] and x[1] >= 24 for x in tl['bts']) and tl['rola'] <= 0, tl)

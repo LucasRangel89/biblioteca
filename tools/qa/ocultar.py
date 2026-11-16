@@ -140,7 +140,7 @@ with sync_playwright() as p:
     bt = next(x for x in pg.evaluate(BOTOES_FILTRO) if x['v'] == 'sem-pt')
     ok('o botão de filtro "Sem edição em PT" passa a mostrar zero', bt['n'] == 0, bt); fecha()
     tr = next(t for t in TRILHAS if any(i in sp for i in t[3])); some = [CAT[i][0] for i in tr[3] if i in sp]; ficam = len(tr[3]) - len(some)
-    frase = pg.evaluate(TRILHA_PAINEL, tr[0])
+    ir('trilhas'); frase = pg.evaluate(TRILHA_PAINEL, tr[0])
     ok(f'a trilha "{tr[1].split(":")[0]}" passa a ter {ficam} livros e avisa: {len(some)} oculto', frase is not None and f' de {ficam}' in frase and frase.endswith(f'{len(some)} oculto' + ('s' if len(some) > 1 else '')), frase)
     pg.click(f'#p-trilhas [data-trilha="{tr[0]}"]'); pg.wait_for_timeout(500)
     cx = pg.evaluate(TRILHA_CAIXA)
@@ -158,7 +158,7 @@ with sync_playwright() as p:
     print('D. Fica guardado, vale em todas as telas, e os números dos filtros seguem a lista')
     g = guardado()
     ok('a escolha está guardada no navegador', g == {'sit': ['sem-pt'], 'tipo': [], 'eixo': [], 'tag': []}, g)
-    pg.reload(); pg.wait_for_timeout(1300)
+    pg.reload(); pg.wait_for_timeout(1300); ir('recs')
     ok('depois de recarregar, continua oculto (a tela das recomendações, a mesma conta)', aviso() and aviso()['n'] == plural(n_sp) and aba() == sum(1 for i in range(N) if not TENHO[i] and i not in sp), (aviso(), aba()))
     vistas = {}
     for v in ('geral', 'biblioteca', 'recs', 'financas', 'desejos', 'precos'):
@@ -187,7 +187,7 @@ with sync_playwright() as p:
     ir('recs')
     ok('nas recomendações, a aba "Já lidas" zera', aba('lidos') == 0, aba('lidos'))
     tr = next(t for t in TRILHAS if any(i in li for i in t[3])); lidos = [CAT[i][0] for i in tr[3] if i in li]
-    frase = pg.evaluate(TRILHA_PAINEL, tr[0])
+    ir('trilhas'); frase = pg.evaluate(TRILHA_PAINEL, tr[0])
     ok(f'a trilha "{tr[1].split(":")[0]}" continua com {len(tr[3])} livros e o lido contado, sem falar em ocultos', frase and f' de {len(tr[3])}' in frase and f'li {len(lidos)}' in frase and 'oculto' not in frase, frase)
     pg.click(f'#p-trilhas [data-trilha="{tr[0]}"]'); pg.wait_for_timeout(500)
     cx = pg.evaluate(TRILHA_CAIXA)

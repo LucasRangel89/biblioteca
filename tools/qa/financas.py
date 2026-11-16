@@ -1,12 +1,12 @@
-"""A guia Finanças e a navegação de seis itens.
+"""A guia Finanças e a navegação de sete itens.
 
   · dinheiro tem lugar próprio: Visão geral, Biblioteca e Recomendações não mostram nenhum valor em reais — nem nos
     indicadores, nem nos gráficos, nem nas colunas das tabelas; os valores ficam em Finanças, Próximas aquisições e Preços;
   · Finanças: quatro indicadores, cinco cartões e a tabela "Compras registradas";
   · sem nenhuma compra registrada, cada cartão de Finanças diz o que falta, em vez de ficar em branco;
   · o botão de ocultar valores esconde todos os reais das três guias que os mostram;
-  · a navegação tem os mesmos seis itens, na mesma ordem, no computador e no celular;
-  · no celular os seis cabem numa linha só, de 412 a 320 px, sem cortar os nomes — e nenhuma guia estoura a largura da
+  · a navegação tem os mesmos sete itens, na mesma ordem, no computador e no celular;
+  · no celular os sete cabem numa linha só, de 412 a 320 px, sem cortar os nomes — e nenhuma guia estoura a largura da
     tela, com ou sem dados (um gráfico vazio já estourou, a 320 px).
 """
 from caminhos import PAINEL_LIMPO, PAINEL_URL
@@ -14,8 +14,8 @@ from relogio import fixa, fonte_usada
 from playwright.sync_api import sync_playwright
 
 errs = []; falhas = []
-GUIAS = [['geral', 'Visão geral', 'Geral'], ['biblioteca', 'Biblioteca', 'Biblioteca'], ['recs', 'Recomendações', 'Recomend.'],
-         ['financas', 'Finanças', 'Finanças'], ['desejos', 'Próximas aquisições', 'Aquisições'], ['precos', 'Preços', 'Preços']]
+GUIAS = [['geral', 'Visão geral', 'Geral'], ['biblioteca', 'Biblioteca', 'Biblioteca'], ['trilhas', 'Trilhas', 'Trilhas'], ['recs', 'Recomendações', 'Sugestões'],
+         ['financas', 'Finanças', 'Finanças'], ['desejos', 'Próximas aquisições', 'Compras'], ['precos', 'Preços', 'Preços']]
 SEM_REAIS = ('geral', 'biblioteca', 'recs'); COM_REAIS = ('financas', 'desejos', 'precos')
 CARTOES = ['p-evo-valor', 'p-gastos', 'p-gasto-loja', 'p-ranking', 'p-cesta', 'p-tab-financas']
 K = "() => Object.fromEntries([...document.querySelectorAll('.visao:not([hidden]) .kpi')].map(k => [k.dataset.k, k.querySelector('.kpi-v b').textContent.replace(/\\u00a0/g, ' ')]))"
@@ -47,10 +47,10 @@ with sync_playwright() as p:
 
     def ir(pg, v, nav='#nav'): pg.click(f'{nav} [data-ir={v}]'); pg.wait_for_timeout(900); return pg.evaluate(GUIA, v)
 
-    print('SEIS GUIAS, NA MESMA ORDEM')
+    print('SETE GUIAS, NA MESMA ORDEM')
     pg = pagina(PAINEL_URL)
     ok('no computador: Visão geral, Biblioteca, Recomendações, Finanças, Próximas aquisições, Preços', pg.evaluate(NAV, '#nav') == GUIAS, pg.evaluate(NAV, '#nav'))
-    ok('a barra do celular tem os mesmos seis', pg.evaluate(NAV, '#nav-m') == GUIAS)
+    ok('a barra do celular tem os mesmos sete', pg.evaluate(NAV, '#nav-m') == GUIAS)
 
     print('DINHEIRO SÓ ONDE É O ASSUNTO (com os dados de exemplo, para haver valores a mostrar)')
     vistas = {v: ir(pg, v) for v, _, _ in GUIAS}
@@ -66,7 +66,7 @@ with sync_playwright() as p:
 
     print('A GUIA FINANÇAS')
     g = ir(pg, 'financas'); kf = pg.evaluate(K)
-    ok('quatro indicadores: investido, preço médio pago, cesta e itens abaixo do alvo', kf == {'investido': 'R$ 4.428', 'medio': 'R$ 48,66', 'cesta': 'R$ 1.296', 'oport': '6'}, kf)
+    ok('quatro indicadores: investido, preço médio pago, cesta e itens abaixo do alvo', kf == {'investido': 'R$ 4.428', 'medio': 'R$ 48,66', 'cesta': 'R$ 1.317', 'oport': '6'}, kf)
     ok('cinco cartões e a tabela "Compras registradas"', [c['id'] for c in g['cartoes']] == CARTOES and [c['titulo'] for c in g['cartoes']] == ['Evolução do investimento', 'Gastos por período', 'Gasto por loja ou origem', 'Melhores oportunidades', 'Custo da cesta de aquisições', 'Compras registradas'], [(c['id'], c['titulo']) for c in g['cartoes']])
     ok('com dados, nenhum cartão fica vazio', not [c['id'] for c in g['cartoes'] if c['vazio']], [(c['id'], c['vazio'][:60]) for c in g['cartoes'] if c['vazio']])
     ok('a tabela traz aquisição, origem, condição e o valor pago', g['colunas'] == ['Título', 'Formato', 'Aquisição', 'Origem', 'Condição', 'Pago'], g['colunas'])
@@ -98,8 +98,8 @@ with sync_playwright() as p:
                  menor: Math.min(...it.map(i => i.larg)), alt: Math.min(...it.map(i => i.alt)), fixa: getComputedStyle(n).position, baixo: Math.round(n.getBoundingClientRect().bottom) - window.innerHeight }; }"""
     for largura in (412, 390, 360, 320):
         pg = pagina(PAINEL_LIMPO, largura, 800); r = pg.evaluate(MEDE)
-        ok(f'{largura} px: os seis itens numa linha só, presos ao pé da tela', r['n'] == 6 and r['linhas'] == 1 and r['fixa'] == 'fixed' and abs(r['baixo']) <= 1, r)
-        ok(f'{largura} px: nenhum nome cortado nem para fora da tela; cada item com espaço para o dedo', r['fora'] == [] and r['cortados'] == [] and r['semNome'] == [] and r['menor'] >= 48 and r['alt'] >= 44,
+        ok(f'{largura} px: os sete itens numa linha só, presos ao pé da tela', r['n'] == 7 and r['linhas'] == 1 and r['fixa'] == 'fixed' and abs(r['baixo']) <= 1, r)
+        ok(f'{largura} px: nenhum nome cortado nem para fora da tela; cada item com espaço para o dedo', r['fora'] == [] and r['cortados'] == [] and r['semNome'] == [] and r['menor'] >= 44 and r['alt'] >= 44,
            dict(r, fonte=fonte_usada(pg, '#nav-m .nv-c')) if r['cortados'] else r)     # nome cortado: antes de mexer no painel, veja com que fonte o teste rodou (relogio.py)
         estouros = {}
         for v, nome, _ in GUIAS:

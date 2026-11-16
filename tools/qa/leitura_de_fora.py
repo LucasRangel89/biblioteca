@@ -23,7 +23,7 @@ TOAST = "() => { const t = [...document.querySelectorAll('#toasts .toast')].map(
 FATOS = "() => Object.fromEntries([...document.querySelectorAll('#gaveta .fatos > div')].map(d => [d.querySelector('dt').textContent, d.querySelector('dd').innerText.replace(/\\u00a0/g, ' ').replace(/\\s+/g, ' ').trim()]))"
 ACOES = "() => [...document.querySelectorAll('#gv-acoes [data-acao]')].map(b => b.dataset.acao + ':' + (b.textContent.trim() || b.getAttribute('aria-label')))"
 DLG = "() => document.querySelector('#dlg').classList.contains('on') ? document.querySelector('#dlg h2').textContent : ''"
-TRILHAS = "() => [...document.querySelectorAll('#p-trilhas .li')].map(l => [l.querySelector('.tr-n').textContent, l.querySelector('.li-m b').textContent, l.querySelector('.li-m > span').textContent])"
+TRILHAS = "() => [...document.querySelectorAll('#p-trilhas .li')].map(l => [l.querySelector('.tr-n').textContent, l.querySelector('.li-m b').textContent.split(':')[0].trim(), l.querySelector('.li-m > span').textContent])"
 # a ordem de compra: na ficha, a posição do livro e os motivos (null se ele não está na ordem); no quadro, quantos estão na fila
 OC = "() => { const d = document.querySelector('#gaveta .f-oc'); return d ? d.innerText.replace(/\\s+/g, ' ') : null; }"
 POR_COMPRAR = "() => document.querySelector('#p-compra .oc-n').innerText.replace(/\\u00a0/g, ' ')"
@@ -57,13 +57,13 @@ with sync_playwright() as p:
     def trilha(nome): return next((t[2] for t in pg.evaluate(TRILHAS) if t[1] == nome), None)
     def recs():
         """Na guia Recomendações: os indicadores, quantos estão na ordem de compra e a trilha de que "Piranesi" faz parte."""
-        k = ir('recs'); return k, pg.evaluate(POR_COMPRAR), trilha('Labirintos de Borges')
+        k = ir('recs'); compra = pg.evaluate(POR_COMPRAR); ir('trilhas'); t = trilha('Labirintos de Borges'); return k, compra, t
     resumo = lambda k: (k['leituras']['v'], k['leituras']['s'], k['recs']['v'])
 
     k0 = ir('geral'); r0, compra0, tr0 = recs()
-    ok('ponto de partida: 3 leituras, todas de fora; 487 recomendações na fila', resumo(k0) == ('3', '0 do acervo + 3 de fora', '487'), resumo(k0))
+    ok('ponto de partida: 3 leituras, todas de fora; 489 recomendações na fila', resumo(k0) == ('3', '0 do acervo + 3 de fora', '489'), resumo(k0))
     abrir('Piranesi', 'Piranesi'); oc0 = pg.evaluate(OC)
-    ok('"Piranesi" é o único livro que falta na trilha "Labirintos de Borges", e a ordem de compra diz isso', tr0 == 'tenho 8 de 9 · falta 1' and compra0 == '487 recomendações por comprar · a ordem não olha preços' and bool(oc0) and ' de 487 ' in oc0 and 'é o que falta para fechar a trilha “Labirintos de Borges”' in oc0, (tr0, compra0, oc0))
+    ok('"Piranesi" é o único livro que falta na trilha "Labirintos de Borges", e a ordem de compra diz isso', tr0 == 'tenho 8 de 9 · falta 1' and compra0 == '489 recomendações por comprar · a ordem não olha preços' and bool(oc0) and ' de 489 ' in oc0 and 'é o que falta para fechar a trilha “Labirintos de Borges”' in oc0, (tr0, compra0, oc0))
 
     print('JÁ LI, E NÃO TENHO')
     a = pg.evaluate(ACOES)
@@ -74,10 +74,10 @@ with sync_playwright() as p:
     ok('sem data e sem nota: a leitura é registrada assim mesmo', pg.evaluate(TOAST) == 'Leitura registrada.' and f.get('Leitura') == 'Lido' and 'Nota' not in f and g['leit'] == 'lido' and g.get('lidoEm') is None and g['col'] == 'rec', (pg.evaluate(TOAST), f, {x: g.get(x) for x in ('leit', 'lidoEm', 'col')}))
     ok('o livro continua fora do acervo, e a ficha passa a oferecer "Não li"', a == ['desejar:Quero comprar', 'tenho:Já tenho', 'naoli:Não li', 'cotar:Monitorar preço', 'editar:Editar'] and 'Formato' not in f, a)
     k = ir('geral'); r, compra, tr = recs()
-    ok('conta como leitura de fora e sai da fila de recomendações', resumo(k) == ('4', '0 do acervo + 4 de fora', '486') and r['recs']['v'] == '486', (resumo(k), r['recs']['v']))
-    ok('sai da ordem de compra, e a trilha dá o livro por feito', oc is None and compra == '486 recomendações por comprar · a ordem não olha preços' and tr == 'tenho 8 de 9 · li 1 · nenhum por comprar', (oc, compra, tr))
+    ok('conta como leitura de fora e sai da fila de recomendações', resumo(k) == ('4', '0 do acervo + 4 de fora', '488') and r['recs']['v'] == '488', (resumo(k), r['recs']['v']))
+    ok('sai da ordem de compra, e a trilha dá o livro por feito', oc is None and compra == '488 recomendações por comprar · a ordem não olha preços' and tr == 'tenho 8 de 9 · li 1 · nenhum por comprar', (oc, compra, tr))
     pg.reload(); pg.wait_for_timeout(1500); k = ir('geral')
-    ok('recarregar não desfaz', resumo(k) == ('4', '0 do acervo + 4 de fora', '486'), resumo(k))
+    ok('recarregar não desfaz', resumo(k) == ('4', '0 do acervo + 4 de fora', '488'), resumo(k))
 
     print('COM DATA E NOTA; DESFAZER')
     abrir('Piranesi', 'Piranesi'); acao('naoli'); f = pg.evaluate(FATOS); t = pg.evaluate(TOAST); k = ir('geral'); r, compra, tr = recs()

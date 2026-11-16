@@ -23,8 +23,8 @@ errs = []; falhas = []
 TOAST = "() => { const t = [...document.querySelectorAll('#toasts .toast')].map(t => t.textContent.replace(/\\u00a0/g, ' ')); return t[t.length - 1] || ''; }"
 DLG = "() => document.querySelector('#dlg').classList.contains('on') ? document.querySelector('#dlg h2').textContent : ''"
 GAVETA = "() => document.querySelector('#gaveta').classList.contains('on') ? document.querySelector('#gaveta h2').textContent : ''"
-TRILHAS = "() => [...document.querySelectorAll('#p-trilhas .li')].map(l => [l.querySelector('.tr-n').textContent, l.querySelector('.li-m b').textContent, l.querySelector('.li-m > span').textContent])"
-NA_TRILHA = "() => [...document.querySelectorAll('#dlg .tr-l li')].map(l => [l.querySelector('.tr-n').textContent, l.querySelector('.li-m b').textContent, l.querySelector('.pill').textContent])"
+TRILHAS = "() => [...document.querySelectorAll('#p-trilhas .li')].map(l => [l.querySelector('.tr-n').textContent, l.querySelector('.li-m b').textContent.split(':')[0].trim(), l.querySelector('.li-m > span').textContent])"
+NA_TRILHA = "() => [...document.querySelectorAll('#dlg .tr-l li')].map(l => [l.querySelector('.tr-n').textContent, l.querySelector('.li-m b').textContent.split(':')[0].trim(), l.querySelector('.pill').textContent])"
 COMPRA = "id => [...document.querySelectorAll('#' + id + ' .oc-l')].map(l => ({pos: l.querySelector('.tr-n').textContent, t: l.querySelector('.li-m b').textContent, motivos: l.querySelector('.oc-m').textContent, botao: l.querySelector('.oc-b').getAttribute('aria-label')}))"
 CAMADAS = "() => Object.fromEntries([...document.querySelectorAll('#gv-camadas .camadas > div')].map(d => [d.querySelector('dt').textContent, [...d.querySelectorAll('dd .tag')].map(t => t.textContent.replace(/\\s+/g, ' ').trim())]))"
 ATIVOS = "() => [...document.querySelectorAll('#f-ativos .ativo')].map(a => a.textContent)"
@@ -61,14 +61,15 @@ with sync_playwright() as p:
     def abrir_trilha(nome): pg.locator('#p-trilhas .li').filter(has=pg.locator('.li-m b', has_text=nome)).first.click(); pg.wait_for_timeout(500)
 
     print('O QUADRO DAS TRILHAS')
-    ir('recs'); ts = pg.evaluate(TRILHAS)
+    ir('recs')
     paineis = pg.evaluate("() => [...document.querySelectorAll('#v-recs .card')].map(c => c.id)")
-    ok('Recomendações ganhou "O que comprar primeiro" e "Trilhas de leitura"', paineis == ['p-eixos-recs', 'p-matriz', 'p-compra', 'p-trilhas', 'p-tipo-recs', 'p-temas', 'p-sugestoes', 'p-tab-recs'], paineis)
+    ok('Recomendações ganhou "O que comprar primeiro" e "Trilhas de leitura"', paineis == ['p-eixos-recs', 'p-matriz', 'p-compra', 'p-trilhas-atalho', 'p-tipo-recs', 'p-temas', 'p-sugestoes', 'p-tab-recs'], paineis)
+    ir('trilhas'); ts = pg.evaluate(TRILHAS)
     ok('as 68 trilhas, na ordem do catálogo', [t[0] for t in ts] == [str(i) for i in range(1, 69)] and ts[0][1] == 'Antes da Palavra' and ts[19][1] == 'Sexta à Noite' and ts[20][1] == 'Formação do Terapeuta' and ts[35][1] == 'Terreiro e Encruzilhada', [t[1] for t in ts])
     ok('cada uma diz quanto já está no acervo e quanto falta', trilha('Divã e Martelo')[2] == 'tenho 7 de 8 · falta 1' and trilha('Das Estrelas à Rede')[2] == 'tenho 9 de 10 · falta 1' and trilha('Cidades Estranhas')[2] == 'tenho 4 de 11 · faltam 7', (trilha('Divã e Martelo'), trilha('Cidades Estranhas')))
     ok('livro lido que não está no acervo conta como feito, não como falta', trilha('Aço e Fé')[2] == 'tenho 7 de 8 · li 1 · nenhum por comprar' and trilha('Bisturi e Fé')[2] == 'tenho 3 de 8 · li 1 · faltam 4', (trilha('Aço e Fé'), trilha('Bisturi e Fé')))
     sub = pg.inner_text('#p-trilhas .card-s'); leg = pg.evaluate("() => [...document.querySelectorAll('#p-trilhas .card-f .leg')].map(l => l.textContent)")
-    ok('o subtítulo conta as completas e a legenda explica a barra', sub == '68 roteiros com os livros em ordem · 31 já completos · clique para abrir' and leg == ['lidos', 'no acervo, por ler', 'faltam'], (sub, leg))
+    ok('o subtítulo conta as completas e a legenda explica a barra', sub.startswith('68 de 68 roteiros') and leg == ['lidos', 'no acervo, por ler', 'faltam'], (sub, leg))
     seg = pg.evaluate("() => [...document.querySelectorAll('#p-trilhas .seg button')].map(b => [b.textContent, b.getAttribute('aria-pressed')])")
     ok('abre "Na ordem"', seg == [['Na ordem', 'true'], ['Falta pouco', 'false'], ['Começar agora', 'false']], seg)
     pg.click('#p-trilhas .seg button[data-v=perto]'); pg.wait_for_timeout(500); ts = pg.evaluate(TRILHAS)
@@ -92,26 +93,26 @@ with sync_playwright() as p:
     ok('e dali se volta à trilha, por cima da ficha', pg.evaluate(DLG).startswith('Trilha 6 · Divã e Martelo') and pg.evaluate(GAVETA) == 'Além do Bem e do Mal')
     pg.click('#dlg footer .btn >> nth=0'); pg.wait_for_timeout(800); g = guardado('A Cura de Schopenhauer')
     ok('"Quero comprar o que falta" leva o livro para as próximas aquisições', pg.evaluate(TOAST) == '1 livro foi para as próximas aquisições.' and g.get('col') == 'desejo' and g.get('prio') == 2 and g.get('u') == 1 and g.get('add') == 20766, (pg.evaluate(TOAST), {k: g.get(k) for k in ('col', 'prio', 'add')}))
-    fechar(); ir('recs')
+    fechar(); ir('trilhas')
     ok('na lista de compra o livro ainda falta na trilha (só deixa de faltar quando chega ao acervo)', trilha('Divã e Martelo')[2] == 'tenho 7 de 8 · falta 1', trilha('Divã e Martelo'))
     abrir_trilha('Divã e Martelo'); itens = pg.evaluate(NA_TRILHA); bot = pg.evaluate("() => [...document.querySelectorAll('#dlg footer .btn')].map(b => b.textContent)")
     ok('a trilha mostra "Na lista de compra" e não oferece mais o botão', itens[7][2] == 'Na lista de compra' and bot == ['Fechar'], (itens[7], bot))
     pg.click('#dlg .tr-l li:nth-child(8) .li'); pg.wait_for_timeout(700)
     pg.click('#gv-acoes [data-acao=comprei]'); pg.wait_for_timeout(500); pg.click('#dlg footer .pri'); pg.wait_for_timeout(800); fechar()
-    ok('comprado o último, a trilha fecha', trilha('Divã e Martelo')[2] == 'tenho todos os 8' and pg.inner_text('#p-trilhas .card-s') == '68 roteiros com os livros em ordem · 32 já completos · clique para abrir', (trilha('Divã e Martelo'), pg.inner_text('#p-trilhas .card-s')))
+    ok('comprado o último, a trilha fecha', trilha('Divã e Martelo')[2] == 'tenho todos os 8' and pg.inner_text('#p-trilhas .card-s').startswith('68 de 68 roteiros'), (trilha('Divã e Martelo'), pg.inner_text('#p-trilhas .card-s')))
     abrir_trilha('Divã e Martelo')
     ok('e a trilha aberta diz o mesmo', pg.inner_text('#dlg .tr-res b') == 'Tenho todos os 8' and pg.evaluate(NA_TRILHA)[7][2] == 'Tenho', pg.inner_text('#dlg .tr-res'))
     pg.click('#dlg [data-tr-tabela]'); pg.wait_for_timeout(900)
     ok('"ver na tabela" filtra a visão geral pelos livros da trilha', pg.evaluate(DLG) == '' and pg.is_visible('#p-tab-geral') and pg.evaluate(ATIVOS) == ['Trilha: Divã e Martelo'] and len(pg.evaluate(LINHAS, 'geral')) == 8 and pg.evaluate(TOAST) == 'Filtrando pela trilha “Divã e Martelo”.', (pg.evaluate(ATIVOS), len(pg.evaluate(LINHAS, 'geral'))))
     pg.click('#f-ativos .ativo'); pg.wait_for_timeout(600)
-    ir('recs'); abrir_trilha('Aço e Fé'); itens = pg.evaluate(NA_TRILHA)
+    ir('trilhas'); abrir_trilha('Aço e Fé'); itens = pg.evaluate(NA_TRILHA)
     ok('trilha com um livro lido emprestado: "Lido · não tenho", e nada a comprar', itens[0] == ['1', 'O Arqueiro (Busca do Graal, vol. 1)', 'Lido · não tenho'] and pg.inner_text('#dlg .tr-res b') == 'Tenho 7 de 8 · li 1 · nenhum por comprar' and len(pg.evaluate("() => [...document.querySelectorAll('#dlg footer .btn')].map(b => b.textContent)")) == 1, itens[0])
     fechar()
     # o marcador da trilha posto à mão em outro livro: ele entra no fim da trilha
     abrir('Crepúsculo dos Ídolos', 'Crepúsculo dos Ídolos'); titulo9 = pg.evaluate(GAVETA)
     pg.click('#gv-acoes [data-acao=editar]'); pg.wait_for_timeout(500)
     pg.fill('#dlg [data-f=tags]', pg.input_value('#dlg [data-f=tags]') + ' trilha-yalom-nietzsche'); pg.click('#dlg footer .pri'); pg.wait_for_timeout(800)
-    cam = pg.evaluate(CAMADAS); fechar(); ir('recs')
+    cam = pg.evaluate(CAMADAS); fechar(); ir('trilhas')
     ok('o marcador da trilha posto à mão põe o livro no fim dela (ele já estava em outra trilha: a ficha mostra as duas)', cam.get('Trilhas de leitura') == ['Divã e Martelo 9º de 9', 'Filosofia em Doses 7º de 9'] and trilha('Divã e Martelo')[2] == 'tenho todos os 9', (titulo9, {c: cam[c] for c in cam if c.startswith('Trilha')}, trilha('Divã e Martelo')))
 
     print('CAMADAS NA FICHA E NOS FILTROS')
@@ -199,12 +200,13 @@ with sync_playwright() as p:
     pg.on('console', lambda m: errs.append(f'[{m.type}] {m.text}') if m.type in ('error', 'warning') else None)
     pg.on('pageerror', lambda e: errs.append(f'[pageerror] {e}'))
     pg.goto(PAINEL_LIMPO); pg.wait_for_timeout(1200); pg.click('#aviso .pri'); pg.wait_for_timeout(200)
-    pg.click('#nav-m [data-ir=recs]'); pg.wait_for_timeout(1000)
+    pg.click('#nav-m [data-ir=recs]'); pg.wait_for_timeout(600)
+    pg.click('#nav-m [data-ir=trilhas]'); pg.wait_for_timeout(600)
     medidas = pg.evaluate("""() => { const dentro = s => [...document.querySelectorAll(s)].every(e => { const r = e.getBoundingClientRect(); return r.left >= -0.5 && r.right <= innerWidth + 0.5; });
       const c = document.querySelector('#p-trilhas .card-b'); return {fora: document.documentElement.scrollWidth - innerWidth, compra: dentro('#p-compra, #p-compra .oc-l, #p-compra .oc-b'), trilhas: dentro('#p-trilhas, #p-trilhas .li, #p-trilhas .tr-b'),
         altura: Math.round(c.getBoundingClientRect().height), rola: c.scrollHeight > c.clientHeight, botao: Math.round(document.querySelector('#p-compra .oc-b').getBoundingClientRect().width)}; }""")
     ok('os dois quadros cabem na tela, sem rolagem lateral', medidas['fora'] <= 0 and medidas['compra'] and medidas['trilhas'], medidas)
-    ok('a lista de trilhas tem altura própria e rola por dentro; o botão da sacola dá para tocar', 300 <= medidas['altura'] <= 420 and medidas['rola'] and medidas['botao'] >= 32, medidas)
+    ok('a lista de trilhas é expandida na própria página', medidas['altura'] > 400 and not medidas['rola'], medidas)
     pg.locator('#p-trilhas .li').first.scroll_into_view_if_needed(); pg.locator('#p-trilhas .li').first.click(); pg.wait_for_timeout(600)
     dl = pg.evaluate("() => { const c = document.querySelector('#dlg .dlg-cx').getBoundingClientRect(); return {t: document.querySelector('#dlg h2').textContent, dentro: c.left >= 0 && c.right <= innerWidth && c.bottom <= innerHeight + 1, itens: document.querySelectorAll('#dlg .tr-l li').length, pilulas: [...document.querySelectorAll('#dlg .tr-l .pill')].every(p => p.getBoundingClientRect().right <= innerWidth)}; }")
     ok('a trilha aberta cabe na tela', dl['t'].startswith('Trilha 1 · Antes da Palavra') and dl['dentro'] and dl['itens'] == 8 and dl['pilulas'], dl)

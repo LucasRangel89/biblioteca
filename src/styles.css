@@ -507,6 +507,13 @@ button.hb:hover { background: var(--surface-3); }
 .li-m .al-t { font-weight: 600; color: var(--ink-2); }
 .li-m .al-t.bom { color: var(--good); } .li-m .al-t.ruim { color: var(--bad); } .li-m .al-t.aviso { color: var(--warn); }
 .nq { white-space: nowrap; }
+/* A guia tem filtros próprios por roteiro; eixo e dificuldade correspondem a qualquer livro visível. */
+.tr-filtros { display: flex; flex-wrap: wrap; align-items: end; gap: 10px; margin: 2px 0 16px; }
+.tr-filtros label { display: flex; flex-direction: column; gap: 4px; flex: 1 1 150px; min-width: 0; color: var(--ink-2); font-size: 12px; font-weight: 600; }
+.tr-filtros input, .tr-filtros select { width: 100%; min-width: 0; min-height: 38px; padding: 6px 9px; border: 1px solid var(--line-2); border-radius: 8px; background: var(--surface); color: var(--ink); font: inherit; }
+.tr-filtros button { min-height: 38px; }
+.tr-lista-ampla .li { padding-top: 13px; padding-bottom: 13px; }
+.tr-lista-ampla .li-m b, .tr-lista-ampla .li-m > span { white-space: normal; overflow-wrap: anywhere; }
 /* trilhas de leitura: número da trilha, nome, quanto já está feito e a barra (lidos · em casa · faltam) */
 .tr-n { flex: none; min-width: 26px; height: 26px; padding: 0 5px; border-radius: 8px; display: inline-grid; place-items: center; background: var(--surface-3); color: var(--ink-2); font: 650 12px/1 var(--sans); font-variant-numeric: tabular-nums; }
 .tr-b { flex: none; display: flex; width: 96px; height: 7px; border-radius: 4px; background: var(--line-2); overflow: hidden; }
@@ -929,8 +936,8 @@ html[data-tema="greco"] .topo::after { content: ""; position: absolute; left: va
   html { scroll-padding-top: 64px; }
   .app { grid-template-columns: minmax(0, 1fr); padding-bottom: calc(62px + env(safe-area-inset-bottom)); }
   .lateral { display: none; }
-  .inferior { display: grid; grid-template-columns: repeat(6, minmax(0, 1fr)); position: fixed; left: 0; right: 0; bottom: 0; z-index: 40; background: color-mix(in srgb, var(--surface) 94%, transparent); -webkit-backdrop-filter: blur(14px); backdrop-filter: blur(14px); border-top: 1px solid var(--line); padding: 5px 4px calc(5px + env(safe-area-inset-bottom)); }
-  .inferior button { display: flex; flex-direction: column; align-items: center; gap: 3px; padding: 6px 1px 5px; border-radius: 10px; color: var(--ink-3); font-size: 10px; font-weight: 600; letter-spacing: -.01em; min-width: 0; }   /* seis guias: 10px cabem em 360 px sem cortar nenhum nome */
+  .inferior { display: grid; grid-template-columns: repeat(7, minmax(0, 1fr)); position: fixed; left: 0; right: 0; bottom: 0; z-index: 40; background: color-mix(in srgb, var(--surface) 94%, transparent); -webkit-backdrop-filter: blur(14px); backdrop-filter: blur(14px); border-top: 1px solid var(--line); padding: 5px 4px calc(5px + env(safe-area-inset-bottom)); }
+  .inferior button { display: flex; flex-direction: column; align-items: center; gap: 3px; padding: 6px 1px 5px; border-radius: 10px; color: var(--ink-3); font-size: 8.5px; font-weight: 600; letter-spacing: -.02em; min-width: 0; }
   .inferior .nv-l { display: none; }
   .inferior .nv-c { display: block; max-width: 100%; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
   .inferior button[aria-current] { color: var(--accent-forte); background: var(--accent-soft); }
@@ -1039,7 +1046,7 @@ html[data-tema="greco"] .topo::after { content: ""; position: absolute; left: va
 @media (max-width: 520px) { .card-tab .busca-t { flex: 1 1 100%; } }
 /* telefones estreitos (360px e menos): o título diminui; nos de 320px, o botão de ocultar valores cede o lugar a ele */
 @media (max-width: 380px) { .topo h1 { font-size: 16px; } }
-@media (max-width: 340px) { #b-olho { display: none; } .inferior { padding-left: 2px; padding-right: 2px; } .inferior button { font-size: 9px; letter-spacing: -.02em; padding-left: 0; padding-right: 0; } }
+@media (max-width: 340px) { #b-olho { display: none; } .inferior { padding-left: 2px; padding-right: 2px; } .inferior button { font-size: 8px; letter-spacing: -.02em; padding-left: 0; padding-right: 0; } #p-trilhas .seg button { padding-left: 7px; padding-right: 7px; font-size: 12px; } }
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after { animation-duration: .001s !important; transition-duration: .001s !important; scroll-behavior: auto !important; }
 }
