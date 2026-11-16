@@ -144,18 +144,19 @@ capas (item 12), que trava no autor.
 
 - **Esforço:** cinco minutos com os quatro livros na mão · **Lugar:** na estante
 
-**A pergunta.** Quatro linhas do catálogo têm um título ou um autor que não bate com nada que existe publicado. Só a
-lombada responde. **O que está escrito nelas?**
+**A pergunta.** Quatro linhas do catálogo tinham um título ou um autor que não batia com nada que existe publicado;
+restam três, porque a quarta já foi arrumada (veja a linha dela na tabela). Só a lombada responde as outras. **O que
+está escrito nelas?**
 
 | O que está no catálogo | O que encontrei | Responda com |
 | --- | --- | --- |
 | *Noite do Sul* (Érico Veríssimo) | ele não tem livro com esse título; tem a novela ***Noite*** (1954) | `o título é ___` |
 | *A Arte de Envelhecer* (Yalom, com a nota "conferir") | com esse título só achei Schopenhauer; não confirmei um Yalom assim | `na capa está ___` |
-| *A Tragédia e a Farsa* (Flávio Henrique Calheiros Casimiro) | o nome lembra uma frase de Marx, mas esse autor não aparece em edição nenhuma que eu achei | `capa: ___` (com o nome certo, a resenha sai na hora) |
-| *O Espírito da Intimidade* (Malidoma Patrice Somé) | a edição brasileira com esse subtítulo é assinada por **Sobonfu** Somé — foram casados; escrevi a resenha sem cravar autor para não errar por você | `é Malidoma` / `é Sobonfu` |
+| *A Tragédia e a Farsa* (Flávio Henrique Calheiros Casimiro) | o nome lembra uma frase de Marx, mas esse autor não aparece em edição nenhuma que eu achei | `capa: ___` (com o nome certo, a sinopse sai na hora) |
+| ~~*O Espírito da Intimidade* (Malidoma Patrice Somé)~~ | a edição brasileira com esse subtítulo é assinada por **Sobonfu** Somé — os dois foram casados e ambos mestres dagara. **Já troquei** no catálogo, na lista de capas e na sinopse, e o nome antigo ficou registrado em `renomeados.tsv` para nada se perder | se a sua lombada disser Malidoma: `volte para Malidoma` |
 
 Os dois primeiros são livros da estante, os outros dois são recomendações. **Enquanto isso**, as linhas ficam com a nota de
-conferência, e as resenhas das duas primeiras continuam sem ser escritas: não por falta de material — porque eu não
+conferência, e as sinopses das duas primeiras continuam sem ser escritas: não por falta de material — porque eu não
 sei de que livro estou falando.
 
 ---
@@ -171,10 +172,10 @@ grafia assim. Não troco nome de livro por conta própria porque é pelo nome qu
 - *Se Liga na Filosofia* → o catálogo lista "Globo Livros" como autor; Globo é a **editora**, o autor é Marcus Weeks.
   Responda `pode`.
 - *O Mundo do Avesso* (Letícia Cesarino) → a edição real é ***Mundo ao avesso: verdade e política na era digital***
-  (UBU, 2022). A resenha que já está no painel é desse livro. Responda `alinhe com a lombada` — ou, se a sua edição
+  (UBU, 2022). A sinopse que já está no painel é desse livro. Responda `alinhe com a lombada` — ou, se a sua edição
   tem mesmo o título curto, `deixa como está e só anota o nome real`.
 
-**Sem resposta**, as três ficam grafadas como hoje, com a resenha no lugar.
+**Sem resposta**, as três ficam grafadas como hoje, com a sinopse no lugar.
 
 ---
 
@@ -200,13 +201,13 @@ Sobre os 23:
 
 - **Esforço:** dois minutos · **Lugar:** aqui
 
-**A pergunta.** Os três volumes de Laurentino Gomes hoje são **uma linha** no catálogo, com uma resenha que apresenta
+**A pergunta.** Os três volumes de Laurentino Gomes hoje são **uma linha** no catálogo, com uma sinopse que apresenta
 os três juntos e um "li" só. **Você quer ver os volumes separados?**
 
 → `separa em três` (diga se tem um, dois ou três em papel e se na pasta digital há um arquivo ou três) ou
 `deixa como uma ficha`. Sem resposta, fica uma ficha como está.
 
-**Se separar:** crio duas linhas novas, refaço as três resenhas, e o painel passa a contar volumes — o que mexe em
+**Se separar:** crio duas linhas novas, refaço as três sinopses, e o painel passa a contar volumes — o que mexe em
 "tenho em digital", nas trilhas e no seu inventário inteiro desse autor.
 
 ---
@@ -234,11 +235,11 @@ Sem resposta, a etapa 3 continua onde está e a contagem de páginas do ano come
 **A pergunta.** Três temas de 12/11 — **Deserto**, **Terras antigas** e **Clássico greco-romano** — esperam o seu
 parecer para a rodada continuar. **Estão bons, e o que faço em seguida?**
 
-**Para ver:** abra o painel → **Aparência** → escolha o tema → abra um livro → olhe título, resenha e os gráficos →
+**Para ver:** abra o painel → **Aparência** → escolha o tema → abra um livro → olhe título, sinopse e os gráficos →
 alterne claro/escuro → repita com os outros dois.
 
 As três perguntas: as cores pesam (abra **Deserto** com o Moby Dick: os gráficos saem cor de cobre)? A letra irregular
-do **Lovecraft** deixa a resenha legível? Os ornamentos (o sulco na areia, a linha de folhas, o meandro) estão
+do **Lovecraft** deixa a sinopse legível? Os ornamentos (o sulco na areia, a linha de folhas, o meandro) estão
 discretos o bastante?
 
 → `cores ok, letra ok, ornamentos ok, segue com cyberpunk` — ou diga o que trocar, ou `a ordem dos próximos sou eu:
@@ -320,7 +321,7 @@ Copie, complete, mande. Linha em branco = fica como está:
 3: propostas: 4 ___ 5 ___ 6 ___ 7 ___
 4: guia de páginas: aprova / muda: ___
 5: arquivos: manipulacao.pdf é ___ ; engenhariasocial.pdf é ___ ; … (12 linhas)
-6: lombadas: Noite do Sul ___ | Arte de Envelhecer ___ | Tragédia e a Farsa ___ | Espírito da Intimidade Malidoma/Sobonfu
+6: lombadas: Noite do Sul ___ | Arte de Envelhecer ___ | Tragédia e a Farsa ___
 7: grafias: Spohr ___ Se Liga na Filosofia ___ Mundo ao avesso ___
 8: os 23 digitais da fila: bloco / um por um ___
 9: Escravidão: uma ficha / três ___ volumes digitais: ___
