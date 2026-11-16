@@ -870,9 +870,10 @@ lote 1 (prioridades e livros com exemplar em casa: Sagan, Kuhn, Kahneman, Becker
   consultado está na coluna `fonte` de cada linha.
 
 Uma coisa que a conferência desta rodada achou e que é para você (está no [`PENDENCIAS.md`](PENDENCIAS.md), item 6):
-*O Espírito da Intimidade* figura no catálogo como Malidoma Patrice Somé, mas a edição brasileira com esse subtítulo é
-assinada por **Sobonfu Somé** — os dois foram casados e ambos mestres dagara. A sinopse foi escrita sobre o livro sem
-nomear o autor; a linha espera a sua conferida na lombada, e aí acerto o catálogo.
+*O Espírito da Intimidade* figurava no catálogo como Malidoma Patrice Somé, mas a edição brasileira com esse subtítulo
+é assinada por **Sobonfu Somé** — os dois foram casados e ambos mestres dagara. A sinopse foi escrita sobre o livro
+sem nomear o autor, e a linha do catálogo já está trocada: o nome antigo ficou em `renomeados.tsv`, para nada se
+perder. Se a sua lombada disser Malidoma, eu volto.
 
 **Lote 7 — o que saiu (18/11/2026).** Entraram mais **81 sinopses**, e o painel passou a ter **782**. O critério foi
 o que você escolheu no [`PENDENCIAS.md`](PENDENCIAS.md), item 2: os digitais que já estão em trilhas de leitura. As 36
