@@ -159,7 +159,7 @@ Formato das linhas: `Título | Autor | Tags`. As tags usam `#` (compatível com 
 | Erva Brava | Paulliny Tort | #F #BR #contemporaneo #d2 #e2 #rel-imortais |
 | Senhor das Moscas | William Golding | #F #politica #classico #d2 #e1 #rel-imortais #tenho-digital #q-o-que-e-humano #q-natureza-e-civilizacao #cenario-ilha-e-isolamento |
 | O Clã do Urso das Cavernas (Ayla, a Filha das Cavernas) | Jean M. Auel | #F #pre-historia #neandertal #d1 #e3 #top #rel-imortais #q-o-que-e-humano #papel-porta-de-entrada #trilha-origens |
-| A Guerra do Fogo | J.-H. Rosny | #F #pre-historia #classico #verificar #d2 #e1 #rel-imortais |
+| A Guerra do Fogo | J.-H. Rosny | #F #pre-historia #classico #d2 #e1 #rel-imortais |
 | Antes de Adão | Jack London | #F #pre-historia #classico #d1 #e1 #rel-imortais #q-o-que-e-humano #trilha-origens |
 | Hominídeos | Robert J. Sawyer | #F #neandertal #ficcao-cientifica #d1 #e2 #rel-imortais #q-o-que-e-humano |
 | A Dança do Tigre (Dance of the Tiger) | Björn Kurtén | #F #neandertal #pre-historia #sem-pt #d2 #e2 #rel-imortais #q-o-que-e-humano |
@@ -430,7 +430,7 @@ Formato das linhas: `Título | Autor | Tags`. As tags usam `#` (compatível com 
 | Sob a Águia (Under the Eagle) | Simon Scarrow | #F #romance-historico #roma #guerra #antiguidade #d1 #e2 |
 | Série Falco | Lindsey Davis | #F #romance-historico #roma #misterio #antiguidade #d1 #e3 |
 | O Egípcio (Sinuhe) | Mika Waltari | #F #romance-historico #antiguidade #medicina #d2 #e3 #trilha-bisturi-e-fe |
-| O Médico de Córdoba | Herbert Le Porrier | #F #romance-historico #medieval #medicina #verificar #d2 #e2 #cenario-oriente-feudal #trilha-bisturi-e-fe |
+| O Médico de Córdoba | Herbert Le Porrier | #F #romance-historico #medieval #medicina #d2 #e2 #cenario-oriente-feudal #trilha-bisturi-e-fe |
 | O Viajante | Gary Jennings | #F #romance-historico #medieval #asia #d1 #e3 #clima-aventura #cenario-oriente-feudal |
 | Shōgun | James Clavell | #F #romance-historico #asia #d2 #e3 #q-alteridade-e-contato #clima-aventura #cenario-oriente-feudal |
 | Musashi | Eiji Yoshikawa | #F #romance-historico #asia #d2 #e3 #clima-aventura #cenario-oriente-feudal |
@@ -817,7 +817,7 @@ Formato das linhas: `Título | Autor | Tags`. As tags usam `#` (compatível com 
 | Mitologia dos Orixás | Reginaldo Prandi | #NF #umbanda #antropologia #BR #mitologia #d1 #e3 #tenho-digital #papel-porta-de-entrada #trilha-terreiro-e-encruzilhada |
 | Orixás | Pierre Verger | #NF #umbanda #antropologia #arte #d2 #e2 #trilha-terreiro-e-encruzilhada |
 | Os Nagô e a Morte | Juana Elbein dos Santos | #NF #umbanda #antropologia #morte #BR #d3 #e2 #q-morte-e-finitude #trilha-terreiro-e-encruzilhada |
-| O Espírito da Intimidade | Malidoma Somé | #NF #espiritualidade #africa #antropologia #d2 #e2 |
+| O Espírito da Intimidade | Sobonfu Somé | #NF #espiritualidade #africa #antropologia #d2 #e2 |
 | Bhagavad Gita | (tradição hindu) | #NF #oriental #espiritualidade #classico #d2 #e1 #top #tenho-digital #clima-contemplativo #papel-porta-de-entrada #papel-fonte-primaria |
 | Os Upanixades | (tradição hindu) | #NF #oriental #filosofia #classico #d3 #e2 #papel-fonte-primaria |
 | Yoga Sutras de Patanjali | Patanjali | #NF #oriental #mistica #classico #d3 #e1 #papel-fonte-primaria |

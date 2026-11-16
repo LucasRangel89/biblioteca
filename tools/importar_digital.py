@@ -9,6 +9,8 @@ O que faz (pode rodar quantas vezes quiser: se nada mudou, nenhum arquivo é alt
  1. lê as listagens das pastas (biblioteca-virtual/listagens/*.txte — a saída de `dir /b` de cada pasta);
  2. confere com o inventário (biblioteca-virtual/inventario.tsv, uma linha por arquivo):
       · arquivo que ainda não está no inventário entra com título e autor deduzidos do nome e a observação "novo";
+      · entra também com `#verificar` no catálogo só quando o nome do arquivo é vago (sem autor, título de uma palavra,
+        o emaranhado do download) — combinado com o dono em 17/11/2026; nome que se deduz com folga entra limpo;
       · arquivo que sumiu da listagem recebe a observação "ausente" (a linha fica; some do catálogo);
  3. atualiza o Catálogo Mestre:
       · livro que já estava catalogado (estante ou recomendação) ganha #tenho-digital;
@@ -295,6 +297,22 @@ def deduzir(nome):
     return caixa_titulo(titulo), autor
 
 
+def nome_vago(titulo, autor):
+    """Diz se o nome do arquivo não conta o que é o livro — aí a linha entra na fila "a verificar" (decisão do dono,
+    17/11/2026: arquivo novo só é marcado para conferência quando o nome é vago; nome que se deduz com folga entra limpo).
+
+    Vago é o nome que não dá para confiar: sem autor, título de uma palavra só, o nome embolado do download (sem
+    espaços, com barras baixas ou reticências), ou título e autor saídos iguais — sinal de que nada foi deduzido."""
+    if not (titulo or '').strip() or not (autor or '').strip():
+        return True
+    base = re.sub(r'\.[A-Za-z0-9]{2,5}$', '', titulo)
+    if '_' in base or '...' in base:
+        return True
+    if len(base.split()) < 2:
+        return True
+    return chave(base) == chave(titulo) and chave(base) == chave(autor)
+
+
 _GRUPO = re.compile(r'[\[({][^\[\](){}]*[\])}]')            # "(2021)", "[grupo que digitalizou]", "(13 de 15)"
 _EDICAO = re.compile(r"#\s*\d"                                                               # "#01"
                      r"|\b(?:v|vol|volume|livro|tomo|parte|n[ºo°])\.?\s*(?:\d+|[IVX]+)\b"       # "v2", "Vol. 3", "Livro II"
@@ -347,10 +365,11 @@ def _linha_nova(pasta, nome, series):
         eixo, genero, _ = PASTAS.get(raiz(pasta), (None, '', ''))
         titulo, autor = deduzir(nome)
         return dict(pasta=pasta, arquivo=nome, formato=extensao(nome), tipo='livro', titulo=titulo, autor=autor,
-                    catalogo='', eixo=str(eixo or ''), genero=genero, marcadores='', obs='novo')
+                    catalogo='', eixo=str(eixo or ''), genero=genero, marcadores='', obs='novo',
+                    vago=nome_vago(titulo, autor))
     titulo, autor = deduzir_hq(nome)
     r = dict(pasta=pasta, arquivo=nome, formato=extensao(nome) or FORMATO_PASTA, tipo='hq', titulo=titulo, autor=autor,
-             catalogo='', eixo='', genero='HQ', marcadores='', obs='novo')
+             catalogo='', eixo='', genero='HQ', marcadores='', obs='novo', vago=nome_vago(titulo, autor))
     serie = series.get(chave(titulo))
     if serie:                                                   # mais uma edição de uma série conhecida: herda os dados dela
         r.update(titulo=serie['titulo'], autor=serie['autor'], catalogo=serie['catalogo'], eixo=serie['eixo'],
@@ -441,7 +460,10 @@ def obras_do_inventario(inventario):
         o['eixo'] = eixos.most_common(1)[0][0] if eixos else 0
         generos = collections.Counter(r['genero'] for r in L if r['genero'] in GENEROS)
         o['genero'] = 'HQ' if all(r['tipo'] == 'hq' for r in L) else (generos.most_common(1)[0][0] if generos else '')
-        o['verificar'] = any(tem_obs(r, 'verificar') or tem_obs(r, 'novo') for r in L)
+        # arquivo novo só vai para "a verificar" se o nome não diz o que é o livro (ver nome_vago); o veredito é
+        # recalculado a cada execução, para não depender de uma coluna que um inventário antigo não tem
+        vago = any(tem_obs(r, 'novo') and nome_vago(r['titulo'], r['autor']) for r in L)
+        o['verificar'] = vago or any(tem_obs(r, 'verificar') for r in L)
         # a classificação da obra: o que as linhas dela trazem na coluna `marcadores`, sem repetir
         o['marcadores'] = list(dict.fromkeys(t.lstrip('#') for r in L for t in r.get('marcadores', '').split() if t.lstrip('#')))
     return obras
@@ -663,7 +685,8 @@ def texto_resumo(inventario, obras, rel, listagens, sem_listagem, outros=(), mov
           'marcadores padrão da pasta.', [f'- {t} — {a or "sem autor"} · pasta `{p}`' for t, a, p in rel.get('sem_classe', [])])
     novos = [r for r in ativos if tem_obs(r, 'novo')]
     lista('Arquivos novos, a revisar', 'Entraram nesta execução ou numa anterior, com título e autor deduzidos do nome do arquivo (nas pastas de '
-          'quadrinhos, também do nome da subpasta). Revise a linha no inventário (tipo, título, autor, eixo, gênero) e apague `novo` da coluna `obs`.',
+          'quadrinhos, também do nome da subpasta). Revise a linha no inventário (tipo, título, autor, eixo, gênero) e apague `novo` da coluna `obs`. '
+          'Os que têm nome vago — sem autor, um título de uma palavra, o emaranhado do download — levam também `#verificar` no catálogo.',
           [f'- `{r["pasta"]}/{r["arquivo"]}` → {r["titulo"]} — {r["autor"] or "sem autor"}' for r in novos])
     aus = [r for r in inventario if tem_obs(r, 'ausente')]
     lista('Arquivos ausentes', 'Estão no inventário, mas não aparecem mais na listagem da pasta. Se o arquivo foi apagado de propósito, apague a linha.',

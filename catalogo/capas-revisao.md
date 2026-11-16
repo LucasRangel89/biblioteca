@@ -9,7 +9,7 @@ Nada aqui consulta a internet. Para saber se as imagens ainda abrem: `python too
 ## Resumo
 
 - 2.614 livros no catálogo · 1.564 com capa (60%) · 1.050 sem capa
-- 191 livros na fila de revisão · 0 ainda sem linha no capas.tsv · 0 linhas de livros que saíram do catálogo
+- 189 livros na fila de revisão · 0 ainda sem linha no capas.tsv · 0 linhas de livros que saíram do catálogo
 
 ## De onde vêm as capas
 
@@ -62,7 +62,7 @@ Da pior para a melhor cobertura: onde vale a pena procurar primeiro.
 | Quadrinhos e mangás | 245 | 58 | 187 | 24% |
 | Antologias e coletâneas | 23 | 9 | 14 | 39% |
 
-## Fila de revisão (191 livros)
+## Fila de revisão (189 livros)
 
 Um livro pode aparecer em mais de um grupo. A ordem dos grupos é a da urgência: primeiro o que está
 quebrado, depois o que pode estar errado, por último o que é pendência do catálogo.
@@ -262,7 +262,7 @@ quebrado, depois o que pode estar errado, por último o que é pendência do cat
 | O Livro das Religiões | Vários autores | Biblioteca virtual · eixo 15 | (sem capa) | sem autor certo |
 | O Livro da Literatura | Vários autores | Biblioteca virtual · eixo 16 | (sem capa) | sem autor certo |
 
-### Título a conferir (30)
+### Título a conferir (28)
 
 **O que fazer:** Conferir o título no Catálogo Mestre (nome cortado, volume sem número ou #verificar).
 
@@ -271,8 +271,6 @@ quebrado, depois o que pode estar errado, por último o que é pendência do cat
 | Coraline | Neil Gaiman e Dave (P. Craig) Russell | Estante física · eixo 2 | 15272781 | marcado #verificar no catálogo |
 | Noite do Sul | Érico Veríssimo | Estante física · eixo 4 | (sem capa) | marcado #verificar no catálogo |
 | A Arte de Envelhecer | Irvin D. Yalom (conforme a prateleira) | Estante física · eixo 14 | (sem capa) | marcado #verificar no catálogo |
-| A Guerra do Fogo | J.-H. Rosny | Recomendações · eixo 1 | (sem capa) | marcado #verificar no catálogo |
-| O Médico de Córdoba | Herbert Le Porrier | Recomendações · eixo 6 | (sem capa) | marcado #verificar no catálogo |
 | A Tragédia e a Farsa | Flávio Henrique Calheiros Casimiro | Recomendações · eixo 11 | (sem capa) | marcado #verificar no catálogo |
 | Há Dois Mil Anos... | Emmanuel / Chico Xavier | Recomendações · eixo 15 | 10582350 | título parece cortado |
 | Contágio | Vários autores | Biblioteca virtual · eixo 2 | (sem capa) | marcado #verificar no catálogo |
