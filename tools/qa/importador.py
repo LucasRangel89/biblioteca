@@ -203,10 +203,10 @@ mesmos = [x for x in livros() if imp.chave(x['t']) == imp.chave(alvo['t'])]
 confere(len(mesmos) == 2 and [x for x in mesmos if x['sec'] != 17][0]['tags'] == alvo['tags'] and 'HQ' in [x for x in mesmos if x['sec'] == 17][0]['tags'],
         f'quadrinho com o título de um livro do catálogo (“{alvo["t"]}”) ganha linha própria; o livro não é marcado como digital')
 bruto = (tmp / 'listagens' / 'HQs.txte').read_bytes()
-confere(b'\r\nAkira\r\n' in bruto and linha('Akira') is not None, 'a série “Akira” está numa subpasta da listagem e no catálogo')
-(tmp / 'listagens' / 'HQs.txte').write_bytes(bruto.replace(b'\r\nAkira\r\n', b'\r\n'))
+confere(b'\r\nBlack Hole\r\n' in bruto and linha('Black Hole') is not None, 'a série “Black Hole” está numa subpasta da listagem e no catálogo')
+(tmp / 'listagens' / 'HQs.txte').write_bytes(bruto.replace(b'\r\nBlack Hole\r\n', b'\r\n'))
 roda()
-confere(do_inv('Akira')['obs'] == 'ausente' and linha('Akira') is None and 'Nada mudou.' in roda(), 'subpasta que some da listagem fica "ausente" e a série sai do catálogo')
+confere(do_inv('Black Hole')['obs'] == 'ausente' and linha('Black Hole') is None and 'Nada mudou.' in roda(), 'subpasta que some da listagem fica "ausente" e a série sai do catálogo')
 (tmp / 'listagens' / 'novasHQSS.txte').rename(tmp / 'novasHQSS.guardada')
 roda()
 r = next((x for x in imp.ler_inventario(imp.INVENTARIO) if x['pasta'] == 'novashqs' and x['arquivo'] == 'novas'), None)
@@ -308,9 +308,9 @@ confere(renomeados('impar\tjose\tÍmpar\tJosé') == ({}, []), 'só acento ou mai
 
 # 10 ▸ as trilhas de leitura (catalogo/trilhas.md): a lista de cada trilha e o marcador #trilha-… nas linhas dos livros
 L0 = parse(antes['catalogo.md']); av = []; tr = bc.ler_trilhas(L0, av)
-confere(len(tr) == 36 and not av and tr == json.loads(bc.DEST_TRILHAS.read_text(encoding='utf-8')), 'as 36 trilhas são lidas sem avisos, e src/trilhas.json está em dia' + (': ' + ' | '.join(av[:3]) if av else ''))
+confere(len(tr) == 68 and not av and tr == json.loads(bc.DEST_TRILHAS.read_text(encoding='utf-8')), 'as 68 trilhas são lidas sem avisos, e src/trilhas.json está em dia' + (': ' + ' | '.join(av[:3]) if av else ''))
 confere(all(sorted(t[3]) == [i for i, b in enumerate(L0) if t[0] in b['tags']] and len(set(t[3])) == len(t[3]) >= 3 for t in tr), 'a lista de cada trilha são exatamente as linhas do catálogo que levam o marcador dela')
-confere(all(t[1] and 30 < len(t[2]) < 400 and '|' not in t[2] and '#' not in t[2] for t in tr) and len({t[0] for t in tr}) == len({t[1] for t in tr}) == 36, 'cada trilha tem nome, marcador próprio e uma descrição curta, sem tabela nem marcador colados')
+confere(all(t[1] and 30 < len(t[2]) < 400 and '|' not in t[2] and '#' not in t[2] for t in tr) and len({t[0] for t in tr}) == len({t[1] for t in tr}) == len(tr), 'cada trilha tem nome, marcador próprio e uma descrição curta, sem tabela nem marcador colados')
 
 def trilhas(texto, linhas):
     (tmp / 'trilhas.md').write_text(texto, encoding='utf-8', newline='\n'); av = []
@@ -325,15 +325,14 @@ confere(r[0][3] == [0, 2] and len(av) == 3 and any('“Não Existe” (Trilha de
 r, av = trilhas('## 1. Sem Marcador\n\nDescrição.\n\n1. Livro Três | Caio\n', LT)
 confere(r == [] and len(av) == 2 and 'a trilha “Sem Marcador” está sem marcador' in av[0] and 'o marcador #trilha-teste não corresponde a nenhuma trilha' in av[1], 'trilha sem marcador não entra, com aviso; marcador de uma trilha que não está no arquivo, também')
 confere(bc.ler_trilhas(LT[2:], [], tmp / 'nao-existe.md') == [], 'sem o arquivo das trilhas, o painel fica sem trilhas (e sem erro)')
-# um livro da seção 17 numa trilha: o marcador vem do inventário, como o resto da classificação dele
-inv = imp.ler_inventario(imp.INVENTARIO)
-for r in inv:
-    if r['arquivo'] == 'Poemas Novos - Fulano de Tal.epub': r['marcadores'] = 'BR d1 e1 trilha-teste'
-(tmp / 'inventario.tsv').write_text(imp.texto_inventario(inv), encoding='utf-8', newline='\n')
-roda(); LV = livros()
-r, av = trilhas('## 1. Trilha de Teste\n\n`#trilha-teste`\n\nDescrição.\n\n1. Poemas Novos | Fulano de Tal\n', LV)
-confere(len(r) == 1 and [(LV[i]['t'], LV[i]['sec']) for i in r[0][3]] == [('Poemas Novos', 17)] and 'trilha-teste' in linha('Poemas Novos')['tags'] and not any('trilha-teste' in a or 'Poemas Novos' in a for a in av),
-        'livro da biblioteca virtual numa trilha: o marcador posto na coluna `marcadores` do inventário chega à linha, e a trilha o encontra')
+# livro da seção 17: o marcador agora vem da lista da trilha, não do inventário
+from sincronizar_trilhas import sincronizar as sincronizar_trilhas
+texto_teste = '## 1. Trilha de Teste\n\n`#trilha-teste`\n\nDescrição.\n\n1. Poemas Novos | Fulano de Tal\n'
+novo, _ = sincronizar_trilhas(ler('catalogo.md'), texto_teste)
+LV = parse(novo)
+r, av = trilhas(texto_teste, LV)
+confere(len(r) == 1 and [(LV[i]['t'], LV[i]['sec']) for i in r[0][3]] == [('Poemas Novos', 17)] and 'trilha-teste' in LV[r[0][3][0]]['tags'] and not av,
+        'livro da biblioteca virtual numa trilha: o marcador é gerado a partir da lista')
 
 # 11 ▸ a classificação de antes da vistoria (catalogo/antes-da-vistoria.tsv): a base de quem já tinha livros editados no painel
 av = []; ca = bc.classe_anterior(dados, av)

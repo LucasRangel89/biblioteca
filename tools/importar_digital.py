@@ -28,7 +28,8 @@ Para corrigir um livro digital, corrija a linha dele no inventário e rode este 
 
 Classificação (coluna `marcadores`): dificuldade (d1–d3), extensão (e1–e3), temas e gêneros de cada obra, sem o `#`.
 Enquanto a coluna está vazia — arquivo novo, ainda não classificado —, valem os marcadores padrão da pasta.
-Na seção 17 do catálogo, só `#lido` e `#top` são postos à mão e preservados; todo o resto vem do inventário.
+Na seção 17 do catálogo, só `#lido` e `#top` são preservados como situação; a classificação vem do inventário.
+Os marcadores `#trilha-*` de todas as seções são derivados de catalogo/trilhas.md após a importação.
 """
 import collections, csv, io, pathlib, re, sys, unicodedata
 
@@ -737,7 +738,33 @@ def main(argv):
     obras = obras_do_inventario(inventario)
     md = CATALOGO.read_text(encoding='utf-8')
     novo_md, rel = atualizar_catalogo(md, obras)
-    assert atualizar_catalogo(novo_md, obras)[0] == novo_md, 'a atualização do catálogo deveria ser estável'
+    novo_md = novo_md.replace(
+        'trinta e seis roteiros, com os livros em ordem. Vinte vieram da versão 3 do catálogo; dezesseis foram montados em 11/11/2026 a partir do acervo e incluem livros da biblioteca virtual.',
+        'roteiros com os livros em ordem ou em seleção livre. As listas e seus marcadores são mantidos em catalogo/trilhas.md.')
+    # As listas de trilhas são a fonte de verdade para seus marcadores em todas
+    # as seções. Aplicar só ao catálogo gerado, nunca escrever no inventário.
+    from sincronizar_trilhas import TRILHAS, sincronizar as sincronizar_trilhas
+    from recomendacoes_adicionais import incluir
+    try:
+        trilhas_texto = TRILHAS.read_text(encoding='utf-8')
+        novo_md = incluir(novo_md)
+        novo_md, mudancas_trilhas = sincronizar_trilhas(novo_md, trilhas_texto)
+        novamente, _ = sincronizar_trilhas(incluir(atualizar_catalogo(novo_md, obras)[0]), trilhas_texto)
+    except ValueError as erro:
+        sys.exit(f'Trilhas inválidas; nenhum arquivo foi gravado: {erro}')
+    assert novamente == novo_md, 'a atualização do catálogo deveria ser estável'
+    # Compare com o arquivo anterior, não com o estado intermediário: a seção
+    # digital é reconstruída a cada importação e ainda contém tags legadas.
+    def marcas(texto):
+        return {(b['t'], b['a']): {t for t in b['tags'] if t.startswith('trilha-')} for b in parse(texto)}
+    antes, depois = marcas(md), marcas(novo_md)
+    alteradas = [(k, depois.get(k, set()) - antes.get(k, set()), antes.get(k, set()) - depois.get(k, set()))
+                 for k in sorted(antes.keys() | depois.keys()) if antes.get(k, set()) != depois.get(k, set())]
+    if alteradas:
+        print(f'Marcadores de trilha: {len(alteradas)} livro(s) atualizados no catálogo gerado')
+        if conferir:
+            for (titulo, autor), adicionadas, removidas in alteradas:
+                print(f'  {titulo} | {autor}: +{sorted(adicionadas)} -{sorted(removidas)}')
     mudou = [nome for nome, alterado in (
         (INVENTARIO.name, gravar(INVENTARIO, texto_inventario(inventario), conferir)),
         (CATALOGO.name, gravar(CATALOGO, novo_md, conferir)),

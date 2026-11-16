@@ -42,7 +42,7 @@ Formato das linhas: `Título | Autor | Tags`. As tags usam `#` (compatível com 
 - **Papel na biblioteca** `#papel-…`: `porta-de-entrada` (melhor primeiro livro de uma área) · `leitura-relampago` (curto e potente) · `desafio` (exige tempo, atenção ou bagagem) · `contraponto` (para ler ao lado de uma visão oposta) · `ponte` (cruza áreas) · `fonte-primaria` (texto fundacional)
 - **Pontes entre áreas** `#ponte-…`: `ciencia-e-fe` · `psicanalise-e-politica` · `literatura-e-neurociencia` · `ficcao-e-filosofia` · `historia-e-ficcao` · `ecologia-e-colonialismo` · `corpo-e-poder` · `ia-e-humanidade`
 - **Cenários** `#cenario-…`: `russia` · `nova-inglaterra` · `sertao-e-nordeste` · `espaco-profundo` · `ilha-e-isolamento` · `guerra-mundial` · `oriente-feudal` · `futuro-proximo` · `cidade-pequena`
-- **Trilhas de leitura** `#trilha-…`: trinta e seis roteiros, com os livros em ordem. Vinte vieram da versão 3 do catálogo; dezesseis foram montados em 11/11/2026 a partir do acervo e incluem livros da biblioteca virtual. A lista de cada trilha está em `catalogo/trilhas.md`.
+- **Trilhas de leitura** `#trilha-…`: roteiros com os livros em ordem ou em seleção livre. As listas e seus marcadores são mantidos em catalogo/trilhas.md. A lista de cada trilha está em `catalogo/trilhas.md`.
 
 ---
 
@@ -54,12 +54,12 @@ Formato das linhas: `Título | Autor | Tags`. As tags usam `#` (compatível com 
 | As Cavernas de Aço | Isaac Asimov | #F #ficcao-cientifica #misterio #classico #d1 #e2 #tenho-fisico #rel-asimov-clarke #cenario-espaco-profundo #trilha-ficcao-cientifica-classica |
 | Contos da Taberna | Arthur C. Clarke | #F #ficcao-cientifica #humor #classico #contos #d1 #e1 #tenho-fisico #rel-asimov-clarke #clima-comico #trilha-ficcao-cientifica-classica |
 | O Vento Solar | Arthur C. Clarke | #F #ficcao-cientifica #classico #contos #d1 #e1 #tenho-fisico #rel-asimov-clarke |
-| 1984 | George Orwell | #F #distopia #autoritarismo #classico #d2 #e2 #tenho-fisico #tenho-digital #q-liberdade-e-obediencia #trilha-liberdade-e-autoritarismo #trilha-distopias |
+| 1984 | George Orwell | #F #distopia #autoritarismo #classico #d2 #e2 #tenho-fisico #tenho-digital #q-liberdade-e-obediencia #trilha-distopias #trilha-do-texto-aos-quadrinhos #trilha-liberdade-e-autoritarismo |
 | A Ilha | Aldous Huxley | #F #utopia #filosofia #classico #d2 #e2 #tenho-fisico #q-liberdade-e-obediencia #cenario-ilha-e-isolamento #trilha-distopias |
-| Os Sertões | Euclides da Cunha | #NF #historia #BR #classico #d3 #e3 #tenho-fisico #papel-desafio #cenario-sertao-e-nordeste #trilha-brasil-profundo |
-| Guerra e Paz | Liev Tolstói (na prateleira consta Dostoiévski; autor correto: Tolstói) | #F #romance-historico #guerra #classico #d3 #e3 #tenho-fisico #papel-desafio #ponte-historia-e-ficcao #cenario-russia #trilha-alma-russa |
+| Os Sertões | Euclides da Cunha | #NF #historia #BR #classico #d3 #e3 #tenho-fisico #papel-desafio #cenario-sertao-e-nordeste #trilha-brasil-profundo #trilha-grandes-desafios |
+| Guerra e Paz | Liev Tolstói (na prateleira consta Dostoiévski; autor correto: Tolstói) | #F #romance-historico #guerra #classico #d3 #e3 #tenho-fisico #papel-desafio #ponte-historia-e-ficcao #cenario-russia #trilha-alma-russa #trilha-grandes-desafios |
 | Bufo & Spallanzani | Rubem Fonseca | #F #misterio #BR #d2 #e2 #tenho-fisico #trilha-crime-a-brasileira |
-| 20 Poemas de Amor e uma Canção Desesperada | Pablo Neruda | #poesia #latam #classico #d1 #e1 #tenho-fisico |
+| 20 Poemas de Amor e uma Canção Desesperada | Pablo Neruda | #poesia #latam #classico #d1 #e1 #tenho-fisico #trilha-poesia-em-vozes |
 | Filhos do Éden (trilogia: Herdeiros de Atlântida · Anjos da Morte · Paraíso Perdido) | Eduardo Spohr | #F #fantasia #BR #d1 #e3 #tenho-fisico |
 | O Herói Discreto | Mario Vargas Llosa | #F #latam #contemporaneo #d2 #e2 #tenho-fisico |
 | Os Tambores Silenciosos | Josué Guimarães | #F #BR #RS #regional-gaucho #d2 #e1 #tenho-fisico #trilha-saga-gaucha |
@@ -73,23 +73,23 @@ Formato das linhas: `Título | Autor | Tags`. As tags usam `#` (compatível com 
 | O Informe de Brodie | Jorge Luis Borges | #F #latam #classico #contos #d2 #e1 #tenho-fisico #tenho-digital #trilha-labirintos-de-borges |
 | Blecaute | Marcelo Rubens Paiva | #F #BR #d1 #e1 #tenho-fisico |
 | Tieta do Agreste | Jorge Amado | #F #BR #classico #d1 #e3 #tenho-fisico #cenario-sertao-e-nordeste |
-| Ensaios e Anseios Crípticos | Paulo Leminski | #NF #poesia #linguagem #BR #d2 #e1 #tenho-fisico |
+| Ensaios e Anseios Crípticos | Paulo Leminski | #NF #poesia #linguagem #BR #d2 #e1 #tenho-fisico #trilha-oficina-do-escritor |
 | O Cirurgião | Tess Gerritsen | #F #thriller-medico #thriller #d1 #e2 #tenho-fisico #trilha-plantao-noturno |
 | Valsa Maldita | Tess Gerritsen | #F #thriller-medico #thriller #d1 #e2 #tenho-fisico |
 | Erro Médico | Robin Cook | #F #thriller-medico #thriller #d1 #e2 #tenho-fisico #tenho-digital #trilha-plantao-noturno |
-| Contos (Edgar Allan Poe) | Edgar Allan Poe | #F #horror #gotico #classico #contos #d2 #e2 #tenho-fisico #tenho-digital |
+| Contos (Edgar Allan Poe) | Edgar Allan Poe | #F #horror #gotico #classico #contos #d2 #e2 #tenho-fisico #tenho-digital #trilha-pesadelos-de-papel |
 | Contos (H.P. Lovecraft) | H.P. Lovecraft | #F #horror #lovecraftiano #classico #contos #d2 #e2 #tenho-fisico #rel-widows-bay |
 | Contos (Sir Arthur Conan Doyle) | Arthur Conan Doyle | #F #misterio #classico #contos #d1 #e2 #tenho-fisico |
 | O Aprendiz de Assassino | Robin Hobb | #F #fantasia #d1 #e2 #tenho-fisico #tenho-digital #trilha-fantasia-de-folego |
 | O Cavaleiro dos Sete Reinos | George R.R. Martin | #F #fantasia #d1 #e2 #tenho-fisico #trilha-fantasia-de-folego |
 | Cartas de um Diabo a seu Aprendiz | C.S. Lewis | #F #religiao #humor #classico #d2 #e1 #tenho-fisico #tenho-digital #q-fe-e-duvida #clima-comico |
-| História do Cerco de Lisboa | José Saramago | #F #portugal #romance-historico #d3 #e2 #tenho-fisico |
+| História do Cerco de Lisboa | José Saramago | #F #portugal #romance-historico #d3 #e2 #tenho-fisico #trilha-catedrais-e-cortes |
 | A Peste | Albert Camus | #F #existencialismo #etica #classico #d2 #e2 #tenho-fisico #q-morte-e-finitude |
 | O Xamã | Noah Gordon | #F #romance-historico #medicina #d1 #e3 #tenho-fisico #tenho-digital #rel-cornwell #trilha-bisturi-e-fe |
-| O Profeta | Khalil Gibran | #F #poesia #espiritualidade #classico #d1 #e1 #tenho-fisico #q-sentido-e-como-viver #clima-contemplativo |
+| O Profeta | Khalil Gibran | #F #poesia #espiritualidade #classico #d1 #e1 #tenho-fisico #q-sentido-e-como-viver #clima-contemplativo #trilha-sentido-e-como-viver #trilha-silencio-e-consciencia |
 | Megalomania de Freud | Israel Rosenfield | #F #psicanalise #d2 #e1 #tenho-fisico |
 | Mentiras no Divã | Irvin D. Yalom | #F #psicologia #d1 #e2 #tenho-fisico #rel-yalom |
-| Mamãe e o Sentido da Vida | Irvin D. Yalom | #F #psicologia #existencialismo #contos #d1 #e2 #tenho-fisico #rel-yalom #q-sentido-e-como-viver |
+| Mamãe e o Sentido da Vida | Irvin D. Yalom | #F #psicologia #existencialismo #contos #d1 #e2 #tenho-fisico #rel-yalom #q-sentido-e-como-viver #trilha-sentido-e-como-viver |
 | Quando Nietzsche Chorou | Irvin D. Yalom | #F #psicologia #filosofia #d1 #e2 #tenho-fisico #rel-yalom #papel-porta-de-entrada #ponte-ficcao-e-filosofia #trilha-yalom-nietzsche |
 | O Homem e seus Símbolos | Carl G. Jung | #NF #psicologia #psicanalise #psicologia-analitica #d2 #e2 #tenho-fisico #tenho-digital #trilha-jung-para-comecar |
 | Inteligência Emocional | Daniel Goleman | #NF #psicologia #autoconhecimento #d1 #e2 #tenho-fisico #tenho-digital |
@@ -99,14 +99,14 @@ Formato das linhas: `Título | Autor | Tags`. As tags usam `#` (compatível com 
 | Além do Bem e do Mal | Friedrich Nietzsche | #NF #filosofia #classico #d3 #e2 #tenho-fisico #tenho-digital #trilha-yalom-nietzsche |
 | Ecce Homo | Friedrich Nietzsche | #NF #filosofia #classico #d3 #e1 #tenho-fisico #trilha-yalom-nietzsche |
 | Filosofia: Novas Respostas para Antigas Questões | Nicholas Fearn | #NF #filosofia #introducao #d1 #e2 #tenho-fisico |
-| Pensamento Crítico de A a Z | Nigel Warburton | #NF #filosofia #introducao #d1 #e1 #tenho-fisico #papel-porta-de-entrada |
+| Pensamento Crítico de A a Z | Nigel Warburton | #NF #filosofia #introducao #d1 #e1 #tenho-fisico #papel-porta-de-entrada #trilha-portas-de-entrada |
 | Sobre o que nos Perguntam os Grandes Filósofos | Leszek Kołakowski | #NF #filosofia #introducao #d2 #e2 #tenho-fisico |
 | Convite à Filosofia | Marilena Chaui | #NF #filosofia #introducao #BR #d2 #e3 #tenho-fisico #tenho-digital |
-| Se Liga na Filosofia | Globo Livros | #NF #filosofia #introducao #d1 #e1 #tenho-fisico #papel-porta-de-entrada |
+| Se Liga na Filosofia | Globo Livros | #NF #filosofia #introducao #d1 #e1 #tenho-fisico #papel-porta-de-entrada #trilha-portas-de-entrada |
 | Grandes Questões da Ciência | Harriet Swain | #NF #ciencia #d1 #e2 #tenho-fisico |
 | A Longa Marcha dos Grilos Canibais | Fernando Reinach | #NF #ciencia #BR #d1 #e2 #tenho-fisico #tenho-digital |
 | O Futuro | Al Gore | #NF #politica #ciencia #contemporaneo #d2 #e3 #tenho-fisico |
-| O Segundo Mundo | Parag Khanna | #NF #geopolitica #politica #d2 #e3 #tenho-fisico |
+| O Segundo Mundo | Parag Khanna | #NF #geopolitica #politica #d2 #e3 #tenho-fisico #trilha-geopolitica |
 | O Novo Papel do Pai | Paul Raeburn | #NF #parentalidade #d1 #e2 #tenho-fisico #trilha-pai-em-construcao |
 | Inteligência Emocional e a Arte de Educar Nossos Filhos (A Arte de Criar Nossos Filhos) | John Gottman e Joan Declaire | #NF #parentalidade #psicologia #d1 #e2 #tenho-fisico #trilha-pai-em-construcao |
 | Primatas da Park Avenue | Wednesday Martin | #NF #sociologia #antropologia #humor #d1 #e2 #tenho-fisico #tenho-digital #clima-comico |
@@ -129,15 +129,15 @@ Formato das linhas: `Título | Autor | Tags`. As tags usam `#` (compatível com 
 | Pantaleão e as Visitadoras | Mario Vargas Llosa | #F #latam #humor #d1 #e2 #tenho-fisico #clima-comico |
 | A Ilha (Benchley) | Peter Benchley | #F #thriller #aventura #d1 #e2 #tenho-fisico #cenario-ilha-e-isolamento |
 | O Plano Perfeito | Sidney Sheldon | #F #thriller #d1 #e2 #tenho-fisico |
-| Corpo | Carlos Drummond de Andrade | #poesia #BR #classico #d2 #e1 #tenho-fisico |
+| Corpo | Carlos Drummond de Andrade | #poesia #BR #classico #d2 #e1 #tenho-fisico #trilha-poesia-em-vozes |
 | Invictus: Nelson Mandela e o Jogo que Uniu a África do Sul | John Carlin | #NF #historia #africa #politica #esporte #d1 #e2 #tenho-fisico #clima-emocionante |
 | 71 Segundos: O Jogo de uma Vida | Luiz Zini Pires | #NF #esporte #BR #d1 #e1 #tenho-fisico |
-| A Imperatriz de Ferro | Jung Chang | #NF #biografia #historia #asia #d2 #e3 #tenho-fisico |
-| História da Riqueza no Brasil | Jorge Caldeira | #NF #historia #economia #BR #d2 #e3 #tenho-fisico #trilha-brasil-profundo |
+| A Imperatriz de Ferro | Jung Chang | #NF #biografia #historia #asia #d2 #e3 #tenho-fisico #trilha-imperios-e-conquistadores #trilha-leste-asiatico |
+| História da Riqueza no Brasil | Jorge Caldeira | #NF #historia #economia #BR #d2 #e3 #tenho-fisico #trilha-brasil-profundo #trilha-economia-sem-jargao |
 | Sérgio Cabral: O Homem que Queria ser Rei | Hudson Corrêa | #NF #biografia #politica #BR #d1 #e2 #tenho-fisico |
 | O Primeiro Ano: Como se Faz um Advogado | Scott Turow | #NF #biografia #d1 #e2 #tenho-fisico |
 | Nietzsche Hoje | Viviane Mosé | #NF #filosofia #BR #d2 #e2 #tenho-fisico #trilha-yalom-nietzsche |
-| A Arte de Envelhecer | Irvin D. Yalom (conforme a prateleira) | #NF #psicologia #verificar #d1 #e2 #tenho-fisico #rel-yalom #q-sentido-e-como-viver |
+| A Arte de Envelhecer | Irvin D. Yalom (conforme a prateleira) | #NF #psicologia #verificar #d1 #e2 #tenho-fisico #rel-yalom #q-sentido-e-como-viver #trilha-sentido-e-como-viver |
 | As 5 Linguagens do Amor | Gary Chapman | #NF #psicologia #autoconhecimento #d1 #e1 #tenho-fisico |
 | Superação e Equilíbrio Emocional | Leo Fraiman | #NF #psicologia #autoconhecimento #d1 #e2 #tenho-fisico |
 | Estados Emocionais Alterados: Psiquiatria Espiritual | Cristina Neves | #NF #psiquiatria #espiritualidade #espiritismo #d2 #e2 #tenho-fisico #ponte-ciencia-e-fe #trilha-fronteiras-do-inexplicavel |
@@ -169,7 +169,7 @@ Formato das linhas: `Título | Autor | Tags`. As tags usam `#` (compatível com 
 | Ismael | Daniel Quinn | #F #filosofia #ecologia #d2 #e2 #top #rel-imortais #q-o-que-e-humano #q-natureza-e-civilizacao #clima-subversivo #papel-ponte #trilha-origens |
 | Neandertal: À Procura de Genomas Perdidos | Svante Pääbo | #NF #ciencia #neandertal #biologia #pre-historia #d2 #e2 #rel-imortais #q-o-que-e-humano #trilha-origens |
 | Kindred: Neanderthal Life, Love, Death and Art | Rebecca Wragg Sykes | #NF #neandertal #ciencia #sem-pt #pre-historia #d2 #e2 #rel-imortais #q-o-que-e-humano #trilha-origens |
-| Sapiens: Uma Breve História da Humanidade | Yuval Noah Harari | #NF #historia #antropologia #d1 #e2 #rel-imortais #tenho-digital #q-o-que-e-humano #q-natureza-e-civilizacao #papel-porta-de-entrada #papel-contraponto |
+| Sapiens: Uma Breve História da Humanidade | Yuval Noah Harari | #NF #historia #antropologia #d1 #e2 #rel-imortais #tenho-digital #q-o-que-e-humano #q-natureza-e-civilizacao #papel-porta-de-entrada #papel-contraponto #trilha-portas-de-entrada |
 | Armas, Germes e Aço | Jared Diamond | #NF #historia #antropologia #d2 #e3 #q-natureza-e-civilizacao |
 | Círculo dos Dias | Ken Follett | #F #pre-historia #romance-historico #d1 #e2 #rel-cornwell #clima-aventura #ponte-historia-e-ficcao |
 
@@ -184,32 +184,32 @@ Formato das linhas: `Título | Autor | Tags`. As tags usam `#` (compatível com 
 | Eu, Robô | Isaac Asimov | #F #ficcao-cientifica #ia #classico #contos #d1 #e2 #rel-asimov-clarke #tenho-digital #papel-porta-de-entrada #ponte-ia-e-humanidade #trilha-ficcao-cientifica-classica #trilha-maquinas-que-pensam |
 | Crônicas Marcianas | Ray Bradbury | #F #ficcao-cientifica #classico #contos #d1 #e2 |
 | Fahrenheit 451 | Ray Bradbury | #F #distopia #classico #d1 #e1 #tenho-digital #q-liberdade-e-obediencia #papel-leitura-relampago #trilha-distopias #trilha-relampago |
-| Um Estranho numa Terra Estranha | Robert A. Heinlein | #F #ficcao-cientifica #classico #d2 #e3 #tenho-digital |
+| Um Estranho numa Terra Estranha | Robert A. Heinlein | #F #ficcao-cientifica #classico #d2 #e3 #tenho-digital #trilha-ficcao-cientifica-de-gente |
 | Nós | Ievguêni Zamiátin | #F #distopia #classico #d2 #e1 #tenho-digital #q-liberdade-e-obediencia #cenario-russia #trilha-distopias |
 | Piquenique na Estrada | Irmãos Strugatski | #F #ficcao-cientifica #classico #d2 #e1 #q-alteridade-e-contato |
 | Duna | Frank Herbert | #F #ficcao-cientifica #politica #classico #d2 #e3 #top #tenho-digital #clima-aventura #cenario-espaco-profundo #trilha-ficcao-cientifica-classica |
 | Neuromancer | William Gibson | #F #ficcao-cientifica #ia #d2 #e2 #tenho-digital #ponte-ia-e-humanidade #cenario-futuro-proximo #trilha-ficcao-cientifica-classica |
-| Hyperion | Dan Simmons | #F #ficcao-cientifica #d2 #e3 #tenho-digital #clima-aventura #cenario-espaco-profundo |
-| O Problema dos Três Corpos | Cixin Liu | #F #ficcao-cientifica #asia #d2 #e2 #tenho-digital #clima-cerebral #cenario-espaco-profundo #trilha-ficcao-cientifica-classica |
-| Androides Sonham com Ovelhas Elétricas? | Philip K. Dick | #F #ficcao-cientifica #consciencia #classico #d1 #e1 #tenho-digital #q-o-que-e-humano #ponte-ia-e-humanidade #cenario-futuro-proximo |
+| Hyperion | Dan Simmons | #F #ficcao-cientifica #d2 #e3 #tenho-digital #clima-aventura #cenario-espaco-profundo #trilha-ficcao-cientifica-de-gente |
+| O Problema dos Três Corpos | Cixin Liu | #F #ficcao-cientifica #asia #d2 #e2 #tenho-digital #clima-cerebral #cenario-espaco-profundo #trilha-ficcao-cientifica-classica #trilha-leste-asiatico |
+| Androides Sonham com Ovelhas Elétricas? | Philip K. Dick | #F #ficcao-cientifica #consciencia #classico #d1 #e1 #tenho-digital #q-o-que-e-humano #ponte-ia-e-humanidade #cenario-futuro-proximo #trilha-do-texto-aos-quadrinhos #trilha-ficcao-cientifica-de-gente |
 | O Homem do Castelo Alto | Philip K. Dick | #F #historia-alternativa #classico #d2 #e2 #q-realidade-e-percepcao |
-| Solaris | Stanisław Lem | #F #ficcao-cientifica #consciencia #filosofia #classico #d2 #e2 #top #rel-imortais #tenho-digital #q-o-que-e-humano #q-realidade-e-percepcao #q-alteridade-e-contato #clima-onirico #papel-ponte #ponte-literatura-e-neurociencia #ponte-ficcao-e-filosofia #cenario-espaco-profundo #trilha-alteridade #trilha-ficcao-cientifica-classica #trilha-mente-e-cerebro |
-| A Mão Esquerda da Escuridão | Ursula K. Le Guin | #F #ficcao-cientifica #genero #antropologia #classico #d2 #e2 #rel-imortais #tenho-digital #q-alteridade-e-contato #trilha-alteridade |
-| Os Despossuídos | Ursula K. Le Guin | #F #ficcao-cientifica #politica #utopia #classico #d2 #e2 #rel-imortais #tenho-digital #q-alteridade-e-contato #ponte-ficcao-e-filosofia #cenario-espaco-profundo |
-| Floresta é o Nome do Mundo | Ursula K. Le Guin | #F #ficcao-cientifica #colonialismo #ecologia #classico #d1 #e1 #rel-imortais #tenho-digital #q-alteridade-e-contato #q-natureza-e-civilizacao #ponte-ecologia-e-colonialismo #trilha-alteridade |
-| A Curva do Sonho | Ursula K. Le Guin | #F #ficcao-cientifica #consciencia #classico #d2 #e1 #tenho-digital #q-realidade-e-percepcao #clima-onirico |
-| O Feiticeiro de Terramar (Ciclo Terramar, vol. 1) | Ursula K. Le Guin | #F #fantasia #classico #d1 #e1 #tenho-digital #trilha-fantasia-de-folego |
+| Solaris | Stanisław Lem | #F #ficcao-cientifica #consciencia #filosofia #classico #d2 #e2 #top #rel-imortais #tenho-digital #q-o-que-e-humano #q-realidade-e-percepcao #q-alteridade-e-contato #clima-onirico #papel-ponte #ponte-literatura-e-neurociencia #ponte-ficcao-e-filosofia #cenario-espaco-profundo #trilha-alteridade #trilha-cerebro-no-acervo #trilha-ficcao-cientifica-classica #trilha-mente-e-cerebro |
+| A Mão Esquerda da Escuridão | Ursula K. Le Guin | #F #ficcao-cientifica #genero #antropologia #classico #d2 #e2 #rel-imortais #tenho-digital #q-alteridade-e-contato #trilha-alteridade #trilha-le-guin-mundos-e-ideias |
+| Os Despossuídos | Ursula K. Le Guin | #F #ficcao-cientifica #politica #utopia #classico #d2 #e2 #rel-imortais #tenho-digital #q-alteridade-e-contato #ponte-ficcao-e-filosofia #cenario-espaco-profundo #trilha-ficcao-cientifica-de-gente #trilha-le-guin-mundos-e-ideias |
+| Floresta é o Nome do Mundo | Ursula K. Le Guin | #F #ficcao-cientifica #colonialismo #ecologia #classico #d1 #e1 #rel-imortais #tenho-digital #q-alteridade-e-contato #q-natureza-e-civilizacao #ponte-ecologia-e-colonialismo #trilha-alteridade #trilha-le-guin-mundos-e-ideias |
+| A Curva do Sonho | Ursula K. Le Guin | #F #ficcao-cientifica #consciencia #classico #d2 #e1 #tenho-digital #q-realidade-e-percepcao #clima-onirico #trilha-ficcao-cientifica-de-gente #trilha-le-guin-mundos-e-ideias |
+| O Feiticeiro de Terramar (Ciclo Terramar, vol. 1) | Ursula K. Le Guin | #F #fantasia #classico #d1 #e1 #tenho-digital #trilha-fantasia-de-folego #trilha-le-guin-mundos-e-ideias |
 | Despertar (Xenogênese) | Octavia E. Butler | #F #ficcao-cientifica #raca #d2 #e2 #rel-imortais #q-alteridade-e-contato #trilha-alteridade |
 | A Parábola do Semeador | Octavia E. Butler | #F #distopia #ecologia #d2 #e2 #rel-imortais #q-natureza-e-civilizacao #ponte-ecologia-e-colonialismo #cenario-futuro-proximo |
 | Kindred: Laços de Sangue | Octavia E. Butler | #F #raca #historia #d2 #e2 |
 | A Máquina do Tempo | H.G. Wells | #F #ficcao-cientifica #classico #d1 #e1 #q-natureza-e-civilizacao #papel-leitura-relampago |
 | O Guia do Mochileiro das Galáxias | Douglas Adams | #F #ficcao-cientifica #humor #d1 #e1 #clima-comico |
-| Matadouro 5 | Kurt Vonnegut | #F #guerra #ficcao-cientifica #classico #d2 #e1 #cenario-guerra-mundial |
-| Flores para Algernon | Daniel Keyes | #F #ficcao-cientifica #psicologia #classico #d1 #e1 #tenho-digital #q-o-que-e-humano #clima-emocionante #papel-leitura-relampago #ponte-literatura-e-neurociencia |
-| A Invenção de Morel | Adolfo Bioy Casares | #F #latam #ficcao-cientifica #classico #d2 #e1 #tenho-digital #q-realidade-e-percepcao #clima-onirico #cenario-ilha-e-isolamento |
+| Matadouro 5 | Kurt Vonnegut | #F #guerra #ficcao-cientifica #classico #d2 #e1 #cenario-guerra-mundial #trilha-depois-da-batalha |
+| Flores para Algernon | Daniel Keyes | #F #ficcao-cientifica #psicologia #classico #d1 #e1 #tenho-digital #q-o-que-e-humano #clima-emocionante #papel-leitura-relampago #ponte-literatura-e-neurociencia #trilha-ficcao-cientifica-de-gente |
+| A Invenção de Morel | Adolfo Bioy Casares | #F #latam #ficcao-cientifica #classico #d2 #e1 #tenho-digital #q-realidade-e-percepcao #clima-onirico #cenario-ilha-e-isolamento #trilha-ficcao-cientifica-de-gente |
 | As Cosmicômicas | Italo Calvino | #F #ficcao-cientifica #ciencia #classico #contos #d2 #e1 #rel-imortais #clima-onirico #clima-cerebral #papel-ponte |
 | O Poder | Naomi Alderman | #F #distopia #genero #d1 #e2 #cenario-futuro-proximo |
-| A Cidade e a Cidade | China Miéville | #F #misterio #ficcao-cientifica #d2 #e2 #tenho-digital #q-realidade-e-percepcao #clima-cerebral |
+| A Cidade e a Cidade | China Miéville | #F #misterio #ficcao-cientifica #d2 #e2 #tenho-digital #q-realidade-e-percepcao #clima-cerebral #trilha-ficcao-cientifica-de-gente |
 | Embassytown | China Miéville | #F #ficcao-cientifica #linguagem #d3 #e2 #q-alteridade-e-contato #clima-cerebral #cenario-espaco-profundo |
 | Permutation City | Greg Egan | #F #ficcao-cientifica #consciencia #ia #sem-pt #d3 #e2 #q-identidade-e-eu #clima-cerebral #ponte-ia-e-humanidade |
 | A História da Sua Vida e Outros Contos | Ted Chiang | #F #ficcao-cientifica #linguagem #contos #d2 #e2 #top #q-alteridade-e-contato #clima-cerebral #papel-ponte #trilha-alteridade |
@@ -217,16 +217,16 @@ Formato das linhas: `Título | Autor | Tags`. As tags usam `#` (compatível com 
 | O Livro das Coisas Estranhas | Michel Faber | #F #ficcao-cientifica #religiao #d2 #e3 #q-fe-e-duvida #cenario-espaco-profundo |
 | Os Empregados | Olga Ravn | #F #ficcao-cientifica #ia #d2 #e1 #q-o-que-e-humano #ponte-ia-e-humanidade #cenario-espaco-profundo |
 | Klara e o Sol | Kazuo Ishiguro | #F #ia #contemporaneo #d1 #e2 #q-o-que-e-humano #clima-melancolico #ponte-literatura-e-neurociencia #ponte-ia-e-humanidade #cenario-futuro-proximo #trilha-maquinas-que-pensam |
-| Não Me Abandone Jamais | Kazuo Ishiguro | #F #ficcao-cientifica #etica #contemporaneo #d1 #e2 #top #tenho-digital #q-o-que-e-humano #clima-melancolico #ponte-ia-e-humanidade #cenario-futuro-proximo |
+| Não Me Abandone Jamais | Kazuo Ishiguro | #F #ficcao-cientifica #etica #contemporaneo #d1 #e2 #top #tenho-digital #q-o-que-e-humano #clima-melancolico #ponte-ia-e-humanidade #cenario-futuro-proximo #trilha-ficcao-cientifica-de-gente |
 | Frankenstein | Mary Shelley | #F #gotico #ficcao-cientifica #classico #d2 #e2 #q-o-que-e-humano #papel-ponte #ponte-ciencia-e-fe |
 | A Estrada | Cormac McCarthy | #F #distopia #contemporaneo #d1 #e1 #top #rel-imortais #q-natureza-e-civilizacao #clima-melancolico #clima-emocionante #papel-porta-de-entrada #papel-leitura-relampago #cenario-futuro-proximo #trilha-relampago |
 | Admirável Mundo Novo | Aldous Huxley | #F #distopia #classico #d2 #e2 #tenho-digital #q-liberdade-e-obediencia #trilha-distopias |
-| A Revolução dos Bichos | George Orwell | #F #distopia #politica #classico #d1 #e1 #tenho-digital #q-liberdade-e-obediencia #clima-subversivo #papel-leitura-relampago #trilha-distopias |
-| O Conto da Aia | Margaret Atwood | #F #distopia #genero #autoritarismo #d1 #e2 #tenho-digital #q-liberdade-e-obediencia #clima-subversivo #ponte-corpo-e-poder #cenario-futuro-proximo #trilha-distopias #trilha-corpo-genero-poder |
+| A Revolução dos Bichos | George Orwell | #F #distopia #politica #classico #d1 #e1 #tenho-digital #q-liberdade-e-obediencia #clima-subversivo #papel-leitura-relampago #trilha-distopias #trilha-do-texto-aos-quadrinhos |
+| O Conto da Aia | Margaret Atwood | #F #distopia #genero #autoritarismo #d1 #e2 #tenho-digital #q-liberdade-e-obediencia #clima-subversivo #ponte-corpo-e-poder #cenario-futuro-proximo #trilha-corpo-genero-poder #trilha-distopias #trilha-do-texto-aos-quadrinhos |
 | Os Cães da Peste | Richard Adams | #F #etica #d2 #e2 #q-o-que-e-humano |
 | The Mandibles | Lionel Shriver | #F #distopia #economia #sem-pt #d2 #e3 #cenario-futuro-proximo |
 | A Parede | Marlen Haushofer | #F #distopia #d2 #e2 #q-natureza-e-civilizacao #clima-claustrofobico #cenario-ilha-e-isolamento |
-| A Polícia da Memória | Yoko Ogawa | #F #distopia #memoria #asia #d1 #e2 #tenho-digital #q-memoria-e-esquecimento |
+| A Polícia da Memória | Yoko Ogawa | #F #distopia #memoria #asia #d1 #e2 #tenho-digital #q-memoria-e-esquecimento #trilha-leste-asiatico |
 | O Senhor dos Anéis | J.R.R. Tolkien | #F #fantasia #classico #d2 #e3 #clima-aventura #trilha-fantasia-de-folego |
 | O Nome do Vento | Patrick Rothfuss | #F #fantasia #d1 #e3 #tenho-digital #clima-aventura #trilha-fantasia-de-folego |
 | O Último Desejo | Andrzej Sapkowski | #F #fantasia #d1 #e2 #clima-aventura |
@@ -247,15 +247,15 @@ Formato das linhas: `Título | Autor | Tags`. As tags usam `#` (compatível com 
 
 | Título | Autor | Tags |
 |---|---|---|
-| Dom Quixote | Miguel de Cervantes | #F #classico #d3 #e3 #tenho-digital #papel-desafio |
-| A Divina Comédia | Dante Alighieri | #poesia #religiao #classico #d3 #e3 #tenho-digital #papel-desafio #papel-fonte-primaria |
-| Odisseia | Homero | #F #antiguidade #classico #mitologia #d2 #e2 #papel-fonte-primaria |
+| Dom Quixote | Miguel de Cervantes | #F #classico #d3 #e3 #tenho-digital #papel-desafio #trilha-grandes-desafios |
+| A Divina Comédia | Dante Alighieri | #poesia #religiao #classico #d3 #e3 #tenho-digital #papel-desafio #papel-fonte-primaria #trilha-grandes-desafios |
+| Odisseia | Homero | #F #antiguidade #classico #mitologia #d2 #e2 #papel-fonte-primaria #trilha-mitos-e-herois |
 | Édipo Rei | Sófocles | #F #antiguidade #teatro #classico #d1 #e1 #papel-leitura-relampago |
 | Hamlet | William Shakespeare | #F #teatro #classico #d2 #e1 |
-| Fausto | Johann W. von Goethe | #F #classico #d3 #e2 #tenho-digital #papel-desafio #ponte-ficcao-e-filosofia |
+| Fausto | Johann W. von Goethe | #F #classico #d3 #e2 #tenho-digital #papel-desafio #ponte-ficcao-e-filosofia #trilha-grandes-desafios |
 | Cândido | Voltaire | #F #filosofia #humor #classico #d1 #e1 #q-sentido-e-como-viver #clima-subversivo #clima-comico #papel-leitura-relampago #ponte-ficcao-e-filosofia #trilha-relampago |
 | Anna Kariênina | Liev Tolstói | #F #classico #d2 #e3 #cenario-russia #trilha-alma-russa |
-| A Morte de Ivan Ilitch | Liev Tolstói | #F #morte #existencialismo #classico #d1 #e1 #top #q-sentido-e-como-viver #q-morte-e-finitude #clima-melancolico #papel-leitura-relampago #cenario-russia #trilha-finitude #trilha-alma-russa |
+| A Morte de Ivan Ilitch | Liev Tolstói | #F #morte #existencialismo #classico #d1 #e1 #top #q-sentido-e-como-viver #q-morte-e-finitude #clima-melancolico #papel-leitura-relampago #cenario-russia #trilha-alma-russa #trilha-finitude |
 | Os Irmãos Karamázov | Fiódor Dostoiévski | #F #religiao #etica #classico #d3 #e3 #top #q-fe-e-duvida #q-culpa-e-justica #papel-desafio #ponte-ficcao-e-filosofia #cenario-russia #trilha-alma-russa |
 | O Idiota | Fiódor Dostoiévski | #F #classico #d3 #e3 #tenho-digital #cenario-russia |
 | A Dama do Cachorrinho e Outros Contos | Anton Tchekhov | #F #classico #contos #d1 #e1 #cenario-russia |
@@ -272,7 +272,7 @@ Formato das linhas: `Título | Autor | Tags`. As tags usam `#` (compatível com 
 | A Montanha Mágica | Thomas Mann | #F #classico #d3 #e3 #papel-desafio |
 | Sidarta | Hermann Hesse | #F #espiritualidade #classico #d1 #e1 #q-sentido-e-como-viver #clima-contemplativo #papel-leitura-relampago #trilha-relampago |
 | O Lobo da Estepe | Hermann Hesse | #F #existencialismo #psicologia #classico #d2 #e2 #q-identidade-e-eu |
-| A Insustentável Leveza do Ser | Milan Kundera | #F #existencialismo #d2 #e2 #tenho-digital #q-sentido-e-como-viver |
+| A Insustentável Leveza do Ser | Milan Kundera | #F #existencialismo #d2 #e2 #tenho-digital #q-sentido-e-como-viver #trilha-sentido-e-como-viver |
 | Ensaio sobre a Cegueira | José Saramago | #F #distopia #etica #d2 #e2 #top #q-liberdade-e-obediencia #clima-claustrofobico #ponte-literatura-e-neurociencia #trilha-distopias |
 | O Homem Duplicado | José Saramago | #F #identidade #d1 #e2 #q-identidade-e-eu |
 | O Perfume | Patrick Süskind | #F #romance-historico #d1 #e2 |
@@ -289,7 +289,7 @@ Formato das linhas: `Título | Autor | Tags`. As tags usam `#` (compatível com 
 | O Apanhador no Campo de Centeio | J.D. Salinger | #F #classico #d1 #e1 |
 | Pastoral Americana | Philip Roth | #F #contemporaneo #d2 #e2 |
 | Amada | Toni Morrison | #F #raca #memoria #d3 #e2 #q-memoria-e-esquecimento #clima-cru-e-chocante #ponte-corpo-e-poder #trilha-corpo-genero-poder |
-| Os Vestígios do Dia | Kazuo Ishiguro | #F #memoria #d1 #e2 #tenho-digital #q-sentido-e-como-viver #clima-melancolico |
+| Os Vestígios do Dia | Kazuo Ishiguro | #F #memoria #d1 #e2 #tenho-digital #q-sentido-e-como-viver #clima-melancolico #trilha-sentido-e-como-viver |
 | O Desconsolado | Kazuo Ishiguro | #F #memoria #d3 #e3 #tenho-digital #q-memoria-e-esquecimento |
 | Stoner | John Williams | #F #d1 #e2 #q-sentido-e-como-viver #clima-melancolico |
 | As Ondas | Virginia Woolf | #F #classico #d3 #e2 |
@@ -311,9 +311,9 @@ Formato das linhas: `Título | Autor | Tags`. As tags usam `#` (compatível com 
 | A Casa dos Espíritos | Isabel Allende | #F #latam #d1 #e2 #clima-onirico #trilha-realismo-magico |
 | A Festa do Bode | Mario Vargas Llosa | #F #latam #autoritarismo #romance-historico #d2 #e2 #q-poder-e-violencia #ponte-historia-e-ficcao |
 | A Cidade e os Cachorros | Mario Vargas Llosa | #F #latam #d2 #e2 |
-| Os Detetives Selvagens | Roberto Bolaño | #F #latam #d3 #e3 #tenho-digital #papel-desafio |
+| Os Detetives Selvagens | Roberto Bolaño | #F #latam #d3 #e3 #tenho-digital #papel-desafio #trilha-grandes-desafios |
 | O Jogo da Amarelinha | Julio Cortázar | #F #latam #d3 #e3 #papel-desafio #trilha-realismo-magico |
-| O Aleph | Jorge Luis Borges | #F #latam #filosofia #classico #contos #d2 #e1 #tenho-digital #q-realidade-e-percepcao #clima-onirico #trilha-realismo-magico #trilha-labirintos-de-borges |
+| O Aleph | Jorge Luis Borges | #F #latam #filosofia #classico #contos #d2 #e1 #tenho-digital #q-realidade-e-percepcao #clima-onirico #trilha-labirintos-de-borges #trilha-realismo-magico |
 | Ficções | Jorge Luis Borges | #F #latam #filosofia #classico #contos #d2 #e1 #tenho-digital #q-realidade-e-percepcao #clima-onirico #clima-cerebral #ponte-ficcao-e-filosofia #trilha-labirintos-de-borges |
 | O Túnel | Ernesto Sabato | #F #latam #psicologia #classico #d1 #e1 #clima-claustrofobico #papel-leitura-relampago |
 | Grande Sertão: Veredas | João Guimarães Rosa | #F #BR #classico #d3 #e3 #top #clima-onirico #papel-desafio #cenario-sertao-e-nordeste #trilha-realismo-magico |
@@ -348,7 +348,7 @@ Formato das linhas: `Título | Autor | Tags`. As tags usam `#` (compatível com 
 | Os Supridores | José Falero | #F #BR #RS #humor #contemporaneo #d1 #e2 #clima-subversivo #trilha-porto-alegre-hoje |
 | Marrom e Amarelo | Paulo Scott | #F #BR #RS #raca #contemporaneo #d2 #e1 #q-identidade-e-eu #trilha-porto-alegre-hoje |
 | Barba Ensopada de Sangue | Daniel Galera | #F #BR #RS #contemporaneo #d2 #e2 #q-identidade-e-eu #clima-melancolico #trilha-porto-alegre-hoje |
-| A Guerra do Fim do Mundo | Mario Vargas Llosa | #F #latam #romance-historico #guerra #religiao #d2 #e3 #q-fe-e-duvida #ponte-historia-e-ficcao #cenario-sertao-e-nordeste |
+| A Guerra do Fim do Mundo | Mario Vargas Llosa | #F #latam #romance-historico #guerra #religiao #d2 #e3 #q-fe-e-duvida #ponte-historia-e-ficcao #cenario-sertao-e-nordeste #trilha-depois-da-batalha |
 | O Filho de Mil Homens | Valter Hugo Mãe | #F #portugal #parentalidade #contemporaneo #d1 #e1 #clima-emocionante #trilha-pai-em-construcao |
 
 ---
@@ -357,13 +357,13 @@ Formato das linhas: `Título | Autor | Tags`. As tags usam `#` (compatível com 
 
 | Título | Autor | Tags |
 |---|---|---|
-| A Vegetariana | Han Kang | #F #asia #d1 #e1 #top #tenho-digital #q-identidade-e-eu #clima-cru-e-chocante #papel-leitura-relampago #ponte-corpo-e-poder #trilha-corpo-genero-poder #trilha-relampago |
-| Crônica do Pássaro de Corda | Haruki Murakami | #F #asia #d2 #e3 #tenho-digital #q-realidade-e-percepcao #clima-onirico |
+| A Vegetariana | Han Kang | #F #asia #d1 #e1 #top #tenho-digital #q-identidade-e-eu #clima-cru-e-chocante #papel-leitura-relampago #ponte-corpo-e-poder #trilha-corpo-genero-poder #trilha-leste-asiatico #trilha-relampago |
+| Crônica do Pássaro de Corda | Haruki Murakami | #F #asia #d2 #e3 #tenho-digital #q-realidade-e-percepcao #clima-onirico #trilha-leste-asiatico |
 | Atlas de Nuvens | David Mitchell | #F #ficcao-cientifica #d2 #e3 #q-identidade-e-eu |
 | A Amiga Genial (tetralogia) | Elena Ferrante | #F #d1 #e3 |
 | A Vida Mentirosa dos Adultos | Elena Ferrante | #F #d1 #e2 |
 | Americanah | Chimamanda Ngozi Adichie | #F #africa #raca #d1 #e3 #q-identidade-e-eu #clima-emocionante |
-| Meio Sol Amarelo | Chimamanda Ngozi Adichie | #F #africa #romance-historico #guerra #d2 #e3 #clima-emocionante #ponte-historia-e-ficcao |
+| Meio Sol Amarelo | Chimamanda Ngozi Adichie | #F #africa #romance-historico #guerra #d2 #e3 #clima-emocionante #ponte-historia-e-ficcao #trilha-depois-da-batalha |
 | O Mundo se Despedaça | Chinua Achebe | #F #africa #colonialismo #classico #d1 #e1 #q-alteridade-e-contato #ponte-ecologia-e-colonialismo #trilha-alteridade |
 | Vida e Época de Michael K. | J.M. Coetzee | #F #africa #autoritarismo #d2 #e1 #clima-cru-e-chocante |
 | Desonra | J.M. Coetzee | #F #africa #d2 #e1 #q-culpa-e-justica #clima-cru-e-chocante |
@@ -374,8 +374,8 @@ Formato das linhas: `Título | Autor | Tags`. As tags usam `#` (compatível com 
 | Os Anéis de Saturno | W.G. Sebald | #F #memoria #historia #d3 #e2 #q-memoria-e-esquecimento #clima-melancolico |
 | Um Equilíbrio Delicado | Rohinton Mistry | #F #asia #autoritarismo #d2 #e3 |
 | O Deus das Pequenas Coisas | Arundhati Roy | #F #asia #d2 #e2 |
-| Pachinko | Min Jin Lee | #F #asia #romance-historico #d1 #e3 #tenho-digital #clima-emocionante #ponte-historia-e-ficcao |
-| O Leopardo | Giuseppe Tomasi di Lampedusa | #F #romance-historico #classico #d2 #e2 #tenho-digital #q-poder-e-violencia #clima-melancolico #ponte-historia-e-ficcao |
+| Pachinko | Min Jin Lee | #F #asia #romance-historico #d1 #e3 #tenho-digital #clima-emocionante #ponte-historia-e-ficcao #trilha-leste-asiatico |
+| O Leopardo | Giuseppe Tomasi di Lampedusa | #F #romance-historico #classico #d2 #e2 #tenho-digital #q-poder-e-violencia #clima-melancolico #ponte-historia-e-ficcao #trilha-catedrais-e-cortes |
 | A Conspiração contra a América | Philip Roth | #F #historia-alternativa #autoritarismo #d2 #e2 #cenario-guerra-mundial |
 | Sobre os Ossos dos Mortos | Olga Tokarczuk | #F #misterio #ecologia #d2 #e2 #tenho-digital #cenario-cidade-pequena |
 | O Testamento de Maria | Colm Tóibín | #F #religiao #d1 #e1 #q-fe-e-duvida |
@@ -401,33 +401,33 @@ Formato das linhas: `Título | Autor | Tags`. As tags usam `#` (compatível com 
 |---|---|---|
 | O Arqueiro (Busca do Graal, vol. 1) | Bernard Cornwell | #F #romance-historico #medieval #guerra #d1 #e2 #lido #top #rel-cornwell #clima-aventura #trilha-aco-e-fe |
 | O Físico | Noah Gordon | #F #romance-historico #medieval #medicina #d1 #e3 #lido #top #rel-cornwell #trilha-bisturi-e-fe |
-| Os Pilares da Terra | Ken Follett | #F #romance-historico #medieval #d1 #e3 #top #rel-cornwell #tenho-digital #clima-aventura #papel-porta-de-entrada #trilha-aco-e-fe |
-| Mundo sem Fim | Ken Follett | #F #romance-historico #medieval #medicina #d1 #e3 #rel-cornwell #tenho-digital #trilha-bisturi-e-fe |
-| A Coluna de Fogo | Ken Follett | #F #romance-historico #religiao #d1 #e3 #rel-cornwell #tenho-digital |
+| Os Pilares da Terra | Ken Follett | #F #romance-historico #medieval #d1 #e3 #top #rel-cornwell #tenho-digital #clima-aventura #papel-porta-de-entrada #trilha-aco-e-fe #trilha-catedrais-e-cortes |
+| Mundo sem Fim | Ken Follett | #F #romance-historico #medieval #medicina #d1 #e3 #rel-cornwell #tenho-digital #trilha-bisturi-e-fe #trilha-catedrais-e-cortes |
+| A Coluna de Fogo | Ken Follett | #F #romance-historico #religiao #d1 #e3 #rel-cornwell #tenho-digital #trilha-catedrais-e-cortes |
 | Crônicas Saxônicas (começa em O Último Reino) | Bernard Cornwell | #F #romance-historico #medieval #guerra #d1 #e3 #rel-cornwell #tenho-digital #clima-aventura #trilha-aco-e-fe |
 | Crônicas de Artur, vols. 2 e 3 (O Inimigo de Deus · Excalibur) | Bernard Cornwell | #F #romance-historico #medieval #guerra #d1 #e3 #rel-cornwell #tenho-digital |
-| Azincourt | Bernard Cornwell | #F #romance-historico #medieval #guerra #d1 #e2 #rel-cornwell #tenho-digital #clima-aventura #trilha-aco-e-fe |
+| Azincourt | Bernard Cornwell | #F #romance-historico #medieval #guerra #d1 #e2 #rel-cornwell #tenho-digital #clima-aventura #trilha-aco-e-fe #trilha-rosas-e-espadas |
 | Série Sharpe | Bernard Cornwell | #F #romance-historico #guerra #d1 #e3 #rel-cornwell #tenho-digital #clima-aventura #trilha-aco-e-fe |
 | O Último Judeu | Noah Gordon | #F #romance-historico #medieval #religiao #d1 #e2 #rel-cornwell #trilha-bisturi-e-fe |
 | A Escolha da Dra. Cole | Noah Gordon | #F #medicina #d1 #e2 #rel-cornwell #tenho-digital |
-| O Nome da Rosa | Umberto Eco | #F #romance-historico #medieval #misterio #filosofia #d3 #e3 #top #q-fe-e-duvida #clima-cerebral #papel-ponte #ponte-ciencia-e-fe |
+| O Nome da Rosa | Umberto Eco | #F #romance-historico #medieval #misterio #filosofia #d3 #e3 #top #q-fe-e-duvida #clima-cerebral #papel-ponte #ponte-ciencia-e-fe #trilha-catedrais-e-cortes |
 | Baudolino | Umberto Eco | #F #romance-historico #medieval #d3 #e3 #clima-cerebral |
 | O Rei de Ferro (Os Reis Malditos) | Maurice Druon | #F #romance-historico #medieval #d2 #e3 |
 | The Sunne in Splendour | Sharon Kay Penman | #F #romance-historico #medieval #sem-pt #d2 #e3 |
 | The Greatest Knight | Elizabeth Chadwick | #F #romance-historico #medieval #sem-pt #d1 #e3 |
 | A Catedral do Mar | Ildefonso Falcones | #F #romance-historico #medieval #d1 #e3 |
 | The Lymond Chronicles (série) | Dorothy Dunnett | #F #romance-historico #renascimento #sem-pt #d2 #e3 |
-| Wolf Hall | Hilary Mantel | #F #romance-historico #renascimento #politica #d3 #e3 #q-poder-e-violencia #ponte-historia-e-ficcao |
+| Wolf Hall | Hilary Mantel | #F #romance-historico #renascimento #politica #d3 #e3 #q-poder-e-violencia #ponte-historia-e-ficcao #trilha-catedrais-e-cortes |
 | Eu, Cláudio | Robert Graves | #F #romance-historico #roma #classico #antiguidade #d2 #e2 #ponte-historia-e-ficcao #trilha-roma-por-dentro |
 | Memórias de Adriano | Marguerite Yourcenar | #F #romance-historico #roma #classico #antiguidade #d3 #e2 #ponte-historia-e-ficcao #trilha-roma-por-dentro |
 | Imperium | Robert Harris | #F #romance-historico #roma #politica #antiguidade #d1 #e2 #trilha-roma-por-dentro |
 | Pompeia | Robert Harris | #F #romance-historico #roma #antiguidade #d1 #e2 |
-| Os Portões de Roma (série Imperador) | Conn Iggulden | #F #romance-historico #roma #antiguidade #d1 #e2 #tenho-digital |
-| O Lobo das Planícies (série Gêngis Khan) | Conn Iggulden | #F #romance-historico #asia #guerra #d1 #e2 #tenho-digital #cenario-oriente-feudal |
+| Os Portões de Roma (série Imperador) | Conn Iggulden | #F #romance-historico #roma #antiguidade #d1 #e2 #tenho-digital #trilha-imperios-e-conquistadores #trilha-roma-no-acervo |
+| O Lobo das Planícies (série Gêngis Khan) | Conn Iggulden | #F #romance-historico #asia #guerra #d1 #e2 #tenho-digital #cenario-oriente-feudal #trilha-imperios-e-conquistadores |
 | O Primeiro Homem de Roma | Colleen McCullough | #F #romance-historico #roma #politica #antiguidade #d2 #e3 |
-| Portões de Fogo | Steven Pressfield | #F #romance-historico #antiguidade #guerra #d2 #e2 #clima-aventura |
+| Portões de Fogo | Steven Pressfield | #F #romance-historico #antiguidade #guerra #d2 #e2 #clima-aventura #trilha-imperios-e-conquistadores |
 | O Menino Persa | Mary Renault | #F #romance-historico #antiguidade #d2 #e2 |
-| Sob a Águia (Under the Eagle) | Simon Scarrow | #F #romance-historico #roma #guerra #antiguidade #d1 #e2 |
+| Sob a Águia (Under the Eagle) | Simon Scarrow | #F #romance-historico #roma #guerra #antiguidade #d1 #e2 #trilha-imperios-e-conquistadores |
 | Série Falco | Lindsey Davis | #F #romance-historico #roma #misterio #antiguidade #d1 #e3 |
 | O Egípcio (Sinuhe) | Mika Waltari | #F #romance-historico #antiguidade #medicina #d2 #e3 #trilha-bisturi-e-fe |
 | O Médico de Córdoba | Herbert Le Porrier | #F #romance-historico #medieval #medicina #d2 #e2 #cenario-oriente-feudal #trilha-bisturi-e-fe |
@@ -443,12 +443,14 @@ Formato das linhas: `Título | Autor | Tags`. As tags usam `#` (compatível com 
 | O Capitão Alatriste | Arturo Pérez-Reverte | #F #romance-historico #aventura #d1 #e2 #clima-aventura |
 | Mestre dos Mares | Patrick O'Brian | #F #romance-historico #guerra #aventura #d2 #e2 #clima-aventura |
 | Kristin Lavransdatter | Sigrid Undset | #F #romance-historico #medieval #classico #d2 #e3 |
-| A Menina que Roubava Livros | Markus Zusak | #F #guerra #d1 #e2 #clima-emocionante #cenario-guerra-mundial |
+| A Menina que Roubava Livros | Markus Zusak | #F #guerra #d1 #e2 #clima-emocionante #cenario-guerra-mundial #trilha-depois-da-batalha |
 | Toda Luz que Não Podemos Ver | Anthony Doerr | #F #guerra #d1 #e3 #clima-emocionante #cenario-guerra-mundial |
 | Suíte Francesa | Irène Némirovsky | #F #guerra #d2 #e2 #ponte-historia-e-ficcao #cenario-guerra-mundial |
 | A Papisa Joana | Donna Woolfolk Cross | #F #romance-historico #medieval #religiao #medicina #genero #d1 #e2 #rel-cornwell #clima-aventura #ponte-historia-e-ficcao |
 | O Crepúsculo e a Aurora | Ken Follett | #F #romance-historico #medieval #d1 #e3 #rel-cornwell #clima-aventura |
 | Samarcanda | Amin Maalouf | #F #romance-historico #medieval #asia #d2 #e2 #ponte-historia-e-ficcao #cenario-oriente-feudal |
+| Trindade (Guerra das Rosas, vol. 2) | Conn Iggulden | #F #romance-historico #medieval #guerra #d1 #e2 #trilha-rosas-e-espadas |
+| Tragam os Corpos | Hilary Mantel | #F #romance-historico #renascimento #politica #d3 #e2 #trilha-catedrais-e-cortes |
 
 ---
 
@@ -473,7 +475,7 @@ Formato das linhas: `Título | Autor | Tags`. As tags usam `#` (compatível com 
 | Território Lovecraft | Matt Ruff | #F #horror #lovecraftiano #raca #d2 #e2 #rel-widows-bay #trilha-lovecraft-widows-bay |
 | Providence | Alan Moore | #HQ #horror #lovecraftiano #d3 #e3 #rel-widows-bay #cenario-nova-inglaterra |
 | Gótico Mexicano | Silvia Moreno-Garcia | #F #horror #gotico #d1 #e2 #rel-widows-bay |
-| Aniquilação (trilogia: Aniquilação · Autoridade · Aceitação) | Jeff VanderMeer | #F #horror #ficcao-cientifica #ecologia #d2 #e3 #rel-widows-bay #tenho-digital #q-alteridade-e-contato #ponte-ecologia-e-colonialismo #cenario-ilha-e-isolamento |
+| Aniquilação (trilogia: Aniquilação · Autoridade · Aceitação) | Jeff VanderMeer | #F #horror #ficcao-cientifica #ecologia #d2 #e3 #rel-widows-bay #tenho-digital #q-alteridade-e-contato #ponte-ecologia-e-colonialismo #cenario-ilha-e-isolamento #trilha-pesadelos-de-papel |
 | The Croning | Laird Barron | #F #horror #lovecraftiano #sem-pt #d3 #e2 #rel-widows-bay |
 | Canções de um Sonhador Morto & Escriba-Sinistro | Thomas Ligotti | #F #horror #contos #d3 #e2 #rel-widows-bay |
 | Teatro Grottesco | Thomas Ligotti | #F #horror #sem-pt #contos #d3 #e2 #rel-widows-bay |
@@ -528,7 +530,7 @@ Formato das linhas: `Título | Autor | Tags`. As tags usam `#` (compatível com 
 | Apologia de Sócrates | Platão | #NF #filosofia #antiguidade #classico #d2 #e1 #tenho-digital #papel-fonte-primaria #trilha-filosofia-em-doses |
 | O Banquete | Platão | #NF #filosofia #antiguidade #classico #d2 #e1 #tenho-digital |
 | Ética a Nicômaco | Aristóteles | #NF #filosofia #etica #antiguidade #classico #d3 #e2 #q-sentido-e-como-viver |
-| Meditações | Marco Aurélio | #NF #filosofia #etica #roma #classico #antiguidade #d1 #e1 #top #tenho-digital #q-sentido-e-como-viver #clima-contemplativo #papel-porta-de-entrada #trilha-roma-por-dentro #trilha-filosofia-em-doses |
+| Meditações | Marco Aurélio | #NF #filosofia #etica #roma #classico #antiguidade #d1 #e1 #top #tenho-digital #q-sentido-e-como-viver #clima-contemplativo #papel-porta-de-entrada #trilha-filosofia-em-doses #trilha-roma-no-acervo #trilha-roma-por-dentro |
 | Cartas a Lucílio | Sêneca | #NF #filosofia #etica #roma #classico #antiguidade #d1 #e2 #q-sentido-e-como-viver #trilha-roma-por-dentro |
 | Manual de Epicteto | Epicteto | #NF #filosofia #etica #roma #classico #antiguidade #d1 #e1 #q-sentido-e-como-viver #clima-contemplativo #papel-leitura-relampago |
 | Ensaios | Michel de Montaigne | #NF #filosofia #classico #d2 #e3 |
@@ -544,7 +546,7 @@ Formato das linhas: `Título | Autor | Tags`. As tags usam `#` (compatível com 
 | Temor e Tremor | Søren Kierkegaard | #NF #filosofia #religiao #classico #d3 #e1 #q-fe-e-duvida |
 | Genealogia da Moral | Friedrich Nietzsche | #NF #filosofia #etica #classico #d3 #e1 #top #tenho-digital #trilha-yalom-nietzsche |
 | Crepúsculo dos Ídolos | Friedrich Nietzsche | #NF #filosofia #classico #d3 #e1 #tenho-digital #trilha-filosofia-em-doses |
-| O Mito de Sísifo | Albert Camus | #NF #filosofia #existencialismo #classico #d2 #e1 #top #tenho-digital #q-sentido-e-como-viver #papel-porta-de-entrada #trilha-finitude #trilha-filosofia-em-doses |
+| O Mito de Sísifo | Albert Camus | #NF #filosofia #existencialismo #classico #d2 #e1 #top #tenho-digital #q-sentido-e-como-viver #papel-porta-de-entrada #trilha-filosofia-em-doses #trilha-finitude |
 | O Existencialismo é um Humanismo | Jean-Paul Sartre | #NF #existencialismo #classico #d2 #e1 #papel-porta-de-entrada |
 | Por uma Moral da Ambiguidade | Simone de Beauvoir | #NF #existencialismo #etica #classico #d2 #e1 #top #trilha-corpo-genero-poder |
 | Em Busca de Sentido | Viktor Frankl | #NF #existencialismo #psicologia #testemunho #classico #psicologia-humanista #d1 #e1 #top #q-sentido-e-como-viver #clima-emocionante #papel-porta-de-entrada #cenario-guerra-mundial #trilha-finitude #trilha-relampago |
@@ -553,7 +555,7 @@ Formato das linhas: `Título | Autor | Tags`. As tags usam `#` (compatível com 
 | O Sentido da Vida: Uma Breve Introdução | Terry Eagleton | #NF #filosofia #introducao #d1 #e1 #q-sentido-e-como-viver |
 | História da Filosofia Ocidental | Bertrand Russell | #NF #filosofia #introducao #classico #d2 #e3 #tenho-digital |
 | Elogio do Ócio | Bertrand Russell | #NF #filosofia #classico #d1 #e1 #q-sentido-e-como-viver #papel-leitura-relampago |
-| Walden | Henry David Thoreau | #NF #filosofia #ecologia #classico #d2 #e2 #tenho-digital #q-sentido-e-como-viver #q-natureza-e-civilizacao #clima-contemplativo |
+| Walden | Henry David Thoreau | #NF #filosofia #ecologia #classico #d2 #e2 #tenho-digital #q-sentido-e-como-viver #q-natureza-e-civilizacao #clima-contemplativo #trilha-sentido-e-como-viver |
 | Cristianismo Puro e Simples | C.S. Lewis | #NF #religiao #filosofia #classico #d1 #e1 #q-fe-e-duvida |
 | Uma Teoria da Justiça | John Rawls | #NF #filosofia #politica #etica #d3 #e3 #q-culpa-e-justica |
 | Justiça: O que é Fazer a Coisa Certa | Michael Sandel | #NF #filosofia #etica #d1 #e2 #q-culpa-e-justica #papel-porta-de-entrada |
@@ -577,7 +579,7 @@ Formato das linhas: `Título | Autor | Tags`. As tags usam `#` (compatível com 
 
 | Título | Autor | Tags |
 |---|---|---|
-| O Erro de Descartes | António Damásio | #NF #neurociencia #consciencia #d2 #e2 #tenho-digital #papel-ponte #ponte-literatura-e-neurociencia #trilha-mente-e-cerebro |
+| O Erro de Descartes | António Damásio | #NF #neurociencia #consciencia #d2 #e2 #tenho-digital #papel-ponte #ponte-literatura-e-neurociencia #trilha-cerebro-no-acervo #trilha-mente-e-cerebro |
 | A Consciência Explicada | Daniel C. Dennett | #NF #consciencia #filosofia #d3 #e3 #trilha-mente-e-cerebro |
 | O Eu e Seu Cérebro | Karl Popper e John Eccles | #NF #consciencia #neurociencia #classico #d3 #e3 |
 | The Conscious Mind | David J. Chalmers | #NF #consciencia #filosofia #sem-pt #d3 #e3 #papel-desafio |
@@ -676,9 +678,9 @@ Formato das linhas: `Título | Autor | Tags`. As tags usam `#` (compatível com 
 | Tristes Trópicos | Claude Lévi-Strauss | #NF #antropologia #classico #d3 #e2 #q-alteridade-e-contato |
 | A Representação do Eu na Vida Cotidiana | Erving Goffman | #NF #sociologia #psicologia #classico #d2 #e2 #q-identidade-e-eu |
 | A Ética Protestante e o Espírito do Capitalismo | Max Weber | #NF #sociologia #religiao #classico #d3 #e2 |
-| A Imaginação Sociológica | C. Wright Mills | #NF #sociologia #classico #d2 #e2 #tenho-digital |
+| A Imaginação Sociológica | C. Wright Mills | #NF #sociologia #classico #d2 #e2 #tenho-digital #trilha-sociologia-em-degraus |
 | O Processo Civilizador | Norbert Elias | #NF #sociologia #historia #classico #d3 #e3 #q-poder-e-violencia #q-natureza-e-civilizacao |
-| Modernidade Líquida | Zygmunt Bauman | #NF #sociologia #d2 #e2 #tenho-digital |
+| Modernidade Líquida | Zygmunt Bauman | #NF #sociologia #d2 #e2 #tenho-digital #trilha-sociologia-em-degraus |
 | A Construção Social da Realidade | Peter Berger e Thomas Luckmann | #NF #sociologia #classico #d3 #e2 #q-realidade-e-percepcao |
 | Origens Culturais da Aquisição do Conhecimento Humano | Michael Tomasello | #NF #antropologia #psicologia #d3 #e2 |
 | The Elephant in the Brain | Kevin Simler e Robin Hanson | #NF #psicologia #sociologia #sem-pt #d2 #e2 #papel-contraponto |
@@ -695,7 +697,7 @@ Formato das linhas: `Título | Autor | Tags`. As tags usam `#` (compatível com 
 | Um Espelho Distante | Barbara Tuchman | #NF #historia #medieval #d2 #e3 |
 | O Queijo e os Vermes | Carlo Ginzburg | #NF #historia #religiao #classico #d2 #e1 #q-fe-e-duvida #papel-ponte #ponte-ciencia-e-fe |
 | A Invenção da Ciência | David Wootton | #NF #historia #ciencia #d3 #e3 |
-| É Isto um Homem? | Primo Levi | #NF #guerra #testemunho #classico #d1 #e1 #top #clima-cru-e-chocante #papel-leitura-relampago #cenario-guerra-mundial |
+| É Isto um Homem? | Primo Levi | #NF #guerra #testemunho #classico #d1 #e1 #top #clima-cru-e-chocante #papel-leitura-relampago #cenario-guerra-mundial #trilha-depois-da-batalha |
 | Hiroshima | John Hersey | #NF #guerra #testemunho #classico #d1 #e1 #clima-cru-e-chocante #cenario-guerra-mundial |
 | Vozes de Tchernóbil | Svetlana Aleksiévitch | #NF #testemunho #historia #d2 #e2 #q-memoria-e-esquecimento #clima-cru-e-chocante #cenario-russia |
 | O Diário de Anne Frank | Anne Frank | #NF #guerra #testemunho #classico #d1 #e1 #clima-emocionante #cenario-guerra-mundial |
@@ -707,7 +709,7 @@ Formato das linhas: `Título | Autor | Tags`. As tags usam `#` (compatível com 
 | Formação do Brasil Contemporâneo | Caio Prado Júnior | #NF #BR #historia #economia #classico #d3 #e2 #trilha-brasil-profundo |
 | O Povo Brasileiro | Darcy Ribeiro | #NF #BR #antropologia #historia #d2 #e3 #tenho-digital #papel-porta-de-entrada #trilha-brasil-profundo |
 | Quarto de Despejo | Carolina Maria de Jesus | #NF #BR #testemunho #raca #classico #d1 #e1 #top #clima-cru-e-chocante #clima-emocionante #trilha-brasil-profundo |
-| As Veias Abertas da América Latina | Eduardo Galeano | #NF #latam #historia #economia #colonialismo #d2 #e3 #tenho-digital #papel-contraponto #ponte-ecologia-e-colonialismo |
+| As Veias Abertas da América Latina | Eduardo Galeano | #NF #latam #historia #economia #colonialismo #d2 #e3 #tenho-digital #papel-contraponto #ponte-ecologia-e-colonialismo #trilha-economia-sem-jargao |
 | Brasil: Uma Biografia | Lilia Schwarcz e Heloisa Starling | #NF #BR #historia #d2 #e3 #tenho-digital #papel-porta-de-entrada |
 | 1808 | Laurentino Gomes | #NF #BR #historia #d1 #e2 |
 | Holocausto Brasileiro | Daniela Arbex | #NF #BR #testemunho #d1 #e2 #clima-cru-e-chocante #ponte-corpo-e-poder |
@@ -728,7 +730,7 @@ Formato das linhas: `Título | Autor | Tags`. As tags usam `#` (compatível com 
 | Pálido Ponto Azul | Carl Sagan | #NF #ciencia #classico #fisica #d1 #e2 #tenho-digital #trilha-do-quark-ao-cosmos |
 | O Mundo Assombrado pelos Demônios | Carl Sagan | #NF #ciencia #filosofia #classico #d1 #e2 #top #tenho-digital #papel-contraponto #ponte-ciencia-e-fe #trilha-fronteiras-do-inexplicavel |
 | O Senhor Está Brincando, Sr. Feynman! | Richard Feynman | #NF #ciencia #biografia #humor #fisica #d1 #e2 #clima-comico |
-| A Falsa Medida do Homem | Stephen Jay Gould | #NF #ciencia #historia #classico #biologia #psicometria #d2 #e2 #tenho-digital #papel-ponte |
+| A Falsa Medida do Homem | Stephen Jay Gould | #NF #ciencia #historia #classico #biologia #psicometria #d2 #e2 #tenho-digital #papel-ponte #trilha-evolucao |
 | A Estrutura das Revoluções Científicas | Thomas S. Kuhn | #NF #ciencia #filosofia #classico #d2 #e1 #top #papel-ponte |
 | O Cisne Negro | Nassim Taleb | #NF #ciencia #economia #d2 #e2 |
 | Uma Breve História do Tempo | Stephen Hawking | #NF #ciencia #fisica #d2 #e1 #tenho-digital #trilha-do-quark-ao-cosmos |
@@ -764,7 +766,7 @@ Formato das linhas: `Título | Autor | Tags`. As tags usam `#` (compatível com 
 
 | Título | Autor | Tags |
 |---|---|---|
-| Rápido e Devagar: Duas Formas de Pensar | Daniel Kahneman | #NF #psicologia #economia #d2 #e3 #top #tenho-digital #papel-porta-de-entrada |
+| Rápido e Devagar: Duas Formas de Pensar | Daniel Kahneman | #NF #psicologia #economia #d2 #e3 #top #tenho-digital #papel-porta-de-entrada #trilha-economia-sem-jargao #trilha-portas-de-entrada |
 | As Armas da Persuasão | Robert Cialdini | #NF #psicologia #psicologia-social #d1 #e2 #tenho-digital |
 | O Animal Social | Elliot Aronson | #NF #psicologia #sociologia #psicologia-social #d1 #e2 |
 | O Efeito Lúcifer | Philip Zimbardo | #NF #psicologia #etica #psicologia-social #d2 #e3 #q-liberdade-e-obediencia |
@@ -776,7 +778,7 @@ Formato das linhas: `Título | Autor | Tags`. As tags usam `#` (compatível com 
 | A Negação da Morte | Ernest Becker | #NF #psicologia #morte #antropologia #classico #d3 #e2 #top #q-morte-e-finitude #papel-ponte #trilha-finitude |
 | The Worm at the Core | Solomon, Greenberg e Pyszczynski | #NF #psicologia #morte #sem-pt #d2 #e2 #q-morte-e-finitude |
 | A Vida Examinada | Stephen Grosz | #NF #psicanalise #psicologia #d1 #e1 |
-| De Frente para o Sol: Como Superar o Terror da Morte | Irvin D. Yalom | #NF #psicologia #morte #existencialismo #d1 #e2 #rel-yalom #tenho-digital #q-morte-e-finitude #trilha-finitude #trilha-cuidar-ate-o-fim |
+| De Frente para o Sol: Como Superar o Terror da Morte | Irvin D. Yalom | #NF #psicologia #morte #existencialismo #d1 #e2 #rel-yalom #tenho-digital #q-morte-e-finitude #trilha-cuidar-ate-o-fim #trilha-finitude |
 | O Enigma de Espinosa | Irvin D. Yalom | #F #filosofia #psicologia #d1 #e2 #rel-yalom #tenho-digital #clima-cerebral #ponte-ficcao-e-filosofia #trilha-yalom-nietzsche |
 | A Cura de Schopenhauer | Irvin D. Yalom | #F #filosofia #psicologia #d1 #e2 #rel-yalom #clima-cerebral #ponte-ficcao-e-filosofia #trilha-yalom-nietzsche |
 | A Arte de Amar | Erich Fromm | #NF #psicologia #classico #d1 #e1 #rel-fromm #tenho-digital |
@@ -818,7 +820,7 @@ Formato das linhas: `Título | Autor | Tags`. As tags usam `#` (compatível com 
 | Orixás | Pierre Verger | #NF #umbanda #antropologia #arte #d2 #e2 #trilha-terreiro-e-encruzilhada |
 | Os Nagô e a Morte | Juana Elbein dos Santos | #NF #umbanda #antropologia #morte #BR #d3 #e2 #q-morte-e-finitude #trilha-terreiro-e-encruzilhada |
 | O Espírito da Intimidade | Sobonfu Somé | #NF #espiritualidade #africa #antropologia #d2 #e2 |
-| Bhagavad Gita | (tradição hindu) | #NF #oriental #espiritualidade #classico #d2 #e1 #top #tenho-digital #clima-contemplativo #papel-porta-de-entrada #papel-fonte-primaria |
+| Bhagavad Gita | (tradição hindu) | #NF #oriental #espiritualidade #classico #d2 #e1 #top #tenho-digital #clima-contemplativo #papel-porta-de-entrada #papel-fonte-primaria #trilha-portas-de-entrada #trilha-silencio-e-consciencia |
 | Os Upanixades | (tradição hindu) | #NF #oriental #filosofia #classico #d3 #e2 #papel-fonte-primaria |
 | Yoga Sutras de Patanjali | Patanjali | #NF #oriental #mistica #classico #d3 #e1 #papel-fonte-primaria |
 | Tao Te Ching | Lao Tsé | #NF #oriental #filosofia #classico #d2 #e1 #clima-contemplativo #papel-fonte-primaria |
@@ -838,7 +840,7 @@ Formato das linhas: `Título | Autor | Tags`. As tags usam `#` (compatível com 
 | Consciência Além da Vida | Pim van Lommel | #NF #morte #consciencia #medicina #d2 #e2 #q-morte-e-finitude #ponte-ciencia-e-fe #trilha-fronteiras-do-inexplicavel |
 | As Variedades da Experiência Religiosa | William James | #NF #psicologia #religiao #classico #d3 #e3 #papel-ponte #ponte-ciencia-e-fe #trilha-fronteiras-do-inexplicavel |
 | Memórias, Sonhos, Reflexões | Carl G. Jung | #NF #psicologia #psicanalise #biografia #classico #psicologia-analitica #d2 #e2 #papel-ponte #ponte-ciencia-e-fe #trilha-fronteiras-do-inexplicavel #trilha-jung-para-comecar |
-| Sobre a Morte e o Morrer | Elisabeth Kübler-Ross | #NF #morte #psicologia #classico #d1 #e2 #tenho-digital #q-morte-e-finitude #trilha-finitude #trilha-cuidar-ate-o-fim |
+| Sobre a Morte e o Morrer | Elisabeth Kübler-Ross | #NF #morte #psicologia #classico #d1 #e2 #tenho-digital #q-morte-e-finitude #trilha-cuidar-ate-o-fim #trilha-finitude |
 | O Tao da Física | Fritjof Capra | #NF #ciencia #oriental #classico #fisica #d2 #e2 #papel-contraponto #ponte-ciencia-e-fe |
 | Por que as Pessoas Acreditam em Coisas Estranhas | Michael Shermer | #NF #ciencia #psicologia #d1 #e2 #tenho-digital #q-fe-e-duvida #papel-contraponto #ponte-ciencia-e-fe #trilha-fronteiras-do-inexplicavel |
 | Spook: Science Tackles the Afterlife | Mary Roach | #NF #ciencia #morte #humor #sem-pt #d1 #e2 #q-morte-e-finitude #ponte-ciencia-e-fe |
@@ -857,7 +859,7 @@ Formato das linhas: `Título | Autor | Tags`. As tags usam `#` (compatível com 
 |---|---|---|
 | Sobre a Escrita | Stephen King | #NF #escrita #biografia #d1 #e2 |
 | Story | Robert McKee | #NF #escrita #cinema #d2 #e3 |
-| O Herói de Mil Faces | Joseph Campbell | #NF #escrita #religiao #antropologia #classico #mitologia #d2 #e3 #tenho-digital #papel-ponte |
+| O Herói de Mil Faces | Joseph Campbell | #NF #escrita #religiao #antropologia #classico #mitologia #d2 #e3 #tenho-digital #papel-ponte #trilha-mitos-e-herois #trilha-oficina-do-escritor |
 | Esculpindo o Tempo | Andrei Tarkovski | #NF #cinema #arte #classico #d3 #e2 |
 | Hitchcock/Truffaut | François Truffaut | #NF #cinema #classico #d2 #e3 |
 | Maneiras de Ver | John Berger | #NF #arte #classico #d1 #e1 |
@@ -880,7 +882,7 @@ Livros e quadrinhos da biblioteca virtual que não estavam nas seções anterior
 | Título | Autor | Tags |
 |---|---|---|
 | 18 Dias | Grant Morrison | #HQ #fantasia #mitologia #d2 #e1 #tenho-digital |
-| 1984 (em quadrinhos) | George Orwell e Fido Nesti | #HQ #distopia #adaptacao #politica #classico #d1 #e2 #tenho-digital |
+| 1984 (em quadrinhos) | George Orwell e Fido Nesti | #HQ #distopia #adaptacao #politica #classico #d1 #e2 #tenho-digital #trilha-do-texto-aos-quadrinhos |
 | 20 Mil Léguas Submarinas: Edição Comentada e Ilustrada | Júlio Verne | #F #ficcao-cientifica #aventura #classico #d1 #e2 #tenho-digital |
 | 2001: Uma Odisseia no Espaço (em quadrinhos) | Jack Kirby | #HQ #ficcao-cientifica #adaptacao #d1 #e2 #tenho-digital |
 | 20th Century Boys | Naoki Urasawa | #HQ #manga #ficcao-cientifica #misterio #asia #d1 #e3 #tenho-digital |
@@ -902,9 +904,9 @@ Livros e quadrinhos da biblioteca virtual que não estavam nas seções anterior
 | A Morte de X | Jeff Lemire, Charles Soule e Aaron Kuder | #HQ #super-herois #d1 #e1 #tenho-digital |
 | A Música do Silêncio | Patrick Rothfuss | #F #fantasia #d1 #e1 #tenho-digital |
 | A Nuvem | Neal Shusterman | #F #ficcao-cientifica #distopia #d1 #e2 #tenho-digital |
-| A Quinta Estação | N.K. Jemisin | #F #fantasia #ficcao-cientifica #d2 #e2 #trilha-fantasia-de-folego #tenho-digital |
+| A Quinta Estação | N.K. Jemisin | #F #fantasia #ficcao-cientifica #d2 #e2 #tenho-digital #trilha-fantasia-de-folego |
 | A Redenção do Anjo Caído | Fabio Baptista | #F #fantasia #BR #d1 #e2 #tenho-digital |
-| A Revolução dos Bichos (em quadrinhos) | George Orwell, Lillo Parra e Chairim Arrais | #HQ #adaptacao #distopia #politica #classico #BR #d1 #e1 #tenho-digital |
+| A Revolução dos Bichos (em quadrinhos) | George Orwell, Lillo Parra e Chairim Arrais | #HQ #adaptacao #distopia #politica #classico #BR #d1 #e1 #tenho-digital #trilha-do-texto-aos-quadrinhos |
 | A Saga de Elric, Livro 1 | Michael Moorcock | #F #fantasia #classico #d1 #e3 #tenho-digital |
 | A Saga de Elric, Livro 2 | Michael Moorcock | #F #fantasia #classico #d1 #e3 #tenho-digital |
 | A Senhora do Império | Raymond E. Feist e Janny Wurts | #F #fantasia #d1 #e3 #tenho-digital |
@@ -913,12 +915,12 @@ Livros e quadrinhos da biblioteca virtual que não estavam nas seções anterior
 | A Torre | Jan Kounen, Omar Ladgham e Mr Fab | #HQ #ficcao-cientifica #distopia #d1 #e1 #tenho-digital |
 | A Última Colônia | John Scalzi | #F #ficcao-cientifica #d1 #e2 #tenho-digital |
 | Abaddon | Christophe Bec e Robert Carey | #HQ #ficcao-cientifica #horror #d1 #e1 #tenho-digital |
-| Akira | Katsuhiro Otomo | #HQ #manga #ficcao-cientifica #distopia #classico #asia #d2 #e3 #trilha-quadrinhos-para-gente-grande #tenho-digital |
+| Akira | Katsuhiro Otomo | #HQ #manga #ficcao-cientifica #distopia #classico #asia #d2 #e3 #tenho-digital #trilha-quadrinhos-para-gente-grande |
 | Alerta de Risco | Neil Gaiman | #F #fantasia #contos #d1 #e2 #tenho-digital |
 | Alerta Vermelho | Martha Wells | #F #ficcao-cientifica #d1 #e1 #tenho-digital |
 | Aliens: Labyrinth | Jim Woodring e Kilian Plunkett | #HQ #ficcao-cientifica #horror #d1 #e1 #tenho-digital |
 | Amanhã | Leo, Rodolphe e Louis Alloing | #HQ #ficcao-cientifica #d1 #e1 #tenho-digital |
-| Androides Sonham com Ovelhas Elétricas? (em quadrinhos) | Philip K. Dick e Tony Parker | #HQ #ficcao-cientifica #adaptacao #d2 #e3 #tenho-digital |
+| Androides Sonham com Ovelhas Elétricas? (em quadrinhos) | Philip K. Dick e Tony Parker | #HQ #ficcao-cientifica #adaptacao #d2 #e3 #tenho-digital #trilha-do-texto-aos-quadrinhos |
 | Anões | Nicolas Jarry e outros | #HQ #fantasia #d1 #e3 #tenho-digital |
 | Antologia da Literatura Fantástica | Jorge Luis Borges, Adolfo Bioy Casares e Silvina Ocampo | #F #contos #fantasia #antologia #classico #latam #d2 #e2 #tenho-digital |
 | As Brigadas Fantasma | John Scalzi | #F #ficcao-cientifica #d1 #e2 #tenho-digital |
@@ -932,14 +934,14 @@ Livros e quadrinhos da biblioteca virtual que não estavam nas seções anterior
 | Astronauta: Assimetria (Graphic MSP) | Danilo Beyruth | #HQ #ficcao-cientifica #BR #d1 #e1 #tenho-digital |
 | Astronauta: Entropia (Graphic MSP) | Danilo Beyruth | #HQ #ficcao-cientifica #BR #d1 #e1 #tenho-digital |
 | Batman | Vários autores | #HQ #super-herois #d1 #e3 #tenho-digital |
-| Batman '89 | Sam Hamm e Joe Quinones | #HQ #super-herois #d1 #e1 #tenho-digital |
-| Batman '89: Ecos | Sam Hamm e Joe Quinones | #HQ #super-herois #d1 #e1 #tenho-digital |
-| Batman Absoluto | Scott Snyder e Nick Dragotta | #HQ #super-herois #d1 #e2 #tenho-digital |
+| Batman '89 | Sam Hamm e Joe Quinones | #HQ #super-herois #d1 #e1 #tenho-digital #trilha-batman-leituras |
+| Batman '89: Ecos | Sam Hamm e Joe Quinones | #HQ #super-herois #d1 #e1 #tenho-digital #trilha-batman-leituras |
+| Batman Absoluto | Scott Snyder e Nick Dragotta | #HQ #super-herois #d1 #e2 #tenho-digital #trilha-batman-leituras |
 | Batman: O Cavaleiro das Trevas III – A Raça Superior | Frank Miller, Brian Azzarello e Andy Kubert | #HQ #super-herois #d1 #e2 #tenho-digital |
-| Batman: O Último Cavaleiro da Terra | Scott Snyder e Greg Capullo | #HQ #super-herois #distopia #d1 #e1 #tenho-digital |
-| Batman: Padrões Sombrios | Dan Watters e Hayden Sherman | #HQ #super-herois #policial #d1 #e2 #tenho-digital |
+| Batman: O Último Cavaleiro da Terra | Scott Snyder e Greg Capullo | #HQ #super-herois #distopia #d1 #e1 #tenho-digital #trilha-batman-leituras |
+| Batman: Padrões Sombrios | Dan Watters e Hayden Sherman | #HQ #super-herois #policial #d1 #e2 #tenho-digital #trilha-batman-leituras |
 | Bomba X | Vincent Brugeas e outros | #HQ #guerra #historia #d1 #e1 #tenho-digital |
-| Bran Mak Morn: O Último Rei dos Pictos | Robert E. Howard | #F #fantasia #contos #classico #d1 #e2 #tenho-digital |
+| Bran Mak Morn: O Último Rei dos Pictos | Robert E. Howard | #F #fantasia #contos #classico #d1 #e2 #tenho-digital #trilha-polpa-e-espada |
 | Caçadores de Trolls | Guillermo del Toro e Daniel Kraus | #F #fantasia #horror #d1 #e2 #tenho-digital |
 | Calamidade | Brandon Sanderson | #F #ficcao-cientifica #super-herois #d1 #e2 #tenho-digital |
 | Cama de Gato | Kurt Vonnegut | #F #ficcao-cientifica #humor #classico #d2 #e2 #tenho-digital |
@@ -955,8 +957,8 @@ Livros e quadrinhos da biblioteca virtual que não estavam nas seções anterior
 | Conan | Robert E. Howard | #F #fantasia #contos #classico #d1 #e2 #tenho-digital |
 | Conan: A Torre do Elefante | Robert E. Howard | #HQ #fantasia #adaptacao #d1 #e1 #tenho-digital |
 | Conan, o Bárbaro (em quadrinhos) | Vários autores | #HQ #fantasia #d1 #e3 #tenho-digital |
-| Conan, o Bárbaro, Livro 1 | Robert E. Howard | #F #fantasia #contos #classico #d1 #e3 #tenho-digital |
-| Conan, o Bárbaro, Livro 2 | Robert E. Howard | #F #fantasia #contos #classico #d1 #e3 #tenho-digital |
+| Conan, o Bárbaro, Livro 1 | Robert E. Howard | #F #fantasia #contos #classico #d1 #e3 #tenho-digital #trilha-polpa-e-espada |
+| Conan, o Bárbaro, Livro 2 | Robert E. Howard | #F #fantasia #contos #classico #d1 #e3 #tenho-digital #trilha-polpa-e-espada |
 | Conan, o Cimério: Edição Definitiva, vol. 1 | Robert E. Howard | #F #fantasia #contos #classico #d1 #e3 #tenho-digital |
 | Conan, o Sangue da Serpente | S.M. Stirling | #F #fantasia #d1 #e2 #tenho-digital |
 | Condição Artificial | Martha Wells | #F #ficcao-cientifica #d1 #e1 #tenho-digital |
@@ -967,7 +969,7 @@ Livros e quadrinhos da biblioteca virtual que não estavam nas seções anterior
 | Count Zero | William Gibson | #F #ficcao-cientifica #d2 #e2 #tenho-digital |
 | Crise Final | Grant Morrison e J.G. Jones | #HQ #super-herois #d2 #e2 #tenho-digital |
 | Crise Infinita | Geoff Johns e Phil Jimenez | #HQ #super-herois #d1 #e2 #tenho-digital |
-| Crônicas de Espada e Feitiçaria | Gardner Dozois (org.) | #F #fantasia #antologia #contos #d1 #e3 #tenho-digital |
+| Crônicas de Espada e Feitiçaria | Gardner Dozois (org.) | #F #fantasia #antologia #contos #d1 #e3 #tenho-digital #trilha-polpa-e-espada |
 | Dark Engine | Ryan Burton e John Bivens | #HQ #fantasia #ficcao-cientifica #d1 #e1 #tenho-digital |
 | Dawnrunner | Ram V e Evan Cagle | #HQ #ficcao-cientifica #d1 #e1 #tenho-digital |
 | Deadpool: Dog Park | Stefan Petrucha | #F #super-herois #humor #d1 #e2 #tenho-digital |
@@ -998,7 +1000,7 @@ Livros e quadrinhos da biblioteca virtual que não estavam nas seções anterior
 | Fábulas | Bill Willingham e Mark Buckingham | #HQ #fantasia #d1 #e3 #tenho-digital |
 | Febre Tifoide | Clay McLeod Chapman | #HQ #super-herois #d1 #e1 #tenho-digital |
 | Ficção de Polpa: Aventura! | Samir Machado de Machado (org.) | #F #antologia #contos #aventura #BR #d1 #e2 #tenho-digital |
-| Ficção de Polpa, vol. 1 | Samir Machado de Machado (org.) | #F #antologia #contos #ficcao-cientifica #horror #BR #d1 #e2 #tenho-digital |
+| Ficção de Polpa, vol. 1 | Samir Machado de Machado (org.) | #F #antologia #contos #ficcao-cientifica #horror #BR #d1 #e2 #tenho-digital #trilha-polpa-e-espada |
 | Filhos da Degradação | Felipe Castilho | #F #fantasia #BR #d1 #e2 #tenho-digital |
 | Forward | Blake Crouch, N.K. Jemisin e Veronica Roth | #F #contos #ficcao-cientifica #antologia #d1 #e1 #tenho-digital |
 | Fumaça e Espelhos | Neil Gaiman | #F #contos #fantasia #horror #d1 #e2 #tenho-digital |
@@ -1030,7 +1032,7 @@ Livros e quadrinhos da biblioteca virtual que não estavam nas seções anterior
 | Kallocaína | Karin Boye | #F #distopia #classico #d2 #e1 #tenho-digital |
 | Kingsway Oeste | Greg Pak e Mirko Colak | #HQ #faroeste #fantasia #historia-alternativa #d1 #e1 #tenho-digital |
 | Klarion | Vários autores | #HQ #super-herois #fantasia #d1 #e1 #tenho-digital |
-| Kull: Exílio da Atlântida | Robert E. Howard | #F #fantasia #contos #classico #d1 #e2 #tenho-digital |
+| Kull: Exílio da Atlântida | Robert E. Howard | #F #fantasia #contos #classico #d1 #e2 #tenho-digital #trilha-polpa-e-espada |
 | Lago de Fogo | Nathan Fairbairn e Matt Smith | #HQ #ficcao-cientifica #medieval #d1 #e1 #tenho-digital |
 | Lázaro, Dê um Passo à Frente | Ray Bradbury | #F #ficcao-cientifica #contos #classico #d1 #e1 #tenho-digital |
 | Leito de Morte | Joshua Williamson e Riley Rossmo | #HQ #aventura #d1 #e1 #tenho-digital |
@@ -1038,11 +1040,11 @@ Livros e quadrinhos da biblioteca virtual que não estavam nas seções anterior
 | Longshot Salva o Universo Marvel | Christopher Hastings e Jacopo Camagni | #HQ #super-herois #humor #d1 #e1 #tenho-digital |
 | Lua de Sangue (Dreamblood, vol. 1) | N.K. Jemisin | #F #fantasia #d2 #e2 #tenho-digital |
 | Lugar Nenhum (em quadrinhos) | Neil Gaiman, Mike Carey e Glenn Fabry | #HQ #fantasia #adaptacao #d1 #e2 #tenho-digital |
-| Mago: Aprendiz | Raymond E. Feist | #F #fantasia #d1 #e2 #trilha-fantasia-de-folego #tenho-digital |
+| Mago: Aprendiz | Raymond E. Feist | #F #fantasia #d1 #e2 #tenho-digital #trilha-fantasia-de-folego |
 | Mago: Espinho de Prata | Raymond E. Feist | #F #fantasia #d1 #e2 #tenho-digital |
 | Mago: Mestre | Raymond E. Feist | #F #fantasia #d1 #e2 #tenho-digital |
 | Marvel Knights: X-Men | Brahm Revel | #HQ #super-herois #d1 #e1 #tenho-digital |
-| Matéria Escura | Blake Crouch | #F #ficcao-cientifica #thriller #d1 #e2 #tenho-digital |
+| Matéria Escura | Blake Crouch | #F #ficcao-cientifica #thriller #d1 #e2 #tenho-digital #trilha-thrillers-de-ideias |
 | Meia-Noite e Apolo | Steve Orlando e Fernando Blanco | #HQ #super-herois #d1 #e1 #tenho-digital |
 | Merlin: A Profecia | M.K. Hume | #F #fantasia #medieval #romance-historico #d1 #e2 #tenho-digital |
 | Mestre Gil de Ham | J.R.R. Tolkien | #F #fantasia #humor #classico #d1 #e1 #tenho-digital |
@@ -1064,17 +1066,17 @@ Livros e quadrinhos da biblioteca virtual que não estavam nas seções anterior
 | O Ceifador | Neal Shusterman | #F #ficcao-cientifica #distopia #d1 #e2 #tenho-digital |
 | O Cerco | Brian Michael Bendis e Olivier Coipel | #HQ #super-herois #d1 #e1 #tenho-digital |
 | O Céu de Pedra | N.K. Jemisin | #F #fantasia #ficcao-cientifica #d2 #e2 #tenho-digital |
-| O Conto da Aia (em quadrinhos) | Margaret Atwood e Renée Nault | #HQ #distopia #adaptacao #genero #d1 #e1 #tenho-digital |
+| O Conto da Aia (em quadrinhos) | Margaret Atwood e Renée Nault | #HQ #distopia #adaptacao #genero #d1 #e1 #tenho-digital #trilha-do-texto-aos-quadrinhos |
 | O Conto de Zoe | John Scalzi | #F #ficcao-cientifica #d1 #e2 #tenho-digital |
 | O Coração é o Último a Morrer | Margaret Atwood | #F #distopia #humor #d1 #e2 #tenho-digital |
 | O Dia das Trífides | John Wyndham | #F #ficcao-cientifica #classico #d1 #e2 #tenho-digital |
-| O Enigma de Andrômeda | Michael Crichton | #F #ficcao-cientifica #thriller #classico #d1 #e2 #tenho-digital |
+| O Enigma de Andrômeda | Michael Crichton | #F #ficcao-cientifica #thriller #classico #d1 #e2 #tenho-digital #trilha-thrillers-de-ideias |
 | O Espadachim de Carvão | Affonso Solano | #F #fantasia #BR #d1 #e2 #tenho-digital |
 | O Fim da Eternidade | Isaac Asimov | #F #ficcao-cientifica #classico #d2 #e1 #rel-asimov-clarke #tenho-digital |
 | O Fim da Morte | Cixin Liu | #F #ficcao-cientifica #asia #d3 #e3 #tenho-digital |
 | O Fim de Todas as Coisas | John Scalzi | #F #ficcao-cientifica #d1 #e2 #tenho-digital |
 | O Grande Silêncio e Outras Histórias | Ted Chiang | #F #contos #ficcao-cientifica #d2 #e1 #tenho-digital |
-| O Império Final (Mistborn, vol. 1) | Brandon Sanderson | #F #fantasia #d1 #e3 #trilha-fantasia-de-folego #tenho-digital |
+| O Império Final (Mistborn, vol. 1) | Brandon Sanderson | #F #fantasia #d1 #e3 #tenho-digital #trilha-fantasia-de-folego |
 | O Incal Negro (O Incal, vol. 1) | Alejandro Jodorowsky e Moebius | #HQ #ficcao-cientifica #classico #d2 #e1 #tenho-digital |
 | O Inimigo do Mundo (Trilogia da Tormenta, vol. 1) | Leonel Caldela | #F #fantasia #BR #d1 #e3 #tenho-digital |
 | O Livro do Silêncio (Deuses de Dois Mundos, vol. 1) | P.J. Pereira | #F #fantasia #religiao #BR #d1 #e2 #tenho-digital |
@@ -1082,7 +1084,7 @@ Livros e quadrinhos da biblioteca virtual que não estavam nas seções anterior
 | O Longo Amanhã | Leigh Brackett | #F #ficcao-cientifica #distopia #classico #d1 #e1 #tenho-digital |
 | O Macaco e a Essência | Aldous Huxley | #F #distopia #classico #d2 #e1 #tenho-digital |
 | O Manual do Mago Frugal para Sobrevivência na Inglaterra Medieval | Brandon Sanderson | #F #fantasia #humor #d1 #e2 #tenho-digital |
-| O Mundo de Rocannon | Ursula K. Le Guin | #F #ficcao-cientifica #classico #d1 #e1 #tenho-digital |
+| O Mundo de Rocannon | Ursula K. Le Guin | #F #ficcao-cientifica #classico #d1 #e1 #tenho-digital #trilha-le-guin-mundos-e-ideias |
 | O Navio Arcano | Robin Hobb | #F #fantasia #d1 #e3 #tenho-digital |
 | O Outro Vento | Ursula K. Le Guin | #F #fantasia #d1 #e2 #tenho-digital |
 | O Poço da Ascensão (Mistborn, vol. 2) | Brandon Sanderson | #F #fantasia #d1 #e3 #tenho-digital |
@@ -1093,7 +1095,7 @@ Livros e quadrinhos da biblioteca virtual que não estavam nas seções anterior
 | O Sol Desvelado | Isaac Asimov | #F #ficcao-cientifica #misterio #classico #d1 #e2 #rel-asimov-clarke #tenho-digital |
 | O Temor do Sábio | Patrick Rothfuss | #F #fantasia #d2 #e3 #tenho-digital |
 | O Timbre | Neal Shusterman | #F #ficcao-cientifica #distopia #d1 #e3 #tenho-digital |
-| O Túmulo do Batman | Warren Ellis e Bryan Hitch | #HQ #super-herois #d1 #e2 #tenho-digital |
+| O Túmulo do Batman | Warren Ellis e Bryan Hitch | #HQ #super-herois #d1 #e2 #tenho-digital #trilha-batman-leituras |
 | O Último Deus | Phillip Kennedy Johnson e Riccardo Federici | #HQ #fantasia #d1 #e2 #tenho-digital |
 | Ogiva | Bruno Zago e Guilherme Petreca | #HQ #ficcao-cientifica #BR #d1 #e1 #tenho-digital |
 | Oryx e Crake | Margaret Atwood | #F #ficcao-cientifica #distopia #d2 #e2 #tenho-digital |
@@ -1106,7 +1108,7 @@ Livros e quadrinhos da biblioteca virtual que não estavam nas seções anterior
 | Os Reinos Partidos (Trilogia Legado, vol. 2) | N.K. Jemisin | #F #fantasia #d1 #e2 #tenho-digital |
 | Patrulha do Destino | Vários autores | #HQ #super-herois #d2 #e3 #tenho-digital |
 | Periféricos | William Gibson | #F #ficcao-cientifica #d3 #e2 #tenho-digital |
-| Pines | Blake Crouch | #F #ficcao-cientifica #thriller #misterio #d1 #e2 #tenho-digital |
+| Pines | Blake Crouch | #F #ficcao-cientifica #thriller #misterio #d1 #e2 #tenho-digital #trilha-thrillers-de-ideias |
 | Poeira Lunar | Arthur C. Clarke | #F #ficcao-cientifica #classico #d1 #e2 #rel-asimov-clarke #tenho-digital |
 | Por Deus ou pelo Acaso | Becky Cloonan | #HQ #fantasia #horror #medieval #d1 #e1 #tenho-digital |
 | Porto da Terra | Zack Kaplan e Andrea Mutti | #HQ #ficcao-cientifica #d1 #e2 #tenho-digital |
@@ -1114,15 +1116,15 @@ Livros e quadrinhos da biblioteca virtual que não estavam nas seções anterior
 | Protocolo Rebelde | Martha Wells | #F #ficcao-cientifica #d1 #e1 #tenho-digital |
 | Quarteto Fantástico | Vários autores | #HQ #super-herois #d1 #e3 #tenho-digital |
 | Rapa Nui | Mikaël e Fabrizio Russo | #HQ #aventura #historia #d1 #e1 #tenho-digital |
-| Reconhecimento de Padrões | William Gibson | #F #ficcao-cientifica #thriller #d2 #e2 #tenho-digital |
-| Recursão | Blake Crouch | #F #ficcao-cientifica #thriller #d1 #e2 #tenho-digital |
+| Reconhecimento de Padrões | William Gibson | #F #ficcao-cientifica #thriller #d2 #e2 #tenho-digital #trilha-thrillers-de-ideias |
+| Recursão | Blake Crouch | #F #ficcao-cientifica #thriller #d1 #e2 #tenho-digital #trilha-thrillers-de-ideias |
 | Rei Conan: Lobos Além da Fronteira | Timothy Truman e Tomás Giorello | #HQ #fantasia #d1 #e1 #tenho-digital |
 | Reino do Amanhã | Mark Waid e Alex Ross | #HQ #super-herois #classico #d2 #e1 #tenho-digital |
 | Renascimento | Fred Duval e Emem | #HQ #ficcao-cientifica #d1 #e2 #tenho-digital |
 | Ronin | Frank Miller | #HQ #ficcao-cientifica #classico #d2 #e2 #tenho-digital |
 | Saga | Brian K. Vaughan e Fiona Staples | #HQ #ficcao-cientifica #fantasia #d1 #e3 #tenho-digital |
 | Saída Estratégica | Martha Wells | #F #ficcao-cientifica #d1 #e1 #tenho-digital |
-| Sandman | Neil Gaiman | #HQ #fantasia #horror #mitologia #classico #d2 #e3 #trilha-quadrinhos-para-gente-grande #tenho-digital |
+| Sandman | Neil Gaiman | #HQ #fantasia #horror #mitologia #classico #d2 #e3 #tenho-digital #trilha-mitos-e-herois #trilha-quadrinhos-para-gente-grande |
 | Santuário dos Ventos | George R.R. Martin | #F #fantasia #ficcao-cientifica #d1 #e2 #tenho-digital |
 | Self/Made | Mathieu Groux e Eduardo Ferigato | #HQ #ficcao-cientifica #fantasia #d1 #e1 #tenho-digital |
 | Senhor da Luz | Roger Zelazny | #F #ficcao-cientifica #fantasia #classico #d3 #e2 #tenho-digital |
@@ -1134,7 +1136,7 @@ Livros e quadrinhos da biblioteca virtual que não estavam nas seções anterior
 | Skinbreaker | Robert Kirkman e David Finch | #HQ #fantasia #d1 #e2 #tenho-digital |
 | Skulldigger e o Garoto Esqueleto | Jeff Lemire e Tonci Zonjic | #HQ #super-herois #policial #d1 #e1 #tenho-digital |
 | Snow Crash | Neal Stephenson | #F #ficcao-cientifica #classico #d2 #e3 #tenho-digital |
-| Solomon Kane | Robert E. Howard | #F #fantasia #horror #contos #classico #d1 #e2 #tenho-digital |
+| Solomon Kane | Robert E. Howard | #F #fantasia #horror #contos #classico #d1 #e2 #tenho-digital #trilha-polpa-e-espada |
 | Sombras do Sol (Dreamblood, vol. 2) | N.K. Jemisin | #F #fantasia #d2 #e2 #tenho-digital |
 | Sonhos Elétricos | Philip K. Dick | #F #ficcao-cientifica #contos #d2 #e2 #tenho-digital |
 | Spawn: The Dark Ages | Brian Holguin e Liam Sharp | #HQ #horror #medieval #fantasia #d1 #e2 #tenho-digital |
@@ -1166,7 +1168,7 @@ Livros e quadrinhos da biblioteca virtual que não estavam nas seções anterior
 | Uma Desolação Chamada Paz | Arkady Martine | #F #ficcao-cientifica #d2 #e2 #tenho-digital |
 | Uma Lembrança Chamada Império | Arkady Martine | #F #ficcao-cientifica #d2 #e2 #tenho-digital |
 | Utopia | Thomas More | #F #utopia #filosofia #politica #classico #d2 #e1 #tenho-digital |
-| V de Vingança | Alan Moore e David Lloyd | #HQ #distopia #politica #classico #d2 #e2 #trilha-quadrinhos-para-gente-grande #tenho-digital |
+| V de Vingança | Alan Moore e David Lloyd | #HQ #distopia #politica #classico #d2 #e2 #tenho-digital #trilha-quadrinhos-para-gente-grande |
 | Vencer o Dragão | Barbara Hambly | #F #fantasia #d1 #e2 #tenho-digital |
 | Viagem ao Centro da Terra (em quadrinhos) | Júlio Verne | #HQ #adaptacao #ficcao-cientifica #aventura #classico #d1 #e1 #tenho-digital |
 | Viagem Fantástica | Isaac Asimov | #F #ficcao-cientifica #classico #d1 #e2 #rel-asimov-clarke #tenho-digital |
@@ -1177,7 +1179,7 @@ Livros e quadrinhos da biblioteca virtual que não estavam nas seções anterior
 | Vingadores vs. X-Men | Vários autores | #HQ #super-herois #d1 #e2 #tenho-digital |
 | Vingadores vs. X-Men: Consequências | Kieron Gillen | #HQ #super-herois #d1 #e1 #tenho-digital |
 | Walden II: Uma Sociedade do Futuro | B.F. Skinner | #F #behaviorismo #utopia #classico #d2 #e2 #tenho-digital |
-| Watchmen | Alan Moore e Dave Gibbons | #HQ #super-herois #politica #classico #d3 #e2 #trilha-quadrinhos-para-gente-grande #tenho-digital |
+| Watchmen | Alan Moore e Dave Gibbons | #HQ #super-herois #politica #classico #d3 #e2 #tenho-digital #trilha-quadrinhos-para-gente-grande |
 | Wayne de Gotham | Tracy Hickman | #F #super-herois #d1 #e2 #tenho-digital |
 | Wild Cards: O Começo de Tudo | George R.R. Martin (org.) | #F #contos #ficcao-cientifica #super-herois #antologia #d1 #e2 #tenho-digital |
 | WildC.A.T.s/X-Men | Vários autores | #HQ #super-herois #d1 #e1 #tenho-digital |
@@ -1191,7 +1193,7 @@ Livros e quadrinhos da biblioteca virtual que não estavam nas seções anterior
 
 | Título | Autor | Tags |
 |---|---|---|
-| A Arte de Amar | Ovídio | #F #roma #antiguidade #classico #d2 #e1 #tenho-digital |
+| A Arte de Amar | Ovídio | #F #roma #antiguidade #classico #d2 #e1 #tenho-digital #trilha-roma-no-acervo |
 | A Briga dos Dois Ivans | Nikolai Gógol | #F #classico #d1 #e1 #tenho-digital |
 | A História de uma Mãe | Peter Madsen | #HQ #adaptacao #fantasia #classico #d1 #e1 #tenho-digital |
 | A Ilha do Tesouro (em quadrinhos) | Robert Louis Stevenson | #HQ #adaptacao #aventura #classico #d1 #e1 #tenho-digital |
@@ -1212,7 +1214,7 @@ Livros e quadrinhos da biblioteca virtual que não estavam nas seções anterior
 | Contraponto | Aldous Huxley | #F #classico #d3 #e3 #tenho-digital |
 | Diário de um Escritor: Meia Carta de um Sujeito | Fiódor Dostoiévski | #F #classico #d2 #e1 #tenho-digital |
 | Duas Narrativas Fantásticas | Fiódor Dostoiévski | #F #contos #fantasia #classico #d2 #e1 #tenho-digital |
-| Epopeia de Gilgamesh | Sin-léqi-unnínni | #F #antiguidade #mitologia #poesia #classico #d2 #e1 #tenho-digital |
+| Epopeia de Gilgamesh | Sin-léqi-unnínni | #F #antiguidade #mitologia #poesia #classico #d2 #e1 #tenho-digital #trilha-mitos-e-herois |
 | Essencial Franz Kafka | Franz Kafka | #F #contos #classico #d2 #e2 #tenho-digital |
 | Folhas Inúteis | Aldous Huxley | #F #classico #d2 #e2 #tenho-digital |
 | Fuga sem Fim | Joseph Roth | #F #classico #d2 #e1 #tenho-digital |
@@ -1244,16 +1246,16 @@ Livros e quadrinhos da biblioteca virtual que não estavam nas seções anterior
 | A Bagagem do Viajante | José Saramago | #F #cronicas #portugal #d2 #e2 #tenho-digital |
 | A Cartomante (Literatura Brasileira em Quadrinhos, vol. 4) | Machado de Assis e Jô Fevereiro | #HQ #adaptacao #classico #BR #d1 #e1 #tenho-digital |
 | A Causa Secreta e Outros Contos | Machado de Assis | #F #contos #horror #classico #BR #d2 #e1 #tenho-digital |
-| A Cegueira do Rio | Mia Couto | #F #contos #africa #d2 #e1 #tenho-digital |
-| A Confissão da Leoa | Mia Couto | #F #contemporaneo #africa #d2 #e1 #tenho-digital |
+| A Cegueira do Rio | Mia Couto | #F #contos #africa #d2 #e1 #tenho-digital #trilha-mia-couto |
+| A Confissão da Leoa | Mia Couto | #F #contemporaneo #africa #d2 #e1 #tenho-digital #trilha-mia-couto |
 | A Extraordinária Zona Norte | Alberto Mussa | #F #contos #BR #d2 #e1 #tenho-digital |
 | A Face Oculta | Moacyr Scliar | #F #contos #BR #RS #d1 #e1 #tenho-digital |
 | A Hora da Estrela | Clarice Lispector | #F #classico #BR #d2 #e1 #tenho-digital |
 | A Hora do Diabo e Outros Contos | Fernando Pessoa | #F #contos #classico #portugal #d2 #e1 #tenho-digital |
-| A Menina sem Palavra | Mia Couto | #F #contos #africa #d1 #e1 #tenho-digital |
+| A Menina sem Palavra | Mia Couto | #F #contos #africa #d1 #e1 #tenho-digital #trilha-mia-couto |
 | Acerto de Contas: Treze Histórias de Crime e Nova Literatura Latino-Americana | Daniel Galera e outros | #F #contos #policial #antologia #latam #d2 #e2 #tenho-digital |
 | Agora é que São Elas | Paulo Leminski | #F #BR #d2 #e1 #tenho-digital |
-| Agosto | Rubem Fonseca | #F #policial #romance-historico #BR #d2 #e2 #trilha-crime-a-brasileira #tenho-digital |
+| Agosto | Rubem Fonseca | #F #policial #romance-historico #BR #d2 #e2 #tenho-digital #trilha-crime-a-brasileira |
 | Alguém que Anda por Aí | Julio Cortázar | #F #contos #latam #d2 #e1 #tenho-digital |
 | Amálgama | Rubem Fonseca | #F #contos #policial #BR #d2 #e1 #tenho-digital |
 | Andarilhos | R. Tavares | #F #contos #BR #d1 #e1 #tenho-digital |
@@ -1263,10 +1265,10 @@ Livros e quadrinhos da biblioteca virtual que não estavam nas seções anterior
 | Canção para Ninar Menino Grande | Conceição Evaristo | #F #contos #raca #BR #d2 #e1 #tenho-digital |
 | Caviar é uma Ova | Gregorio Duvivier | #F #cronicas #humor #BR #d1 #e1 #tenho-digital |
 | Contos Completos | José Donoso | #F #contos #latam #d2 #e3 #tenho-digital |
-| Contos do Nascer da Terra | Mia Couto | #F #contos #africa #d2 #e1 #tenho-digital |
+| Contos do Nascer da Terra | Mia Couto | #F #contos #africa #d2 #e1 #tenho-digital #trilha-mia-couto |
 | Crônicas de Bustos Domecq / Novos Contos de Bustos Domecq | Jorge Luis Borges e Adolfo Bioy Casares | #F #contos #humor #policial #latam #d2 #e2 #tenho-digital |
-| Daytripper | Fábio Moon e Gabriel Bá | #HQ #morte #BR #d1 #e2 #trilha-quadrinhos-para-gente-grande #tenho-digital |
-| De Onde Eles Vêm | Jeferson Tenório | #F #raca #contemporaneo #BR #RS #d1 #e1 #trilha-porto-alegre-hoje #tenho-digital |
+| Daytripper | Fábio Moon e Gabriel Bá | #HQ #morte #BR #d1 #e2 #tenho-digital #trilha-quadrinhos-para-gente-grande |
+| De Onde Eles Vêm | Jeferson Tenório | #F #raca #contemporaneo #BR #RS #d1 #e1 #tenho-digital #trilha-porto-alegre-hoje |
 | Dois Mortos e a Morte e Outras Histórias | Tanto Tupiassu | #F #contos #BR #d1 #e1 #tenho-digital |
 | Doramar ou a Odisseia: Histórias | Itamar Vieira Junior | #F #contos #BR #d2 #e1 #tenho-digital |
 | Doze Contos Peregrinos | Gabriel García Márquez | #F #contos #latam #d2 #e1 #tenho-digital |
@@ -1274,13 +1276,13 @@ Livros e quadrinhos da biblioteca virtual que não estavam nas seções anterior
 | Essa História Está Diferente | Ronaldo Bressane (org.) | #F #contos #antologia #BR #d1 #e1 #tenho-digital |
 | Feliz Ano Velho | Marcelo Rubens Paiva | #NF #biografia #testemunho #contemporaneo #BR #d1 #e1 #tenho-digital |
 | Ficções Amazônicas | Aparecida Vilaça e Francisco Vilaça Gaspar | #F #contos #antropologia #BR #d2 #e1 #tenho-digital |
-| História Universal da Infâmia | Jorge Luis Borges | #F #contos #classico #latam #d2 #e1 #trilha-labirintos-de-borges #tenho-digital |
+| História Universal da Infâmia | Jorge Luis Borges | #F #contos #classico #latam #d2 #e1 #tenho-digital #trilha-labirintos-de-borges |
 | Histórias da Meia-Noite | Machado de Assis | #F #contos #classico #BR #d2 #e1 #tenho-digital |
 | Histórias de Cronópios e de Famas | Julio Cortázar | #F #contos #humor #latam #d2 #e1 #tenho-digital |
 | Krakatoa | Veronica Stigger | #F #contemporaneo #BR #d2 #e1 #tenho-digital |
 | Levantado do Chão | José Saramago | #F #contemporaneo #portugal #d3 #e2 #tenho-digital |
 | Lituma nos Andes | Mario Vargas Llosa | #F #contemporaneo #latam #d2 #e2 #tenho-digital |
-| Livro de Sonhos | Jorge Luis Borges | #F #contos #antologia #latam #d2 #e1 #trilha-labirintos-de-borges #tenho-digital |
+| Livro de Sonhos | Jorge Luis Borges | #F #contos #antologia #latam #d2 #e1 #tenho-digital #trilha-labirintos-de-borges |
 | Louco: Fuga (Graphic MSP) | Rogério Coelho | #HQ #BR #d1 #e1 #tenho-digital |
 | Luzes de Niterói | Marcello Quintanilha | #HQ #BR #d1 #e2 #tenho-digital |
 | Manual Prático do Ódio | Ferréz | #F #BR #d1 #e2 #tenho-digital |
@@ -1290,42 +1292,42 @@ Livros e quadrinhos da biblioteca virtual que não estavam nas seções anterior
 | Noturno do Chile | Roberto Bolaño | #F #contemporaneo #latam #d2 #e1 #tenho-digital |
 | O Beijo no Asfalto (em quadrinhos) | Nelson Rodrigues, Arnaldo Branco e Gabriel Góes | #HQ #adaptacao #teatro #BR #d1 #e1 #tenho-digital |
 | O Buraco na Parede | Rubem Fonseca | #F #contos #BR #d2 #e1 #tenho-digital |
-| O Cobrador | Rubem Fonseca | #F #contos #policial #BR #d2 #e1 #trilha-crime-a-brasileira #tenho-digital |
+| O Cobrador | Rubem Fonseca | #F #contos #policial #BR #d2 #e1 #tenho-digital #trilha-crime-a-brasileira |
 | O Conto da Ilha Desconhecida | José Saramago | #F #contos #portugal #d1 #e1 #tenho-digital |
 | O Falador | Mario Vargas Llosa | #F #contemporaneo #latam #d2 #e1 #tenho-digital |
-| O Fazedor | Jorge Luis Borges | #F #contos #poesia #classico #latam #d3 #e1 #trilha-labirintos-de-borges #tenho-digital |
+| O Fazedor | Jorge Luis Borges | #F #contos #poesia #classico #latam #d3 #e1 #tenho-digital #trilha-labirintos-de-borges |
 | O Gaúcho | José de Alencar | #F #regional-gaucho #classico #BR #RS #d2 #e2 #tenho-digital |
 | O Inconsciente Corporativo e Outros Contos | Vinícius Portella | #F #contos #BR #d2 #e1 #tenho-digital |
 | O Livro dos Abraços | Eduardo Galeano | #F #cronicas #latam #d1 #e2 #tenho-digital |
-| O Livro dos Seres Imaginários | Jorge Luis Borges | #F #contos #fantasia #latam #d2 #e1 #trilha-labirintos-de-borges #tenho-digital |
+| O Livro dos Seres Imaginários | Jorge Luis Borges | #F #contos #fantasia #latam #d2 #e1 #tenho-digital #trilha-labirintos-de-borges |
 | O Melhor de Rubem Fonseca | Rubem Fonseca | #F #contos #policial #BR #d2 #e2 #tenho-digital |
-| O Ouro dos Tigres | Jorge Luis Borges | #poesia #latam #d3 #e1 #tenho-digital |
+| O Ouro dos Tigres | Jorge Luis Borges | #poesia #latam #d3 #e1 #tenho-digital #trilha-poesia-em-vozes |
 | O Outro, o Mesmo | Jorge Luis Borges | #poesia #classico #latam #d3 #e1 #tenho-digital |
 | O Triste Fim de Policarpo Quaresma (Literatura Brasileira em Quadrinhos, vol. 1) | Lima Barreto, Ronaldo Antonelli e Francisco Vilachã | #HQ #adaptacao #classico #BR #d1 #e1 #tenho-digital |
 | Os Cem Melhores Contos Brasileiros do Século | Italo Moriconi (org.) | #F #contos #antologia #BR #d2 #e3 #tenho-digital |
 | Os Chefes / Os Filhotes | Mario Vargas Llosa | #F #contos #latam #d2 #e1 #tenho-digital |
 | Os Conjurados | Jorge Luis Borges | #poesia #latam #d3 #e1 #tenho-digital |
-| Os Dragões Não Conhecem o Paraíso | Caio Fernando Abreu | #F #contos #BR #RS #d2 #e1 #trilha-porto-alegre-hoje #tenho-digital |
+| Os Dragões Não Conhecem o Paraíso | Caio Fernando Abreu | #F #contos #BR #RS #d2 #e1 #tenho-digital #trilha-porto-alegre-hoje |
 | Os Prisioneiros | Rubem Fonseca | #F #contos #BR #d2 #e1 #tenho-digital |
 | Pai, Pai | João Silvério Trevisan | #NF #biografia #testemunho #BR #d2 #e1 #tenho-digital |
 | Pássaros na Boca e Sete Casas Vazias: Contos Reunidos | Samanta Schweblin | #F #contos #horror #latam #d2 #e2 #tenho-digital |
 | Penadinho: Vida (Graphic MSP) | Paulo Crumbim e Cristina Eiko | #HQ #BR #d1 #e1 #tenho-digital |
 | Pequenas Criaturas | Rubem Fonseca | #F #contos #BR #d2 #e2 #tenho-digital |
-| Percatempos: Tudo que Faço Quando Não Sei o que Fazer | Gregorio Duvivier | #F #humor #poesia #BR #d1 #e1 #tenho-digital |
+| Percatempos: Tudo que Faço Quando Não Sei o que Fazer | Gregorio Duvivier | #F #humor #poesia #BR #d1 #e1 #tenho-digital #trilha-poesia-em-vozes |
 | Quincas Borba (em quadrinhos) | Machado de Assis | #HQ #adaptacao #classico #BR #d1 #e1 #tenho-digital |
 | Rinha de Galos | María Fernanda Ampuero | #F #contos #latam #d2 #e1 #tenho-digital |
 | Romance Negro | Rubem Fonseca | #F #policial #contos #BR #d2 #e1 #tenho-digital |
 | Salvar o Fogo | Itamar Vieira Junior | #F #contemporaneo #BR #d2 #e2 #tenho-digital |
-| Sete Monstros Brasileiros | Braulio Tavares | #F #contos #fantasia #horror #BR #d1 #e1 #tenho-digital |
+| Sete Monstros Brasileiros | Braulio Tavares | #F #contos #fantasia #horror #BR #d1 #e1 #tenho-digital #trilha-pesadelos-de-papel |
 | Talco de Vidro | Marcello Quintanilha | #HQ #BR #d2 #e1 #tenho-digital |
 | Todos os Contos | Clarice Lispector | #F #contos #classico #BR #d3 #e3 #tenho-digital |
 | Todos os Contos de Machado de Assis (box) | Machado de Assis | #F #contos #classico #BR #d2 #e3 #tenho-digital |
 | Tudo é Rio | Carla Madeira | #F #contemporaneo #BR #d1 #e1 #tenho-digital |
-| Tungstênio | Marcello Quintanilha | #HQ #policial #BR #d2 #e1 #trilha-quadrinhos-para-gente-grande #tenho-digital |
-| Um Rio Chamado Tempo, uma Casa Chamada Terra | Mia Couto | #F #africa #d2 #e1 #tenho-digital |
+| Tungstênio | Marcello Quintanilha | #HQ #policial #BR #d2 #e1 #tenho-digital #trilha-quadrinhos-para-gente-grande |
+| Um Rio Chamado Tempo, uma Casa Chamada Terra | Mia Couto | #F #africa #d2 #e1 #tenho-digital #trilha-mia-couto |
 | Um Sonho de Três Noites | Tiago Cabral | #F #contos #BR #d1 #e1 #tenho-digital |
 | Vagamundo | Eduardo Galeano | #F #contos #latam #d1 #e1 #tenho-digital |
-| Venenos de Deus, Remédios do Diabo | Mia Couto | #F #africa #d2 #e1 #tenho-digital |
+| Venenos de Deus, Remédios do Diabo | Mia Couto | #F #africa #d2 #e1 #tenho-digital #trilha-mia-couto |
 
 ### 17.5 Ficção contemporânea e mundial
 
@@ -1333,9 +1335,9 @@ Livros e quadrinhos da biblioteca virtual que não estavam nas seções anterior
 |---|---|---|
 | 1Q84, vol. 1 | Haruki Murakami | #F #fantasia #contemporaneo #asia #d2 #e2 #tenho-digital |
 | 20 Contos de Truman Capote | Truman Capote | #F #contos #classico #d2 #e2 #tenho-digital |
-| A Chegada | Shaun Tan | #HQ #fantasia #d1 #e1 #trilha-quadrinhos-para-gente-grande #tenho-digital |
+| A Chegada | Shaun Tan | #HQ #fantasia #d1 #e1 #tenho-digital #trilha-quadrinhos-para-gente-grande |
 | A Dissociação | Nadia Yala Kisukidi | #F #contemporaneo #africa #d2 #e2 #tenho-digital |
-| A Espera | Keum Suk Gendry-Kim | #HQ #guerra #historia #asia #d1 #e1 #tenho-digital |
+| A Espera | Keum Suk Gendry-Kim | #HQ #guerra #historia #asia #d1 #e1 #tenho-digital #trilha-leste-asiatico |
 | A Extraordinária Cozinha dos Livros | Kim Jee-Hye | #F #contemporaneo #asia #d1 #e2 #tenho-digital |
 | A Fábrica | Hiroko Oyamada | #F #contemporaneo #asia #d2 #e1 #tenho-digital |
 | A Inconveniente Loja de Conveniência | Kim Ho-yeon | #F #contemporaneo #asia #d1 #e2 #tenho-digital |
@@ -1344,7 +1346,7 @@ Livros e quadrinhos da biblioteca virtual que não estavam nas seções anterior
 | A Papelaria Tsubaki | Ito Ogawa | #F #contemporaneo #asia #d1 #e2 #tenho-digital |
 | A Vida | (autor não informado) | #HQ #d1 #e1 #verificar #tenho-digital |
 | Ao Sul de Lugar Nenhum | Charles Bukowski | #F #contos #contemporaneo #d1 #e1 #tenho-digital |
-| Atos Humanos | Han Kang | #F #testemunho #contemporaneo #asia #d2 #e1 #tenho-digital |
+| Atos Humanos | Han Kang | #F #testemunho #contemporaneo #asia #d2 #e1 #tenho-digital #trilha-leste-asiatico |
 | Baratas | Scholastique Mukasonga | #NF #testemunho #biografia #contemporaneo #africa #d2 #e1 #tenho-digital |
 | Blackbird | Pierre Maurel | #HQ #contemporaneo #d1 #e1 #tenho-digital |
 | Caçando Carneiros | Haruki Murakami | #F #contemporaneo #asia #d2 #e2 #tenho-digital |
@@ -1360,12 +1362,12 @@ Livros e quadrinhos da biblioteca virtual que não estavam nas seções anterior
 | Nossa Senhora do Nilo | Scholastique Mukasonga | #F #contemporaneo #africa #d2 #e1 #tenho-digital |
 | Noturnos: Histórias de Música e Anoitecer | Kazuo Ishiguro | #F #contos #contemporaneo #d1 #e1 #tenho-digital |
 | O Desertor | Abdulrazak Gurnah | #F #colonialismo #africa #d2 #e2 #tenho-digital |
-| O Grande Caderno | Ágota Kristóf | #F #guerra #europa-leste #d2 #e1 #tenho-digital |
+| O Grande Caderno | Ágota Kristóf | #F #guerra #europa-leste #d2 #e1 #tenho-digital #trilha-depois-da-batalha |
 | O Lamento dos Rios | Ann Liang | #F #fantasia #contemporaneo #asia #d1 #e2 #tenho-digital |
-| O Livro Branco | Han Kang | #F #contemporaneo #asia #d2 #e1 #tenho-digital |
+| O Livro Branco | Han Kang | #F #contemporaneo #asia #d2 #e1 #tenho-digital #trilha-leste-asiatico |
 | O Museu do Silêncio | Yoko Ogawa | #F #contemporaneo #asia #d2 #e2 #tenho-digital |
-| O Pássaro Pintado | Jerzy Kosinski | #F #guerra #europa-leste #d2 #e1 #tenho-digital |
-| O que Lhes Restou | Ghassan Kanafani | #F #guerra #d2 #e1 #tenho-digital |
+| O Pássaro Pintado | Jerzy Kosinski | #F #guerra #europa-leste #d2 #e1 #tenho-digital #trilha-depois-da-batalha |
+| O que Lhes Restou | Ghassan Kanafani | #F #guerra #d2 #e1 #tenho-digital #trilha-depois-da-batalha |
 | O Relatório de Brodeck | Manu Larcenet | #HQ #adaptacao #guerra #d2 #e2 #tenho-digital |
 | Onde Vivem as Monstras | Aoko Matsuda | #F #contos #fantasia #genero #asia #d2 #e1 #tenho-digital |
 | Os Impostos | (autor não informado) | #HQ #d1 #e1 #verificar #tenho-digital |
@@ -1386,33 +1388,33 @@ Livros e quadrinhos da biblioteca virtual que não estavam nas seções anterior
 | Título | Autor | Tags |
 |---|---|---|
 | 1356 (Busca do Graal, vol. 4) | Bernard Cornwell | #F #romance-historico #medieval #guerra #d1 #e2 #rel-cornwell #tenho-digital |
-| A Lição de Anatomia | Nina Siegal | #F #romance-historico #arte #d2 #e2 #tenho-digital |
-| Almas Divididas | Toby Clements | #F #romance-historico #medieval #guerra #d1 #e3 #tenho-digital |
-| Barracuda | Jean Dufaux e Jérémy | #HQ #aventura #romance-historico #d1 #e2 #tenho-digital |
-| Bórgia | Alejandro Jodorowsky e Milo Manara | #HQ #romance-historico #renascimento #d2 #e2 #tenho-digital |
+| A Lição de Anatomia | Nina Siegal | #F #romance-historico #arte #d2 #e2 #tenho-digital #trilha-catedrais-e-cortes |
+| Almas Divididas | Toby Clements | #F #romance-historico #medieval #guerra #d1 #e3 #tenho-digital #trilha-rosas-e-espadas |
+| Barracuda | Jean Dufaux e Jérémy | #HQ #aventura #romance-historico #d1 #e2 #tenho-digital #trilha-historia-desenhada |
+| Bórgia | Alejandro Jodorowsky e Milo Manara | #HQ #romance-historico #renascimento #d2 #e2 #tenho-digital #trilha-historia-desenhada |
 | Cães do Rei | Martin Jensen | #F #romance-historico #medieval #misterio #d1 #e2 #tenho-digital |
 | Civilizações | Laurent Binet | #F #historia-alternativa #d2 #e2 #tenho-digital |
 | Como Tigres na Neve | Juhea Kim | #F #romance-historico #asia #d2 #e2 #tenho-digital |
-| Desafiando a Morte | David Gilman | #F #romance-historico #medieval #guerra #d1 #e2 #tenho-digital |
-| Hamnet | Maggie O'Farrell | #F #romance-historico #renascimento #d2 #e2 #tenho-digital |
-| Herança de Sangue (Guerra das Rosas, vol. 3) | Conn Iggulden | #F #romance-historico #medieval #guerra #d1 #e2 #tenho-digital |
-| Ira Dei | Vincent Brugeas e Ronan Toulhoat | #HQ #romance-historico #medieval #d1 #e2 #tenho-digital |
-| Kingmaker: Uma Jornada no Inverno | Toby Clements | #F #romance-historico #medieval #guerra #d1 #e3 #tenho-digital |
-| Lobo Solitário | Kazuo Koike e Goseki Kojima | #HQ #manga #romance-historico #classico #asia #d2 #e3 #tenho-digital |
+| Desafiando a Morte | David Gilman | #F #romance-historico #medieval #guerra #d1 #e2 #tenho-digital #trilha-rosas-e-espadas |
+| Hamnet | Maggie O'Farrell | #F #romance-historico #renascimento #d2 #e2 #tenho-digital #trilha-catedrais-e-cortes |
+| Herança de Sangue (Guerra das Rosas, vol. 3) | Conn Iggulden | #F #romance-historico #medieval #guerra #d1 #e2 #tenho-digital #trilha-rosas-e-espadas |
+| Ira Dei | Vincent Brugeas e Ronan Toulhoat | #HQ #romance-historico #medieval #d1 #e2 #tenho-digital #trilha-historia-desenhada |
+| Kingmaker: Uma Jornada no Inverno | Toby Clements | #F #romance-historico #medieval #guerra #d1 #e3 #tenho-digital #trilha-rosas-e-espadas |
+| Lobo Solitário | Kazuo Koike e Goseki Kojima | #HQ #manga #romance-historico #classico #asia #d2 #e3 #tenho-digital #trilha-imperios-e-conquistadores |
 | M, o Homem da Providência | Antonio Scurati | #F #romance-historico #autoritarismo #d3 #e3 #tenho-digital |
-| Mestre da Guerra: Uma Lenda Forjada em Batalha | David Gilman | #F #romance-historico #medieval #guerra #d1 #e2 #tenho-digital |
-| Miyamoto Musashi | Shotaro Ishinomori | #HQ #manga #biografia #romance-historico #asia #d1 #e2 #tenho-digital |
-| O Abandono da Fé | Toby Clements | #F #romance-historico #medieval #guerra #d1 #e3 #tenho-digital |
+| Mestre da Guerra: Uma Lenda Forjada em Batalha | David Gilman | #F #romance-historico #medieval #guerra #d1 #e2 #tenho-digital #trilha-rosas-e-espadas |
+| Miyamoto Musashi | Shotaro Ishinomori | #HQ #manga #biografia #romance-historico #asia #d1 #e2 #tenho-digital #trilha-imperios-e-conquistadores |
+| O Abandono da Fé | Toby Clements | #F #romance-historico #medieval #guerra #d1 #e3 #tenho-digital #trilha-rosas-e-espadas |
 | O Cirurgião de Almas | Luis Zueco | #F #romance-historico #medicina #d1 #e2 #tenho-digital |
-| O Espelho e a Luz | Hilary Mantel | #F #romance-historico #renascimento #d3 #e3 #tenho-digital |
+| O Espelho e a Luz | Hilary Mantel | #F #romance-historico #renascimento #d3 #e3 #tenho-digital #trilha-catedrais-e-cortes |
 | O Forte | Bernard Cornwell | #F #romance-historico #guerra #d1 #e2 #rel-cornwell #tenho-digital |
-| O Portão dos Mortos | David Gilman | #F #romance-historico #medieval #guerra #d1 #e2 #tenho-digital |
+| O Portão dos Mortos | David Gilman | #F #romance-historico #medieval #guerra #d1 #e2 #tenho-digital #trilha-rosas-e-espadas |
 | O Procurador | Gianfranco Manfredi e Pedro Mauro | #HQ #romance-historico #d1 #e1 #tenho-digital |
-| O Último Voo das Borboletas | Kan Takahama | #HQ #manga #romance-historico #asia #d1 #e1 #tenho-digital |
-| Pássaros da Tempestade (Guerra das Rosas, vol. 1) | Conn Iggulden | #F #romance-historico #medieval #guerra #d1 #e2 #tenho-digital |
+| O Último Voo das Borboletas | Kan Takahama | #HQ #manga #romance-historico #asia #d1 #e1 #tenho-digital #trilha-historia-desenhada |
+| Pássaros da Tempestade (Guerra das Rosas, vol. 1) | Conn Iggulden | #F #romance-historico #medieval #guerra #d1 #e2 #tenho-digital #trilha-rosas-e-espadas |
 | Rebelde | Bernard Cornwell | #F #romance-historico #guerra #d1 #e2 #rel-cornwell #tenho-digital |
-| Sangue de Víbora | David Gilman | #F #romance-historico #medieval #guerra #d1 #e2 #tenho-digital |
-| Santo Guerreiro: Roma Invicta | Eduardo Spohr | #F #romance-historico #roma #fantasia #BR #antiguidade #d1 #e3 #tenho-digital |
+| Sangue de Víbora | David Gilman | #F #romance-historico #medieval #guerra #d1 #e2 #tenho-digital #trilha-rosas-e-espadas |
+| Santo Guerreiro: Roma Invicta | Eduardo Spohr | #F #romance-historico #roma #fantasia #BR #antiguidade #d1 #e3 #tenho-digital #trilha-roma-no-acervo |
 | Santo Guerreiro: Ventos do Norte | Eduardo Spohr | #F #romance-historico #roma #fantasia #BR #antiguidade #d1 #e3 #tenho-digital |
 | Trilogia Gatilho | Carlos Estefan e Pedro Mauro | #HQ #faroeste #BR #d1 #e2 #tenho-digital |
 | Troia: O Romance de uma Guerra | Cláudio Moreno | #F #romance-historico #antiguidade #BR #RS #d1 #e2 #tenho-digital |
@@ -1423,36 +1425,36 @@ Livros e quadrinhos da biblioteca virtual que não estavam nas seções anterior
 | Título | Autor | Tags |
 |---|---|---|
 | 100 Balas | Brian Azzarello e Eduardo Risso | #HQ #policial #thriller #d1 #e3 #tenho-digital |
-| A Baía dos Mortos | Edith Wharton | #F #contos #horror #gotico #classico #d2 #e1 #tenho-digital |
-| A Causa Secreta e Outros Contos de Horror | Edgar Allan Poe, Machado de Assis e outros | #F #horror #contos #classico #d1 #e1 #tenho-digital |
+| A Baía dos Mortos | Edith Wharton | #F #contos #horror #gotico #classico #d2 #e1 #tenho-digital #trilha-pesadelos-de-papel |
+| A Causa Secreta e Outros Contos de Horror | Edgar Allan Poe, Machado de Assis e outros | #F #horror #contos #classico #d1 #e1 #tenho-digital #trilha-pesadelos-de-papel |
 | A Colônia | Ezekiel Boone | #F #horror #ficcao-cientifica #d1 #e2 #tenho-digital |
-| A Enchente | Michael McDowell | #F #horror #gotico #d1 #e1 #tenho-digital |
-| A Estrada Enluarada e Outras Histórias | Ambrose Bierce | #F #contos #horror #classico #d2 #e1 #tenho-digital |
+| A Enchente | Michael McDowell | #F #horror #gotico #d1 #e1 #tenho-digital #trilha-pesadelos-de-papel |
+| A Estrada Enluarada e Outras Histórias | Ambrose Bierce | #F #contos #horror #classico #d2 #e1 #tenho-digital #trilha-pesadelos-de-papel |
 | A Floresta das Árvores Retorcidas | Alexandre Callari | #F #horror #BR #d1 #e2 #tenho-digital |
 | A Longa Marcha | Stephen King | #F #distopia #thriller #d1 #e2 #tenho-digital |
 | A Mordida do Cão Morto | Tyler Boss | #HQ #misterio #d1 #e1 #tenho-digital |
 | A Paciente Silenciosa | Alex Michaelides | #F #thriller #d1 #e2 #tenho-digital |
-| A Última Casa da Rua Needless | Catriona Ward | #F #horror #thriller #d2 #e2 #tenho-digital |
+| A Última Casa da Rua Needless | Catriona Ward | #F #horror #thriller #d2 #e2 #tenho-digital #trilha-pesadelos-de-papel |
 | Antologia de Contos Extraordinários | Edgar Allan Poe | #F #contos #horror #misterio #classico #d2 #e2 #tenho-digital |
 | Antologia H.P. Lovecraft | H.P. Lovecraft | #F #horror #lovecraftiano #contos #classico #d2 #e2 #rel-widows-bay #tenho-digital |
 | Ar Frio (em quadrinhos) | Romeu Martins, Val Oliveira e Sandro Zambi | #HQ #adaptacao #horror #lovecraftiano #BR #d1 #e1 #tenho-digital |
 | B.P.D.P.: O Diabo que Você Conhece | Mike Mignola, Scott Allie e Laurence Campbell | #HQ #horror #d1 #e2 #tenho-digital |
 | Bedlam | Nick Spencer e Riley Rossmo | #HQ #horror #policial #d2 #e2 #tenho-digital |
 | Black Hole | Charles Burns | #HQ #horror #d2 #e2 #tenho-digital |
-| Britannia | Peter Milligan e Juan José Ryp | #HQ #horror #roma #romance-historico #antiguidade #d1 #e2 #tenho-digital |
+| Britannia | Peter Milligan e Juan José Ryp | #HQ #horror #roma #romance-historico #antiguidade #d1 #e2 #tenho-digital #trilha-historia-desenhada #trilha-roma-no-acervo |
 | Cabo do Medo | John D. MacDonald | #F #thriller #d1 #e1 #tenho-digital |
 | Caminhos Misteriosos | Jason Rubin e Tyler Kirkham | #HQ #fantasia #d1 #e1 #verificar #tenho-digital |
 | Candyman | Clive Barker | #F #horror #d1 #e1 #tenho-digital |
-| Carmilla | J. Sheridan Le Fanu | #F #horror #gotico #classico #d1 #e1 #tenho-digital |
-| Casas Estranhas | Uketsu | #F #horror #misterio #asia #d1 #e1 #tenho-digital |
+| Carmilla | J. Sheridan Le Fanu | #F #horror #gotico #classico #d1 #e1 #tenho-digital #trilha-pesadelos-de-papel |
+| Casas Estranhas | Uketsu | #F #horror #misterio #asia #d1 #e1 #tenho-digital #trilha-pesadelos-de-papel |
 | Casas Estranhas 2 | Uketsu | #F #misterio #horror #asia #d1 #e2 #tenho-digital |
 | Cego | Robin Cook | #F #thriller #thriller-medico #d1 #e2 #tenho-digital |
-| Cérebro | Robin Cook | #F #thriller #thriller-medico #d1 #e2 #trilha-plantao-noturno #tenho-digital |
+| Cérebro | Robin Cook | #F #thriller #thriller-medico #d1 #e2 #tenho-digital #trilha-plantao-noturno |
 | Ciclo Antarktos (The Antarktos Cycle) | Robert M. Price (org.) | #F #horror #lovecraftiano #antologia #contos #d2 #e3 #verificar #tenho-digital |
 | Coelho Morto / Olhos Mortos | Gerry Duggan e John McCrea | #HQ #policial #d1 #e2 #tenho-digital |
-| Colheita Macabra | Tess Gerritsen | #F #thriller #thriller-medico #d1 #e2 #trilha-plantao-noturno #tenho-digital |
+| Colheita Macabra | Tess Gerritsen | #F #thriller #thriller-medico #d1 #e2 #tenho-digital #trilha-plantao-noturno |
 | Com Sangue | Stephen King | #F #horror #contos #d1 #e2 #tenho-digital |
-| Coma | Robin Cook | #F #thriller #thriller-medico #d1 #e2 #trilha-plantao-noturno #tenho-digital |
+| Coma | Robin Cook | #F #thriller #thriller-medico #d1 #e2 #tenho-digital #trilha-plantao-noturno |
 | Como Vender uma Casa Assombrada | Grady Hendrix | #F #horror #humor #d1 #e2 #tenho-digital |
 | Condado Maldito | Cullen Bunn e Tyler Crook | #HQ #horror #gotico #d1 #e2 #tenho-digital |
 | Contos de Horror (Vertigo) | Vários autores | #HQ #horror #antologia #d1 #e2 #tenho-digital |
@@ -1465,14 +1467,14 @@ Livros e quadrinhos da biblioteca virtual que não estavam nas seções anterior
 | Cripta | Vários autores | #HQ #horror #antologia #classico #d1 #e3 #verificar #tenho-digital |
 | Crise | Robin Cook | #F #thriller #thriller-medico #d1 #e2 #tenho-digital |
 | Cura Fatal | Robin Cook | #F #thriller #thriller-medico #d1 #e2 #tenho-digital |
-| Dias Perfeitos | Raphael Montes | #F #thriller #BR #d1 #e2 #trilha-crime-a-brasileira #tenho-digital |
-| Do Inferno | Alan Moore e Eddie Campbell | #HQ #policial #romance-historico #horror #d3 #e3 #trilha-quadrinhos-para-gente-grande #tenho-digital |
+| Dias Perfeitos | Raphael Montes | #F #thriller #BR #d1 #e2 #tenho-digital #trilha-crime-a-brasileira |
+| Do Inferno | Alan Moore e Eddie Campbell | #HQ #policial #romance-historico #horror #d3 #e3 #tenho-digital #trilha-quadrinhos-para-gente-grande |
 | Dolores Claiborne | Stephen King | #F #thriller #d1 #e2 #tenho-digital |
 | Esfinge | Robin Cook | #F #thriller #aventura #d1 #e2 #tenho-digital |
 | Eu Sou a Lenda | Richard Matheson | #F #horror #ficcao-cientifica #classico #d1 #e1 #tenho-digital |
 | Evil Dead | Vários autores | #HQ #horror #d1 #e2 #tenho-digital |
 | Gélido | Tess Gerritsen | #F #thriller #thriller-medico #d1 #e2 #tenho-digital |
-| Gravidade | Tess Gerritsen | #F #thriller #thriller-medico #ficcao-cientifica #d1 #e2 #trilha-plantao-noturno #tenho-digital |
+| Gravidade | Tess Gerritsen | #F #thriller #thriller-medico #ficcao-cientifica #d1 #e2 #tenho-digital #trilha-plantao-noturno |
 | H.P. Lovecraft, vol. 2: Miskatonic Edition | H.P. Lovecraft | #F #horror #lovecraftiano #contos #classico #d2 #e3 #rel-widows-bay #tenho-digital |
 | Hailstone | Rafael Scavone e Rafael de Latorre | #HQ #horror #faroeste #BR #d1 #e1 #tenho-digital |
 | Hellblazer | Vários autores | #HQ #horror #d2 #e3 #tenho-digital |
@@ -1482,7 +1484,7 @@ Livros e quadrinhos da biblioteca virtual que não estavam nas seções anterior
 | Histórias Extraordinárias | Edgar Allan Poe | #F #contos #horror #misterio #classico #d2 #e2 #tenho-digital |
 | Imagens Estranhas | Uketsu | #F #horror #misterio #asia #d1 #e2 #tenho-digital |
 | Infiel | Pornsak Pichetshote e Aaron Campbell | #HQ #horror #raca #d1 #e1 #tenho-digital |
-| Jantar Secreto | Raphael Montes | #F #thriller #horror #BR #d1 #e2 #trilha-crime-a-brasileira #tenho-digital |
+| Jantar Secreto | Raphael Montes | #F #thriller #horror #BR #d1 #e2 #tenho-digital #trilha-crime-a-brasileira |
 | Lágrimas de Aço | S.A. Cosby | #F #thriller #policial #d1 #e2 #tenho-digital |
 | Lovecraft | Hans Rodionoff, Keith Giffen e Enrique Breccia | #HQ #horror #lovecraftiano #biografia #d2 #e1 #verificar #tenho-digital |
 | Manual das Donas de Casa Caçadoras de Vampiros | Grady Hendrix | #F #horror #humor #d1 #e2 #tenho-digital |
@@ -1495,13 +1497,13 @@ Livros e quadrinhos da biblioteca virtual que não estavam nas seções anterior
 | Natureza Morta | Kay Chronister | #F #horror #d2 #e2 #tenho-digital |
 | O Bazar dos Sonhos Ruins | Stephen King | #F #horror #contos #d1 #e3 #tenho-digital |
 | O Bebê é Meu | Oyinkan Braithwaite | #F #thriller #africa #d1 #e1 #tenho-digital |
-| O Comitê da Morte | Noah Gordon | #F #thriller #thriller-medico #d1 #e2 #rel-cornwell #trilha-plantao-noturno #tenho-digital |
+| O Comitê da Morte | Noah Gordon | #F #thriller #thriller-medico #d1 #e2 #rel-cornwell #tenho-digital #trilha-plantao-noturno |
 | O Delator | Tess Gerritsen | #F #thriller #thriller-medico #d1 #e2 #tenho-digital |
 | O Escaravelho de Ouro e Outros Contos | Edgar Allan Poe | #F #horror #contos #misterio #classico #d2 #e1 #tenho-digital |
 | O Fio do Bisturi | Tess Gerritsen | #F #thriller #thriller-medico #d1 #e2 #tenho-digital |
 | O Homem do Colorado | Stephen King | #F #thriller #misterio #d1 #e1 #tenho-digital |
 | O Horror em Red Hook | H.P. Lovecraft | #F #horror #lovecraftiano #classico #d2 #e1 #rel-widows-bay #tenho-digital |
-| O Jardim de Ossos | Tess Gerritsen | #F #thriller #thriller-medico #romance-historico #d1 #e2 #trilha-plantao-noturno #tenho-digital |
+| O Jardim de Ossos | Tess Gerritsen | #F #thriller #thriller-medico #romance-historico #d1 #e2 #tenho-digital #trilha-plantao-noturno |
 | O Papel de Parede Amarelo | Charlotte Perkins Gilman | #F #horror #gotico #genero #classico #d1 #e1 #tenho-digital |
 | O Pátio | Alan Moore e Jacen Burrows | #HQ #horror #lovecraftiano #d2 #e1 #tenho-digital |
 | O Sacrifício | Joe Hill | #F #horror #d1 #e3 #tenho-digital |
@@ -1518,7 +1520,7 @@ Livros e quadrinhos da biblioteca virtual que não estavam nas seções anterior
 | Pestilência | Frank Tieri e Oleg Okunev | #HQ #horror #medieval #d1 #e1 #tenho-digital |
 | Preacher | Garth Ennis e Steve Dillon | #HQ #horror #religiao #humor #d2 #e3 #tenho-digital |
 | Protocolo Zero | Anthony McCarten | #F #thriller #d1 #e2 #tenho-digital |
-| Rashomon | Victor Santos | #HQ #policial #asia #d1 #e1 #verificar #tenho-digital |
+| Rashomon | Victor Santos | #HQ #policial #asia #d1 #e1 #verificar #tenho-digital #trilha-leste-asiatico |
 | Servidão Mental | Robin Cook | #F #thriller #thriller-medico #d1 #e2 #tenho-digital |
 | Sete Anos de Escuridão | You-jeong Jeong | #F #thriller #asia #d2 #e2 #tenho-digital |
 | Severed | Scott Snyder, Scott Tuft e Attila Futaki | #HQ #horror #d1 #e1 #tenho-digital |
@@ -1526,14 +1528,14 @@ Livros e quadrinhos da biblioteca virtual que não estavam nas seções anterior
 | Slow Horses | Mick Herron | #F #thriller #d1 #e2 #tenho-digital |
 | Sombras da Noite | Stephen King | #F #horror #contos #d1 #e2 #tenho-digital |
 | Sombrio e Sangrento | Shawn Aldridge e Scott Godlewski | #HQ #horror #d1 #e1 #tenho-digital |
-| Suicidas | Raphael Montes | #F #thriller #BR #d1 #e2 #trilha-crime-a-brasileira #tenho-digital |
+| Suicidas | Raphael Montes | #F #thriller #BR #d1 #e2 #tenho-digital #trilha-crime-a-brasileira |
 | Todo Mundo Neste Trem é Suspeito | Benjamin Stevenson | #F #misterio #humor #d1 #e2 #tenho-digital |
 | Tormenta | C.J. Tudor | #F #thriller #horror #d1 #e2 #tenho-digital |
 | Torso | Brian Michael Bendis e Marc Andreyko | #HQ #policial #romance-historico #d2 #e2 #tenho-digital |
 | Trilogia Lovecraft | (autor não informado) | #HQ #horror #lovecraftiano #d1 #e2 #verificar #tenho-digital |
 | Um Estudo em Esmeralda | Neil Gaiman e Rafael Albuquerque | #HQ #misterio #lovecraftiano #adaptacao #d1 #e1 #tenho-digital |
 | Um Passeio no Inferno | Garth Ennis e Goran Sudžuka | #HQ #horror #policial #d2 #e2 #tenho-digital |
-| Uma Família Feliz | Raphael Montes | #F #thriller #BR #d1 #e2 #trilha-crime-a-brasileira #tenho-digital |
+| Uma Família Feliz | Raphael Montes | #F #thriller #BR #d1 #e2 #tenho-digital #trilha-crime-a-brasileira |
 | Vendemos Nossas Almas | Grady Hendrix | #F #horror #d1 #e2 #tenho-digital |
 | Vertigo: Contos Inquietantes | Vários autores | #HQ #horror #antologia #d1 #e1 #tenho-digital |
 | Vertigo (Opera Graphica) | Vários autores | #HQ #horror #fantasia #antologia #d1 #e3 #tenho-digital |
@@ -1545,13 +1547,13 @@ Livros e quadrinhos da biblioteca virtual que não estavam nas seções anterior
 | Título | Autor | Tags |
 |---|---|---|
 | 200 Limeriques de Edward Lear para Ler e para Ver | Edward Lear | #poesia #humor #classico #d1 #e1 #tenho-digital |
-| Canções, seguido de Sapato Florido e A Rua dos Cataventos | Mario Quintana | #poesia #classico #BR #RS #d1 #e1 #tenho-digital |
+| Canções, seguido de Sapato Florido e A Rua dos Cataventos | Mario Quintana | #poesia #classico #BR #RS #d1 #e1 #tenho-digital #trilha-poesia-em-vozes |
 | Carta ao Pai | Franz Kafka | #NF #classico #d2 #e1 #tenho-digital |
-| Distraídos Venceremos | Paulo Leminski | #poesia #BR #d1 #e1 #tenho-digital |
+| Distraídos Venceremos | Paulo Leminski | #poesia #BR #d1 #e1 #tenho-digital #trilha-poesia-em-vozes |
 | Elogio da Sombra | Jorge Luis Borges | #poesia #latam #d2 #e1 #tenho-digital |
-| Esconderijos do Tempo | Mario Quintana | #poesia #BR #RS #d1 #e1 #trilha-porto-alegre-hoje #tenho-digital |
-| Não Me Deixe Só: Uma Lírica Americana | Claudia Rankine | #poesia #raca #d2 #e1 #tenho-digital |
-| Rabo de Baleia | Alice Sant'Anna | #poesia #contemporaneo #BR #d2 #e1 #tenho-digital |
+| Esconderijos do Tempo | Mario Quintana | #poesia #BR #RS #d1 #e1 #tenho-digital #trilha-porto-alegre-hoje |
+| Não Me Deixe Só: Uma Lírica Americana | Claudia Rankine | #poesia #raca #d2 #e1 #tenho-digital #trilha-poesia-em-vozes |
+| Rabo de Baleia | Alice Sant'Anna | #poesia #contemporaneo #BR #d2 #e1 #tenho-digital #trilha-poesia-em-vozes |
 | Sonetos de Amor e Sacanagem | Gregorio Duvivier | #poesia #humor #BR #d1 #e1 #tenho-digital |
 
 ### 17.9 Filosofia, ética e existência (não ficção)
@@ -1564,7 +1566,7 @@ Livros e quadrinhos da biblioteca virtual que não estavam nas seções anterior
 | 50 Clássicos da Filosofia | Tom Butler-Bowdon | #NF #filosofia #introducao #d1 #e2 #tenho-digital |
 | A Arqueologia do Saber | Michel Foucault | #NF #filosofia #classico #d3 #e2 #tenho-digital |
 | A Arte de Argumentar | Antonio Suarez Abreu | #NF #filosofia #linguagem #didatico #d1 #e1 #tenho-digital |
-| A Arte de Viver | Epicteto | #NF #filosofia #etica #antiguidade #classico #d1 #e1 #tenho-digital |
+| A Arte de Viver | Epicteto | #NF #filosofia #etica #antiguidade #classico #d1 #e1 #tenho-digital #trilha-roma-no-acervo |
 | A Cabeça Bem-Feita | Edgar Morin | #NF #filosofia #educacao #d2 #e1 #tenho-digital |
 | A Filosofia da Adúltera | Luiz Felipe Pondé | #NF #filosofia #BR #d1 #e1 #tenho-digital |
 | A Filosofia entre a Religião e a Ciência | Bertrand Russell | #NF #filosofia #religiao #ciencia #d2 #e1 #tenho-digital |
@@ -1601,7 +1603,7 @@ Livros e quadrinhos da biblioteca virtual que não estavam nas seções anterior
 | Descomplicando a Filosofia: Conceitos Básicos e Grandes Pensadores | Alessandro Cavallari | #NF #filosofia #introducao #d1 #e2 #tenho-digital |
 | Deus ou Seja a Natureza: Spinoza e os Novos Paradigmas da Física | Roberto Leon Ponczek | #NF #filosofia #ciencia #fisica #d3 #e2 #tenho-digital |
 | Dez Erros Filosóficos | Mortimer J. Adler | #NF #filosofia #d2 #e1 #tenho-digital |
-| Dialética do Esclarecimento | Theodor W. Adorno e Max Horkheimer | #NF #filosofia #sociologia #classico #d3 #e2 #tenho-digital |
+| Dialética do Esclarecimento | Theodor W. Adorno e Max Horkheimer | #NF #filosofia #sociologia #classico #d3 #e2 #tenho-digital #trilha-sociologia-em-degraus |
 | Discurso de Metafísica e Outros Textos | Gottfried Wilhelm Leibniz | #NF #filosofia #classico #d3 #e1 #tenho-digital |
 | Do Romantismo a Nietzsche: Rupturas e Transformações na Filosofia do Século XIX | Clademir Luís Araldi | #NF #filosofia #d2 #e1 #tenho-digital |
 | Dossiê Nietzsche | Daniel Rodrigues Aurélio | #NF #filosofia #introducao #d1 #e1 #tenho-digital |
@@ -1620,7 +1622,7 @@ Livros e quadrinhos da biblioteca virtual que não estavam nas seções anterior
 | Filosofia da Biologia | Karla Chediak | #NF #filosofia #ciencia #introducao #d2 #e1 #tenho-digital |
 | Filosofia da Ciência | Alberto Oliva | #NF #filosofia #ciencia #introducao #d2 #e1 #tenho-digital |
 | Filosofia da História | Rossano Pecoraro | #NF #filosofia #historia #introducao #d2 #e1 #tenho-digital |
-| Filosofia da Linguagem | Claudio Costa | #NF #filosofia #linguagem #introducao #d2 #e1 #tenho-digital |
+| Filosofia da Linguagem | Claudio Costa | #NF #filosofia #linguagem #introducao #d2 #e1 #tenho-digital #trilha-linguagem |
 | Filosofia da Mente | Claudio Costa | #NF #filosofia #consciencia #introducao #d2 #e1 #tenho-digital |
 | Filosofia da Natureza | Márcia Gonçalves | #NF #filosofia #introducao #d2 #e1 #tenho-digital |
 | Filosofia em 60 Segundos | Andrew Pessin | #NF #filosofia #introducao #d1 #e1 #tenho-digital |
@@ -1630,7 +1632,7 @@ Livros e quadrinhos da biblioteca virtual que não estavam nas seções anterior
 | Filosofia para Ocupados | Lesley Levene | #NF #filosofia #introducao #d1 #e1 #tenho-digital |
 | Filosofia sem as Partes Chatas | Alain Stephen | #NF #filosofia #introducao #d1 #e1 #tenho-digital |
 | Filosofia: Textos Fundamentais Comentados | Laurence Bonjour e Ann Baker | #NF #filosofia #didatico #d3 #e3 #tenho-digital |
-| Filosofias Africanas: Uma Introdução | Nei Lopes e Luiz Antonio Simas | #NF #filosofia #introducao #BR #africa #d2 #e1 #trilha-terreiro-e-encruzilhada #tenho-digital |
+| Filosofias Africanas: Uma Introdução | Nei Lopes e Luiz Antonio Simas | #NF #filosofia #introducao #BR #africa #d2 #e1 #tenho-digital #trilha-terreiro-e-encruzilhada |
 | Foucault em 90 Minutos | Paul Strathern | #NF #introducao #filosofia #biografia #d1 #e1 #tenho-digital |
 | Grandes Pensadores | The School of Life | #NF #filosofia #introducao #d1 #e2 #tenho-digital |
 | Guia Politicamente Incorreto da Filosofia | Luiz Felipe Pondé | #NF #filosofia #BR #d1 #e1 #tenho-digital |
@@ -1649,7 +1651,7 @@ Livros e quadrinhos da biblioteca virtual que não estavam nas seções anterior
 | Hume | Leonardo Sartori Porto | #NF #filosofia #introducao #d2 #e1 #tenho-digital |
 | Hume em 90 Minutos | Paul Strathern | #NF #introducao #filosofia #biografia #d1 #e1 #tenho-digital |
 | Imposturas Intelectuais | Alan Sokal e Jean Bricmont | #NF #filosofia #ciencia #d2 #e2 #tenho-digital |
-| Infocracia: Digitalização e a Crise da Democracia | Byung-Chul Han | #NF #filosofia #politica #d2 #e1 #trilha-entender-o-presente #tenho-digital |
+| Infocracia: Digitalização e a Crise da Democracia | Byung-Chul Han | #NF #filosofia #politica #d2 #e1 #tenho-digital #trilha-entender-o-presente |
 | Iniciação à Filosofia | Marilena Chaui | #NF #filosofia #introducao #didatico #BR #d1 #e2 #tenho-digital |
 | Iniciação à História da Filosofia: Dos Pré-Socráticos a Wittgenstein | Danilo Marcondes | #NF #filosofia #introducao #didatico #BR #d2 #e2 #tenho-digital |
 | Inteligência Artificial (Como Ler Filosofia) | João de Fernandes Teixeira | #NF #filosofia #ia #introducao #tecnologia #d2 #e1 #tenho-digital |
@@ -1658,13 +1660,13 @@ Livros e quadrinhos da biblioteca virtual que não estavam nas seções anterior
 | Kant e a Crítica da Razão Pura | Vinicius Berlendis de Figueiredo | #NF #filosofia #introducao #d3 #e1 #tenho-digital |
 | Kierkegaard | Jorge M. de Almeida e Alvaro L.M. Valls | #NF #filosofia #existencialismo #introducao #d2 #e1 #tenho-digital |
 | Kierkegaard em 90 Minutos | Paul Strathern | #NF #introducao #filosofia #biografia #d1 #e1 #tenho-digital |
-| Lacrimae Rerum | Slavoj Žižek | #NF #filosofia #cinema #d2 #e2 #tenho-digital |
+| Lacrimae Rerum | Slavoj Žižek | #NF #filosofia #cinema #d2 #e2 #tenho-digital #trilha-cinema-que-pensa |
 | Leibniz e a Linguagem | Vivianne de Castilho Moreira | #NF #filosofia #linguagem #d3 #e1 #tenho-digital |
 | Leibniz em 90 Minutos | Paul Strathern | #NF #introducao #filosofia #biografia #d1 #e1 #tenho-digital |
 | Lições sobre os Pré-platônicos | Friedrich Nietzsche | #NF #filosofia #antiguidade #classico #d3 #e2 #tenho-digital |
 | Linguagem: Conceitos-Chave em Filosofia | José Medina | #NF #filosofia #linguagem #introducao #d2 #e2 #tenho-digital |
 | Linguagem e Cognição | (autor não informado) | #NF #filosofia #linguagem #d2 #e2 #verificar #tenho-digital |
-| Linguagem e Mente: Pensamentos Atuais sobre Antigos Problemas | Noam Chomsky | #NF #filosofia #linguagem #d3 #e2 #tenho-digital |
+| Linguagem e Mente: Pensamentos Atuais sobre Antigos Problemas | Noam Chomsky | #NF #filosofia #linguagem #d3 #e2 #tenho-digital #trilha-linguagem |
 | Livro da Alma | Avicena (Ibn Sina) | #NF #filosofia #medieval #classico #d3 #e2 #tenho-digital |
 | Maquiavel em 90 Minutos | Paul Strathern | #NF #introducao #filosofia #biografia #politica #d1 #e1 #tenho-digital |
 | Marx em 90 Minutos | Paul Strathern | #NF #introducao #filosofia #biografia #politica #d1 #e1 #tenho-digital |
@@ -1676,7 +1678,7 @@ Livros e quadrinhos da biblioteca virtual que não estavam nas seções anterior
 | Nietzsche | Nelson Boeira | #NF #filosofia #introducao #d2 #e1 #tenho-digital |
 | Nietzsche e a Filosofia Budista | Antoine Panaïoti | #NF #filosofia #oriental #d3 #e2 #tenho-digital |
 | Nietzsche e a Grande Política da Linguagem | Viviane Mosé | #NF #filosofia #linguagem #BR #d3 #e2 #tenho-digital |
-| Nietzsche em 90 Minutos | Paul Strathern | #NF #introducao #filosofia #biografia #d1 #e1 #trilha-filosofia-em-doses #tenho-digital |
+| Nietzsche em 90 Minutos | Paul Strathern | #NF #introducao #filosofia #biografia #d1 #e1 #tenho-digital #trilha-filosofia-em-doses |
 | Nietzsche (em quadrinhos) | Michel Onfray e Maximilien Le Roy | #HQ #biografia #filosofia #d1 #e1 #tenho-digital |
 | Nietzscheanismo | Ashley Woodward | #NF #filosofia #introducao #d2 #e2 #tenho-digital |
 | Niilismo | Rossano Pecoraro | #NF #filosofia #existencialismo #introducao #d2 #e1 #tenho-digital |
@@ -1684,7 +1686,7 @@ Livros e quadrinhos da biblioteca virtual que não estavam nas seções anterior
 | Nos Labirintos da Moral | Mario Sergio Cortella e Yves de La Taille | #NF #filosofia #etica #BR #d1 #e1 #tenho-digital |
 | O Anti-Édipo | Gilles Deleuze e Félix Guattari | #NF #filosofia #psicanalise #politica #d3 #e3 #tenho-digital |
 | O Anticristo e Ditirambos de Dionísio | Friedrich Nietzsche | #NF #filosofia #religiao #classico #d2 #e1 #tenho-digital |
-| O Cinema Pensa: Uma Introdução à Filosofia Através dos Filmes | Julio Cabrera | #NF #filosofia #cinema #d2 #e2 #tenho-digital |
+| O Cinema Pensa: Uma Introdução à Filosofia Através dos Filmes | Julio Cabrera | #NF #filosofia #cinema #d2 #e2 #tenho-digital #trilha-cinema-que-pensa |
 | O Fantástico Mundo da Filosofia | Michael F. Patton | #NF #filosofia #introducao #d1 #e1 #tenho-digital |
 | O Filósofo Ignorante | Voltaire | #NF #filosofia #classico #d2 #e1 #tenho-digital |
 | O Hobbit e a Filosofia | William Irwin | #NF #filosofia #arte #d1 #e2 #tenho-digital |
@@ -1694,30 +1696,30 @@ Livros e quadrinhos da biblioteca virtual que não estavam nas seções anterior
 | O que é Filosofia | José Ortega y Gasset | #NF #filosofia #d2 #e2 #tenho-digital |
 | O que é Ideologia | Marilena Chaui | #NF #filosofia #politica #introducao #BR #d1 #e1 #tenho-digital |
 | O que é Poder | Byung-Chul Han | #NF #filosofia #politica #d2 #e1 #tenho-digital |
-| O que é Semiótica | Lucia Santaella | #NF #filosofia #linguagem #introducao #BR #d2 #e1 #tenho-digital |
+| O que é Semiótica | Lucia Santaella | #NF #filosofia #linguagem #introducao #BR #d2 #e1 #tenho-digital #trilha-linguagem |
 | O Sentido do Pensar: A Filosofia Desafia a Inteligência Artificial | Markus Gabriel | #NF #filosofia #ia #tecnologia #d3 #e2 #tenho-digital |
 | Oito Ensaios sobre Cultura Latino-Americana e Libertação (1965-1991) | Enrique Dussel | #NF #filosofia #colonialismo #latam #d3 #e2 #tenho-digital |
 | Ontologia | Susana de Castro | #NF #filosofia #introducao #d2 #e1 #tenho-digital |
 | Os Analectos | Confúcio | #NF #filosofia #oriental #etica #classico #d2 #e1 #tenho-digital |
 | Palácio de Cristal: Para uma Teoria Filosófica da Globalização | Peter Sloterdijk | #NF #filosofia #politica #d3 #e2 #tenho-digital |
 | Pape Satàn Aleppe: Crônicas de uma Sociedade Líquida | Umberto Eco | #NF #filosofia #cronicas #d1 #e2 #tenho-digital |
-| Platão em 90 Minutos | Paul Strathern | #NF #introducao #filosofia #biografia #d1 #e1 #trilha-filosofia-em-doses #tenho-digital |
+| Platão em 90 Minutos | Paul Strathern | #NF #introducao #filosofia #biografia #d1 #e1 #tenho-digital #trilha-filosofia-em-doses |
 | Por que Amamos | Renato Noguera | #NF #filosofia #BR #d1 #e1 #tenho-digital |
 | Pós-estruturalismo | James Williams | #NF #filosofia #introducao #d3 #e2 #tenho-digital |
 | Primeiros Passos em Filosofia Antiga | Marly N. Peres | #NF #filosofia #antiguidade #introducao #d1 #e1 #tenho-digital |
 | Provérbios de Confúcio | Willian Castro | #NF #filosofia #oriental #etica #d1 #e1 #tenho-digital |
-| Psicopolítica | Byung-Chul Han | #NF #filosofia #politica #d2 #e1 #trilha-entender-o-presente #tenho-digital |
+| Psicopolítica | Byung-Chul Han | #NF #filosofia #politica #d2 #e1 #tenho-digital #trilha-entender-o-presente |
 | Racionalismo | Charlie Huenemann | #NF #filosofia #introducao #d2 #e2 #tenho-digital |
 | Rousseau em 90 Minutos | Paul Strathern | #NF #introducao #filosofia #biografia #politica #d1 #e1 #tenho-digital |
 | Santo Agostinho em 90 Minutos | Paul Strathern | #NF #introducao #filosofia #biografia #religiao #d1 #e1 #tenho-digital |
 | São Tomás de Aquino em 90 Minutos | Paul Strathern | #NF #introducao #filosofia #biografia #religiao #d1 #e1 #tenho-digital |
-| Sartre em 90 Minutos | Paul Strathern | #NF #introducao #filosofia #biografia #existencialismo #d1 #e1 #trilha-filosofia-em-doses #tenho-digital |
+| Sartre em 90 Minutos | Paul Strathern | #NF #introducao #filosofia #biografia #existencialismo #d1 #e1 #tenho-digital #trilha-filosofia-em-doses |
 | Schelling | Leonardo Alves Vieira | #NF #filosofia #introducao #d3 #e1 #tenho-digital |
 | Schopenhauer | Jair Barboza | #NF #filosofia #introducao #d2 #e1 #tenho-digital |
 | Schopenhauer em 90 Minutos | Paul Strathern | #NF #introducao #filosofia #biografia #d1 #e1 #tenho-digital |
 | Ser Livre com Sartre | Frédéric Allouche | #NF #filosofia #existencialismo #introducao #d1 #e1 #tenho-digital |
 | Signos | Maurice Merleau-Ponty | #NF #filosofia #linguagem #d3 #e2 #tenho-digital |
-| Sobre a Brevidade da Vida | Sêneca | #NF #filosofia #etica #roma #classico #antiguidade #d1 #e1 #tenho-digital |
+| Sobre a Brevidade da Vida | Sêneca | #NF #filosofia #etica #roma #classico #antiguidade #d1 #e1 #tenho-digital #trilha-roma-no-acervo |
 | Sociedade Paliativa | Byung-Chul Han | #NF #filosofia #d2 #e1 #tenho-digital |
 | Sócrates | Clóvis de Barros Filho | #NF #filosofia #introducao #BR #d1 #e1 #tenho-digital |
 | Sócrates Encontra Descartes | Peter Kreeft | #NF #filosofia #d1 #e1 #tenho-digital |
@@ -1728,11 +1730,11 @@ Livros e quadrinhos da biblioteca virtual que não estavam nas seções anterior
 | Textos Básicos de Ética: De Platão a Foucault | Danilo Marcondes | #NF #filosofia #etica #didatico #d2 #e1 #tenho-digital |
 | Textos Básicos de Filosofia da Ciência: A Revolução Científica | Danilo Marcondes | #NF #filosofia #ciencia #didatico #d2 #e1 #tenho-digital |
 | Textos Básicos de Filosofia: Dos Pré-Socráticos a Wittgenstein | Danilo Marcondes | #NF #filosofia #didatico #d2 #e1 #tenho-digital |
-| Textos Básicos de Linguagem: De Platão a Foucault | Danilo Marcondes | #NF #filosofia #linguagem #didatico #d2 #e1 #tenho-digital |
+| Textos Básicos de Linguagem: De Platão a Foucault | Danilo Marcondes | #NF #filosofia #linguagem #didatico #d2 #e1 #tenho-digital #trilha-linguagem |
 | Textos Selecionados de Filosofia Latino-Americana I | Vários autores | #NF #filosofia #latam #d3 #e2 #tenho-digital |
 | Tigres no Espelho e Outros Textos | George Steiner | #NF #filosofia #escrita #d3 #e2 #tenho-digital |
 | Tudo o que Você Precisa Saber sobre Filosofia | Paul Kleinman | #NF #filosofia #introducao #d1 #e2 #tenho-digital |
-| Uma Breve História da Filosofia | Nigel Warburton | #NF #filosofia #introducao #d1 #e2 #trilha-filosofia-em-doses #tenho-digital |
+| Uma Breve História da Filosofia | Nigel Warburton | #NF #filosofia #introducao #d1 #e2 #tenho-digital #trilha-filosofia-em-doses |
 | Utilitarismo | Tim Mulgan | #NF #filosofia #etica #introducao #d2 #e2 #tenho-digital |
 | Violência | Slavoj Žižek | #NF #filosofia #politica #d2 #e1 #tenho-digital |
 | Viver Apaixonadamente com Kierkegaard | Damien Clerget-Gurnaud | #NF #filosofia #existencialismo #introducao #d1 #e1 #tenho-digital |
@@ -1746,25 +1748,25 @@ Livros e quadrinhos da biblioteca virtual que não estavam nas seções anterior
 | A Anatomia da Violência: As Raízes Biológicas da Criminalidade | Adrian Raine | #NF #psicologia #neurociencia #d2 #e2 #tenho-digital |
 | A Arte de Esquecer: Cérebro e Memória | Iván Izquierdo | #NF #neurociencia #memoria #BR #d1 #e1 #tenho-digital |
 | A Consciência: Uma Viagem pelo Cérebro | Ronald Fiuza | #NF #neurociencia #consciencia #BR #d2 #e2 #tenho-digital |
-| A Estranha Ordem das Coisas: As Origens Biológicas dos Sentimentos e da Cultura | António Damásio | #NF #ciencia #neurociencia #biologia #consciencia #d3 #e2 #tenho-digital |
-| A Ilusão do Eu | Chris Niebauer | #NF #consciencia #neurociencia #espiritualidade #d1 #e1 #tenho-digital |
+| A Estranha Ordem das Coisas: As Origens Biológicas dos Sentimentos e da Cultura | António Damásio | #NF #ciencia #neurociencia #biologia #consciencia #d3 #e2 #tenho-digital #trilha-cerebro-no-acervo |
+| A Ilusão do Eu | Chris Niebauer | #NF #consciencia #neurociencia #espiritualidade #d1 #e1 #tenho-digital #trilha-silencio-e-consciencia |
 | A Mente Assombrada | Oliver Sacks | #NF #neurociencia #d1 #e2 #tenho-digital |
-| A Vantagem Humana: Como Nosso Cérebro se Tornou Superpoderoso | Suzana Herculano-Houzel | #NF #ciencia #neurociencia #biologia #BR #d2 #e2 #tenho-digital |
+| A Vantagem Humana: Como Nosso Cérebro se Tornou Superpoderoso | Suzana Herculano-Houzel | #NF #ciencia #neurociencia #biologia #BR #d2 #e2 #tenho-digital #trilha-evolucao |
 | Bases Biológicas do Comportamento: Introdução à Neurociência | Marcus Lira Brandão | #NF #neurociencia #didatico #BR #d2 #e2 #tenho-digital |
 | Bases Biológicas dos Transtornos Psiquiátricos: Uma Abordagem Translacional | Flávio Kapczinski, João Quevedo e Iván Izquierdo | #NF #neurociencia #psiquiatria #BR #d3 #e2 #tenho-digital |
 | Cem Bilhões de Neurônios: Conceitos Fundamentais de Neurociência | Roberto Lent | #NF #neurociencia #didatico #BR #d2 #e3 #tenho-digital |
 | Cérebro e Crença | Michael Shermer | #NF #psicologia #neurociencia #religiao #d2 #e2 #tenho-digital |
-| Cérebro: Uma Biografia | David Eagleman | #NF #neurociencia #d1 #e2 #tenho-digital |
+| Cérebro: Uma Biografia | David Eagleman | #NF #neurociencia #d1 #e2 #tenho-digital #trilha-cerebro-no-acervo |
 | Cognição, Neuropsicologia e Aprendizagem | Vitor da Fonseca | #NF #neurociencia #educacao #d2 #e2 #tenho-digital |
 | Como Criar uma Mente: Os Segredos do Pensamento Humano | Ray Kurzweil | #NF #ia #neurociencia #tecnologia #d2 #e2 #tenho-digital |
-| Do que é Feito o Pensamento: A Língua como Janela para a Natureza Humana | Steven Pinker | #NF #psicologia #linguagem #d2 #e3 #tenho-digital |
+| Do que é Feito o Pensamento: A Língua como Janela para a Natureza Humana | Steven Pinker | #NF #psicologia #linguagem #d2 #e3 #tenho-digital #trilha-linguagem |
 | E o Cérebro Criou o Homem | António Damásio | #NF #neurociencia #consciencia #d3 #e2 #tenho-digital |
 | Elástico: Como o Pensamento Flexível Pode Mudar Nossas Vidas | Leonard Mlodinow | #NF #neurociencia #psicologia #d1 #e2 #tenho-digital |
 | Em Busca de Espinosa | António Damásio | #NF #filosofia #neurociencia #d2 #e2 #tenho-digital |
-| Emocional: A Nova Neurociência dos Afetos | Leonard Mlodinow | #NF #psicologia #neurociencia #d1 #e2 #tenho-digital |
+| Emocional: A Nova Neurociência dos Afetos | Leonard Mlodinow | #NF #psicologia #neurociencia #d1 #e2 #tenho-digital #trilha-cerebro-no-acervo |
 | Filosofia da Mente: Neurociência, Cognição e Comportamento | João de Fernandes Teixeira | #NF #neurociencia #filosofia #consciencia #BR #d2 #e2 #tenho-digital |
 | Fundamentos de Neuropsicologia | Alexander R. Luria | #NF #neurociencia #classico #d3 #e2 #tenho-digital |
-| Limiar | Sidarta Ribeiro | #NF #ciencia #neurociencia #BR #d1 #e1 #tenho-digital |
+| Limiar | Sidarta Ribeiro | #NF #ciencia #neurociencia #BR #d1 #e1 #tenho-digital #trilha-cerebro-no-acervo |
 | Manual de Psicologia Cognitiva | Michael W. Eysenck | #NF #psicologia #didatico #d3 #e3 #tenho-digital |
 | Mente, Cérebro e Cognição | João de Fernandes Teixeira | #NF #psicologia #filosofia #consciencia #BR #d2 #e1 #tenho-digital |
 | Neuroanatomia Funcional | Angelo Machado | #NF #neurociencia #medicina #didatico #BR #d3 #e2 #tenho-digital |
@@ -1783,20 +1785,20 @@ Livros e quadrinhos da biblioteca virtual que não estavam nas seções anterior
 | Neuropsicologia Hoje | Flávia Heloísa dos Santos e outros (orgs.) | #NF #neurociencia #BR #d3 #e2 #tenho-digital |
 | Neuropsicologia sem Neura: Uma Introdução à Neuropsicologia para Curiosos | Bruno Santos Souza e Camila Nogueira Marchetti | #NF #neurociencia #introducao #BR #d1 #e1 #tenho-digital |
 | Neuropsicologia: Teoria e Prática | Daniel Fuentes e outros (orgs.) | #NF #neurociencia #didatico #BR #d3 #e2 #tenho-digital |
-| O Cérebro Imperfeito | Dean Buonomano | #NF #neurociencia #d1 #e2 #tenho-digital |
-| O Cérebro Leitor | Maryanne Wolf | #NF #psicologia #neurociencia #linguagem #educacao #d2 #e2 #tenho-digital |
+| O Cérebro Imperfeito | Dean Buonomano | #NF #neurociencia #d1 #e2 #tenho-digital #trilha-cerebro-no-acervo |
+| O Cérebro Leitor | Maryanne Wolf | #NF #psicologia #neurociencia #linguagem #educacao #d2 #e2 #tenho-digital #trilha-linguagem |
 | O Cérebro no Mundo Digital | Maryanne Wolf | #NF #psicologia #neurociencia #tecnologia #educacao #d2 #e2 #tenho-digital |
 | O Cérebro Quântico: As Novas Descobertas da Neurociência e a Próxima Geração de Seres Humanos | Jeffrey Satinover | #NF #ciencia #fisica #neurociencia #consciencia #d2 #e2 #tenho-digital |
 | O Cérebro que Não Sabia de Nada | Dean Burnett | #NF #neurociencia #humor #d1 #e2 #tenho-digital |
 | O Estilo Emocional do Cérebro | Richard J. Davidson e Sharon Begley | #NF #psicologia #neurociencia #d1 #e2 #tenho-digital |
 | O Futuro da Mente: A Busca Científica para Entender, Aprimorar e Potencializar a Mente | Michio Kaku | #NF #neurociencia #ciencia #d1 #e2 #tenho-digital |
-| O Mistério da Consciência | António Damásio | #NF #neurociencia #consciencia #d3 #e2 #tenho-digital |
-| O Olhar da Mente | Oliver Sacks | #NF #neurociencia #d1 #e2 #tenho-digital |
+| O Mistério da Consciência | António Damásio | #NF #neurociencia #consciencia #d3 #e2 #tenho-digital #trilha-cerebro-no-acervo |
+| O Olhar da Mente | Oliver Sacks | #NF #neurociencia #d1 #e2 #tenho-digital #trilha-cerebro-no-acervo |
 | O Oráculo da Noite: A História e a Ciência do Sonho | Sidarta Ribeiro | #NF #ciencia #neurociencia #historia #BR #d2 #e2 #tenho-digital |
 | O Poder Curativo do Nervo Vago | Stanley Rosenberg | #NF #neurociencia #medicina #autoconhecimento #d1 #e2 #tenho-digital |
 | O que o Cérebro Tem para Contar: Desvendando os Mistérios da Natureza Humana | V.S. Ramachandran | #NF #neurociencia #d2 #e3 #tenho-digital |
 | Os Dragões do Éden | Carl Sagan | #NF #ciencia #neurociencia #biologia #classico #d2 #e2 #tenho-digital |
-| Outras Mentes: O Polvo e a Origem da Consciência | Peter Godfrey-Smith | #NF #consciencia #biologia #filosofia #d2 #e2 #tenho-digital |
+| Outras Mentes: O Polvo e a Origem da Consciência | Peter Godfrey-Smith | #NF #consciencia #biologia #filosofia #d2 #e2 #tenho-digital #trilha-evolucao |
 | Por que Guardar Segredo é Difícil e Outras Curiosidades da Neurociência do Cotidiano | Suzana Herculano-Houzel | #NF #ciencia #neurociencia #BR #d1 #e1 #tenho-digital |
 | Por que Nós Dormimos: A Nova Ciência do Sono e do Sonho | Matthew Walker | #NF #ciencia #neurociencia #medicina #d1 #e2 #tenho-digital |
 | Princípios de Neurociências | Eric R. Kandel e outros | #NF #neurociencia #didatico #d3 #e3 #tenho-digital |
@@ -1813,14 +1815,14 @@ Livros e quadrinhos da biblioteca virtual que não estavam nas seções anterior
 
 | Título | Autor | Tags |
 |---|---|---|
-| 17 Contradições e o Fim do Capitalismo | David Harvey | #NF #politica #economia #d3 #e2 #tenho-digital |
+| 17 Contradições e o Fim do Capitalismo | David Harvey | #NF #politica #economia #d3 #e2 #tenho-digital #trilha-economia-sem-jargao |
 | 8 Estratégias de Marketing para Crescer: Dicas Práticas para Desenvolver seu Negócio | Philip Kotler e Milton Kotler | #NF #gestao #d1 #e1 #tenho-digital |
 | A Arte da Inteligência: Os Bastidores da CIA e do FBI | Henry A. Crumpton | #NF #geopolitica #biografia #d1 #e2 #tenho-digital |
 | A Arte da Quarentena para Principiantes | Christian Dunker | #NF #politica #psicanalise #BR #d1 #e1 #tenho-digital |
 | A Cidade Inteligente: Tecnologias Urbanas e Democracia | Evgeny Morozov | #NF #tecnologia #politica #d2 #e1 #tenho-digital |
 | A Curvatura da Banana: Quem Tem um Projeto de Nação para o Brasil? | Marcos Costa | #NF #politica #BR #d1 #e2 #tenho-digital |
 | A Diplomacia na Construção do Brasil: 1750–2016 | Rubens Ricupero | #NF #politica #historia #geopolitica #BR #d3 #e3 #tenho-digital |
-| A Era da Ilusão: A Diplomacia Nuclear em Tempos Traiçoeiros | Mohamed ElBaradei | #NF #politica #geopolitica #d2 #e2 #tenho-digital |
+| A Era da Ilusão: A Diplomacia Nuclear em Tempos Traiçoeiros | Mohamed ElBaradei | #NF #politica #geopolitica #d2 #e2 #tenho-digital #trilha-geopolitica |
 | A Globalização da Comunicação | Armand Mattelart | #NF #politica #sociologia #d2 #e1 #tenho-digital |
 | A Invisibilidade da Desigualdade Brasileira | Jessé Souza (org.) | #NF #politica #sociologia #BR #d3 #e2 #tenho-digital |
 | A Jornada do Empreendedor: O Herói da Nossa Era | Edson Marqueto Rigonatti, Laura Mello Constantini e Martino Bagini | #NF #gestao #d1 #e2 #tenho-digital |
@@ -1828,10 +1830,10 @@ Livros e quadrinhos da biblioteca virtual que não estavam nas seções anterior
 | A Mídia | Noam Chomsky | #NF #politica #d1 #e1 #tenho-digital |
 | A Passo de Caranguejo: Guerras Quentes e o Populismo da Mídia | Umberto Eco | #NF #politica #cronicas #d1 #e2 #tenho-digital |
 | A Política no Banco dos Réus | Fábio Kerche e Marjorie Marona | #NF #politica #BR #d2 #e2 #tenho-digital |
-| A Questão Palestina: Guerra, Política e Relações Internacionais | Marcelo Buzetto | #NF #politica #geopolitica #d2 #e1 #tenho-digital |
+| A Questão Palestina: Guerra, Política e Relações Internacionais | Marcelo Buzetto | #NF #politica #geopolitica #d2 #e1 #tenho-digital #trilha-geopolitica |
 | A Sociedade Anárquica | Hedley Bull | #NF #politica #geopolitica #classico #d3 #e2 #tenho-digital |
 | À Sombra do Poder: Bastidores da Crise que Derrubou Dilma Rousseff | Rodrigo de Almeida | #NF #politica #BR #d1 #e2 #tenho-digital |
-| A Vida Não é Útil | Ailton Krenak | #NF #politica #ecologia #BR #d1 #e1 #trilha-entender-o-presente #tenho-digital |
+| A Vida Não é Útil | Ailton Krenak | #NF #politica #ecologia #BR #d1 #e1 #tenho-digital #trilha-entender-o-presente |
 | Administração de Serviços: Operações, Estratégia e Tecnologia da Informação | James A. Fitzsimmons e Mona J. Fitzsimmons | #NF #tecnologia #gestao #didatico #d3 #e3 #tenho-digital |
 | África: Geohistória, Geopolítica e Relações Internacionais | Therezinha de Castro | #NF #politica #geopolitica #BR #africa #d2 #e2 #tenho-digital |
 | Antologia da Maldade: Um Dicionário de Citações, Associações Ilícitas e Ligações Perigosas | Gustavo H.B. Franco e Fabio Giambiagi | #NF #politica #economia #humor #BR #d1 #e2 #tenho-digital |
@@ -1839,10 +1841,10 @@ Livros e quadrinhos da biblioteca virtual que não estavam nas seções anterior
 | As Ideias Conservadoras | João Pereira Coutinho | #NF #politica #d1 #e1 #tenho-digital |
 | As Transições e os Choques: O que Aprendemos e o que Ainda Temos de Aprender com a Crise Financeira | Martin Wolf | #NF #politica #economia #d3 #e3 #tenho-digital |
 | Bala Perdida: A Violência Policial no Brasil e os Desafios para sua Superação | Bernardo Kucinski e outros | #NF #politica #BR #d1 #e1 #tenho-digital |
-| Brasil dos Humilhados: Uma Denúncia da Ideologia Elitista | Jessé Souza | #NF #politica #sociologia #BR #d2 #e1 #tenho-digital |
+| Brasil dos Humilhados: Uma Denúncia da Ideologia Elitista | Jessé Souza | #NF #politica #sociologia #BR #d2 #e1 #tenho-digital #trilha-sociologia-em-degraus |
 | Brasil: Mito Fundador e Sociedade Autoritária | Marilena Chaui | #NF #politica #autoritarismo #BR #d2 #e1 #tenho-digital |
 | Brasil: Os Frutos da Guerra | Neill Lochery | #NF #politica #historia #guerra #BR #d2 #e2 #tenho-digital |
-| Brasil: Raízes do Atraso | Fabio Giambiagi | #NF #politica #economia #BR #d2 #e2 #tenho-digital |
+| Brasil: Raízes do Atraso | Fabio Giambiagi | #NF #politica #economia #BR #d2 #e2 #tenho-digital #trilha-economia-sem-jargao |
 | Carcereiros | Drauzio Varella | #NF #politica #testemunho #BR #d1 #e1 #tenho-digital |
 | Cidades Rebeldes | Slavoj Žižek e outros | #NF #politica #BR #d2 #e1 #tenho-digital |
 | Collected Papers, vol. 1: Technology, War and Fascism | Herbert Marcuse | #NF #politica #filosofia #d3 #e2 #tenho-digital |
@@ -1850,13 +1852,13 @@ Livros e quadrinhos da biblioteca virtual que não estavam nas seções anterior
 | Comando Vermelho | Carlos Amorim | #NF #politica #BR #d1 #e2 #tenho-digital |
 | Comece pelo Porquê | Simon Sinek | #NF #autoconhecimento #gestao #d1 #e2 #tenho-digital |
 | Como a Democracia Chega ao Fim | David Runciman | #NF #politica #d2 #e2 #tenho-digital |
-| Como as Democracias Morrem | Steven Levitsky e Daniel Ziblatt | #NF #politica #autoritarismo #d1 #e2 #trilha-entender-o-presente #tenho-digital |
+| Como as Democracias Morrem | Steven Levitsky e Daniel Ziblatt | #NF #politica #autoritarismo #d1 #e2 #tenho-digital #trilha-entender-o-presente |
 | Como Esmagar o Fascismo | Leon Trotsky | #NF #politica #autoritarismo #classico #d2 #e1 #tenho-digital |
 | Como Morrem os Pobres e Outros Ensaios | George Orwell | #NF #politica #cronicas #classico #d1 #e2 #tenho-digital |
-| Como o Mundo Funciona: Um Guia Científico para o Passado, o Presente e o Futuro | Vaclav Smil | #NF #politica #ciencia #economia #d2 #e2 #tenho-digital |
+| Como o Mundo Funciona: Um Guia Científico para o Passado, o Presente e o Futuro | Vaclav Smil | #NF #politica #ciencia #economia #d2 #e2 #tenho-digital #trilha-geopolitica |
 | Complexo de Vira-Lata: Análise da Humilhação Brasileira | Marcia Tiburi | #NF #politica #BR #d2 #e1 #tenho-digital |
 | Contágio: Por que as Coisas Pegam | Jonah Berger | #NF #gestao #psicologia #d1 #e2 #tenho-digital |
-| Crash: Uma Breve História da Economia | Alexandre Versignassi | #NF #politica #economia #historia #BR #d1 #e2 #tenho-digital |
+| Crash: Uma Breve História da Economia | Alexandre Versignassi | #NF #politica #economia #historia #BR #d1 #e2 #tenho-digital #trilha-economia-sem-jargao |
 | Cultura Gaúcha e Separatismo no Rio Grande do Sul | Caroline Kraus Luvizotto | #NF #politica #sociologia #BR #RS #d2 #e1 #tenho-digital |
 | Democracia em Colapso? | Marilena Chaui, Antonio Carlos Mazzeo e outros | #NF #politica #BR #d2 #e2 #tenho-digital |
 | Democracia em Risco? 22 Ensaios sobre o Brasil Hoje | Vários autores | #NF #politica #BR #d2 #e2 #tenho-digital |
@@ -1868,13 +1870,13 @@ Livros e quadrinhos da biblioteca virtual que não estavam nas seções anterior
 | Do Povo para o Povo: Uma Nova História da Democracia | Roger Osborne | #NF #politica #historia #d2 #e2 #tenho-digital |
 | Economia Política Internacional: Fundamentos Teóricos e as Relações Internacionais do Brasil | Reinaldo Gonçalves | #NF #politica #economia #geopolitica #BR #d3 #e2 #tenho-digital |
 | Einstein, Freud e Relações Internacionais: Guerra e Paz num Diálogo Interdisciplinar | Luis Henrique Beust | #NF #geopolitica #psicanalise #d2 #e1 #verificar #tenho-digital |
-| Energia e Civilização: Uma História | Vaclav Smil | #NF #politica #historia #ciencia #economia #d3 #e3 #tenho-digital |
+| Energia e Civilização: Uma História | Vaclav Smil | #NF #politica #historia #ciencia #economia #d3 #e3 #tenho-digital #trilha-geopolitica |
 | Engenharia Social | (autor não informado) | #NF #politica #d2 #e2 #verificar #tenho-digital |
 | Eros e Civilização | Herbert Marcuse | #NF #politica #filosofia #psicanalise #classico #d3 #e2 #tenho-digital |
 | Escritos Políticos | Frantz Fanon | #NF #politica #colonialismo #raca #d2 #e2 #tenho-digital |
 | Estado e Forma Política | Alysson Leandro Mascaro | #NF #politica #filosofia #BR #d3 #e1 #tenho-digital |
 | Falando de Política sem Politiquês | Carlito Neto | #NF #politica #introducao #BR #d1 #e1 #tenho-digital |
-| Freakonomics: O Lado Oculto e Inesperado de Tudo que nos Afeta | Steven D. Levitt e Stephen J. Dubner | #NF #politica #economia #d1 #e2 #tenho-digital |
+| Freakonomics: O Lado Oculto e Inesperado de Tudo que nos Afeta | Steven D. Levitt e Stephen J. Dubner | #NF #politica #economia #d1 #e2 #tenho-digital #trilha-economia-sem-jargao |
 | Geografia e Geopolítica da América do Sul: Integrações e Conflitos | Wanderley Messias da Costa e Daniel Bruno Vasconcelos | #NF #politica #geopolitica #latam #d3 #e2 #tenho-digital |
 | Geografia e Geopolítica: Ensaios e Resenhas | José William Vesentini | #NF #politica #geopolitica #BR #d2 #e2 #tenho-digital |
 | Geografia Política e Geopolítica: Discursos sobre o Território e o Poder | Wanderley Messias da Costa | #NF #politica #geopolitica #BR #d3 #e2 #tenho-digital |
@@ -1885,11 +1887,11 @@ Livros e quadrinhos da biblioteca virtual que não estavam nas seções anterior
 | Gestão de Processos | Fabiano Gonçalves dos Santos | #NF #gestao #d2 #e1 #tenho-digital |
 | Gestão de Recursos Humanos: Ontem, Hoje e Amanhã | Allan Claudius Queiroz Barbosa e André Ofenhejm Mascarenhas | #NF #gestao #d2 #e2 #tenho-digital |
 | Gestão Estratégica de Pessoas: Evolução, Teoria e Crítica | André Ofenhejm Mascarenhas | #NF #gestao #d3 #e2 #tenho-digital |
-| Globalização: As Consequências Humanas | Zygmunt Bauman | #NF #politica #sociologia #d2 #e1 #tenho-digital |
+| Globalização: As Consequências Humanas | Zygmunt Bauman | #NF #politica #sociologia #d2 #e1 #tenho-digital #trilha-sociologia-em-degraus |
 | Golpe de Estado: O Espírito e a Herança de 1964 Ainda Ameaçam o Brasil | Palmério Dória e Mylton Severiano | #NF #politica #historia #autoritarismo #BR #d1 #e2 #tenho-digital |
 | Gramsci, Materialismo Histórico e Relações Internacionais | Stephen Gill | #NF #politica #geopolitica #d3 #e3 #tenho-digital |
-| História da Paz | Demétrio Magnoli | #NF #politica #historia #geopolitica #d2 #e3 #tenho-digital |
-| História das Guerras | Demétrio Magnoli | #NF #politica #historia #guerra #d2 #e3 #tenho-digital |
+| História da Paz | Demétrio Magnoli | #NF #politica #historia #geopolitica #d2 #e3 #tenho-digital #trilha-geopolitica |
+| História das Guerras | Demétrio Magnoli | #NF #politica #historia #guerra #d2 #e3 #tenho-digital #trilha-geopolitica |
 | História das Relações Internacionais Contemporâneas | José Flávio Sombra Saraiva (org.) | #NF #politica #historia #geopolitica #d3 #e2 #tenho-digital |
 | História das Relações Internacionais do Brasil | Francisco Doratioto e Carlos Vidigal | #NF #politica #geopolitica #historia #BR #d2 #e2 #tenho-digital |
 | História das Relações Internacionais I: A Pax Britannica e o Mundo do Século XIX | Antônio Carlos Lessa | #NF #politica #geopolitica #historia #d2 #e1 #tenho-digital |
@@ -1908,12 +1910,12 @@ Livros e quadrinhos da biblioteca virtual que não estavam nas seções anterior
 | Mensalão: O Julgamento do Maior Caso de Corrupção da História Política Brasileira | Merval Pereira | #NF #politica #BR #d1 #e2 #tenho-digital |
 | Multilateralismo nas Relações Internacionais | Elena Lazarou | #NF #politica #geopolitica #d2 #e1 #tenho-digital |
 | Neuromarketing | Darren Bridger | #NF #gestao #psicologia #neurociencia #d1 #e2 #tenho-digital |
-| O Brasil no Espectro de uma Guerra Híbrida | Piero C. Leirner | #NF #politica #geopolitica #BR #d3 #e2 #tenho-digital |
+| O Brasil no Espectro de uma Guerra Híbrida | Piero C. Leirner | #NF #politica #geopolitica #BR #d3 #e2 #tenho-digital #trilha-geopolitica |
 | O Capital em Quadrinhos, vol. 1 | K. Ploeckinger e G. Wolfram | #HQ #economia #politica #introducao #adaptacao #d1 #e1 #tenho-digital |
 | O Capital para Crianças | Liliana Fortuny e Joan Riera | #NF #politica #economia #d1 #e1 #tenho-digital |
 | O Espetáculo da Corrupção: Como um Sistema Corrupto e o Modo de Combatê-lo Estão Destruindo o País | Walfrido Warde | #NF #politica #BR #d2 #e2 #tenho-digital |
 | O Fim da Guerra: A Maconha e a Criação de um Novo Sistema para Lidar com as Drogas | Denis Russo Burgierman | #NF #politica #BR #d1 #e2 #tenho-digital |
-| O Futuro da Geografia: Como o Poder e a Política no Espaço Transformarão o Mundo | Tim Marshall | #NF #geopolitica #politica #d1 #e2 #tenho-digital |
+| O Futuro da Geografia: Como o Poder e a Política no Espaço Transformarão o Mundo | Tim Marshall | #NF #geopolitica #politica #d1 #e2 #tenho-digital #trilha-geopolitica |
 | O Grande Debate: Edmund Burke, Thomas Paine e o Nascimento da Esquerda e da Direita | Yuval Levin | #NF #politica #filosofia #historia #d2 #e2 #tenho-digital |
 | O Grande Experimento | Marcel Novaes | #NF #politica #historia #d2 #e2 #tenho-digital |
 | O Livro da Economia | Vários autores | #NF #introducao #economia #d1 #e2 #tenho-digital |
@@ -1921,8 +1923,8 @@ Livros e quadrinhos da biblioteca virtual que não estavam nas seções anterior
 | O Livro de Ouro das Revoluções: Movimentos Políticos que Mudaram o Mundo | Mark Almond | #NF #politica #historia #d1 #e2 #tenho-digital |
 | O Livro dos Negócios | Vários autores | #NF #introducao #economia #gestao #d1 #e2 #tenho-digital |
 | O Livro Urgente da Política Brasileira | Alessandro Nicoli de Mattos | #NF #politica #introducao #BR #d1 #e2 #tenho-digital |
-| O Minotauro Global: A Verdadeira Origem da Crise Financeira e o Futuro da Economia Global | Yanis Varoufakis | #NF #politica #economia #d2 #e2 #tenho-digital |
-| O Mundo em 2050: As Grandes Tendências Globais e o que Podemos Esperar do Futuro | Hamish McRae | #NF #politica #economia #d1 #e2 #tenho-digital |
+| O Minotauro Global: A Verdadeira Origem da Crise Financeira e o Futuro da Economia Global | Yanis Varoufakis | #NF #politica #economia #d2 #e2 #tenho-digital #trilha-economia-sem-jargao |
+| O Mundo em 2050: As Grandes Tendências Globais e o que Podemos Esperar do Futuro | Hamish McRae | #NF #politica #economia #d1 #e2 #tenho-digital #trilha-geopolitica |
 | O Negócio do Jair | Juliana Dal Piva | #NF #politica #BR #d1 #e2 #tenho-digital |
 | O Ódio à Democracia | Jacques Rancière | #NF #politica #filosofia #d3 #e1 #tenho-digital |
 | O Populismo Reacionário: Ascensão e Legado do Bolsonarismo | Christian Lynch e Paulo Henrique Cassimiro | #NF #politica #autoritarismo #BR #d2 #e2 #tenho-digital |
@@ -1933,9 +1935,9 @@ Livros e quadrinhos da biblioteca virtual que não estavam nas seções anterior
 | Os Argentinos | Ariel Palacios | #NF #politica #latam #d1 #e2 #tenho-digital |
 | Os Arquivos Snowden: A História Secreta do Homem Mais Procurado do Mundo | Luke Harding | #NF #politica #tecnologia #d1 #e2 #tenho-digital |
 | Os Clássicos da Política | Francisco C. Weffort (org.) | #NF #politica #filosofia #didatico #classico #d2 #e2 #tenho-digital |
-| Os Engenheiros do Caos | Giuliano da Empoli | #NF #politica #tecnologia #autoritarismo #d1 #e1 #trilha-entender-o-presente #tenho-digital |
+| Os Engenheiros do Caos | Giuliano da Empoli | #NF #politica #tecnologia #autoritarismo #d1 #e1 #tenho-digital #trilha-entender-o-presente |
 | Os Líderes e as Massas: Escritos de 1921 a 1926 | Antonio Gramsci | #NF #politica #classico #d3 #e2 #tenho-digital |
-| Palestina | Joe Sacco | #HQ #politica #guerra #testemunho #d2 #e2 #trilha-quadrinhos-para-gente-grande #tenho-digital |
+| Palestina | Joe Sacco | #HQ #politica #guerra #testemunho #d2 #e2 #tenho-digital #trilha-quadrinhos-para-gente-grande |
 | Partidos Políticos no Brasil (1945-2000) | Rogerio Augusto Schmitt | #NF #politica #BR #d2 #e1 #tenho-digital |
 | Pepe Mujica: Simplesmente Humano | Allan Percy | #NF #politica #biografia #latam #d1 #e1 #tenho-digital |
 | Política: Conceitos-Chave em Filosofia | Iain Mackenzie | #NF #politica #filosofia #introducao #d2 #e2 #tenho-digital |
@@ -1959,7 +1961,7 @@ Livros e quadrinhos da biblioteca virtual que não estavam nas seções anterior
 | Relações Internacionais: Perspectivas Francesas | Carlos R.S. Milani (org.) | #NF #politica #geopolitica #d3 #e2 #tenho-digital |
 | Relações Internacionais: Teoria e História | Demétrio Magnoli | #NF #politica #geopolitica #historia #d2 #e2 #tenho-digital |
 | Simulacro e Poder: Uma Análise da Mídia | Marilena Chaui | #NF #politica #BR #d2 #e1 #tenho-digital |
-| Tecnofeudalismo | Yanis Varoufakis | #NF #politica #economia #tecnologia #d2 #e2 #tenho-digital |
+| Tecnofeudalismo | Yanis Varoufakis | #NF #politica #economia #tecnologia #d2 #e2 #tenho-digital #trilha-economia-sem-jargao |
 | Teoria das Relações Internacionais | Thales Castro | #NF #politica #geopolitica #didatico #d2 #e3 #tenho-digital |
 | Teorias da Comunicação de Massa | Melvin DeFleur e Sandra Ball-Rokeach | #NF #politica #sociologia #d3 #e2 #tenho-digital |
 | Teorias das Relações Internacionais: Correntes e Debates | João Pontes Nogueira e Nizar Messari | #NF #politica #geopolitica #didatico #d2 #e2 #tenho-digital |
@@ -1977,19 +1979,19 @@ Livros e quadrinhos da biblioteca virtual que não estavam nas seções anterior
 |---|---|---|
 | 100 Mistérios da Humanidade | National Geographic | #NF #historia #enigmas #d1 #e2 #tenho-digital |
 | 1964: Visões Críticas do Golpe | Caio Navarro de Toledo (org.) | #NF #historia #autoritarismo #politica #BR #d2 #e2 #tenho-digital |
-| 44 Cartas do Mundo Líquido Moderno | Zygmunt Bauman | #NF #sociologia #d1 #e1 #trilha-entender-o-presente #tenho-digital |
+| 44 Cartas do Mundo Líquido Moderno | Zygmunt Bauman | #NF #sociologia #d1 #e1 #tenho-digital #trilha-entender-o-presente #trilha-sociologia-em-degraus |
 | 50 Grandes Ideias da Humanidade que Você Precisa Conhecer | Ben Dupré | #NF #historia #introducao #filosofia #d1 #e2 #tenho-digital |
 | 50 Pensadores que Formaram o Mundo Moderno | Stephen Trombley | #NF #historia #filosofia #introducao #d2 #e2 #tenho-digital |
 | A Biblioteca Desaparecida | Luciano Canfora | #NF #historia #antiguidade #d2 #e1 #tenho-digital |
 | A Conquista da América | Tzvetan Todorov | #NF #historia #colonialismo #classico #latam #d3 #e2 #tenho-digital |
-| A Cultura do Narcisismo | Christopher Lasch | #NF #psicologia #sociologia #classico #d3 #e2 #tenho-digital |
-| A Elite do Atraso: Da Escravidão à Lava Jato | Jessé Souza | #NF #historia #sociologia #politica #BR #d2 #e2 #tenho-digital |
+| A Cultura do Narcisismo | Christopher Lasch | #NF #psicologia #sociologia #classico #d3 #e2 #tenho-digital #trilha-sociologia-em-degraus |
+| A Elite do Atraso: Da Escravidão à Lava Jato | Jessé Souza | #NF #historia #sociologia #politica #BR #d2 #e2 #tenho-digital #trilha-sociologia-em-degraus |
 | A Fabulosa História do Hospital: Da Idade Média aos Dias de Hoje | Jean-Noël Fabiani | #NF #historia #medicina #d1 #e2 #tenho-digital |
 | A Guardiã de Todas as Coisas | Michael S. Malone | #NF #historia #memoria #ciencia #d2 #e2 #tenho-digital |
 | A História da Ciência para Quem Tem Pressa | Nicola Chalton e Meredith MacArdle | #NF #historia #introducao #ciencia #d1 #e1 #tenho-digital |
 | A História da Humanidade | Hendrik Willem van Loon | #NF #historia #classico #d1 #e3 #tenho-digital |
 | A História do Brasil para Quem Tem Pressa | Marcos Costa | #NF #historia #introducao #BR #d1 #e1 #tenho-digital |
-| A História do Cinema para Quem Tem Pressa | Celso Sabadin | #NF #historia #introducao #cinema #d1 #e1 #tenho-digital |
+| A História do Cinema para Quem Tem Pressa | Celso Sabadin | #NF #historia #introducao #cinema #d1 #e1 #tenho-digital #trilha-cinema-que-pensa |
 | A História do Mundo para Quem Tem Pressa | Emma Marriott | #NF #historia #introducao #d1 #e1 #tenho-digital |
 | A História do Século 20 para Quem Tem Pressa | Nicola Chalton e Meredith MacArdle | #NF #historia #introducao #d1 #e1 #tenho-digital |
 | A História do Universo para Quem Tem Pressa | Colin Stuart | #NF #historia #introducao #ciencia #d1 #e1 #tenho-digital |
@@ -2010,7 +2012,7 @@ Livros e quadrinhos da biblioteca virtual que não estavam nas seções anterior
 | Antropologia e Imagem | Andrea Barbosa | #NF #antropologia #arte #introducao #BR #d2 #e1 #tenho-digital |
 | Antropologia e Nutrição: Um Diálogo Possível | Ana Maria Canesqui e Rosa Wanda Diez Garcia (orgs.) | #NF #antropologia #medicina #BR #d3 #e2 #tenho-digital |
 | Antropologia Estrutural | Claude Lévi-Strauss | #NF #antropologia #classico #d3 #e2 #tenho-digital |
-| Aprendendo a Pensar com a Sociologia | Zygmunt Bauman | #NF #sociologia #introducao #d2 #e2 #tenho-digital |
+| Aprendendo a Pensar com a Sociologia | Zygmunt Bauman | #NF #sociologia #introducao #d2 #e2 #tenho-digital #trilha-sociologia-em-degraus |
 | As 100 Maiores Catástrofes da História | Stephen J. Spignesi | #NF #historia #introducao #d1 #e2 #tenho-digital |
 | As 100 Maiores Invenções da História: Uma Classificação Cronológica | Tom Philbin | #NF #historia #introducao #tecnologia #d1 #e2 #tenho-digital |
 | As 100 Piores Ideias da História | Michael N. Smith e Eric Kasum | #NF #historia #introducao #humor #d1 #e2 #tenho-digital |
@@ -2018,7 +2020,7 @@ Livros e quadrinhos da biblioteca virtual que não estavam nas seções anterior
 | As Teorias da Comunicação | Francisco Rüdiger | #NF #sociologia #d2 #e2 #tenho-digital |
 | Casa-Grande & Senzala em Quadrinhos | Gilberto Freyre | #HQ #adaptacao #historia #sociologia #BR #d1 #e1 #tenho-digital |
 | Comunicação e Análise do Discurso | Roseli Figaro | #NF #linguagem #d2 #e2 #tenho-digital |
-| Conceitos Essenciais da Sociologia | Anthony Giddens e Philip W. Sutton | #NF #sociologia #introducao #didatico #d2 #e2 #tenho-digital |
+| Conceitos Essenciais da Sociologia | Anthony Giddens e Philip W. Sutton | #NF #sociologia #introducao #didatico #d2 #e2 #tenho-digital #trilha-sociologia-em-degraus |
 | De Pernas pro Ar | Eduardo Galeano | #NF #historia #politica #latam #d1 #e2 #tenho-digital |
 | Evolucionismo Cultural | Celso Castro (org.) | #NF #antropologia #classico #d3 #e1 #tenho-digital |
 | Futebol ao Sol e à Sombra | Eduardo Galeano | #NF #historia #esporte #latam #d1 #e2 #tenho-digital |
@@ -2027,17 +2029,17 @@ Livros e quadrinhos da biblioteca virtual que não estavam nas seções anterior
 | Heróis da História | Will Durant | #NF #historia #biografia #d2 #e2 #tenho-digital |
 | História da Vida | Edmac Lima Trigueiro | #NF #historia #d2 #e2 #tenho-digital |
 | História da Vida Privada | Philippe Ariès e Georges Duby (orgs.) | #NF #historia #d3 #e3 #tenho-digital |
-| História do Futuro: O Horizonte do Brasil no Século XXI | Míriam Leitão | #NF #historia #economia #politica #BR #d2 #e3 #tenho-digital |
+| História do Futuro: O Horizonte do Brasil no Século XXI | Míriam Leitão | #NF #historia #economia #politica #BR #d2 #e3 #tenho-digital #trilha-economia-sem-jargao |
 | História do Mundo em 6 Copos | Tom Standage | #NF #historia #d1 #e2 #tenho-digital |
 | Introdução à Antropologia | Igor Machado | #NF #antropologia #introducao #BR #d1 #e1 #tenho-digital |
-| Introdução à Linguística, vol. 1: Domínios e Fronteiras | Fernanda Mussalim e Anna Christina Bentes (orgs.) | #NF #linguagem #didatico #d2 #e2 #tenho-digital |
+| Introdução à Linguística, vol. 1: Domínios e Fronteiras | Fernanda Mussalim e Anna Christina Bentes (orgs.) | #NF #linguagem #didatico #d2 #e2 #tenho-digital #trilha-linguagem |
 | Introdução à Linguística, vol. 2: Domínios e Fronteiras | Fernanda Mussalim e Anna Christina Bentes (orgs.) | #NF #linguagem #didatico #d2 #e2 #tenho-digital |
 | Introdução à Linguística, vol. 3: Fundamentos Epistemológicos | Fernanda Mussalim e Anna Christina Bentes (orgs.) | #NF #linguagem #didatico #d3 #e2 #tenho-digital |
-| Linguagem: A História da Maior Invenção da Humanidade | Daniel L. Everett | #NF #linguagem #antropologia #d2 #e2 #tenho-digital |
+| Linguagem: A História da Maior Invenção da Humanidade | Daniel L. Everett | #NF #linguagem #antropologia #d2 #e2 #tenho-digital #trilha-linguagem |
 | Linguagem, Discurso e Sociedade: Caminhos que se Entrecruzam | Vários autores | #NF #linguagem #sociologia #d2 #e2 #tenho-digital |
-| Lutando na Espanha | George Orwell | #NF #historia #guerra #testemunho #politica #classico #d2 #e2 #tenho-digital |
+| Lutando na Espanha | George Orwell | #NF #historia #guerra #testemunho #politica #classico #d2 #e2 #tenho-digital #trilha-depois-da-batalha |
 | Manual de Sociologia da Religião | Roberto Cipriani | #NF #sociologia #religiao #d3 #e2 #tenho-digital |
-| Meu Destino é Ser Onça | Alberto Mussa | #NF #mitologia #antropologia #BR #d2 #e2 #tenho-digital |
+| Meu Destino é Ser Onça | Alberto Mussa | #NF #mitologia #antropologia #BR #d2 #e2 #tenho-digital #trilha-mitos-e-herois |
 | Mulheres | Eduardo Galeano | #NF #historia #genero #latam #d1 #e1 #tenho-digital |
 | Na Natureza Selvagem | Jon Krakauer | #NF #biografia #aventura #d1 #e1 #tenho-digital |
 | O Fantasma Chinês | Christoph Giesen | #NF #historia #geopolitica #asia #d2 #e2 #tenho-digital |
@@ -2045,7 +2047,7 @@ Livros e quadrinhos da biblioteca virtual que não estavam nas seções anterior
 | O Livro da Sociologia | Vários autores | #NF #introducao #sociologia #d1 #e2 #tenho-digital |
 | O Livro do Amor, vol. 1 | Regina Navarro Lins | #NF #historia #genero #BR #d2 #e2 #tenho-digital |
 | O Mapa Fantasma | Steven Johnson | #NF #historia #medicina #ciencia #d1 #e2 #tenho-digital |
-| O Nazista e o Psiquiatra | Jack El-Hai | #NF #historia #guerra #psiquiatria #d1 #e2 #tenho-digital |
+| O Nazista e o Psiquiatra | Jack El-Hai | #NF #historia #guerra #psiquiatria #d1 #e2 #tenho-digital #trilha-depois-da-batalha |
 | O Novo Iluminismo: Em Defesa da Razão, da Ciência e do Humanismo | Steven Pinker | #NF #ciencia #filosofia #historia #politica #d2 #e3 #tenho-digital |
 | O Perigo de uma História Única | Chimamanda Ngozi Adichie | #NF #raca #africa #d1 #e1 #tenho-digital |
 | O Poder da Identidade | Manuel Castells | #NF #sociologia #identidade #d3 #e3 #tenho-digital |
@@ -2068,7 +2070,7 @@ Livros e quadrinhos da biblioteca virtual que não estavam nas seções anterior
 | Titãs da História: Os Gigantes que Mudaram o Nosso Mundo | Simon Sebag Montefiore | #NF #historia #biografia #d1 #e3 #tenho-digital |
 | Três Vezes Brasil | Alberto da Costa e Silva | #NF #historia #BR #d2 #e1 #tenho-digital |
 | Tudo sobre o Amor | bell hooks | #NF #genero #d1 #e1 #tenho-digital |
-| Uma Breve História da Linguagem | Steven Roger Fischer | #NF #linguagem #historia #d1 #e2 #tenho-digital |
+| Uma Breve História da Linguagem | Steven Roger Fischer | #NF #linguagem #historia #d1 #e2 #tenho-digital #trilha-linguagem |
 | Uma Breve História do Conhecimento | Charles Van Doren | #NF #historia #d2 #e3 #tenho-digital |
 | Uma Breve História do Homem: Progresso e Declínio | Hans-Hermann Hoppe | #NF #historia #politica #economia #d2 #e1 #tenho-digital |
 | Uma Breve História do Mundo em 50 Animais | Jacob F. Field | #NF #historia #introducao #d1 #e2 #tenho-digital |
@@ -2084,7 +2086,7 @@ Livros e quadrinhos da biblioteca virtual que não estavam nas seções anterior
 | 100 Coisas Essenciais que Não Sabia que Não Sabia: Perceba o Mundo Através da Matemática | John D. Barrow | #NF #ciencia #matematica #d1 #e2 #tenho-digital |
 | 17 Equações que Mudaram o Mundo | Ian Stewart | #NF #ciencia #matematica #d2 #e2 #tenho-digital |
 | 20 Episódios da História da Matemática: Dos Primeiros Artefatos à Invenção do Cálculo | Frederico Andries Lopes | #NF #ciencia #matematica #historia #BR #d2 #e1 #tenho-digital |
-| 2041: Como a Inteligência Artificial Vai Mudar sua Vida nas Próximas Décadas | Kai-Fu Lee e Chen Qiufan | #NF #ia #tecnologia #d1 #e2 #trilha-maquinas-que-pensam #tenho-digital |
+| 2041: Como a Inteligência Artificial Vai Mudar sua Vida nas Próximas Décadas | Kai-Fu Lee e Chen Qiufan | #NF #ia #tecnologia #d1 #e2 #tenho-digital #trilha-maquinas-que-pensam |
 | 50 Ideias de Biologia que Você Precisa Conhecer | J.V. Chamary | #NF #ciencia #biologia #introducao #d1 #e1 #tenho-digital |
 | 50 Ideias de Física Quântica | Joanne Baker | #NF #ciencia #fisica #introducao #d1 #e2 #tenho-digital |
 | 60 Jogos para o Pensamento Lógico, vol. 1 | Aury de Sá Leite | #NF #matematica #didatico #d1 #e1 #tenho-digital |
@@ -2092,8 +2094,8 @@ Livros e quadrinhos da biblioteca virtual que não estavam nas seções anterior
 | A Ciência Médica de House | Andrew Holtz | #NF #ciencia #medicina #d1 #e2 #tenho-digital |
 | A Conquista Social da Terra | Edward O. Wilson | #NF #ciencia #biologia #antropologia #d2 #e2 #tenho-digital |
 | A Criação | Edward O. Wilson | #NF #ciencia #biologia #ecologia #religiao #d1 #e1 #tenho-digital |
-| A Dança do Universo | Marcelo Gleiser | #NF #ciencia #fisica #historia #BR #d2 #e2 #trilha-do-quark-ao-cosmos #tenho-digital |
-| A Dupla Hélice | James D. Watson | #NF #ciencia #biologia #biografia #classico #d1 #e1 #tenho-digital |
+| A Dança do Universo | Marcelo Gleiser | #NF #ciencia #fisica #historia #BR #d2 #e2 #tenho-digital #trilha-do-quark-ao-cosmos |
+| A Dupla Hélice | James D. Watson | #NF #ciencia #biologia #biografia #classico #d1 #e1 #tenho-digital #trilha-evolucao |
 | A Era das Máquinas Espirituais | Ray Kurzweil | #NF #tecnologia #ia #d2 #e2 #tenho-digital |
 | A Física do Futuro | Michio Kaku | #NF #ciencia #fisica #tecnologia #d1 #e2 #tenho-digital |
 | A Guide to the Project Management Body of Knowledge (PMBOK Guide) | Project Management Institute | #NF #tecnologia #gestao #didatico #d3 #e3 #tenho-digital |
@@ -2107,7 +2109,7 @@ Livros e quadrinhos da biblioteca virtual que não estavam nas seções anterior
 | A Magia da Realidade | Richard Dawkins | #NF #ciencia #biologia #d1 #e2 #tenho-digital |
 | A Música dos Números Primos | Marcus du Sautoy | #NF #ciencia #matematica #d2 #e2 #tenho-digital |
 | A Nova Era Tecnológica: Redes Sociais, Realidade Virtual e Inteligência Artificial | Caio Garrido | #NF #ia #BR #tecnologia #d1 #e1 #tenho-digital |
-| A Próxima Onda: Inteligência Artificial, Poder e o Maior Dilema do Século XXI | Mustafa Suleyman e Michael Bhaskar | #NF #ia #politica #tecnologia #d2 #e2 #trilha-maquinas-que-pensam #tenho-digital |
+| A Próxima Onda: Inteligência Artificial, Poder e o Maior Dilema do Século XXI | Mustafa Suleyman e Michael Bhaskar | #NF #ia #politica #tecnologia #d2 #e2 #tenho-digital #trilha-maquinas-que-pensam |
 | A Realidade Oculta: Universos Paralelos e as Leis Profundas do Cosmo | Brian Greene | #NF #ciencia #fisica #d3 #e2 #tenho-digital |
 | A Singularidade Está Mais Próxima: A Fusão do Ser Humano com o Poder da Inteligência Artificial | Ray Kurzweil | #NF #ia #tecnologia #d2 #e3 #tenho-digital |
 | A Vida no Limite: A Ciência da Sobrevivência | Frances M. Ashcroft | #NF #ciencia #biologia #medicina #d2 #e2 #tenho-digital |
@@ -2120,15 +2122,15 @@ Livros e quadrinhos da biblioteca virtual que não estavam nas seções anterior
 | Análise e Projeto de Sistemas | (autor não informado) | #NF #tecnologia #programacao #didatico #d2 #e2 #verificar #tenho-digital |
 | Aprenda Python Básico: Rápido e Fácil de Entender | Felipe Galvão | #NF #tecnologia #programacao #didatico #d1 #e1 #tenho-digital |
 | Arquimedes e a Alavanca em 90 Minutos | Paul Strathern | #NF #introducao #ciencia #biografia #d1 #e1 #tenho-digital |
-| Astrofísica para Apressados | Neil deGrasse Tyson | #NF #ciencia #fisica #d1 #e1 #trilha-do-quark-ao-cosmos #tenho-digital |
-| Até o Fim do Tempo | Brian Greene | #NF #ciencia #fisica #d2 #e2 #trilha-do-quark-ao-cosmos #tenho-digital |
+| Astrofísica para Apressados | Neil deGrasse Tyson | #NF #ciencia #fisica #d1 #e1 #tenho-digital #trilha-do-quark-ao-cosmos |
+| Até o Fim do Tempo | Brian Greene | #NF #ciencia #fisica #d2 #e2 #tenho-digital #trilha-do-quark-ao-cosmos |
 | Batendo à Porta do Céu | Lisa Randall | #NF #ciencia #fisica #d3 #e2 #tenho-digital |
 | BI2: Business Intelligence | Carlos Barbieri | #NF #tecnologia #dados #gestao #d2 #e2 #tenho-digital |
 | Big Data | Viktor Mayer-Schönberger e Kenneth Cukier | #NF #tecnologia #dados #d1 #e2 #tenho-digital |
 | Big Data e Internet das Coisas | Larissa Kakizaki de Alcantara | #NF #tecnologia #dados #d2 #e1 #tenho-digital |
 | Bilhões e Bilhões | Carl Sagan | #NF #ciencia #fisica #ecologia #d1 #e2 #tenho-digital |
 | Bohr e a Teoria Quântica em 90 Minutos | Paul Strathern | #NF #introducao #ciencia #biografia #fisica #d1 #e1 #tenho-digital |
-| Breves Respostas para Grandes Questões | Stephen Hawking | #NF #ciencia #fisica #d1 #e1 #trilha-do-quark-ao-cosmos #tenho-digital |
+| Breves Respostas para Grandes Questões | Stephen Hawking | #NF #ciencia #fisica #d1 #e1 #tenho-digital #trilha-do-quark-ao-cosmos |
 | Business Intelligence: Implementar do Jeito Certo e a Custo Zero | Ronaldo Braghittoni | #NF #tecnologia #dados #gestao #d2 #e1 #tenho-digital |
 | Ciência da Computação e Tecnologias Digitais | Ernane Rosa Martins (org.) | #NF #tecnologia #d2 #e2 #tenho-digital |
 | Ciência da Computação: Uma Visão Abrangente | J. Glenn Brookshear | #NF #tecnologia #programacao #didatico #d2 #e3 #tenho-digital |
@@ -2143,9 +2145,9 @@ Livros e quadrinhos da biblioteca virtual que não estavam nas seções anterior
 | Curie e a Radioatividade em 90 Minutos | Paul Strathern | #NF #introducao #ciencia #biografia #d1 #e1 #tenho-digital |
 | Curiosidade Mórbida: A Ciência e a Vida Secreta dos Cadáveres | Mary Roach | #NF #ciencia #medicina #morte #humor #d1 #e2 #tenho-digital |
 | Da Cabeça aos Pés: Histórias do Corpo Humano | Gavin Francis | #NF #ciencia #medicina #d1 #e2 #tenho-digital |
-| Dados Demais!: Como Desenvolver Habilidades Analíticas para Resolver Problemas Complexos, Reduzir Riscos e Decidir Melhor | Thomas H. Davenport e Jinho Kim | #NF #tecnologia #dados #gestao #d1 #e2 #tenho-digital |
+| Dados Demais!: Como Desenvolver Habilidades Analíticas para Resolver Problemas Complexos, Reduzir Riscos e Decidir Melhor | Thomas H. Davenport e Jinho Kim | #NF #tecnologia #dados #gestao #d1 #e2 #tenho-digital #trilha-dados-na-pratica |
 | Darwin e a Evolução em 90 Minutos | Paul Strathern | #NF #introducao #ciencia #biografia #d1 #e1 #tenho-digital |
-| Darwin sem Frescura | Reinaldo José Lopes | #NF #ciencia #biologia #BR #d1 #e2 #tenho-digital |
+| Darwin sem Frescura | Reinaldo José Lopes | #NF #ciencia #biologia #BR #d1 #e2 #tenho-digital #trilha-evolucao |
 | De Onde Vêm as Boas Ideias | Steven Johnson | #NF #ciencia #tecnologia #historia #d1 #e2 #tenho-digital |
 | De Primatas a Astronautas: A Jornada do Homem em Busca do Conhecimento | Leonard Mlodinow | #NF #ciencia #historia #d1 #e2 #tenho-digital |
 | Decisões de Investimentos em Tecnologia da Informação: Vencendo os Desafios da Avaliação de Projetos em TI | Jocildo Correia Neto | #NF #tecnologia #gestao #d2 #e2 #tenho-digital |
@@ -2159,13 +2161,13 @@ Livros e quadrinhos da biblioteca virtual que não estavam nas seções anterior
 | Engenharia de Software | Roque Maitino Neto | #NF #tecnologia #programacao #didatico #d2 #e2 #tenho-digital |
 | Engenharia de Software: Produtos | Wilson de Pádua Paula Filho | #NF #tecnologia #programacao #didatico #d3 #e3 #tenho-digital |
 | Engenharia de Software: Projetos e Processos | Wilson de Pádua Paula Filho | #NF #tecnologia #programacao #didatico #d3 #e3 #tenho-digital |
-| Entendendo Algoritmos | Aditya Y. Bhargava | #NF #tecnologia #programacao #d1 #e2 #tenho-digital |
+| Entendendo Algoritmos | Aditya Y. Bhargava | #NF #tecnologia #programacao #d1 #e2 #tenho-digital #trilha-dados-na-pratica |
 | Epigenética | Richard C. Francis | #NF #ciencia #biologia #d2 #e1 #tenho-digital |
 | Estatística: O que é, para que Serve, como Funciona | Charles Wheelan | #NF #matematica #dados #d1 #e2 #tenho-digital |
 | Estatística Usando Excel | Juan Carlos Lapponi | #NF #tecnologia #matematica #dados #didatico #d2 #e2 #tenho-digital |
 | Estratégia de Governança de Tecnologia de Informação | Rosa Maria de Moura Albertin | #NF #tecnologia #gestao #d2 #e2 #tenho-digital |
 | Estratégia de UX | Jaime Levy | #NF #tecnologia #design #gestao #d2 #e2 #tenho-digital |
-| Evolução em Quatro Dimensões: DNA, Comportamento e a História da Vida | Eva Jablonka e Marion J. Lamb | #NF #ciencia #biologia #d3 #e3 #tenho-digital |
+| Evolução em Quatro Dimensões: DNA, Comportamento e a História da Vida | Eva Jablonka e Marion J. Lamb | #NF #ciencia #biologia #d3 #e3 #tenho-digital #trilha-evolucao |
 | Excel (2 em 1): Do Básico ao Intermediário | Luiz Felipe Araujo | #NF #tecnologia #dados #didatico #d1 #e1 #tenho-digital |
 | Excel Calcula Tudo: Passo a Passo Ilustrado | Matilde Ferreira e Saulo Lima | #NF #tecnologia #dados #didatico #d1 #e1 #tenho-digital |
 | Excel: Módulo Avançado | Luiz Felipe Araujo | #NF #tecnologia #dados #didatico #d2 #e1 #tenho-digital |
@@ -2183,7 +2185,7 @@ Livros e quadrinhos da biblioteca virtual que não estavam nas seções anterior
 | Gestão da Segurança da Informação: NBR 27001 e NBR 27002 | Flavia Estélia Silva Coelho | #NF #tecnologia #gestao #didatico #d2 #e2 #tenho-digital |
 | Gestão de Riscos de TI: NBR 27005 | Edson Kowask Bezerra | #NF #tecnologia #gestao #didatico #d2 #e1 #tenho-digital |
 | Gestão Digital | Ellen Salomão | #NF #tecnologia #gestao #d1 #e2 #tenho-digital |
-| Guia Brasileiro de Análise de Dados | Cláudio D. Shikida e Leonardo Monasterio | #NF #tecnologia #dados #economia #BR #d2 #e2 #tenho-digital |
+| Guia Brasileiro de Análise de Dados | Cláudio D. Shikida e Leonardo Monasterio | #NF #tecnologia #dados #economia #BR #d2 #e2 #tenho-digital #trilha-dados-na-pratica |
 | Guia de Sobrevivência na Natureza | Dave Canterbury | #NF #didatico #d1 #e2 #tenho-digital |
 | Guia do Scrum | Ken Schwaber e Jeff Sutherland | #NF #tecnologia #gestao #d1 #e1 #tenho-digital |
 | Guia Mangá de Banco de Dados | Mana Takahashi e Shoko Azuma | #NF #tecnologia #dados #didatico #d1 #e1 #tenho-digital |
@@ -2202,7 +2204,7 @@ Livros e quadrinhos da biblioteca virtual que não estavam nas seções anterior
 | Inteligência Artificial | George F. Luger | #NF #ia #tecnologia #didatico #d3 #e3 #tenho-digital |
 | Inteligência Artificial | Kai-Fu Lee | #NF #ia #tecnologia #geopolitica #d1 #e2 #tenho-digital |
 | Inteligência Artificial: 10 Coisas que Deve Saber | Tim Rocktäschel | #NF #ia #introducao #tecnologia #d1 #e1 #tenho-digital |
-| Inteligência Artificial a Nosso Favor | Stuart Russell | #NF #ia #tecnologia #d2 #e2 #trilha-maquinas-que-pensam #tenho-digital |
+| Inteligência Artificial a Nosso Favor | Stuart Russell | #NF #ia #tecnologia #d2 #e2 #tenho-digital #trilha-maquinas-que-pensam |
 | Inteligência Artificial Aplicada: Uma Abordagem Introdutória | Luciano Frontino de Medeiros | #NF #ia #tecnologia #didatico #BR #d2 #e2 #tenho-digital |
 | Inteligência Artificial: Uma Abordagem de Aprendizado de Máquina | Katti Faceli, Ana Carolina Lorena, João Gama e outros | #NF #ia #tecnologia #didatico #programacao #BR #d3 #e2 #tenho-digital |
 | Inteligência Emocional para Gerenciamento de Projetos | Anthony Mersino | #NF #tecnologia #gestao #psicologia #d1 #e2 #tenho-digital |
@@ -2228,14 +2230,14 @@ Livros e quadrinhos da biblioteca virtual que não estavam nas seções anterior
 | Microbiologia para Leigos | Jennifer Stearns, Michael Surette e Julienne Kaiser | #NF #ciencia #biologia #didatico #d2 #e2 #tenho-digital |
 | Modelagem de Banco de Dados | Paulo Henrique Cayres | #NF #tecnologia #dados #didatico #d2 #e1 #tenho-digital |
 | Mundos Paralelos: Uma Jornada Através da Criação, das Dimensões Superiores e do Futuro do Cosmo | Michio Kaku | #NF #ciencia #fisica #d2 #e2 #tenho-digital |
-| MySQL: Comece com o Principal Banco de Dados Open Source do Mercado | Vinícius Carvalho | #NF #tecnologia #dados #programacao #didatico #d1 #e1 #tenho-digital |
+| MySQL: Comece com o Principal Banco de Dados Open Source do Mercado | Vinícius Carvalho | #NF #tecnologia #dados #programacao #didatico #d1 #e1 #tenho-digital #trilha-dados-na-pratica |
 | Newton e a Gravidade em 90 Minutos | Paul Strathern | #NF #introducao #ciencia #biografia #fisica #d1 #e1 #tenho-digital |
 | Nexus: Uma Breve História das Redes de Informação, da Idade da Pedra à Inteligência Artificial | Yuval Noah Harari | #NF #ia #historia #tecnologia #d2 #e3 #tenho-digital |
 | Noções de Estatística para Concursos | Anderson Meneses | #NF #matematica #didatico #d2 #e1 #tenho-digital |
-| O Algoritmo Mestre: Como a Busca pelo Algoritmo de Machine Learning Definitivo Recriará Nosso Mundo | Pedro Domingos | #NF #tecnologia #ia #d2 #e2 #trilha-maquinas-que-pensam #tenho-digital |
+| O Algoritmo Mestre: Como a Busca pelo Algoritmo de Machine Learning Definitivo Recriará Nosso Mundo | Pedro Domingos | #NF #tecnologia #ia #d2 #e2 #tenho-digital #trilha-maquinas-que-pensam |
 | O Andar do Bêbado: Como o Acaso Determina Nossas Vidas | Leonard Mlodinow | #NF #ciencia #matematica #d1 #e2 #tenho-digital |
 | O Caldeirão Azul | Marcelo Gleiser | #NF #ciencia #fisica #BR #d1 #e2 #tenho-digital |
-| O Caminho para o Sucesso com Power BI | Leonardo Karpinski | #NF #tecnologia #dados #didatico #d1 #e1 #tenho-digital |
+| O Caminho para o Sucesso com Power BI | Leonardo Karpinski | #NF #tecnologia #dados #didatico #d1 #e1 #tenho-digital #trilha-dados-na-pratica |
 | O Capelão do Diabo | Richard Dawkins | #NF #ciencia #biologia #religiao #d2 #e2 #tenho-digital |
 | O Cerne da Matéria | Rogerio Rosenfeld | #NF #ciencia #fisica #BR #d2 #e2 #tenho-digital |
 | O Colapso de Tudo | John Casti | #NF #ciencia #tecnologia #d1 #e2 #tenho-digital |
@@ -2248,18 +2250,18 @@ Livros e quadrinhos da biblioteca virtual que não estavam nas seções anterior
 | O Guia Completo das Plantas Medicinais | David Hoffmann | #NF #ciencia #medicina #didatico #d1 #e2 #tenho-digital |
 | O Humano Mais Humano: O que a Inteligência Artificial nos Ensina sobre a Vida | Brian Christian | #NF #ia #filosofia #tecnologia #d2 #e2 #tenho-digital |
 | O Inverno Nuclear | Carl Sagan | #NF #ciencia #guerra #ecologia #d2 #e2 #tenho-digital |
-| O Livro dos Humanos: A História de como nos Tornamos Quem Somos | Adam Rutherford | #NF #ciencia #biologia #antropologia #d1 #e2 #tenho-digital |
-| O Maior Espetáculo da Terra | Richard Dawkins | #NF #ciencia #biologia #d2 #e2 #tenho-digital |
-| O Mínimo que Você Precisa Saber sobre Banco de Dados e SQL: Uma Abordagem Prática e Muito Simples | Tiago P. Ribeiro | #NF #tecnologia #dados #didatico #d1 #e1 #tenho-digital |
+| O Livro dos Humanos: A História de como nos Tornamos Quem Somos | Adam Rutherford | #NF #ciencia #biologia #antropologia #d1 #e2 #tenho-digital #trilha-evolucao |
+| O Maior Espetáculo da Terra | Richard Dawkins | #NF #ciencia #biologia #d2 #e2 #tenho-digital #trilha-evolucao |
+| O Mínimo que Você Precisa Saber sobre Banco de Dados e SQL: Uma Abordagem Prática e Muito Simples | Tiago P. Ribeiro | #NF #tecnologia #dados #didatico #d1 #e1 #tenho-digital #trilha-dados-na-pratica |
 | O Mosquito: A Incrível História do Maior Predador da Humanidade | Timothy C. Winegard | #NF #ciencia #historia #medicina #d2 #e3 #tenho-digital |
 | O Poder do Pensamento Matemático | Jordan Ellenberg | #NF #ciencia #matematica #d2 #e3 #tenho-digital |
-| O Polegar do Violinista | Sam Kean | #NF #ciencia #biologia #historia #d1 #e2 #tenho-digital |
-| O Programador Pragmático | Andrew Hunt e David Thomas | #NF #tecnologia #programacao #d2 #e2 #tenho-digital |
+| O Polegar do Violinista | Sam Kean | #NF #ciencia #biologia #historia #d1 #e2 #tenho-digital #trilha-evolucao |
+| O Programador Pragmático | Andrew Hunt e David Thomas | #NF #tecnologia #programacao #d2 #e2 #tenho-digital #trilha-dados-na-pratica |
 | O que os Médicos Não Contam | Matt McCarthy | #NF #ciencia #medicina #testemunho #d1 #e2 #tenho-digital |
 | O Rio que Saía do Éden | Richard Dawkins | #NF #ciencia #biologia #d2 #e1 #tenho-digital |
 | O Tecido do Cosmo | Brian Greene | #NF #ciencia #fisica #d3 #e3 #tenho-digital |
 | O Tempo que o Tempo Tem: Por que o Ano Tem 12 Meses e Outras Curiosidades sobre o Calendário | Alexandre Cherman e Fernando Vieira | #NF #ciencia #historia #BR #d1 #e1 #tenho-digital |
-| O Universo Elegante | Brian Greene | #NF #ciencia #fisica #d3 #e2 #trilha-do-quark-ao-cosmos #tenho-digital |
+| O Universo Elegante | Brian Greene | #NF #ciencia #fisica #d3 #e2 #tenho-digital #trilha-do-quark-ao-cosmos |
 | O Universo numa Casca de Noz | Stephen Hawking | #NF #ciencia #fisica #d2 #e1 #tenho-digital |
 | Origens: Catorze Bilhões de Anos de Evolução Cósmica | Neil deGrasse Tyson e Donald Goldsmith | #NF #ciencia #fisica #d2 #e2 #tenho-digital |
 | Os 100 Maiores Cientistas da História: Uma Classificação dos Cientistas Mais Influentes do Passado e do Presente | John Simmons | #NF #ciencia #biografia #historia #d1 #e3 #tenho-digital |
@@ -2269,7 +2271,7 @@ Livros e quadrinhos da biblioteca virtual que não estavam nas seções anterior
 | Os Simpsons e a Ciência | Paul Halpern | #NF #ciencia #humor #d1 #e2 #tenho-digital |
 | Pandemias: A Humanidade em Risco | Stefan Cunha Ujvari | #NF #ciencia #medicina #BR #d1 #e1 #tenho-digital |
 | Para Explicar o Mundo: A Descoberta da Ciência Moderna | Steven Weinberg | #NF #ciencia #fisica #historia #d2 #e2 #tenho-digital |
-| Pegando Fogo: Por que Cozinhar nos Tornou Humanos | Richard Wrangham | #NF #ciencia #biologia #antropologia #d2 #e2 #tenho-digital |
+| Pegando Fogo: Por que Cozinhar nos Tornou Humanos | Richard Wrangham | #NF #ciencia #biologia #antropologia #d2 #e2 #tenho-digital #trilha-evolucao |
 | People Analytics para Leigos | Mike West | #NF #tecnologia #dados #gestao #d1 #e2 #tenho-digital |
 | Pequenas Maravilhas | Idan Ben-Barak | #NF #ciencia #biologia #d1 #e1 #tenho-digital |
 | Pitágoras e seu Teorema em 90 Minutos | Paul Strathern | #NF #introducao #ciencia #biografia #d1 #e1 #tenho-digital |
@@ -2289,7 +2291,7 @@ Livros e quadrinhos da biblioteca virtual que não estavam nas seções anterior
 | Sistemas de Banco de Dados | Ramez Elmasri e Shamkant B. Navathe | #NF #tecnologia #dados #didatico #d3 #e3 #tenho-digital |
 | Sistemas de Gerenciamento de Banco de Dados | Raghu Ramakrishnan e Johannes Gehrke | #NF #tecnologia #dados #didatico #d3 #e3 #tenho-digital |
 | Sprint | Jake Knapp, John Zeratsky e Braden Kowitz | #NF #tecnologia #gestao #design #d1 #e2 #tenho-digital |
-| SQL: Curso Prático | Celso Henrique Poderoso de Oliveira | #NF #tecnologia #dados #programacao #didatico #d2 #e2 #tenho-digital |
+| SQL: Curso Prático | Celso Henrique Poderoso de Oliveira | #NF #tecnologia #dados #programacao #didatico #d2 #e2 #tenho-digital #trilha-dados-na-pratica |
 | SQL: Uma Abordagem para Banco de Dados Oracle | Eduardo Gonçalves | #NF #tecnologia #dados #programacao #didatico #d2 #e2 #tenho-digital |
 | Stephen Hawking: Histórias de Física e de uma Amizade | Leonard Mlodinow | #NF #ciencia #fisica #biografia #d1 #e2 #tenho-digital |
 | Storytelling com Dados | Cole Nussbaumer Knaflic | #NF #tecnologia #dados #design #d1 #e2 #tenho-digital |
@@ -2299,7 +2301,7 @@ Livros e quadrinhos da biblioteca virtual que não estavam nas seções anterior
 | Todo Mundo Mente: O que a Internet e os Dados Dizem sobre Quem Realmente Somos | Seth Stephens-Davidowitz | #NF #tecnologia #dados #psicologia #sociologia #d1 #e2 #tenho-digital |
 | Transformação Digital: Repensando o seu Negócio para a Era Digital | David L. Rogers | #NF #tecnologia #gestao #d1 #e2 #tenho-digital |
 | Tudo o que Você Precisa Saber sobre Ciência | Federico Kukso | #NF #ciencia #introducao #d1 #e2 #tenho-digital |
-| Turing e o Computador em 90 Minutos | Paul Strathern | #NF #introducao #ciencia #biografia #tecnologia #d1 #e1 #trilha-maquinas-que-pensam #tenho-digital |
+| Turing e o Computador em 90 Minutos | Paul Strathern | #NF #introducao #ciencia #biografia #tecnologia #d1 #e1 #tenho-digital #trilha-maquinas-que-pensam |
 | Uma Nova História do Tempo | Stephen Hawking e Leonard Mlodinow | #NF #ciencia #fisica #d1 #e1 #tenho-digital |
 | Use a Cabeça! SQL | Lynn Beighley | #NF #tecnologia #dados #programacao #didatico #d1 #e3 #tenho-digital |
 | UX Estratégico: Design Aplicado a Ecossistema de Produtos | Gabriel Pinheiro Maciel da Silva | #NF #tecnologia #design #gestao #d2 #e1 #tenho-digital |
@@ -2335,7 +2337,7 @@ Livros e quadrinhos da biblioteca virtual que não estavam nas seções anterior
 | A Gestalt-terapia | Chantal Masquelier-Savatier | #NF #psicologia #psicologia-humanista #introducao #d2 #e1 #tenho-digital |
 | A Inibição Intelectual na Psicanálise | Ana Lydia Santiago | #NF #psicanalise #educacao #BR #d3 #e2 #tenho-digital |
 | A Interpretação | Laéria Fontenele | #NF #psicologia #psicanalise #introducao #BR #d2 #e1 #tenho-digital |
-| A Interpretação dos Sonhos | Sigmund Freud | #NF #psicanalise #classico #d3 #e3 #trilha-psicanalise-em-degraus #tenho-digital |
+| A Interpretação dos Sonhos | Sigmund Freud | #NF #psicanalise #classico #d3 #e3 #tenho-digital #trilha-psicanalise-em-degraus |
 | A Jornada de Ser Humano | Magda Lopes | #NF #autoconhecimento #d1 #e2 #tenho-digital |
 | A Linguagem Corporal do Amor | Allan e Barbara Pease | #NF #autoconhecimento #d1 #e2 #tenho-digital |
 | A Linguagem Corporal no Trabalho | Allan e Barbara Pease | #NF #autoconhecimento #gestao #d1 #e2 #tenho-digital |
@@ -2352,8 +2354,8 @@ Livros e quadrinhos da biblioteca virtual que não estavam nas seções anterior
 | A Psicologia da Inteligência | Jean Piaget | #NF #psicologia #educacao #classico #d3 #e2 #tenho-digital |
 | A Psicologia da Mídia Social | Ciáran McMahon | #NF #psicologia #tecnologia #psicologia-social #d1 #e1 #tenho-digital |
 | A Psicologia das Emoções: O Fascínio do Rosto Humano | A. Freitas-Magalhães | #NF #psicologia #d2 #e2 #tenho-digital |
-| A Psicologia de C.G. Jung: Uma Introdução às Obras Completas | Jolande Jacobi | #NF #psicologia #psicologia-analitica #introducao #d2 #e2 #trilha-jung-para-comecar #tenho-digital |
-| A Psicologia Vai ao Cinema | Skip Dine Young | #NF #psicologia #cinema #d1 #e2 #tenho-digital |
+| A Psicologia de C.G. Jung: Uma Introdução às Obras Completas | Jolande Jacobi | #NF #psicologia #psicologia-analitica #introducao #d2 #e2 #tenho-digital #trilha-jung-para-comecar |
+| A Psicologia Vai ao Cinema | Skip Dine Young | #NF #psicologia #cinema #d1 #e2 #tenho-digital #trilha-cinema-que-pensa |
 | A Psicose | Andréa M.C. Guerra | #NF #psicanalise #psicopatologia #introducao #BR #d2 #e1 #tenho-digital |
 | A Revolução Sexual | Wilhelm Reich | #NF #psicologia #psicanalise #politica #classico #d2 #e2 #tenho-digital |
 | A Sublimação | Clarissa Metzger | #NF #psicanalise #introducao #BR #d2 #e1 #tenho-digital |
@@ -2361,7 +2363,7 @@ Livros e quadrinhos da biblioteca virtual que não estavam nas seções anterior
 | A Técnica Pomodoro | Francesco Cirillo | #NF #autoconhecimento #gestao #d1 #e1 #tenho-digital |
 | A Terapia Cognitivo-Comportamental Baseada em Evidências | Deborah Dobson e Keith S. Dobson | #NF #psicologia #tcc #d3 #e2 #tenho-digital |
 | A Transferência: Uma Viagem Rumo ao Continente Negro | Denise Maurano | #NF #psicanalise #introducao #d2 #e1 #tenho-digital |
-| Agilidade Emocional | Susan David | #NF #autoconhecimento #psicologia #d1 #e2 #tenho-digital |
+| Agilidade Emocional | Susan David | #NF #autoconhecimento #psicologia #d1 #e2 #tenho-digital #trilha-habitos-emocoes-relacoes |
 | Além da Ordem: Mais 12 Regras para a Vida | Jordan B. Peterson | #NF #autoconhecimento #psicologia #d2 #e2 #tenho-digital |
 | Alienação e Liberdade | Frantz Fanon | #NF #psiquiatria #colonialismo #raca #politica #d3 #e3 #tenho-digital |
 | Alienação Parental | Fábio Vieira Figueiredo e Georgios Alexandridis | #NF #psicologia #parentalidade #BR #d2 #e1 #tenho-digital |
@@ -2388,26 +2390,26 @@ Livros e quadrinhos da biblioteca virtual que não estavam nas seções anterior
 | Bíblia da Sedução | Alex Hilgert | #NF #autoconhecimento #d1 #e2 #tenho-digital |
 | Cada Dia Mais Perto | Irvin D. Yalom e Ginny Elkin | #NF #psicologia #existencialismo #testemunho #d1 #e2 #rel-yalom #tenho-digital |
 | Cão Farejador: Ensaios sobre Jung e Simondon | Amnéris Maroni | #NF #psicologia #psicologia-analitica #filosofia #d3 #e2 #tenho-digital |
-| Cartas a um Jovem Terapeuta | Contardo Calligaris | #NF #psicologia #psicanalise #BR #d1 #e1 #trilha-formacao-do-terapeuta #tenho-digital |
+| Cartas a um Jovem Terapeuta | Contardo Calligaris | #NF #psicologia #psicanalise #BR #d1 #e1 #tenho-digital #trilha-formacao-do-terapeuta |
 | Cartas de um Terapeuta para os seus Momentos de Crise | Alexandre Coimbra Amaral | #NF #psicologia #autoconhecimento #BR #d1 #e2 #tenho-digital |
 | Cartografias do Feminino | Joel Birman | #NF #psicologia #psicanalise #genero #BR #d3 #e2 #tenho-digital |
-| Casos Clínicos do DSM-5 | John W. Barnhill | #NF #psiquiatria #psicopatologia #didatico #d2 #e2 #tenho-digital |
+| Casos Clínicos do DSM-5 | John W. Barnhill | #NF #psiquiatria #psicopatologia #didatico #d2 #e2 #tenho-digital #trilha-mente-e-sofrimento |
 | Cercado de Idiotas | Thomas Erikson | #NF #autoconhecimento #psicologia #d1 #e2 #tenho-digital |
 | Ciência e Comportamento Humano | B.F. Skinner | #NF #psicologia #behaviorismo #classico #d3 #e2 #tenho-digital |
 | Ciência Marxista do Sujeito: Uma Introdução à Psicologia Crítica, vol. 1 | Klaus Holzkamp | #NF #psicologia #politica #d3 #e2 #tenho-digital |
 | Ciência Psicológica | Michael S. Gazzaniga e Todd F. Heatherton | #NF #psicologia #introducao #didatico #d2 #e3 #tenho-digital |
-| Cinco Lições sobre a Teoria de Jacques Lacan | J.-D. Nasio | #NF #psicanalise #introducao #d2 #e1 #trilha-psicanalise-em-degraus #tenho-digital |
-| Cinema e Loucura: Conhecendo os Transtornos Mentais Através dos Filmes | J. Landeira-Fernandez e Elie Cheniaux | #NF #psicologia #psicopatologia #cinema #BR #d1 #e2 #tenho-digital |
-| Cinema, Imagem e Psicanálise | Tania Rivera | #NF #psicanalise #cinema #BR #d2 #e1 #tenho-digital |
+| Cinco Lições sobre a Teoria de Jacques Lacan | J.-D. Nasio | #NF #psicanalise #introducao #d2 #e1 #tenho-digital #trilha-psicanalise-em-degraus |
+| Cinema e Loucura: Conhecendo os Transtornos Mentais Através dos Filmes | J. Landeira-Fernandez e Elie Cheniaux | #NF #psicologia #psicopatologia #cinema #BR #d1 #e2 #tenho-digital #trilha-cinema-que-pensa |
+| Cinema, Imagem e Psicanálise | Tania Rivera | #NF #psicanalise #cinema #BR #d2 #e1 #tenho-digital #trilha-cinema-que-pensa |
 | Clínica Humanista-Fenomenológica: Estudos em Psicoterapia e Psicopatologia Crítica | Virginia Moreira | #NF #psicologia #psicologia-humanista #psicopatologia #BR #d3 #e2 #tenho-digital |
 | Código da Atração | Eduardo Santorini | #NF #autoconhecimento #BR #d1 #e1 #tenho-digital |
 | Como Aumentar a Testosterona de Forma Natural | Editora Mente Livre | #NF #autoconhecimento #medicina #d1 #e1 #tenho-digital |
 | Como Convencer Alguém em 90 Segundos | Nicholas Boothman | #NF #autoconhecimento #d1 #e1 #tenho-digital |
 | Como Fazer Amigos e Influenciar Pessoas | Dale Carnegie | #NF #autoconhecimento #classico #d1 #e2 #tenho-digital |
-| Como Trabalha um Psicanalista | J.-D. Nasio | #NF #psicanalise #d2 #e1 #trilha-psicanalise-em-degraus #tenho-digital |
+| Como Trabalha um Psicanalista | J.-D. Nasio | #NF #psicanalise #d2 #e1 #tenho-digital #trilha-psicanalise-em-degraus |
 | Compêndio de Psiquiatria: Ciência do Comportamento e Psiquiatria Clínica | Benjamin J. Sadock, Virginia A. Sadock e Pedro Ruiz | #NF #psiquiatria #psicopatologia #didatico #d3 #e3 #tenho-digital |
 | Compreender o Behaviorismo | William M. Baum | #NF #psicologia #behaviorismo #d2 #e2 #tenho-digital |
-| Comunicação Não-Violenta | Marshall B. Rosenberg | #NF #psicologia #autoconhecimento #d1 #e2 #tenho-digital |
+| Comunicação Não-Violenta | Marshall B. Rosenberg | #NF #psicologia #autoconhecimento #d1 #e2 #tenho-digital #trilha-habitos-emocoes-relacoes |
 | Conversas Difíceis | Douglas Stone, Bruce Patton e Sheila Heen | #NF #psicologia #autoconhecimento #d1 #e2 #tenho-digital |
 | Crenças Extraordinárias: Uma Abordagem Histórica de um Problema Psicológico | Peter Lamont | #NF #psicologia #historia #enigmas #d2 #e2 #tenho-digital |
 | Crescimento Pessoal: As 59 Falácias Lógicas Mais Poderosas | Steve Allen | #NF #autoconhecimento #filosofia #d1 #e1 #tenho-digital |
@@ -2446,7 +2448,7 @@ Livros e quadrinhos da biblioteca virtual que não estavam nas seções anterior
 | Fadas no Divã: Psicanálise nas Histórias Infantis | Diana Lichtenstein Corso e Mário Corso | #NF #psicanalise #parentalidade #BR #RS #d2 #e2 #tenho-digital |
 | Formas de Investigação Clínica em Psicologia | Walter Trinca | #NF #psicologia #psicopatologia #BR #d3 #e2 #tenho-digital |
 | Frases Up: 250 Frases para Motivar e Iluminar o seu Dia | Vários autores | #NF #autoconhecimento #d1 #e1 #tenho-digital |
-| Freud, Criador da Psicanálise | Marco Antonio Coutinho Jorge e Nadiá Paulo Ferreira | #NF #psicanalise #introducao #biografia #BR #d1 #e1 #trilha-psicanalise-em-degraus #tenho-digital |
+| Freud, Criador da Psicanálise | Marco Antonio Coutinho Jorge e Nadiá Paulo Ferreira | #NF #psicanalise #introducao #biografia #BR #d1 #e1 #tenho-digital #trilha-psicanalise-em-degraus |
 | Freud e a Cocaína: A História do Uso da Droga nos Primórdios da Psicanálise | David Cohen | #NF #psicanalise #historia #biografia #d1 #e2 #tenho-digital |
 | Freud e a Filosofia | Joel Birman | #NF #psicanalise #filosofia #introducao #BR #d2 #e1 #tenho-digital |
 | Freud e a Perversão | Patrick Valas | #NF #psicanalise #psicopatologia #d3 #e1 #tenho-digital |
@@ -2459,14 +2461,14 @@ Livros e quadrinhos da biblioteca virtual que não estavam nas seções anterior
 | Fundamentos de Psicopatologia Fenomenológica e Daseinsanalyse | Roberto Schmidlin | #NF #psicologia #psicologia-humanista #psicopatologia #filosofia #d3 #e2 #tenho-digital |
 | Fundamentos Psicanalíticos: Teoria, Técnica e Clínica | David E. Zimerman | #NF #psicanalise #didatico #BR #RS #d2 #e3 #tenho-digital |
 | Habilidades Sociais, Desenvolvimento e Aprendizagem | Almir Del Prette e Zilda A.P. Del Prette (orgs.) | #NF #psicologia #educacao #BR #d3 #e2 #tenho-digital |
-| He | Robert A. Johnson | #NF #psicologia #psicologia-analitica #d1 #e1 #trilha-jung-para-comecar #tenho-digital |
+| He | Robert A. Johnson | #NF #psicologia #psicologia-analitica #d1 #e1 #tenho-digital #trilha-jung-para-comecar |
 | Heranças Invisíveis do Abandono Afetivo: Um Estudo Psicanalítico sobre as Dimensões da Experiência Traumática | Daniel Schor | #NF #psicanalise #d3 #e2 #tenho-digital |
 | História Bizarra da Psicologia | Raquel Sodré | #NF #psicologia #historia #humor #BR #d1 #e1 #tenho-digital |
 | História da Psicologia Moderna | C. James Goodwin | #NF #psicologia #introducao #historia #didatico #d2 #e3 #tenho-digital |
 | História da Psicologia: Rumos e Percursos | Ana Maria Jacó-Vilela, Arthur Arruda Leal Ferreira e Francisco Teixeira Portugal (orgs.) | #NF #psicologia #introducao #historia #didatico #BR #d3 #e3 #tenho-digital |
-| História da Psicologia sem as Partes Chatas | Joel Levy | #NF #psicologia #introducao #historia #humor #d1 #e1 #trilha-formacao-do-terapeuta #tenho-digital |
+| História da Psicologia sem as Partes Chatas | Joel Levy | #NF #psicologia #introducao #historia #humor #d1 #e1 #tenho-digital #trilha-formacao-do-terapeuta |
 | Imitação: Seu Lugar na Psicanálise | Paulo de Carvalho Ribeiro | #NF #psicanalise #BR #d3 #e2 #tenho-digital |
-| (In)distraível | Nir Eyal | #NF #autoconhecimento #d1 #e2 #tenho-digital |
+| (In)distraível | Nir Eyal | #NF #autoconhecimento #d1 #e2 #tenho-digital #trilha-habitos-emocoes-relacoes |
 | Inconsciente Social | Carla Penna | #NF #psicanalise #psicologia-social #d3 #e2 #tenho-digital |
 | Inovações em Terapia Cognitivo-Comportamental | Amy Wenzel | #NF #psicologia #tcc #d3 #e2 #tenho-digital |
 | Instrumentação Psicológica | Luiz Pasquali | #NF #psicologia #psicometria #didatico #BR #d3 #e3 #tenho-digital |
@@ -2475,24 +2477,24 @@ Livros e quadrinhos da biblioteca virtual que não estavam nas seções anterior
 | Inteligências Múltiplas ao Redor do Mundo | Howard Gardner | #NF #psicologia #educacao #d2 #e3 #tenho-digital |
 | Interfaces da Psicanálise | Renato Mezan | #NF #psicanalise #BR #d3 #e3 #tenho-digital |
 | Introdução à Epistemologia da Psicologia | Hilton Japiassu | #NF #psicologia #filosofia #BR #d3 #e1 #tenho-digital |
-| Introdução a Jacques Lacan | Vladimir Safatle | #NF #psicanalise #introducao #d2 #e1 #trilha-psicanalise-em-degraus #tenho-digital |
+| Introdução a Jacques Lacan | Vladimir Safatle | #NF #psicanalise #introducao #d2 #e1 #tenho-digital #trilha-psicanalise-em-degraus |
 | Introdução à Psicologia | Robert S. Feldman | #NF #psicologia #introducao #didatico #d2 #e3 #tenho-digital |
 | Introdução à Psicologia (6ª ed.) | (autor não informado) | #NF #psicologia #introducao #didatico #d2 #e3 #verificar #tenho-digital |
 | Introdução à Psicologia das Diferenças Individuais | Carmen Flores-Mendoza e Roberto Colom (orgs.) | #NF #psicologia #psicometria #didatico #BR #d3 #e2 #tenho-digital |
 | Introdução à Psicologia do Ser | Abraham Maslow | #NF #psicologia #psicologia-humanista #classico #d2 #e2 #tenho-digital |
 | Introdução à Psicologia Fenomenológica: A Nova Psicologia de Edmund Husserl | Tommy Akira Goto | #NF #psicologia #psicologia-humanista #filosofia #BR #d3 #e2 #tenho-digital |
 | Introdução à Psicologia Forense | Paula Inez Cunha Gomide e Sérgio Said Staut Júnior (orgs.) | #NF #psicologia #didatico #BR #d2 #e2 #tenho-digital |
-| Introdução à Psicologia Junguiana | Heráclito Pinheiro | #NF #psicologia #psicologia-analitica #introducao #BR #d1 #e1 #trilha-jung-para-comecar #tenho-digital |
+| Introdução à Psicologia Junguiana | Heráclito Pinheiro | #NF #psicologia #psicologia-analitica #introducao #BR #d1 #e1 #tenho-digital #trilha-jung-para-comecar |
 | Introdução à Topologia de Lacan | J.-D. Nasio | #NF #psicanalise #d3 #e1 #tenho-digital |
 | Introdução às Obras de Freud, Ferenczi, Groddeck, Klein, Winnicott, Dolto, Lacan | J.-D. Nasio (org.) | #NF #psicanalise #introducao #d2 #e2 #tenho-digital |
 | Introdução Clínica a Freud | Bruce Fink | #NF #psicanalise #introducao #d2 #e2 #tenho-digital |
-| Introdução Clínica à Psicanálise Lacaniana | Bruce Fink | #NF #psicanalise #introducao #d2 #e2 #trilha-psicanalise-em-degraus #tenho-digital |
+| Introdução Clínica à Psicanálise Lacaniana | Bruce Fink | #NF #psicanalise #introducao #d2 #e2 #tenho-digital #trilha-psicanalise-em-degraus |
 | Já Entendi: Como Aprender Mais e Melhor Estudando Sozinho | Gladys Mariotto | #NF #autoconhecimento #educacao #BR #d1 #e1 #tenho-digital |
 | Jean Piaget no Século XXI: Escritos de Epistemologia e Psicologia Genéticas | Adrián Oscar Dongo Montoya (org.) | #NF #psicologia #educacao #BR #d3 #e2 #tenho-digital |
 | Jung e a Construção da Psicologia Moderna: O Sonho de uma Ciência | Sonu Shamdasani | #NF #psicologia #psicologia-analitica #historia #d3 #e3 #tenho-digital |
 | Jung e o Tarô: Uma Jornada Arquetípica | Sallie Nichols | #NF #psicologia #psicologia-analitica #mistica #d2 #e2 #tenho-digital |
 | Jung: Na Fronteira do Espírito | José Carlos Leal | #NF #psicologia #psicologia-analitica #espiritualidade #BR #d2 #e2 #tenho-digital |
-| Jung: Vida e Obra | Nise da Silveira | #NF #psicologia #psicologia-analitica #introducao #biografia #classico #BR #d1 #e1 #trilha-jung-para-comecar #tenho-digital |
+| Jung: Vida e Obra | Nise da Silveira | #NF #psicologia #psicologia-analitica #introducao #biografia #classico #BR #d1 #e1 #tenho-digital #trilha-jung-para-comecar |
 | Kafka para Sobrecarregados | Allan Percy | #NF #autoconhecimento #d1 #e1 #tenho-digital |
 | Lacan: La Formation Du Concept de Sujet | Bertrand Ogilvie | #NF #psicanalise #filosofia #d3 #e1 #tenho-digital |
 | Lacan, o Grande Freudiano | Marco Antonio Coutinho Jorge e Nadiá Paulo Ferreira | #NF #psicanalise #introducao #biografia #BR #d1 #e1 #tenho-digital |
@@ -2501,21 +2503,21 @@ Livros e quadrinhos da biblioteca virtual que não estavam nas seções anterior
 | Linguagem e Psicanálise | Leila Longo | #NF #psicanalise #linguagem #introducao #BR #d2 #e1 #tenho-digital |
 | Linguagem: Os Segredos da Sedução pela Poderosa Força das Palavras | (autor não informado) | #NF #autoconhecimento #d1 #e1 #verificar #tenho-digital |
 | Mal-estar na Atualidade: A Psicanálise e as Novas Formas de Subjetivação | Joel Birman | #NF #psicanalise #d3 #e2 #tenho-digital |
-| Mal-estar, Sofrimento e Sintoma: Uma Psicopatologia do Brasil entre Muros | Christian Dunker | #NF #psicologia #psicanalise #psicopatologia #BR #d3 #e2 #tenho-digital |
+| Mal-estar, Sofrimento e Sintoma: Uma Psicopatologia do Brasil entre Muros | Christian Dunker | #NF #psicologia #psicanalise #psicopatologia #BR #d3 #e2 #tenho-digital #trilha-mente-e-sofrimento |
 | Manipulação | (autor não informado) | #NF #autoconhecimento #d1 #e1 #verificar #tenho-digital |
 | Manual Clínico dos Transtornos Psicológicos | David H. Barlow | #NF #psicologia #tcc #psicopatologia #didatico #d3 #e3 #tenho-digital |
 | Manual de Persuasão do FBI | Jack Shafer | #NF #autoconhecimento #psicologia-social #d1 #e2 #tenho-digital |
 | Manual de Psicologia Hospitalar: O Mapa da Doença | Alfredo Simonetti | #NF #psicologia #medicina #BR #d2 #e1 #tenho-digital |
-| Manual de Psicopatologia | Elie Cheniaux | #NF #psicologia #psicopatologia #didatico #psiquiatria #BR #d2 #e2 #trilha-formacao-do-terapeuta #tenho-digital |
+| Manual de Psicopatologia | Elie Cheniaux | #NF #psicologia #psicopatologia #didatico #psiquiatria #BR #d2 #e2 #tenho-digital #trilha-formacao-do-terapeuta |
 | Manual de Técnica Psicanalítica: Uma Re-visão | David E. Zimerman | #NF #psicanalise #didatico #BR #RS #d2 #e3 #tenho-digital |
 | Manual do Homem Moderno | J.F. Rozza | #NF #autoconhecimento #BR #d1 #e1 #tenho-digital |
 | Manual do Xaveco: Como Conquistar uma Mulher | (autor não informado) | #NF #autoconhecimento #d1 #e1 #verificar #tenho-digital |
 | Manual do Xavequeiro | Fabiano Rampazzo | #NF #autoconhecimento #humor #BR #d1 #e1 #tenho-digital |
 | Mapas do Significado: A Arquitetura da Crença | Jordan B. Peterson | #NF #psicologia #mitologia #religiao #d3 #e3 #tenho-digital |
 | Memórias de um Doente dos Nervos | Daniel Paul Schreber | #NF #psicologia #psicanalise #psiquiatria #testemunho #classico #d3 #e2 #tenho-digital |
-| Mentes Ansiosas: O Medo e a Ansiedade Nossos de Cada Dia | Ana Beatriz Barbosa Silva | #NF #psicologia #psicopatologia #BR #d1 #e2 #tenho-digital |
+| Mentes Ansiosas: O Medo e a Ansiedade Nossos de Cada Dia | Ana Beatriz Barbosa Silva | #NF #psicologia #psicopatologia #BR #d1 #e2 #tenho-digital #trilha-mente-e-sofrimento |
 | Mentes Consumistas: Do Consumismo à Compulsão por Compras | Ana Beatriz Barbosa Silva | #NF #psicologia #psicopatologia #BR #d1 #e2 #tenho-digital |
-| Mentes Depressivas: As Três Dimensões da Doença do Século | Ana Beatriz Barbosa Silva | #NF #psicologia #psicopatologia #BR #d1 #e2 #tenho-digital |
+| Mentes Depressivas: As Três Dimensões da Doença do Século | Ana Beatriz Barbosa Silva | #NF #psicologia #psicopatologia #BR #d1 #e2 #tenho-digital #trilha-mente-e-sofrimento |
 | Mentes Impiedosas | Taj Nathan | #NF #psicologia #psiquiatria #d1 #e2 #tenho-digital |
 | Mentes Inquietas: TDAH: Desatenção, Hiperatividade e Impulsividade | Ana Beatriz Barbosa Silva | #NF #psicologia #psicopatologia #BR #d1 #e2 #tenho-digital |
 | Mentes Maquiavélicas: A Psicologia da Manipulação | Tamás Bereczkei | #NF #psicologia #psicologia-social #d2 #e2 #tenho-digital |
@@ -2523,28 +2525,28 @@ Livros e quadrinhos da biblioteca virtual que não estavam nas seções anterior
 | Mentes que Amam Demais: O Jeito Borderline de Ser | Ana Beatriz Barbosa Silva | #NF #psicologia #psicopatologia #BR #d1 #e2 #tenho-digital |
 | Metamorfoses do Corpo: Uma Pedagogia Freudiana | Sherrine Njaine Borges | #NF #psicologia #psicanalise #BR #d3 #e2 #tenho-digital |
 | Mind, Self and Society | George Herbert Mead | #NF #psicologia #psicologia-social #sociologia #classico #d3 #e2 #tenho-digital |
-| Mindset: A Nova Psicologia do Sucesso | Carol S. Dweck | #NF #autoconhecimento #psicologia #educacao #d1 #e2 #tenho-digital |
-| Mito e Psicanálise | Ana Vicentini de Azevedo | #NF #psicanalise #mitologia #introducao #BR #d2 #e1 #tenho-digital |
+| Mindset: A Nova Psicologia do Sucesso | Carol S. Dweck | #NF #autoconhecimento #psicologia #educacao #d1 #e2 #tenho-digital #trilha-habitos-emocoes-relacoes |
+| Mito e Psicanálise | Ana Vicentini de Azevedo | #NF #psicanalise #mitologia #introducao #BR #d2 #e1 #tenho-digital #trilha-mitos-e-herois |
 | Modificação de Comportamento: O que é e como Fazer | Garry Martin e Joseph Pear | #NF #psicologia #behaviorismo #didatico #d2 #e3 #tenho-digital |
-| Nação Dopamina | Anna Lembke | #NF #psicologia #neurociencia #autoconhecimento #d1 #e2 #tenho-digital |
-| Não Acredite em Tudo que Você Sente | Robert L. Leahy | #NF #psicologia #tcc #autoconhecimento #d1 #e2 #tenho-digital |
+| Nação Dopamina | Anna Lembke | #NF #psicologia #neurociencia #autoconhecimento #d1 #e2 #tenho-digital #trilha-habitos-emocoes-relacoes |
+| Não Acredite em Tudo que Você Sente | Robert L. Leahy | #NF #psicologia #tcc #autoconhecimento #d1 #e2 #tenho-digital #trilha-habitos-emocoes-relacoes |
 | Não Minta pra Mim: Psicologia da Mentira e Linguagem Corporal | Paulo Sérgio de Camargo | #NF #psicologia #BR #d1 #e1 #tenho-digital |
 | Narcisismo e Transformação do Caráter | Nathan Schwartz-Salant | #NF #psicologia #psicologia-analitica #d3 #e2 #tenho-digital |
 | Natureza Humana | Donald Winnicott | #NF #psicologia #psicanalise #classico #d3 #e2 #tenho-digital |
 | Negocie como se sua Vida Dependesse Disso | Chris Voss e Tahl Raz | #NF #autoconhecimento #gestao #d1 #e2 #tenho-digital |
 | Neurose e Não Neurose | Marion Minerbo | #NF #psicanalise #psicopatologia #d3 #e2 #tenho-digital |
-| Neurose, Psicose, Perversão | Sigmund Freud | #NF #psicanalise #psicopatologia #classico #d3 #e2 #tenho-digital |
+| Neurose, Psicose, Perversão | Sigmund Freud | #NF #psicanalise #psicopatologia #classico #d3 #e2 #tenho-digital #trilha-mente-e-sofrimento |
 | No Círculo Cínico, ou Caro Lacan, por que Negar a Psicanálise aos Canalhas? | Ricardo Goldenberg | #NF #psicanalise #BR #d3 #e1 #tenho-digital |
 | Normose: A Patologia da Normalidade | Pierre Weil, Jean-Yves Leloup e Roberto Crema | #NF #psicologia #espiritualidade #d2 #e1 #tenho-digital |
 | O Animal Social | David Brooks | #NF #psicologia #psicologia-social #d1 #e2 #tenho-digital |
 | O Cavaleiro Preso na Armadura | Robert Fisher | #F #autoconhecimento #d1 #e1 #tenho-digital |
-| O Cérebro de Buda | Rick Hanson | #NF #psicologia #neurociencia #espiritualidade #autoconhecimento #d1 #e2 #tenho-digital |
+| O Cérebro de Buda | Rick Hanson | #NF #psicologia #neurociencia #espiritualidade #autoconhecimento #d1 #e2 #tenho-digital #trilha-silencio-e-consciencia |
 | O Cérebro e a Inteligência Emocional | Daniel Goleman | #NF #psicologia #neurociencia #d1 #e1 #tenho-digital |
 | O Código da Conquista | J.F. Rozza | #NF #autoconhecimento #BR #d1 #e1 #tenho-digital |
 | O Código da Inteligência | Augusto Cury | #NF #autoconhecimento #BR #d1 #e2 #tenho-digital |
 | O Comportamento Verbal | B.F. Skinner | #NF #psicologia #behaviorismo #linguagem #classico #d3 #e3 #tenho-digital |
 | O Conceito de Sujeito | Luciano Elia | #NF #psicanalise #introducao #d2 #e1 #tenho-digital |
-| O Demônio do Meio-dia: Uma Anatomia da Depressão | Andrew Solomon | #NF #psicologia #psicopatologia #testemunho #d2 #e3 #tenho-digital |
+| O Demônio do Meio-dia: Uma Anatomia da Depressão | Andrew Solomon | #NF #psicologia #psicopatologia #testemunho #d2 #e3 #tenho-digital #trilha-mente-e-sofrimento |
 | O Desafio de Mudar o seu Estilo de Vida | Neil Strauss | #NF #autoconhecimento #d1 #e2 #tenho-digital |
 | O Desejo e sua Interpretação | Jacques Lacan | #NF #psicanalise #d3 #e3 #tenho-digital |
 | O Desenvolvimento da Personalidade | Carl G. Jung | #NF #psicologia #psicologia-analitica #educacao #classico #d3 #e2 #tenho-digital |
@@ -2566,16 +2568,16 @@ Livros e quadrinhos da biblioteca virtual que não estavam nas seções anterior
 | O Mito da Liberdade | B.F. Skinner | #NF #psicologia #behaviorismo #politica #classico #d2 #e1 #tenho-digital |
 | O Paciente, o Terapeuta e o Estado | Elisabeth Roudinesco | #NF #politica #psicanalise #d2 #e1 #tenho-digital |
 | O Pai e sua Função em Psicanálise | Joël Dor | #NF #psicanalise #d3 #e1 #tenho-digital |
-| O Palhaço e o Psicanalista | Christian Dunker e Cláudio Thebas | #NF #psicanalise #autoconhecimento #BR #d1 #e2 #tenho-digital |
+| O Palhaço e o Psicanalista | Christian Dunker e Cláudio Thebas | #NF #psicanalise #autoconhecimento #BR #d1 #e2 #tenho-digital #trilha-habitos-emocoes-relacoes |
 | O Poder da Energia | Brendon Burchard | #NF #autoconhecimento #d1 #e2 #tenho-digital |
 | O Poder da Persuasão | Robert Cialdini | #NF #autoconhecimento #psicologia #psicologia-social #d1 #e2 #tenho-digital |
-| O Poder do Hábito | Charles Duhigg | #NF #autoconhecimento #psicologia #d1 #e2 #tenho-digital |
-| O Prazer de Ler Freud | J.-D. Nasio | #NF #psicanalise #introducao #d1 #e1 #trilha-psicanalise-em-degraus #tenho-digital |
+| O Poder do Hábito | Charles Duhigg | #NF #autoconhecimento #psicologia #d1 #e2 #tenho-digital #trilha-habitos-emocoes-relacoes |
+| O Prazer de Ler Freud | J.-D. Nasio | #NF #psicanalise #introducao #d1 #e1 #tenho-digital #trilha-psicanalise-em-degraus |
 | O que é Psicanálise | Fabio Herrmann | #NF #psicanalise #introducao #BR #d1 #e1 #tenho-digital |
 | O que é um Homem? Psicanálise e História da Masculinidade no Ocidente | Pedro Ambra | #NF #psicanalise #genero #historia #BR #d3 #e2 #tenho-digital |
 | O que nos Faz Bons ou Maus | Paul Bloom | #NF #psicologia #etica #d1 #e2 #tenho-digital |
 | O Saber do Psicanalista | Jacques Lacan | #NF #psicanalise #d3 #e1 #tenho-digital |
-| O Significante Imaginário: Psicanálise e Cinema | Christian Metz | #NF #psicanalise #cinema #d3 #e2 #tenho-digital |
+| O Significante Imaginário: Psicanálise e Cinema | Christian Metz | #NF #psicanalise #cinema #d3 #e2 #tenho-digital #trilha-cinema-que-pensa |
 | O Sujeito no Labirinto: Um Ensaio Psicológico | José Antônio Damásio Abib | #NF #psicologia #filosofia #BR #d3 #e2 #tenho-digital |
 | O Teste do Psicopata: Uma Viagem pela Indústria da Loucura | Jon Ronson | #NF #psicologia #psiquiatria #humor #d1 #e2 #tenho-digital |
 | Obras Completas (ed. Imago; vols. 1, 2, 5, 10–17, 19, 21 e 23) | Sigmund Freud | #NF #psicanalise #classico #d3 #e3 #tenho-digital |
@@ -2583,7 +2585,7 @@ Livros e quadrinhos da biblioteca virtual que não estavam nas seções anterior
 | Olhe nos Meus Olhos | John Elder Robison | #NF #psicologia #testemunho #biografia #d1 #e2 #tenho-digital |
 | Os 7 Níveis da Consciência | Rodrigo Duprat | #NF #espiritualidade #autoconhecimento #consciencia #d1 #e1 #tenho-digital |
 | Os Delírios da Razão | Magali Gouveia Engel | #NF #psicologia #psiquiatria #historia #BR #d3 #e2 #tenho-digital |
-| Os Desafios da Terapia | Irvin D. Yalom | #NF #psicologia #existencialismo #d1 #e2 #rel-yalom #trilha-formacao-do-terapeuta #tenho-digital |
+| Os Desafios da Terapia | Irvin D. Yalom | #NF #psicologia #existencialismo #d1 #e2 #rel-yalom #tenho-digital #trilha-formacao-do-terapeuta |
 | Os Deuses e o Homem: Uma Nova Psicologia da Vida e dos Amores Masculinos | Jean Shinoda Bolen | #NF #psicologia #psicologia-analitica #mitologia #genero #d1 #e2 #tenho-digital |
 | Os Grandes Casos de Psicose | J.-D. Nasio | #NF #psicanalise #psicopatologia #d2 #e2 #tenho-digital |
 | Os Homens no Meu Divã: Histórias Reais de Sexo, Amor e Psicoterapia | Brandy Engler e David Rensin | #NF #psicologia #d1 #e2 #tenho-digital |
@@ -2627,11 +2629,11 @@ Livros e quadrinhos da biblioteca virtual que não estavam nas seções anterior
 | Psicologia das Multidões | Gustave Le Bon | #NF #psicologia #psicologia-social #politica #classico #d2 #e1 #tenho-digital |
 | Psicologia de Massas do Fascismo | Wilhelm Reich | #NF #psicologia #psicanalise #politica #autoritarismo #classico #d3 #e2 #tenho-digital |
 | Psicologia do Crime | Odon Ramos Maranhão | #NF #psicologia #BR #d2 #e1 #tenho-digital |
-| Psicologia do Inconsciente | Carl G. Jung | #NF #psicologia #psicologia-analitica #classico #d3 #e1 #trilha-jung-para-comecar #tenho-digital |
+| Psicologia do Inconsciente | Carl G. Jung | #NF #psicologia #psicologia-analitica #classico #d3 #e1 #tenho-digital #trilha-jung-para-comecar |
 | Psicologia do Jogo | Daniil B. Elkonin | #NF #psicologia #educacao #classico #d3 #e2 #tenho-digital |
 | Psicologia do Sexo | Havelock Ellis | #NF #psicologia #classico #d2 #e2 #tenho-digital |
 | Psicologia do Sono | Juan Moises de la Serna | #NF #psicologia #neurociencia #d1 #e1 #tenho-digital |
-| Psicologia e Religião | Carl G. Jung | #NF #psicologia #psicologia-analitica #religiao #classico #d3 #e1 #trilha-jung-para-comecar #tenho-digital |
+| Psicologia e Religião | Carl G. Jung | #NF #psicologia #psicologia-analitica #religiao #classico #d3 #e1 #tenho-digital #trilha-jung-para-comecar |
 | Psicologia e Religião Oriental | Carl G. Jung | #NF #psicologia #psicologia-analitica #religiao #oriental #classico #d3 #e1 #tenho-digital |
 | Psicologia e Sociologia | (autor não informado) | #NF #psicologia #psicologia-social #d2 #e2 #verificar #tenho-digital |
 | Psicologia Evolucionista | Armando Correa de Siqueira Neto | #NF #psicologia #biologia #BR #d2 #e1 #tenho-digital |
@@ -2649,17 +2651,17 @@ Livros e quadrinhos da biblioteca virtual que não estavam nas seções anterior
 | Psicologia Social e Pessoalidade | Mary Jane P. Spink | #NF #psicologia #psicologia-social #BR #d3 #e2 #tenho-digital |
 | Psicologia Social: Principais Temas e Vertentes | Cláudio V. Torres e Elaine R. Neiva (orgs.) | #NF #psicologia #psicologia-social #didatico #BR #d3 #e2 #tenho-digital |
 | Psicologia, Subjetividade e Políticas Públicas | Ana Mercês Bahia Bock e Maria da Graça M. Gonçalves | #NF #psicologia #politica #psicologia-social #BR #d2 #e2 #tenho-digital |
-| Psicologias: Uma Introdução ao Estudo de Psicologia | Ana Mercês Bahia Bock, Odair Furtado e Maria de Lourdes Trassi Teixeira | #NF #psicologia #introducao #didatico #BR #d1 #e2 #trilha-formacao-do-terapeuta #tenho-digital |
+| Psicologias: Uma Introdução ao Estudo de Psicologia | Ana Mercês Bahia Bock, Odair Furtado e Maria de Lourdes Trassi Teixeira | #NF #psicologia #introducao #didatico #BR #d1 #e2 #tenho-digital #trilha-formacao-do-terapeuta |
 | Psicometria | Claudio Simon Hutz, Denise Ruschel Bandeira e Clarissa Marceli Trentini (orgs.) | #NF #psicologia #psicometria #didatico #BR #d3 #e2 #tenho-digital |
 | Psicometria e Estatística Aplicada à Neuropsicologia Clínica | Laiss Bertola | #NF #psicologia #psicometria #matematica #neurociencia #BR #d3 #e2 #tenho-digital |
-| Psicopatas do Cotidiano | Katia Mecler | #NF #psicologia #psicopatologia #BR #d1 #e2 #tenho-digital |
+| Psicopatas do Cotidiano | Katia Mecler | #NF #psicologia #psicopatologia #BR #d1 #e2 #tenho-digital #trilha-mente-e-sofrimento |
 | Psicopatologia | Susan Krauss Whitbourne e Richard P. Halgin | #NF #psicologia #psicopatologia #didatico #d2 #e3 #tenho-digital |
 | Psicopatologia Crítica: Guia Didático para Estudantes e Profissionais de Psicologia | Rogério Paes Henriques | #NF #psicologia #psicopatologia #didatico #BR #d2 #e2 #tenho-digital |
-| Psicopatologia e Semiologia dos Transtornos Mentais | Paulo Dalgalarrondo | #NF #psicologia #psicopatologia #didatico #psiquiatria #BR #d3 #e3 #tenho-digital |
+| Psicopatologia e Semiologia dos Transtornos Mentais | Paulo Dalgalarrondo | #NF #psicologia #psicopatologia #didatico #psiquiatria #BR #d3 #e3 #tenho-digital #trilha-mente-e-sofrimento |
 | Psicopatologia Lacaniana, vol. 1: Semiologia | Antônio Teixeira e Heloisa Caldas (orgs.) | #NF #psicanalise #psicopatologia #BR #d3 #e2 #tenho-digital |
 | Psicopolítica e Psicopatologia do Trabalho | Fernanda Sousa-Duarte, Ana Magnólia Mendes e Emílio Peres Facas (orgs.) | #NF #psicologia #politica #BR #d3 #e2 #tenho-digital |
 | Psicoterapia Positiva: Manual do Terapeuta | Tayyab Rashid e Martin Seligman | #NF #psicologia #didatico #psicologia-humanista #d2 #e3 #tenho-digital |
-| Psicoterapias: Abordagens Atuais | Aristides Volpato Cordioli e Eugenio Horacio Grevet (orgs.) | #NF #psicologia #introducao #didatico #BR #RS #d3 #e3 #trilha-formacao-do-terapeuta #tenho-digital |
+| Psicoterapias: Abordagens Atuais | Aristides Volpato Cordioli e Eugenio Horacio Grevet (orgs.) | #NF #psicologia #introducao #didatico #BR #RS #d3 #e3 #tenho-digital #trilha-formacao-do-terapeuta |
 | Psicoterapias Cognitivo-Comportamentais: Um Diálogo com a Psiquiatria | Bernard Rangé (org.) | #NF #psicologia #tcc #didatico #psiquiatria #BR #d3 #e3 #tenho-digital |
 | Re-Vendo a Psicologia | James Hillman | #NF #psicologia #psicologia-analitica #d3 #e2 #tenho-digital |
 | Reinvenção da Intimidade | Christian Dunker | #NF #psicologia #psicanalise #BR #d2 #e2 #tenho-digital |
@@ -2670,11 +2672,11 @@ Livros e quadrinhos da biblioteca virtual que não estavam nas seções anterior
 | Seu Cérebro na Pornografia: Pornografia na Internet e a Ciência Emergente do Vício | Gary Wilson | #NF #autoconhecimento #neurociencia #d1 #e1 #tenho-digital |
 | She | Robert A. Johnson | #NF #psicologia #psicologia-analitica #d1 #e1 #tenho-digital |
 | Shoshana Felman e a Coisa Literária: Escrita, Loucura e Psicanálise | Lucia Castello Branco | #NF #psicanalise #escrita #BR #d3 #e2 #tenho-digital |
-| Só Freud Explica | Joel Levy | #NF #psicanalise #introducao #d1 #e1 #trilha-psicanalise-em-degraus #tenho-digital |
+| Só Freud Explica | Joel Levy | #NF #psicanalise #introducao #d1 #e1 #tenho-digital #trilha-psicanalise-em-degraus |
 | Sobre Comportamento e Cognição (vols. 1–6) | Vários autores | #NF #psicologia #behaviorismo #tcc #BR #d3 #e3 #tenho-digital |
 | Sobre Ética e Psicanálise | Maria Rita Kehl | #NF #psicanalise #etica #BR #d2 #e1 #tenho-digital |
 | Sobre o Behaviorismo | B.F. Skinner | #NF #psicologia #behaviorismo #classico #d2 #e2 #tenho-digital |
-| Solidão | Anthony Storr | #NF #autoconhecimento #psicologia #psicanalise #d2 #e2 #tenho-digital |
+| Solidão | Anthony Storr | #NF #autoconhecimento #psicologia #psicanalise #d2 #e2 #tenho-digital #trilha-habitos-emocoes-relacoes |
 | Sonho e Mito: Um Estudo sobre a Psicologia dos Povos | Karl Abraham | #NF #psicologia #psicanalise #mitologia #classico #d3 #e1 #tenho-digital |
 | Sonhos Confinados | Christian Dunker e outros | #NF #psicologia #psicanalise #BR #d2 #e2 #tenho-digital |
 | Subversão | Alex Silva Dias | #NF #psicologia #d2 #e2 #tenho-digital |
@@ -2699,9 +2701,9 @@ Livros e quadrinhos da biblioteca virtual que não estavam nas seções anterior
 | Treinamento Cerebral: 79 Jogos e Enigmas Lógicos | Thiago Correa | #NF #autoconhecimento #matematica #d1 #e1 #tenho-digital |
 | Tudo o que Você Precisa Saber sobre Psicanálise | Silvia Ons | #NF #psicanalise #introducao #d1 #e1 #tenho-digital |
 | Tudo o que Você Precisa Saber sobre Psicologia | Paul Kleinman | #NF #psicologia #introducao #d1 #e2 #tenho-digital |
-| Uma Biografia da Depressão | Christian Dunker | #NF #psicologia #psicanalise #psicopatologia #historia #BR #d2 #e2 #tenho-digital |
+| Uma Biografia da Depressão | Christian Dunker | #NF #psicologia #psicanalise #psicopatologia #historia #BR #d2 #e2 #tenho-digital #trilha-mente-e-sofrimento |
 | Uma Força para o Bem | Daniel Goleman | #NF #autoconhecimento #espiritualidade #etica #d1 #e2 #tenho-digital |
-| Uma Questão de Vida e Morte | Irvin D. Yalom e Marilyn Yalom | #NF #psicologia #morte #testemunho #d1 #e2 #rel-yalom #trilha-cuidar-ate-o-fim #tenho-digital |
+| Uma Questão de Vida e Morte | Irvin D. Yalom e Marilyn Yalom | #NF #psicologia #morte #testemunho #d1 #e2 #rel-yalom #tenho-digital #trilha-cuidar-ate-o-fim |
 | Velut Luna: A Clínica Geral da Nova Psicanálise | MD Magno | #NF #psicanalise #BR #d3 #e2 #tenho-digital |
 | Vínculo Fantasma: Os Relacionamentos Voláteis da Atualidade | Tatiana Paranaguá | #NF #psicologia #BR #d1 #e1 #tenho-digital |
 | Virtudes do Medo | Gavin de Becker | #NF #psicologia #autoconhecimento #d1 #e2 #tenho-digital |
@@ -2714,7 +2716,7 @@ Livros e quadrinhos da biblioteca virtual que não estavam nas seções anterior
 
 | Título | Autor | Tags |
 |---|---|---|
-| 108 Contos e Parábolas Orientais | Monja Coen | #NF #espiritualidade #oriental #contos #BR #d1 #e1 #tenho-digital |
+| 108 Contos e Parábolas Orientais | Monja Coen | #NF #espiritualidade #oriental #contos #BR #d1 #e1 #tenho-digital #trilha-silencio-e-consciencia |
 | A Anunciação da Umbanda: Como Tudo Começou | Eliana Pacco | #NF #religiao #umbanda #BR #d1 #e1 #tenho-digital |
 | A Arte da Cura a Distância: Técnicas Rosacruzes / Concentração e Memorização | H. Spencer Lewis e Sar Alden | #NF #religiao #mistica #d1 #e1 #tenho-digital |
 | A Erva do Diabo | Carlos Castaneda | #NF #religiao #mistica #antropologia #espiritualidade #classico #d2 #e2 #tenho-digital |
@@ -2741,7 +2743,7 @@ Livros e quadrinhos da biblioteca virtual que não estavam nas seções anterior
 | Contos Japoneses | Antônio Nojiri e Kikuo Furuno | #F #religiao #mitologia #contos #asia #d1 #e1 #tenho-digital |
 | Crônicas de Além-Túmulo | Humberto de Campos / Chico Xavier | #NF #religiao #espiritismo #cronicas #BR #d1 #e2 #tenho-digital |
 | Da Criação do Mundo e Outros Escritos | Fílon de Alexandria | #NF #religiao #filosofia #antiguidade #classico #d3 #e2 #tenho-digital |
-| Despertar: Um Guia para a Espiritualidade sem Religião | Sam Harris | #NF #espiritualidade #consciencia #neurociencia #d2 #e2 #tenho-digital |
+| Despertar: Um Guia para a Espiritualidade sem Religião | Sam Harris | #NF #espiritualidade #consciencia #neurociencia #d2 #e2 #tenho-digital #trilha-silencio-e-consciencia |
 | Deus | José Laércio do Egito | #NF #espiritualidade #mistica #BR #d2 #e2 #tenho-digital |
 | Deus: Como Ele Nasceu | Reinaldo José Lopes | #NF #religiao #historia #BR #d1 #e1 #tenho-digital |
 | Fé | João Batista Libânio | #NF #religiao #BR #d2 #e1 #tenho-digital |
@@ -2750,9 +2752,9 @@ Livros e quadrinhos da biblioteca virtual que não estavam nas seções anterior
 | Guia Ilustrado Zahar: Mitologia | Philip Wilkinson e Neil Philip | #NF #religiao #mitologia #introducao #d1 #e2 #tenho-digital |
 | História do Espiritismo | Arthur Conan Doyle | #NF #religiao #espiritismo #historia #classico #d2 #e2 #tenho-digital |
 | Inocência, Conhecimento e Encantamento | Osho | #NF #espiritualidade #oriental #d1 #e2 #tenho-digital |
-| Introdução à Mitologia | Marly N. Peres | #NF #mitologia #introducao #d1 #e1 #tenho-digital |
+| Introdução à Mitologia | Marly N. Peres | #NF #mitologia #introducao #d1 #e1 #tenho-digital #trilha-mitos-e-herois |
 | Jornada do Espírito | James Van Praagh | #NF #religiao #espiritismo #d1 #e2 #tenho-digital |
-| Lendas Africanas dos Orixás | Pierre Verger | #NF #religiao #mitologia #umbanda #BR #africa #d1 #e1 #trilha-terreiro-e-encruzilhada #tenho-digital |
+| Lendas Africanas dos Orixás | Pierre Verger | #NF #religiao #mitologia #umbanda #BR #africa #d1 #e1 #tenho-digital #trilha-terreiro-e-encruzilhada |
 | Lendas e Fábulas Brasileiras para Crianças | Jossi Borges | #F #religiao #mitologia #contos #BR #d1 #e1 #tenho-digital |
 | Manual de Umbanda para Iniciantes | Diamantino Fernandes Trindade | #NF #religiao #umbanda #introducao #BR #d1 #e1 #tenho-digital |
 | Mentes Interligadas | Dean Radin | #NF #consciencia #enigmas #d2 #e2 #tenho-digital |
@@ -2761,14 +2763,14 @@ Livros e quadrinhos da biblioteca virtual que não estavam nas seções anterior
 | Mitologia: Deuses, Heróis e Lendas | Maurício Horta, José Francisco Botelho e Salvador Nogueira | #NF #religiao #mitologia #introducao #BR #d1 #e2 #tenho-digital |
 | Murmúrio das Estrelas Matutinas | Vadim Zeland | #NF #espiritualidade #autoconhecimento #d1 #e1 #tenho-digital |
 | No Rumo do Mundo de Regeneração | Divaldo Pereira Franco | #NF #religiao #espiritismo #BR #d1 #e2 #tenho-digital |
-| Noites Gregas: Histórias, Mitos e Encantos do Mundo Antigo | Cláudio Moreno | #NF #mitologia #antiguidade #BR #RS #d1 #e2 #tenho-digital |
+| Noites Gregas: Histórias, Mitos e Encantos do Mundo Antigo | Cláudio Moreno | #NF #mitologia #antiguidade #BR #RS #d1 #e2 #tenho-digital #trilha-mitos-e-herois |
 | O Ativista Quântico: Princípios da Física Quântica para Transformar o Mundo e a Nós Mesmos | Amit Goswami | #NF #religiao #espiritualidade #fisica #consciencia #d2 #e2 #tenho-digital |
 | O Caibalion | Três Iniciados | #NF #religiao #mistica #classico #d2 #e1 #tenho-digital |
 | O Espiritismo, a Magia e as Sete Linhas de Umbanda | Leal de Souza | #NF #religiao #umbanda #espiritismo #classico #BR #d2 #e1 #tenho-digital |
 | O Hábito da Intuição: O que a Ciência, a Psicologia e a Mediunidade nos Ensinam sobre Confiar na Nossa Voz Interior | Elizabeth Greenwood | #NF #espiritualidade #psicologia #d1 #e2 #tenho-digital |
 | O Livro das Religiões | Vários autores | #NF #introducao #religiao #d1 #e2 #tenho-digital |
 | O Livro dos Homens | Osho | #NF #religiao #espiritualidade #d1 #e2 #tenho-digital |
-| O Poder do Mito | Joseph Campbell | #NF #mitologia #religiao #classico #d2 #e2 #tenho-digital |
+| O Poder do Mito | Joseph Campbell | #NF #mitologia #religiao #classico #d2 #e2 #tenho-digital #trilha-mitos-e-herois |
 | O Poder do Silêncio | Carlos Castaneda | #NF #mistica #espiritualidade #d2 #e2 #tenho-digital |
 | O que é o Espiritismo | Allan Kardec | #NF #religiao #espiritismo #introducao #classico #d1 #e1 #tenho-digital |
 | O Ser | José Laércio do Egito | #NF #espiritualidade #mistica #BR #d2 #e2 #tenho-digital |
@@ -2793,8 +2795,8 @@ Livros e quadrinhos da biblioteca virtual que não estavam nas seções anterior
 | Umbanda Astrológica | Carlos Lima | #NF #religiao #umbanda #mistica #BR #d1 #e1 #tenho-digital |
 | Umbanda de A a Z | Norberto Peixoto | #NF #religiao #umbanda #BR #d1 #e2 #tenho-digital |
 | Umbanda: Orixás e Entidades | Marcelo Alonso Morais | #NF #religiao #umbanda #BR #d1 #e2 #tenho-digital |
-| Umbanda, Religião Brasileira: Um Guia para Leigos e Iniciantes | Flávia Pinto | #NF #religiao #umbanda #introducao #BR #d1 #e1 #trilha-terreiro-e-encruzilhada #tenho-digital |
-| Umbandas: Uma História do Brasil | Luiz Antonio Simas | #NF #religiao #umbanda #historia #BR #d2 #e2 #trilha-terreiro-e-encruzilhada #tenho-digital |
+| Umbanda, Religião Brasileira: Um Guia para Leigos e Iniciantes | Flávia Pinto | #NF #religiao #umbanda #introducao #BR #d1 #e1 #tenho-digital #trilha-terreiro-e-encruzilhada |
+| Umbandas: Uma História do Brasil | Luiz Antonio Simas | #NF #religiao #umbanda #historia #BR #d2 #e2 #tenho-digital #trilha-terreiro-e-encruzilhada |
 | Wabi Sabi: A Sabedoria Japonesa de Apreciar o Imperfeito | Nobuo Suzuki | #NF #espiritualidade #oriental #autoconhecimento #d1 #e1 #tenho-digital |
 | Zen em Quadrinhos | Tsai Chih Chung | #HQ #espiritualidade #oriental #filosofia #asia #d1 #e1 #tenho-digital |
 
@@ -2802,7 +2804,7 @@ Livros e quadrinhos da biblioteca virtual que não estavam nas seções anterior
 
 | Título | Autor | Tags |
 |---|---|---|
-| 100 Exercícios de Escrita Criativa, vol. 1: Iniciantes | Mário Falcão | #NF #escrita #didatico #BR #d1 #e1 #tenho-digital |
+| 100 Exercícios de Escrita Criativa, vol. 1: Iniciantes | Mário Falcão | #NF #escrita #didatico #BR #d1 #e1 #tenho-digital #trilha-oficina-do-escritor |
 | 1001 Atividades para Fazer com suas Crianças | Carly Waller Krueger | #NF #parentalidade #d1 #e2 #tenho-digital |
 | 5 Lições de Storytelling | James McSill | #NF #escrita #d1 #e1 #tenho-digital |
 | 50 Fatos que Mudaram a História do Rock | Paolo Hewitt | #NF #historia #arte #d1 #e2 #tenho-digital |
@@ -2813,40 +2815,40 @@ Livros e quadrinhos da biblioteca virtual que não estavam nas seções anterior
 | Brevidade Inteligente: O Poder de Dizer Muito com Poucas Palavras | Jim VandeHei, Mike Allen e Roy Schwartz | #NF #escrita #gestao #d1 #e1 #tenho-digital |
 | Brincadeiras Criativas para o seu Bebê | Christopher Clouder e Janni Nicol | #NF #parentalidade #d1 #e1 #tenho-digital |
 | Brincar com Tradição: Jogos Tradicionais para Crianças | Patrícia Pereira Santos | #NF #parentalidade #d1 #e1 #tenho-digital |
-| Clases de Literatura | Julio Cortázar | #NF #arte #escrita #latam #d2 #e2 #tenho-digital |
-| Como Criar Histórias: Um Guia Prático para Escritores | Ursula K. Le Guin | #NF #escrita #didatico #d1 #e1 #tenho-digital |
+| Clases de Literatura | Julio Cortázar | #NF #arte #escrita #latam #d2 #e2 #tenho-digital #trilha-oficina-do-escritor |
+| Como Criar Histórias: Um Guia Prático para Escritores | Ursula K. Le Guin | #NF #escrita #didatico #d1 #e1 #tenho-digital #trilha-oficina-do-escritor |
 | Como Educar um Viking: O Segredo dos Países Nórdicos para Criar Crianças Felizes, Saudáveis e Independentes | Helen Russell | #NF #parentalidade #d1 #e2 #tenho-digital |
-| Como Falar para seu Filho Ouvir e como Ouvir para seu Filho Falar | Adele Faber e Elaine Mazlish | #NF #parentalidade #d1 #e2 #trilha-pai-em-construcao #tenho-digital |
+| Como Falar para seu Filho Ouvir e como Ouvir para seu Filho Falar | Adele Faber e Elaine Mazlish | #NF #parentalidade #d1 #e2 #tenho-digital #trilha-pai-em-construcao |
 | Como Ficar Sozinho | Jonathan Franzen | #NF #escrita #d2 #e2 #tenho-digital |
-| Como Ler Livros: O Guia Clássico para a Leitura Inteligente | Mortimer J. Adler e Charles Van Doren | #NF #escrita #educacao #classico #d2 #e2 #tenho-digital |
+| Como Ler Livros: O Guia Clássico para a Leitura Inteligente | Mortimer J. Adler e Charles Van Doren | #NF #escrita #educacao #classico #d2 #e2 #tenho-digital #trilha-oficina-do-escritor |
 | Como Ouvir as Crianças e Responder às suas Perguntas Mais Difíceis | Claude Halmos | #NF #parentalidade #psicanalise #d1 #e1 #tenho-digital |
 | Como Star Wars Conquistou o Universo: O Passado, Presente e o Futuro da Franquia Multibilionária | Chris Taylor | #NF #arte #cinema #d1 #e3 #tenho-digital |
-| Como Ver um Filme | Ana Maria Bahiana | #NF #arte #cinema #BR #d1 #e1 #tenho-digital |
+| Como Ver um Filme | Ana Maria Bahiana | #NF #arte #cinema #BR #d1 #e1 #tenho-digital #trilha-cinema-que-pensa |
 | Crianças Dinamarquesas: O que as Pessoas Mais Felizes do Mundo Sabem sobre Criar Filhos Confiantes e Capazes | Jessica Joelle Alexander e Iben Dissing Sandahl | #NF #parentalidade #d1 #e1 #tenho-digital |
 | Crianças Francesas Não Fazem Manha | Pamela Druckerman | #NF #parentalidade #d1 #e2 #tenho-digital |
 | Crianças Inteligentes: 100 Ideias de Brincadeiras Criativas para Crianças de 2 a 5 Anos | Julian Chomet e Caroline Fertleman | #NF #parentalidade #d1 #e1 #tenho-digital |
-| Crônicas de Pai | Leo Aversa | #NF #parentalidade #cronicas #humor #BR #d1 #e1 #trilha-pai-em-construcao #tenho-digital |
-| Ensaio Autobiográfico | Jorge Luis Borges | #NF #arte #biografia #escrita #latam #d1 #e1 #tenho-digital |
-| Filosofando no Cinema | Ollivier Pourriol | #NF #arte #cinema #filosofia #d2 #e2 #tenho-digital |
+| Crônicas de Pai | Leo Aversa | #NF #parentalidade #cronicas #humor #BR #d1 #e1 #tenho-digital #trilha-pai-em-construcao |
+| Ensaio Autobiográfico | Jorge Luis Borges | #NF #arte #biografia #escrita #latam #d1 #e1 #tenho-digital #trilha-oficina-do-escritor |
+| Filosofando no Cinema | Ollivier Pourriol | #NF #arte #cinema #filosofia #d2 #e2 #tenho-digital #trilha-cinema-que-pensa |
 | Guia Único das Ciências Humanas na Redação: Como Trabalhar o Repertório Sociocultural | Nelson Adrian | #NF #escrita #didatico #educacao #BR #d1 #e2 #tenho-digital |
-| Homens Difíceis: Os Bastidores do Processo Criativo de Breaking Bad, Família Soprano, Mad Men e Outras Séries Revolucionárias | Brett Martin | #NF #arte #cinema #d1 #e2 #tenho-digital |
+| Homens Difíceis: Os Bastidores do Processo Criativo de Breaking Bad, Família Soprano, Mad Men e Outras Séries Revolucionárias | Brett Martin | #NF #arte #cinema #d1 #e2 #tenho-digital #trilha-cinema-que-pensa |
 | Lobisomem: O Apocalipse – Livro da Wyrm | Brian Campbell, Sam Inabinet e outros | #NF #fantasia #horror #d1 #e2 #tenho-digital |
 | Machado e Borges e Outros Ensaios sobre Machado de Assis | Luis Augusto Fischer | #NF #arte #escrita #BR #RS #d3 #e2 #tenho-digital |
 | Marvel Universe: Map by Map | Nick Jones | #NF #super-herois #arte #d1 #e2 #tenho-digital |
 | Meu Pai Fala Cada uma | Justin Halpern | #NF #parentalidade #humor #d1 #e1 #tenho-digital |
 | Modus Operandi: Guia de True Crime | Carol Moreira e Mabê Bonafé | #NF #arte #BR #d1 #e2 #tenho-digital |
-| O Ato Criativo | Rick Rubin | #NF #arte #d1 #e2 #tenho-digital |
+| O Ato Criativo | Rick Rubin | #NF #arte #d1 #e2 #tenho-digital #trilha-oficina-do-escritor |
 | O Guia Completo do Storytelling | Fernando Palacios e Martha Terenzzo | #NF #escrita #gestao #BR #d1 #e2 #tenho-digital |
 | O Livro da Literatura | Vários autores | #NF #introducao #escrita #d1 #e2 #tenho-digital |
-| O Livro que Você Gostaria que seus Pais Tivessem Lido | Philippa Perry | #NF #parentalidade #psicologia #d1 #e2 #trilha-pai-em-construcao #tenho-digital |
-| O Papai é Pop | Marcos Piangers | #NF #parentalidade #cronicas #humor #BR #RS #d1 #e1 #trilha-pai-em-construcao #tenho-digital |
+| O Livro que Você Gostaria que seus Pais Tivessem Lido | Philippa Perry | #NF #parentalidade #psicologia #d1 #e2 #tenho-digital #trilha-pai-em-construcao |
+| O Papai é Pop | Marcos Piangers | #NF #parentalidade #cronicas #humor #BR #RS #d1 #e1 #tenho-digital #trilha-pai-em-construcao |
 | O Papai é Pop 2 | Marcos Piangers | #NF #parentalidade #cronicas #humor #BR #RS #d1 #e1 #tenho-digital |
 | O Poder da Arte | Simon Schama | #NF #arte #historia #biografia #d2 #e3 #tenho-digital |
 | Obra Crítica | Julio Cortázar | #NF #arte #escrita #latam #d3 #e3 #tenho-digital |
-| Outras Inquisições | Jorge Luis Borges | #NF #arte #escrita #filosofia #classico #latam #d3 #e2 #trilha-labirintos-de-borges #tenho-digital |
+| Outras Inquisições | Jorge Luis Borges | #NF #arte #escrita #filosofia #classico #latam #d3 #e2 #tenho-digital #trilha-labirintos-de-borges |
 | Pequenas Resistências | Rivka Galchen | #NF #parentalidade #escrita #d1 #e1 #tenho-digital |
-| Questão de Ênfase | Susan Sontag | #NF #arte #escrita #d2 #e2 #tenho-digital |
-| Sem Tempo a Perder | Ursula K. Le Guin | #NF #escrita #d1 #e1 #tenho-digital |
+| Questão de Ênfase | Susan Sontag | #NF #arte #escrita #d2 #e2 #tenho-digital #trilha-oficina-do-escritor |
+| Sem Tempo a Perder | Ursula K. Le Guin | #NF #escrita #d1 #e1 #tenho-digital #trilha-le-guin-mundos-e-ideias #trilha-oficina-do-escritor |
 | Storytelling: A Arte de Contar Histórias | Jéssica Milato | #NF #escrita #gestao #d1 #e1 #tenho-digital |
 | Storytelling: Aprenda a Contar Histórias com Steve Jobs, Papa Francisco, Churchill e Outras Lendas da Liderança | Carmine Gallo | #NF #escrita #gestao #d1 #e2 #tenho-digital |
 | Storytelling: Cativando com a Narrativa | José Antonio Ramalho | #NF #escrita #gestao #d1 #e1 #tenho-digital |

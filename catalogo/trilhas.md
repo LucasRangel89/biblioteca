@@ -3,12 +3,14 @@
 Roteiros prontos. Em cada trilha os livros se explicam entre si: siga a ordem ou pule — o que importa é a conversa entre eles.
 No painel, cada trilha mostra o que você já tem e o que já leu.
 
-Cada item é `Título | Autor`, **como estão no Catálogo Mestre**: é por eles que o painel encontra o livro. O marcador da trilha
-(`#trilha-…`) também vai na linha do livro, no catálogo; `python tools/build_catalog.py` avisa se os dois lugares discordarem.
+Cada item é `Título | Autor`, como aparece no catálogo ou no painel. Esta lista é a fonte de verdade para os marcadores
+`#trilha-…`: `python tools/atualizar.py --conferir` mostra a prévia e `python tools/atualizar.py` os gera no Catálogo
+Mestre, sem editá-lo à mão. Referências ausentes ou ambíguas interrompem a atualização antes de gravar. Os marcadores
+antigos no inventário não determinam mais as trilhas; as demais classificações continuam vindo do inventário.
 
 As trilhas 1 a 20 vieram da "versão 3" do catálogo e ficam como chegaram. As trilhas 21 a 36 foram montadas em 11/11/2026
-a partir do que está no acervo: nelas há livros da biblioteca virtual, que levam o marcador da trilha na coluna
-`marcadores` do inventário (`biblioteca-virtual/inventario.tsv`), e não na linha do catálogo, que é gerada.
+a partir do acervo. As trilhas 37 em diante acrescentam os roteiros e alternativas aprovados; há listas curtas e livres,
+e as trilhas 62 e 63 oferecem versões baseadas no acervo sem alterar as trilhas 18 e 15.
 
 ## 1. Antes da Palavra: neandertais, origens e o que nos fez humanos
 
@@ -580,3 +582,490 @@ Da apresentação para leigos à história, aos mitos e à filosofia que nasce n
 6. Fogo no Mato: A Ciência Encantada das Macumbas | Luiz Antonio Simas e Luiz Rufino
 7. Orixás | Pierre Verger
 8. Os Nagô e a Morte | Juana Elbein dos Santos
+
+## 37. Rosas e Espadas: a Inglaterra medieval em guerra
+
+`#trilha-rosas-e-espadas`
+
+Da Guerra dos Cem Anos à Guerra das Rosas, em narrativas de batalhas e intrigas. Trindade é o segundo volume da série Guerra das Rosas e consta como recomendação.
+
+1. Mestre da Guerra: Uma Lenda Forjada em Batalha | David Gilman
+2. Desafiando a Morte | David Gilman
+3. O Portão dos Mortos | David Gilman
+4. Sangue de Víbora | David Gilman
+5. Azincourt | Bernard Cornwell
+6. Pássaros da Tempestade (Guerra das Rosas, vol. 1) | Conn Iggulden
+7. Trindade (Guerra das Rosas, vol. 2) | Conn Iggulden
+8. Herança de Sangue (Guerra das Rosas, vol. 3) | Conn Iggulden
+9. Kingmaker: Uma Jornada no Inverno | Toby Clements
+10. O Abandono da Fé | Toby Clements
+11. Almas Divididas | Toby Clements
+
+## 38. Catedrais e Cortes: o romance histórico que sobe de nível
+
+`#trilha-catedrais-e-cortes`
+
+Do romance histórico popular à prosa mais exigente. Tragam os Corpos é o volume intermediário da trilogia de Mantel e consta como recomendação.
+
+1. Os Pilares da Terra | Ken Follett
+2. Mundo sem Fim | Ken Follett
+3. A Coluna de Fogo | Ken Follett
+4. A Lição de Anatomia | Nina Siegal
+5. Hamnet | Maggie O'Farrell
+6. O Leopardo | Giuseppe Tomasi di Lampedusa
+7. O Nome da Rosa | Umberto Eco
+8. História do Cerco de Lisboa | José Saramago
+9. Wolf Hall | Hilary Mantel
+10. Tragam os Corpos | Hilary Mantel
+11. O Espelho e a Luz | Hilary Mantel
+
+## 39. Mitos: de Gilgamesh a Campbell
+
+`#trilha-mitos-e-herois`
+
+Da fonte antiga aos mitos brasileiros, à interpretação e à reinvenção em quadrinhos.
+
+1. Epopeia de Gilgamesh | Sin-léqi-unnínni
+2. Odisseia | Homero
+3. Noites Gregas: Histórias, Mitos e Encantos do Mundo Antigo | Cláudio Moreno
+4. Introdução à Mitologia | Marly N. Peres
+5. O Poder do Mito | Joseph Campbell
+6. O Herói de Mil Faces | Joseph Campbell
+7. Meu Destino é Ser Onça | Alberto Mussa
+8. Mito e Psicanálise | Ana Vicentini de Azevedo
+9. Sandman | Neil Gaiman
+
+## 40. Oficina do Escritor
+
+`#trilha-oficina-do-escritor`
+
+Leitura, ofício, exercícios, mito, poética e ensaio para quem escreve ficção.
+
+1. Como Ler Livros: O Guia Clássico para a Leitura Inteligente | Mortimer J. Adler e Charles Van Doren
+2. Como Criar Histórias: Um Guia Prático para Escritores | Ursula K. Le Guin
+3. 100 Exercícios de Escrita Criativa, vol. 1: Iniciantes | Mário Falcão
+4. O Herói de Mil Faces | Joseph Campbell
+5. Sem Tempo a Perder | Ursula K. Le Guin
+6. Ensaio Autobiográfico | Jorge Luis Borges
+7. Ensaios e Anseios Crípticos | Paulo Leminski
+8. Clases de Literatura | Julio Cortázar
+9. O Ato Criativo | Rick Rubin
+10. Questão de Ênfase | Susan Sontag
+
+## 41. Pesadelos de Papel: do gótico ao horror contemporâneo
+
+`#trilha-pesadelos-de-papel`
+
+Do gótico e dos contos clássicos ao horror brasileiro e contemporâneo.
+
+1. Carmilla | J. Sheridan Le Fanu
+2. Contos (Edgar Allan Poe) | Edgar Allan Poe
+3. A Estrada Enluarada e Outras Histórias | Ambrose Bierce
+4. A Baía dos Mortos | Edith Wharton
+5. A Causa Secreta e Outros Contos de Horror | Edgar Allan Poe, Machado de Assis e outros
+6. Sete Monstros Brasileiros | Braulio Tavares
+7. A Enchente | Michael McDowell
+8. Casas Estranhas | Uketsu
+9. A Última Casa da Rua Needless | Catriona Ward
+10. Aniquilação (trilogia: Aniquilação · Autoridade · Aceitação) | Jeff VanderMeer
+
+## 42. Ficção Científica de Gente
+
+`#trilha-ficcao-cientifica-de-gente`
+
+Ficção científica cuja pergunta é sobre pessoas, sociedades e percepção, não apenas máquinas.
+
+1. Flores para Algernon | Daniel Keyes
+2. Androides Sonham com Ovelhas Elétricas? | Philip K. Dick
+3. Não Me Abandone Jamais | Kazuo Ishiguro
+4. A Curva do Sonho | Ursula K. Le Guin
+5. Os Despossuídos | Ursula K. Le Guin
+6. A Invenção de Morel | Adolfo Bioy Casares
+7. A Cidade e a Cidade | China Miéville
+8. Um Estranho numa Terra Estranha | Robert A. Heinlein
+9. Hyperion | Dan Simmons
+
+## 43. Leste Asiático: memória e poder
+
+`#trilha-leste-asiatico`
+
+Ficção, testemunho e história para pensar memória, violência e poder no Leste Asiático.
+
+1. Rashomon | Victor Santos
+2. A Imperatriz de Ferro | Jung Chang
+3. Pachinko | Min Jin Lee
+4. A Espera | Keum Suk Gendry-Kim
+5. Atos Humanos | Han Kang
+6. A Vegetariana | Han Kang
+7. O Livro Branco | Han Kang
+8. A Polícia da Memória | Yoko Ogawa
+9. Crônica do Pássaro de Corda | Haruki Murakami
+10. O Problema dos Três Corpos | Cixin Liu
+
+## 44. Depois da Batalha: guerra, memória e testemunho
+
+`#trilha-depois-da-batalha`
+
+Testemunhos e ficções sobre guerras e suas consequências; parte dos títulos ainda não consta como possuída.
+
+1. É Isto um Homem? | Primo Levi
+2. A Menina que Roubava Livros | Markus Zusak
+3. O Grande Caderno | Ágota Kristóf
+4. O Pássaro Pintado | Jerzy Kosinski
+5. Matadouro 5 | Kurt Vonnegut
+6. O Nazista e o Psiquiatra | Jack El-Hai
+7. Lutando na Espanha | George Orwell
+8. O que Lhes Restou | Ghassan Kanafani
+9. Meio Sol Amarelo | Chimamanda Ngozi Adichie
+10. A Guerra do Fim do Mundo | Mario Vargas Llosa
+
+## 45. Cinema que Pensa
+
+`#trilha-cinema-que-pensa`
+
+Do olhar cinematográfico à filosofia, psicologia e psicanálise, incluindo uma incursão pelas séries de televisão.
+
+1. Como Ver um Filme | Ana Maria Bahiana
+2. A História do Cinema para Quem Tem Pressa | Celso Sabadin
+3. Filosofando no Cinema | Ollivier Pourriol
+4. O Cinema Pensa: Uma Introdução à Filosofia Através dos Filmes | Julio Cabrera
+5. A Psicologia Vai ao Cinema | Skip Dine Young
+6. Cinema e Loucura: Conhecendo os Transtornos Mentais Através dos Filmes | J. Landeira-Fernandez e Elie Cheniaux
+7. Cinema, Imagem e Psicanálise | Tania Rivera
+8. Homens Difíceis: Os Bastidores do Processo Criativo de Breaking Bad, Família Soprano, Mad Men e Outras Séries Revolucionárias | Brett Martin
+9. O Significante Imaginário: Psicanálise e Cinema | Christian Metz
+10. Lacrimae Rerum | Slavoj Žižek
+
+## 46. Evolução sem Mistério
+
+`#trilha-evolucao`
+
+Das portas de entrada da biologia às relações entre evolução, comportamento e cultura.
+
+1. Darwin sem Frescura | Reinaldo José Lopes
+2. O Maior Espetáculo da Terra | Richard Dawkins
+3. O Polegar do Violinista | Sam Kean
+4. A Dupla Hélice | James D. Watson
+5. O Livro dos Humanos: A História de como nos Tornamos Quem Somos | Adam Rutherford
+6. Pegando Fogo: Por que Cozinhar nos Tornou Humanos | Richard Wrangham
+7. A Vantagem Humana: Como Nosso Cérebro se Tornou Superpoderoso | Suzana Herculano-Houzel
+8. Outras Mentes: O Polvo e a Origem da Consciência | Peter Godfrey-Smith
+9. A Falsa Medida do Homem | Stephen Jay Gould
+10. Evolução em Quatro Dimensões: DNA, Comportamento e a História da Vida | Eva Jablonka e Marion J. Lamb
+
+## 47. Geopolítica sem Pânico
+
+`#trilha-geopolitica`
+
+Geografia, recursos, guerras e diferentes leituras das relações internacionais.
+
+1. O Futuro da Geografia: Como o Poder e a Política no Espaço Transformarão o Mundo | Tim Marshall
+2. O Mundo em 2050: As Grandes Tendências Globais e o que Podemos Esperar do Futuro | Hamish McRae
+3. História da Paz | Demétrio Magnoli
+4. História das Guerras | Demétrio Magnoli
+5. O Segundo Mundo | Parag Khanna
+6. Como o Mundo Funciona: Um Guia Científico para o Passado, o Presente e o Futuro | Vaclav Smil
+7. Energia e Civilização: Uma História | Vaclav Smil
+8. A Era da Ilusão: A Diplomacia Nuclear em Tempos Traiçoeiros | Mohamed ElBaradei
+9. A Questão Palestina: Guerra, Política e Relações Internacionais | Marcelo Buzetto
+10. O Brasil no Espectro de uma Guerra Híbrida | Piero C. Leirner
+
+## 48. Dinheiro, Poder e Atraso
+
+`#trilha-economia-sem-jargao`
+
+Economia e história por autores de diferentes perspectivas, do Brasil ao sistema global.
+
+1. Crash: Uma Breve História da Economia | Alexandre Versignassi
+2. Freakonomics: O Lado Oculto e Inesperado de Tudo que nos Afeta | Steven D. Levitt e Stephen J. Dubner
+3. Rápido e Devagar: Duas Formas de Pensar | Daniel Kahneman
+4. O Minotauro Global: A Verdadeira Origem da Crise Financeira e o Futuro da Economia Global | Yanis Varoufakis
+5. Tecnofeudalismo | Yanis Varoufakis
+6. As Veias Abertas da América Latina | Eduardo Galeano
+7. História da Riqueza no Brasil | Jorge Caldeira
+8. Brasil: Raízes do Atraso | Fabio Giambiagi
+9. História do Futuro: O Horizonte do Brasil no Século XXI | Míriam Leitão
+10. 17 Contradições e o Fim do Capitalismo | David Harvey
+
+## 49. Sociologia em Degraus
+
+`#trilha-sociologia-em-degraus`
+
+De uma introdução à imaginação sociológica, à teoria social e às interpretações do Brasil.
+
+1. 44 Cartas do Mundo Líquido Moderno | Zygmunt Bauman
+2. Conceitos Essenciais da Sociologia | Anthony Giddens e Philip W. Sutton
+3. Aprendendo a Pensar com a Sociologia | Zygmunt Bauman
+4. A Imaginação Sociológica | C. Wright Mills
+5. Modernidade Líquida | Zygmunt Bauman
+6. Globalização: As Consequências Humanas | Zygmunt Bauman
+7. A Cultura do Narcisismo | Christopher Lasch
+8. Dialética do Esclarecimento | Theodor W. Adorno e Max Horkheimer
+9. Brasil dos Humilhados: Uma Denúncia da Ideologia Elitista | Jessé Souza
+10. A Elite do Atraso: Da Escravidão à Lava Jato | Jessé Souza
+
+## 50. Linguagem: da fala ao pensamento
+
+`#trilha-linguagem`
+
+Da história da linguagem à leitura, linguística, semiótica e filosofia da linguagem.
+
+1. Uma Breve História da Linguagem | Steven Roger Fischer
+2. Linguagem: A História da Maior Invenção da Humanidade | Daniel L. Everett
+3. O Cérebro Leitor | Maryanne Wolf
+4. Do que é Feito o Pensamento: A Língua como Janela para a Natureza Humana | Steven Pinker
+5. O que é Semiótica | Lucia Santaella
+6. Introdução à Linguística, vol. 1: Domínios e Fronteiras | Fernanda Mussalim e Anna Christina Bentes (orgs.)
+7. Filosofia da Linguagem | Claudio Costa
+8. Textos Básicos de Linguagem: De Platão a Foucault | Danilo Marcondes
+9. Linguagem e Mente: Pensamentos Atuais sobre Antigos Problemas | Noam Chomsky
+
+## 51. Impérios e Conquistadores
+
+`#trilha-imperios-e-conquistadores`
+
+Uma viagem ficcional por impérios e conquistadores, com romances e quadrinhos.
+
+1. Portões de Fogo | Steven Pressfield
+2. Os Portões de Roma (série Imperador) | Conn Iggulden
+3. Sob a Águia (Under the Eagle) | Simon Scarrow
+4. O Lobo das Planícies (série Gêngis Khan) | Conn Iggulden
+5. A Imperatriz de Ferro | Jung Chang
+6. Miyamoto Musashi | Shotaro Ishinomori
+7. Lobo Solitário | Kazuo Koike e Goseki Kojima
+
+## 52. Polpa e Espada
+
+`#trilha-polpa-e-espada`
+
+Aventura, contos e fantasia de espada e feitiçaria.
+
+1. Ficção de Polpa, vol. 1 | Samir Machado de Machado (org.)
+2. Conan, o Bárbaro, Livro 1 | Robert E. Howard
+3. Conan, o Bárbaro, Livro 2 | Robert E. Howard
+4. Kull: Exílio da Atlântida | Robert E. Howard
+5. Solomon Kane | Robert E. Howard
+6. Bran Mak Morn: O Último Rei dos Pictos | Robert E. Howard
+7. Crônicas de Espada e Feitiçaria | Gardner Dozois (org.)
+
+## 53. Silêncio e Consciência
+
+`#trilha-silencio-e-consciencia`
+
+Parábolas, fontes espirituais e leituras contemporâneas sobre o eu e a consciência, com perspectivas distintas.
+
+1. 108 Contos e Parábolas Orientais | Monja Coen
+2. O Profeta | Khalil Gibran
+3. Bhagavad Gita | Tradição hindu
+4. O Cérebro de Buda | Rick Hanson
+5. A Ilusão do Eu | Chris Niebauer
+6. Despertar: Um Guia para a Espiritualidade sem Religião | Sam Harris
+
+## 54. Thrillers de Ideias
+
+`#trilha-thrillers-de-ideias`
+
+Suspense e ficção científica em torno de ideias que perturbam a realidade.
+
+1. Matéria Escura | Blake Crouch
+2. Recursão | Blake Crouch
+3. Pines | Blake Crouch
+4. O Enigma de Andrômeda | Michael Crichton
+5. Reconhecimento de Padrões | William Gibson
+
+## 55. História desenhada: épocas em quadrinhos
+
+`#trilha-historia-desenhada`
+
+Uma alternativa curta de romance histórico em quadrinhos: da Antiguidade a cenários posteriores, sem repetir as listas de séries propostas.
+
+1. Britannia | Peter Milligan e Juan José Ryp
+2. Ira Dei | Vincent Brugeas e Ronan Toulhoat
+3. Bórgia | Alejandro Jodorowsky e Milo Manara
+4. Barracuda | Jean Dufaux e Jérémy
+5. O Último Voo das Borboletas | Kan Takahama
+
+## 56. Dados na prática: da pergunta à análise
+
+`#trilha-dados-na-pratica`
+
+Começa pela pergunta de negócio, passa por algoritmos e bancos de dados, e chega à análise. SQL e Power BI pedem prática, não apenas leitura.
+
+1. Dados Demais!: Como Desenvolver Habilidades Analíticas para Resolver Problemas Complexos, Reduzir Riscos e Decidir Melhor | Thomas H. Davenport e Jinho Kim
+2. Entendendo Algoritmos | Aditya Y. Bhargava
+3. O Mínimo que Você Precisa Saber sobre Banco de Dados e SQL: Uma Abordagem Prática e Muito Simples | Tiago P. Ribeiro
+4. MySQL: Comece com o Principal Banco de Dados Open Source do Mercado | Vinícius Carvalho
+5. SQL: Curso Prático | Celso Henrique Poderoso de Oliveira
+6. O Caminho para o Sucesso com Power BI | Leonardo Karpinski
+7. Guia Brasileiro de Análise de Dados | Cláudio D. Shikida e Leonardo Monasterio
+8. O Programador Pragmático | Andrew Hunt e David Thomas
+
+## 57. Mente e sofrimento: perspectivas clínicas
+
+`#trilha-mente-e-sofrimento`
+
+De apresentações acessíveis e relato de sofrimento a casos e obras clínicas, contrapondo perspectivas em vez de reduzir o tema a um diagnóstico.
+
+1. Mentes Depressivas: As Três Dimensões da Doença do Século | Ana Beatriz Barbosa Silva
+2. Mentes Ansiosas: O Medo e a Ansiedade Nossos de Cada Dia | Ana Beatriz Barbosa Silva
+3. Psicopatas do Cotidiano | Katia Mecler
+4. O Demônio do Meio-dia: Uma Anatomia da Depressão | Andrew Solomon
+5. Uma Biografia da Depressão | Christian Dunker
+6. Casos Clínicos do DSM-5 | John W. Barnhill
+7. Neurose, Psicose, Perversão | Sigmund Freud
+8. Mal-estar, Sofrimento e Sintoma: Uma Psicopatologia do Brasil entre Muros | Christian Dunker
+9. Psicopatologia e Semiologia dos Transtornos Mentais | Paulo Dalgalarrondo
+
+## 58. Poesia em vozes
+
+`#trilha-poesia-em-vozes`
+
+Uma seleção de poesia e texto breve para experimentar vozes brasileiras, latino-americanas e norte-americanas, sem exigir uma história linear da poesia.
+
+1. Percatempos: Tudo que Faço Quando Não Sei o que Fazer | Gregorio Duvivier
+2. Distraídos Venceremos | Paulo Leminski
+3. Canções, seguido de Sapato Florido e A Rua dos Cataventos | Mario Quintana
+4. 20 Poemas de Amor e uma Canção Desesperada | Pablo Neruda
+5. Corpo | Carlos Drummond de Andrade
+6. Rabo de Baleia | Alice Sant'Anna
+7. Não Me Deixe Só: Uma Lírica Americana | Claudia Rankine
+8. O Ouro dos Tigres | Jorge Luis Borges
+
+## 59. Mia Couto: seis portas para Moçambique
+
+`#trilha-mia-couto`
+
+Uma trilha curta de autor, de uma entrada mais acessível a contos e romances. Não pretende representar toda a literatura moçambicana.
+
+1. A Menina sem Palavra | Mia Couto
+2. Contos do Nascer da Terra | Mia Couto
+3. A Cegueira do Rio | Mia Couto
+4. A Confissão da Leoa | Mia Couto
+5. Venenos de Deus, Remédios do Diabo | Mia Couto
+6. Um Rio Chamado Tempo, uma Casa Chamada Terra | Mia Couto
+
+## 60. Hábitos, emoções e relações
+
+`#trilha-habitos-emocoes-relacoes`
+
+Uma seleção de autoconhecimento que termina em reflexão sobre solidão e escuta, em vez de prometer uma receita universal.
+
+1. O Poder do Hábito | Charles Duhigg
+2. Mindset: A Nova Psicologia do Sucesso | Carol S. Dweck
+3. Comunicação Não-Violenta | Marshall B. Rosenberg
+4. Nação Dopamina | Anna Lembke
+5. (In)distraível | Nir Eyal
+6. Não Acredite em Tudo que Você Sente | Robert L. Leahy
+7. Agilidade Emocional | Susan David
+8. Solidão | Anthony Storr
+9. O Palhaço e o Psicanalista | Christian Dunker e Cláudio Thebas
+
+## 61. A mesma história em dois formatos
+
+`#trilha-do-texto-aos-quadrinhos`
+
+Leia cada original junto da adaptação e compare o que muda em ponto de vista, ritmo e imagem.
+
+1. 1984 | George Orwell
+2. 1984 (em quadrinhos) | George Orwell e Fido Nesti
+3. A Revolução dos Bichos | George Orwell
+4. A Revolução dos Bichos (em quadrinhos) | George Orwell, Lillo Parra e Chairim Arrais
+5. Androides Sonham com Ovelhas Elétricas? | Philip K. Dick
+6. Androides Sonham com Ovelhas Elétricas? (em quadrinhos) | Philip K. Dick e Tony Parker
+7. O Conto da Aia | Margaret Atwood
+8. O Conto da Aia (em quadrinhos) | Margaret Atwood e Renée Nault
+
+## 62. Roma no Acervo: histórias e vozes antigas
+
+`#trilha-roma-no-acervo`
+
+Uma alternativa à trilha 18, preservada como veio: ficção e quadrinhos romanos ou sobre o mundo antigo, seguidos de fontes antigas; não são todos relatos históricos.
+
+1. Os Portões de Roma (série Imperador) | Conn Iggulden
+2. Santo Guerreiro: Roma Invicta | Eduardo Spohr
+3. Britannia | Peter Milligan e Juan José Ryp
+4. Meditações | Marco Aurélio
+5. Sobre a Brevidade da Vida | Sêneca
+6. A Arte de Viver | Epicteto
+7. A Arte de Amar | Ovídio
+
+## 63. Cérebro no Acervo: ciência, experiência e ficção
+
+`#trilha-cerebro-no-acervo`
+
+Uma alternativa baseada na posse à trilha 15, que permanece intacta; da divulgação e casos à teoria e ficção.
+
+1. Cérebro: Uma Biografia | David Eagleman
+2. O Cérebro Imperfeito | Dean Buonomano
+3. Emocional: A Nova Neurociência dos Afetos | Leonard Mlodinow
+4. O Olhar da Mente | Oliver Sacks
+5. Limiar | Sidarta Ribeiro
+6. O Erro de Descartes | António Damásio
+7. Solaris | Stanisław Lem
+8. O Mistério da Consciência | António Damásio
+9. A Estranha Ordem das Coisas: As Origens Biológicas dos Sentimentos e da Cultura | António Damásio
+
+## 64. Sentido e Como Viver
+
+`#trilha-sentido-e-como-viver`
+
+Uma pergunta em comum reúne ficção, filosofia, reflexão e vida na natureza; perspectivas diferentes, sem uma resposta única.
+
+1. O Profeta | Khalil Gibran
+2. Mamãe e o Sentido da Vida | Irvin D. Yalom
+3. A Arte de Envelhecer | Irvin D. Yalom
+4. A Insustentável Leveza do Ser | Milan Kundera
+5. Os Vestígios do Dia | Kazuo Ishiguro
+6. Walden | Henry David Thoreau
+
+## 65. Portas de Entrada
+
+`#trilha-portas-de-entrada`
+
+Experimente pontos de partida para filosofia, história, economia e tradições espirituais. Pode ler em qualquer ordem.
+
+1. Pensamento Crítico de A a Z | Nigel Warburton
+2. Se Liga na Filosofia | Globo Livros
+3. Sapiens: Uma Breve História da Humanidade | Yuval Noah Harari
+4. Rápido e Devagar: Duas Formas de Pensar | Daniel Kahneman
+5. Bhagavad Gita | Tradição hindu
+
+## 66. Grandes Desafios
+
+`#trilha-grandes-desafios`
+
+Uma coleção aberta de leituras exigentes, não uma sequência obrigatória; escolha livremente e alterne com livros curtos.
+
+1. Dom Quixote | Miguel de Cervantes
+2. A Divina Comédia | Dante Alighieri
+3. Fausto | Johann W. von Goethe
+4. Os Detetives Selvagens | Roberto Bolaño
+5. Guerra e Paz | Liev Tolstói
+6. Os Sertões | Euclides da Cunha
+
+## 67. Ursula K. Le Guin: mundos e ideias
+
+`#trilha-le-guin-mundos-e-ideias`
+
+Ficção científica, fantasia e escrita com Le Guin. Terramar é uma série: confira a ordem e o conteúdo do volume único antes de avançar.
+
+1. O Mundo de Rocannon | Ursula K. Le Guin
+2. Floresta é o Nome do Mundo | Ursula K. Le Guin
+3. O Feiticeiro de Terramar (Ciclo Terramar, vol. 1) | Ursula K. Le Guin
+4. A Curva do Sonho | Ursula K. Le Guin
+5. A Mão Esquerda da Escuridão | Ursula K. Le Guin
+6. Os Despossuídos | Ursula K. Le Guin
+7. Sem Tempo a Perder | Ursula K. Le Guin
+
+## 68. Batman: leituras independentes
+
+`#trilha-batman-leituras`
+
+Uma seleção de diferentes versões do personagem; não pressupõe cronologia única. Algumas histórias fazem parte de continuidades ou sequências que podem exigir leituras anteriores.
+
+1. Batman Absoluto | Scott Snyder e Nick Dragotta
+2. Batman: Padrões Sombrios | Dan Watters e Hayden Sherman
+3. O Túmulo do Batman | Warren Ellis e Bryan Hitch
+4. Batman: O Último Cavaleiro da Terra | Scott Snyder e Greg Capullo
+5. Batman '89 | Sam Hamm e Joe Quinones
+6. Batman '89: Ecos | Sam Hamm e Joe Quinones

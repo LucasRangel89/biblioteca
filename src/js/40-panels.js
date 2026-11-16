@@ -333,29 +333,64 @@ const frasesTrilha = x => [x.tenho === x.n ? 'tenho todos os ' + x.n : `tenho ${
 const barraTrilha = x => { const lidos = x.livros.filter(b => b.leit === 'lido').length, casa = x.livros.filter(b => b.col === 'acervo' && b.leit !== 'lido').length; return `<span class="tr-b" aria-hidden="true"><i class="l" style="width:${x.n ? (lidos / x.n * 100).toFixed(1) : 0}%"></i><i class="c" style="width:${x.n ? (casa / x.n * 100).toFixed(1) : 0}%"></i></span>`; };
 function pTrilhas(w, id) {
   return { id: id || 'trilhas', w: w || 'p-5 m-6', tit: 'Trilhas de leitura', montar(k) {
-    segmento(k.tools, [['ordem', 'Na ordem'], ['perto', 'Falta pouco']], 'trilhas');
+    segmento(k.tools, [['ordem', 'Na ordem'], ['perto', 'Falta pouco'], ['agora', 'Começar agora']], 'trilhas');
     k.corpo.classList.add('lista', 'rolavel', 'enche');
     k.corpo.addEventListener('click', e => { const b = e.target.closest('[data-trilha]'); if (!b) return; const t = TRILHAS.find(x => x.tag === b.dataset.trilha); if (t) dlgTrilha(t); });
     legendaFixa(k.pe, [['lidos', 'var(--good)'], ['no acervo, por ler', 'var(--c2)'], ['faltam', 'var(--line-2)']]);
+    const cobertura = document.createElement('span'); cobertura.className = 'nota'; k.pe.appendChild(cobertura);
     return c => {
       const xs = c.trilhas.slice(), perto = S.ui.trilhas === 'perto';
       // "falta pouco": primeiro as que ainda pedem compra, da que falta menos para a que falta mais; as completas vão para o fim
       if (perto) xs.sort((a, z) => (a.faltam.length ? 0 : 1) - (z.faltam.length ? 0 : 1) || a.faltam.length - z.faltam.length || z.n - a.n || a.t.n - z.t.n);
+      if (S.ui.trilhas === 'agora') xs.sort((a, z) => Number(!!proximoDaTrilha(z)) - Number(!!proximoDaTrilha(a)) || a.t.n - z.t.n);
       const completas = xs.filter(x => !x.faltam.length).length;
+      const emTrilha = new Set(xs.flatMap(x => x.livros.filter(b => b.col === 'acervo').map(b => b.id)));
+      const acervo = DB.livros.filter(b => b.col === 'acervo' && !oculto(b, true)).length;
+      cobertura.textContent = `Acervo visível em trilhas: ${emTrilha.size} de ${acervo} livros distintos${acervo ? ` (${(100 * emTrilha.size / acervo).toFixed(1).replace('.', ',')}%)` : ''}.`;
       k.sub.textContent = `${plural(xs.length, 'roteiro', 'roteiros')} com os livros em ordem · ${completas ? plural(completas, 'já completo', 'já completos') + ' · ' : ''}clique para abrir`;
       setHtml(k.corpo, xs.length ? xs.map(x => `<button type="button" class="li tr" data-trilha="${x.t.tag}" title="${esc(x.t.nome)}"><span class="tr-n">${x.t.n}</span><span class="li-m"><b>${esc(x.t.curto)}</b><span>${frasesTrilha(x)}</span></span>${barraTrilha(x)}</button>`).join('') : vazioHtml('Este catálogo não traz trilhas de leitura.'));
     };
   } };
 }
+// Coleções são escolhas livres, não uma sequência nem um pré-requisito.
+const TRILHAS_LIVRES = new Set(['trilha-portas-de-entrada', 'trilha-grandes-desafios']);
+// Nas sequências, sugere apenas o primeiro não lido, se disponível; não infere dependências externas de série.
+const proximoDaTrilha = x => { if (x.esc || TRILHAS_LIVRES.has(x.t.tag)) return null; const b = x.livros.find(y => y.leit !== 'lido'); return b && b.col === 'acervo' ? b : null; };
 const estadoNaTrilha = b => (b.leit === 'lido' ? ['leit-lido', b.col === 'acervo' ? 'Lido' : 'Lido · não tenho'] : b.col === 'acervo' ? (b.leit === 'lendo' ? ['leit-lendo', 'Lendo'] : ['col-acervo', 'Tenho']) : b.col === 'desejo' ? ['col-desejo', 'Na lista de compra'] : ['', 'Falta']);
+// Ligações curatoriais explícitas; as restantes são sugeridas por livros em comum.
+const PONTES_TRILHAS = {
+  'trilha-aco-e-fe': ['trilha-rosas-e-espadas'],
+  'trilha-rosas-e-espadas': ['trilha-aco-e-fe', 'trilha-catedrais-e-cortes'],
+  'trilha-lovecraft-widows-bay': ['trilha-pesadelos-de-papel'],
+  'trilha-pesadelos-de-papel': ['trilha-lovecraft-widows-bay'],
+  'trilha-psicanalise-em-degraus': ['trilha-sociologia-em-degraus'],
+  'trilha-sociologia-em-degraus': ['trilha-psicanalise-em-degraus'],
+  'trilha-origens': ['trilha-evolucao'], 'trilha-evolucao': ['trilha-origens']
+};
+function sugestoesTrilha(t) {
+  const explicitas = (PONTES_TRILHAS[t.tag] || []).map(tag => TRILHAS.find(x => x.tag === tag)).filter(Boolean);
+  const chaves = new Set(t.linhas);
+  const outras = TRILHAS.filter(x => x !== t && !explicitas.includes(x))
+    .map(x => ({ t: x, n: x.linhas.filter(k => chaves.has(k)).length }))
+    .filter(x => x.n).sort((a, b) => b.n - a.n || a.t.n - b.t.n).map(x => x.t);
+  return explicitas.concat(outras).slice(0, 3);
+}
 function dlgTrilha(t) {
   const corpo = () => {
     const x = ctxAtual().trilhas.find(y => y.t === t), paraLista = x.faltam.filter(b => b.col === 'rec');
+    const ds = x.livros.map(b => b._d).filter(d => d >= 1 && d <= 3);
+    const es = x.livros.map(b => b._e);
+    const paginas = es.length && es.every(e => e >= 1 && e <= 3) ? es.reduce((n, e) => n + [0, 170, 375, 800][e], 0) : null;
+    const proximo = proximoDaTrilha(x), relacionadas = sugestoesTrilha(t);
     return { x, paraLista, html: `<p class="dlg-sub">${esc(t.desc)}</p>
+      ${TRILHAS_LIVRES.has(t.tag) ? '<p class="nota">Coleção de escolha livre: os livros podem ser lidos em qualquer ordem.</p>' : ''}
+      <p class="nota">${x.livros.length && !TRILHAS_LIVRES.has(t.tag) ? `Porta de entrada: ${esc(x.livros[0].t)}. ` : ''}${ds.length ? `Dificuldade: d${Math.min(...ds)}–d${Math.max(...ds)}${ds.length < x.n ? ' (parcial)' : ''}. ` : ''}${paginas ? `<label>Ritmo: <input data-tr-ritmo type="number" min="1" max="1000" value="30" style="width:5em"> páginas/dia.</label> <span data-tr-tempo data-paginas="${paginas}">Estimativa muito aproximada: ${Math.ceil(paginas / 30)} dias.</span> Calculada por faixas de extensão, não por páginas reais; séries podem durar mais.` : 'Sem estimativa de tempo: faltam dados de extensão.'}${x.esc ? ' Calculado apenas para livros visíveis.' : ''}</p>
+      ${proximo ? `<p class="nota">Para começar agora: <button type="button" class="lk" data-livro="${proximo.id}">${esc(proximo.t)}</button> (primeiro não lido disponível).</p>` : ''}
+      ${relacionadas.length ? `<p class="nota">Se gostou, siga para: ${relacionadas.map(r => `<button type="button" class="lk" data-tr-rel="${r.tag}">${esc(r.curto)}</button>`).join(' · ')}</p>` : ''}
       <p class="tr-res">${barraTrilha(x)}<span><b>${maiuscula(frasesTrilha(x))}</b></span><span class="tr-a"><button type="button" class="lk" data-tr-tabela>ver na tabela</button><button type="button" class="lk" data-tr-imprimir title="Imprimir esta trilha — a caixa de impressão também salva em PDF">imprimir</button><button type="button" class="lk" data-tr-copiar title="Copiar esta trilha como texto, para colar numa mensagem ou num bloco de notas">copiar</button></span></p>
       <ol class="tr-l">${x.vis.map((b, i) => { const [cls, rot] = estadoNaTrilha(b); return `<li><button type="button" class="li" data-livro="${b.id}"><span class="tr-n">${i + 1}</span>${capaHtml(b)}<span class="li-m"><b>${esc(b.t)}</b><span>${esc(b.a || 'Autor não informado')}</span></span><span class="pill ${cls}">${rot}</span></button></li>`; }).join('')}</ol>
       ${x.esc ? `<p class="nota tr-fora">${icone('olhoOff', 14)}<span>${plural(x.esc, 'livro desta trilha não aparece', 'livros desta trilha não aparecem')} aqui: você pediu para ocultar. Para vê-${x.esc === 1 ? 'lo' : 'los'}, use “Ocultar”, na barra de filtros.</span></p>` : ''}
-      <p class="nota">A ordem é a sugerida no catálogo (catalogo/trilhas.md). Clique num livro para abrir a ficha.</p>` };
+      <p class="nota">${TRILHAS_LIVRES.has(t.tag) ? 'Seleção livre, sem ordem obrigatória.' : 'A ordem é a sugerida no catálogo (catalogo/trilhas.md).'} Clique num livro para abrir a ficha.</p>` };
   };
   const r = corpo();
   Dlg.abrir({ titulo: `Trilha ${t.n} · ${t.nome}`, largo: true, corpo: r.html,
@@ -365,8 +400,14 @@ function dlgTrilha(t) {
         toast(`${plural(livros.length, 'livro foi', 'livros foram')} para as próximas aquisições.`);
       } }] : []).concat([{ n: 'Fechar', cls: 'pri' }]),
     aoAbrir(el) {
+      el.addEventListener('input', e => {
+        if (!e.target.matches('[data-tr-ritmo]')) return;
+        const saida = el.querySelector('[data-tr-tempo]'), ritmo = Number(e.target.value);
+        if (saida) saida.textContent = ritmo >= 1 && ritmo <= 1000 ? `Estimativa muito aproximada: ${Math.ceil(Number(saida.dataset.paginas) / ritmo)} dias.` : 'Informe um ritmo entre 1 e 1000 páginas/dia.';
+      });
       el.addEventListener('click', e => {
         const li = e.target.closest('[data-livro]'); if (li) { const id = li.dataset.livro; Dlg.fechar(); abrirLivro(id); return; }
+        const rel = e.target.closest('[data-tr-rel]'); if (rel) { const outra = TRILHAS.find(y => y.tag === rel.dataset.trRel); if (outra) { Dlg.fechar(); dlgTrilha(outra); } return; }
         if (e.target.closest('[data-tr-imprimir]')) { imprimirFolha(folhaDaTrilha(t, corpo().x)); return; }
         if (e.target.closest('[data-tr-copiar]')) { copiarFolha(folhaDaTrilha(t, corpo().x)); return; }
         // "ver na tabela": fecha tudo e mostra, na visão geral, só os livros da trilha
