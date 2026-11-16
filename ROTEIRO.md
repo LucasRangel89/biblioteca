@@ -21,7 +21,7 @@ Este arquivo é atualizado ao fim de cada rodada. Para saber em que pé as coisa
 | 7 | A versão 3 do catálogo: camadas e trilhas de leitura | **Feita** (11/11/2026) |
 | 8 | Análise dos filtros, trilhas personalizadas e novas recomendações | **Feita** (11/11/2026) — das oito propostas, três viraram a etapa 9; cinco esperam a sua decisão (lista abaixo) |
 | 9 | Filtros que dizem quantos livros têm e somam dentro do grupo; grupo da psicologia; conserto das caixas que não cabiam na tela | **Feita** (11/11/2026) |
-| 10 | As suas ideias: ocultar categorias, imprimir e copiar listas, sinopses, temas visuais, estímulo à leitura | **Em parte** (12/11/2026) — ocultar e imprimir estão prontos; sinopses dos lotes 1 a 6 (**701 no painel** — todas as recomendações têm linha); seis temas prontos (Lovecraft, Sherlock Holmes, Moby Dick, Deserto, Terras antigas, Clássico greco-romano); a guia de leitura continua aguardando a aprovação do desenho abaixo |
+| 10 | As suas ideias: ocultar categorias, imprimir e copiar listas, sinopses, temas visuais, estímulo à leitura | **Em parte** (12/11/2026) — ocultar e imprimir estão prontos; sinopses dos lotes 1 a 7 (**782 no painel** — todas as recomendações têm linha, e também os 81 digitais que já estão em trilhas); seis temas prontos (Lovecraft, Sherlock Holmes, Moby Dick, Deserto, Terras antigas, Clássico greco-romano); a guia de leitura continua aguardando a aprovação do desenho abaixo |
 | 11 | Mais capas: auditoria, casamento e fontes, robô que abre PR e capas no painel | **Em parte** (12/11/2026) — as quatro partes estão no ar; o Google Books não respondeu nas execuções #9 e #10. Caminho gratuito em revisão: ISBN conferido opcional, chave Google opcional e piloto do Internet Archive só de leitura; nenhuma capa nova entrou |
 
 A ordem pode mudar: as etapas que faltam não dependem umas das outras. Se alguma interessar mais, peça por ela.
@@ -657,7 +657,7 @@ não se perder entre uma conversa e outra. Para retomar, basta dizer "vamos para
 | --- | --- | --- |
 | 1 | Ocultar categorias | **Feita** (11/11/2026) |
 | 2 | Imprimir e copiar listas | **Feita** (11/11/2026) |
-| 3 | Sinopse na ficha de cada livro | **Em andamento** (17/11/2026) — estilo aprovado por você (11/11/2026); saíram os lotes 1 a 6: **701 sinopses** no painel — as 607 recomendações do catálogo têm linha, e só falta a biblioteca virtual — e três pendências suas |
+| 3 | Sinopse na ficha de cada livro | **Em andamento** (18/11/2026) — estilo aprovado por você (11/11/2026); saíram os lotes 1 a 7: **782 sinopses** no painel — as 607 recomendações do catálogo têm linha e 87 dos 1.910 digitais também, os que já estão em trilhas — falta o resto da biblioteca virtual (1.823 linhas) — e três pendências suas |
 | 4 | Temas visuais | Combinada, com as três decisões tomadas (11/11/2026); falta fazer, poucos temas por rodada |
 | 5 | Estímulo à leitura (gamificação) | Direção combinada com as suas respostas; falta você aprovar o desenho |
 
@@ -780,7 +780,8 @@ amostras têm 281 e 251), com a fonte e a data anotadas no arquivo.
 | 4 | As seções 7 (horror e ficção estranha), 8 (poesia) e 9 (filosofia), na ordem do catálogo | 90 | Feito em 15/11/2026: 90 sinopses, nenhuma pendência nova |
 | 5 | As seções 10 (mente, consciência e neurociência), 11 (política, poder e economia) e 12 (sociedade, antropologia e história), na ordem do catálogo | 110 | Feito em 16/11/2026: 109 sinopses e 1 pendência |
 | 6 | O resto das recomendações: as seções 13 a 16, na ordem do catálogo | 116 | Feito em 17/11/2026: 116 sinopses, nenhuma pendência nova |
-| 7 em diante | Os livros digitais (seção 17), um eixo de cada vez — você escolhe por onde começar | 1.910 | A fazer |
+| 7 | Os digitais que já estão em trilhas de leitura (a escolha que você fez no item 2 de `PENDENCIAS.md`) | 81 | Feito em 18/11/2026: 81 sinopses, nenhuma pendência nova |
+| 8 em diante | O resto dos livros digitais (seção 17), um eixo de cada vez — você escolhe por onde começar | 1.823 | A fazer |
 
 Esta tabela é atualizada a cada lote. Se quiser outra ordem — um autor, um eixo, uma trilha na frente —, é só dizer.
 
@@ -873,9 +874,30 @@ Uma coisa que a conferência desta rodada achou e que é para você (está no [`
 assinada por **Sobonfu Somé** — os dois foram casados e ambos mestres dagara. A sinopse foi escrita sobre o livro sem
 nomear o autor; a linha espera a sua conferida na lombada, e aí acerto o catálogo.
 
-O que falta de sinopse é agora só a biblioteca virtual: **1.910 livros** na seção 17, nenhum com linha. É o lote 7 em
-diante — um eixo por vez, quando você quiser. Antes dele, porém, vale a vistoria da etapa 4 (dificuldade e extensão dos
-digitais são estimativas) e a escolha do primeiro eixo; o guia põe essas duas em ordem de impacto.
+**Lote 7 — o que saiu (18/11/2026).** Entraram mais **81 sinopses**, e o painel passou a ter **782**. O critério foi
+o que você escolheu no [`PENDENCIAS.md`](PENDENCIAS.md), item 2: os digitais que já estão em trilhas de leitura. As 36
+trilhas citam **81** livros da seção 17, e nenhum deles tinha linha. A busca começou pelo atalho óbvio — reaproveitar a
+sinopse do irmão impresso de cada título — e não havia nenhum: dos 81, nenhum tem o mesmo livro em papel no catálogo
+com texto escrito. Cada um foi conferido sozinho. Estão repartidos por doze eixos, na ordem do catálogo: ficção
+científica e fantasia (7), América Latina e Brasil (10), ficção contemporânea (1), horror (11), poesia (1), filosofia
+(7), política (4), sociedade (1), ciência e futuro (10), psicologia e psicanálise (21), espiritualidade (3) e artes e
+escrita (5). Nenhuma
+conta o final e nenhuma é cópia de contracapa.
+
+- **74 de obra bem conhecida**, escritas a partir do que é estabelecido sobre elas;
+- **7 conferidas fora daqui** — obras com edição brasileira difícil de achar, lançamentos recentes e um caso em que o
+  nome do catálogo é o da tradução. O endereço consultado está na coluna `fonte` de cada linha.
+- **nenhuma pendência nova**: dos 81, todos têm texto.
+
+Dois detalhes que a conferência ajustou na escrita, porque as fontes erram neles: *Esconderijos do Tempo*, do Quintana,
+é de 1980 (muita ficha repete 1973), e *A Dança do Universo*, do Gleiser, levou o Jabuti de ciências naturais e saúde,
+em 1998 — não o de ensaio. Em *Colheita Macabra*, o livro é *Harvest*, o do tráfico de órgãos, e não o da múmia com a
+bala na cabeça, que é outro da mesma autora.
+
+Depois do lote 7, falta só o resto da biblioteca virtual: **1.823 livros** da seção 17 ainda sem linha (87 têm, e os
+81 das trilhas foram justamente estes). O eixo por onde começar é a sua escolha, no [`PENDENCIAS.md`](PENDENCIAS.md),
+item 2; valem também a vistoria da etapa 4 (dificuldade e extensão dos digitais são estimativas) e a régua da amostragem
+dos 40 sorteados, que está parada esperando suas respostas.
 
 **Pendências — três livros ficaram sem sinopse**, porque não deu para confirmar que livro é. No painel, a ficha deles
 segue como antes, sem nada no lugar:
@@ -979,7 +1001,7 @@ Duas coisas que você precisa saber:
 Como combinado, **Deserto** é inspirado em Duna e **Terras antigas** em Tolkien, sem usar o nome das obras protegidas,
 personagens ou logotipos. Cada um nasceu com um clima só. As três letras novas são livres (SIL OFL 1.1), vão dentro do
 painel com as licenças e não são buscadas na internet. O arquivo passou de cerca de 1,2 MB para **1,37 MB** com os temas e as
-sinopses dos lotes 1 e 2; os lotes 3 e 4 acrescentaram mais **67 KB** juntos, o lote 5 mais **43 KB** e o lote 6 mais **46 KB** — uns 380 bytes
+sinopses dos lotes 1 e 2; os lotes 3 e 4 acrescentaram mais **67 KB** juntos, o lote 5 mais **43 KB**, o lote 6 mais **46 KB** e o lote 7 mais **24 KB** — uns 380 bytes
 por sinopse dentro do arquivo.
 
 - Os três passaram pela conferência de contraste e pelas mesmas medidas de tela, ficha e celular dos anteriores.

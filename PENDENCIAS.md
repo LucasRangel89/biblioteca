@@ -31,29 +31,32 @@ como certo. Não precisa abrir livro nenhum — só se uma linha lhe parecer sus
 coluna do lado.
 
 **Depois das suas respostas:** eu corrijo as 40, conto quantos dos outros 1.870 livros têm o mesmo tipo de erro e
-corrijo o padrão. Só então abro o lote 7 das sinopses (item 2), porque ele usa essa régua.
+corrijo o padrão. O lote 7 das sinopses não esperou por isso — saiu em 18/11 pelo critério do item 2, livro por livro.
+A régua continua valendo para o lote 8 em diante, que vai mexer nas etiquetas dos outros 1.823.
 
 ---
 
-## 2. As resenhas curtas dos livros digitais: por qual tema eu começo
+## 2. As sinopses curtas dos livros digitais: por qual tema eu começo — o lote 7 saiu, falta o próximo
 
 - **Esforço:** dois minutos · **Lugar:** aqui
 
-**A pergunta.** Falta escrever a resenha de 1.910 livros (a biblioteca virtual não tem nenhuma; das 607
-recomendações, 606 têm e uma espera a resposta do item 6). Não dá para fazer de uma vez — são ~17 rodadas de 110. **Por onde eu começo?**
+**O que você respondeu (17/11).** `pelos 81 das trilhas`. Saíram as **81 sinopses** em 18/11 e o painel foi a **782**:
+agora não há trilha de leitura com buraco — todo livro citado nelas tem texto na ficha. Nenhuma virou pendência.
+
+**A pergunta que sobra.** Faltam **1.823** sinopses na biblioteca virtual (das 607 recomendações, 606 têm e uma espera
+a resposta do item 6). Não dá para fazer de uma vez — são ~17 rodadas de 110. **Por onde eu começo agora?**
 
 **Responda com uma destas:**
-- `lote 7 pelo horror` → 117 livros digitais do eixo de horror, uma rodada e está fechado;
-- `comece pela ficção científica` → são 307, três rodadas;
-- `pelos 81 das trilhas` → os digitais que já estão em trilhas de leitura; hoje metade de uma trilha tem resenha e
-  a outra metade não, e isso fica feio na tela;
+- `lote 8 pelo horror` → 106 livros do eixo de horror que ainda não têm linha; uma rodada e está fechado;
+- `comece pela ficção científica` → são 300, três rodadas;
+- `pelo maior eixo` → psicologia e psicanálise: 373 sem linha, quatro rodadas;
 - `escolhe você` → eu sigo a ordem dos temas, do maior para o menor;
-- nada → o lote 7 fica parado.
+- nada → o lote 8 fica parado.
 
-**O peso de cada tema na biblioteca virtual:** psicologia 399 · ficção científica e fantasia 307 · ciência e futuro
-224 · filosofia 180 · política e economia 157 · horror 117 · sociedade e história 101 · Brasil e lusofonia 89 ·
-espiritualidade 83 · mente e neurociência 65 · artes e escrita 57 · ficção contemporânea 49 · clássicos 41 · romances
-históricos 32 · poesia 9. Os 242 quadrinhos não aparecem porque estão espalhados pelos temas de ficção.
+**O que falta por tema na biblioteca virtual:** psicologia 373 · ficção científica e fantasia 300 · ciência e futuro
+214 · filosofia 173 · política e economia 153 · horror 106 · sociedade e história 100 · espiritualidade 80 · Brasil e
+lusofonia 79 · mente e neurociência 65 · artes e escrita 52 · ficção contemporânea 48 · clássicos 40 · romances
+históricos 32 · poesia 8. Os 242 quadrinhos não aparecem porque estão espalhados pelos temas de ficção.
 
 ---
 
@@ -175,20 +178,21 @@ grafia assim. Não troco nome de livro por conta própria porque é pelo nome qu
 
 ---
 
-## 8. A fila dos "a verificar": quais eu baixo agora
+## 8. A fila dos "a verificar": duas já baixaram, falta uma escolha
 
 - **Esforço:** dois minutos · **Lugar:** aqui
 
-**A pergunta.** 29 linhas do catálogo estão marcadas "a verificar" (3 na estante, 3 nas recomendações, 23 na
-biblioteca virtual) porque algo nelas pode estar errado. **O que já está resolvido eu baixo da fila, ou espera?**
+**O que já foi (17 e 18/11).** *A Guerra do Fogo* e *O Médico de Córdoba* saíram da fila: a busca confirmou os dois, e
+as sinopses deles estão escritas. E o jeito dos arquivos novos está decidido — quem entra agora só é marcado "a
+verificar" **quando o nome é vago** (sem autor, título de uma palavra só, o emaranhado do download); nome que se
+deduz com folga entra limpo. A regra está em `tools/importar_digital.py`, na função `nome_vago`, e o teste do
+importador a confere.
 
-1. Três delas **já têm resenha** e a etiqueta só fala da edição: *A Guerra do Fogo* e *O Médico de Córdoba* (a busca
-   confirmou os dois) e *Coraline* (só espera você dizer se o seu exemplar é a HQ ou o romance ilustrado).
-   → `tira as duas` ou `deixa todas até eu conferir`.
-2. Os 23 da biblioteca virtual somem conforme o item 1 e o item 5 andam.
-   → `baixa em bloco quando acabar a vistoria` ou `confiro um por um antes`.
-3. E para o futuro, quando entrar arquivo novo: entra sempre marcado "a verificar", ou só quando o nome do arquivo
-   não diz o que é? → `sempre` (é como está hoje) ou `só quando for vago`.
+**A pergunta que sobra.** A fila tem hoje **27 linhas**: 3 na estante (as três pendências de identificação, item 6),
+1 recomendação — *Coraline*, que espera você dizer se o seu exemplar é a HQ ou o romance ilustrado — e **23 digitais**.
+Sobre os 23:
+
+→ `baixa em bloco quando acabar a vistoria` (item 5) ou `confiro um por um antes`. Sem resposta, ficam na fila.
 
 ---
 
@@ -312,13 +316,13 @@ ou **sempre o mesmo arquivo atualizado**, com o histórico só no Git?
 Copie, complete, mande. Linha em branco = fica como está:
 
 ```
-2: lote 7 por ___
+2: lote 8 por ___
 3: propostas: 4 ___ 5 ___ 6 ___ 7 ___
 4: guia de páginas: aprova / muda: ___
 5: arquivos: manipulacao.pdf é ___ ; engenhariasocial.pdf é ___ ; … (12 linhas)
 6: lombadas: Noite do Sul ___ | Arte de Envelhecer ___ | Tragédia e a Farsa ___ | Espírito da Intimidade Malidoma/Sobonfu
 7: grafias: Spohr ___ Se Liga na Filosofia ___ Mundo ao avesso ___
-8: fila "a verificar": tiro as duas ___ | os 23 digitais: bloco/um por um ___ | arquivo novo: sempre/só se for vago ___
+8: os 23 digitais da fila: bloco / um por um ___
 9: Escravidão: uma ficha / três ___ volumes digitais: ___
 10: leituras: painel / planilha ___
 11: temas: cores ___ letra ___ ornamentos ___ | próximos: ___

@@ -12,7 +12,8 @@ Confere que:
   · pendência não tem sinopse, diz o motivo e aparece na lista de pendências do ROTEIRO.md;
   · os lotes 1 e 2 estão completos (estante, prioridades (#top) e recomendações ainda não adquiridas das seções 1 a 5), o
     lote 3 tirou as 94 linhas que faltavam nas seções 1 a 6, o lote 4, as 90 linhas das seções 7 a 9, o lote 5, as 110
-    linhas das seções 10 a 12 e o lote 6, as 116 linhas das seções 13 a 16;
+    linhas das seções 10 a 12, o lote 6, as 116 linhas das seções 13 a 16, e o lote 7, os 81 livros digitais que já
+    estão em trilhas de leitura (a escolha do dono em `PENDENCIAS.md`, item 2);
   · o leitor do arquivo avisa do que está errado em vez de deixar passar (livro que não existe, linha repetida, sinopse
     longa, de uma frase só, sem fonte), e acha o livro também pelo nome antigo;
   · src/sinopses.json e o painel pronto estão em dia com o arquivo;
@@ -112,7 +113,7 @@ ok('as duas amostras aprovadas pelo dono estão como ele aprovou', all(da.get(t)
 roteiro = (RAIZ / 'ROTEIRO.md').read_text(encoding='utf-8')
 ok('…e são as mesmas que o ROTEIRO.md mostra', all(' '.join(s.split()) in ' '.join(roteiro.replace('\n> ', ' ').split()) for s in AMOSTRAS.values()))
 
-print('C. Pendências e os lotes 1 a 6')
+print('C. Pendências e os lotes 1 a 7')
 ok('pendência não tem sinopse e diz o motivo ("pendente: …")', all(r['fonte'].startswith('pendente: ') and len(r['fonte']) > 40 for r in PEND), [r['titulo'] for r in PEND if not r['fonte'].startswith('pendente: ')])
 ok('cada pendência está na lista de pendências do ROTEIRO.md', bool(PEND) and all(f'*{r["titulo"]}*' in roteiro for r in PEND), [r['titulo'] for r in PEND if f'*{r["titulo"]}*' not in roteiro])
 pesquisados = {POS[norm(r['titulo'], r['autor'])] for r in LINHAS if norm(r['titulo'], r['autor']) in POS}
@@ -151,9 +152,17 @@ antes6 = {POS[norm(r['titulo'], r['autor'])] for r in LINHAS if r['data'] != '20
 ok('lote 6: as seções 13 a 16 não têm mais nenhum livro sem linha', set(secoes_13_16) <= pesquisados, [CAT[i][0] for i in secoes_13_16 if i not in pesquisados][:5])
 ok('…com as 116 linhas novas, todas nas seções 13 a 16, sem repetir as de antes', len(lote6) == 116 and set(lote6) <= set(secoes_13_16) and not (set(lote6) & antes6), len(lote6))
 ok('a tabela de lotes dá o lote 6 como feito, com o número de livros de hoje', re.search(r'\| 6 \|[^\n]*\| %d \| Feito[^\n]*\b%d sinopses\b' % (len(lote6), len([r for r in COM if POS[norm(r['titulo'], r['autor'])] in set(lote6)])), roteiro) is not None)
+secao17 = [i for i, r in enumerate(CAT) if r[3] == 17]
+lote7 = [POS[norm(r['titulo'], r['autor'])] for r in LINHAS if r['data'] == '2026-11-18' and norm(r['titulo'], r['autor']) in POS]
+antes7 = {POS[norm(r['titulo'], r['autor'])] for r in LINHAS if r['data'] != '2026-11-18' and norm(r['titulo'], r['autor']) in POS}
+nas_trilhas = sorted({i for t in json.loads((RAIZ / 'src' / 'trilhas.json').read_text(encoding='utf-8')) for i in t[3] if CAT[i][3] == 17})
+ok('lote 7: todo livro digital citado numa trilha de leitura tem sinopse', set(nas_trilhas) <= set(lote7), [CAT[i][0] for i in nas_trilhas if i not in set(lote7)][:5])
+ok('…são as 81 linhas novas, todas na seção 17, sem repetir as de antes', len(lote7) == 81 and set(lote7) <= set(secao17) and not (set(lote7) & antes7), len(lote7))
+ok('…e o lote 7 não escreveu nada fora das trilhas: são exatamente os 81', set(lote7) == set(nas_trilhas) == set(secao17) & (set(lote7) | set()), (len(set(lote7)), len(set(nas_trilhas))))
+ok('a tabela de lotes dá o lote 7 como feito, com o número de livros de hoje', re.search(r'\| 7 \|[^\n]*\| %d \| Feito[^\n]*\b%d sinopses\b' % (len(lote7), len([r for r in COM if POS[norm(r['titulo'], r['autor'])] in set(lote7)])), roteiro) is not None)
 restantes = [i for i, r in enumerate(CAT) if 1 <= r[3] <= 16 and i not in pesquisados]
 ok('as recomendações (seções 1 a 16) têm todas uma linha no arquivo', not restantes, [CAT[i][0] for i in restantes][:5])
-ok('…e a tabela de lotes abre o lote 7 em diante com os 1.910 da seção 17', re.search(r'\| 7 em diante \|[^\n]*\| 1\.910 \| A fazer', roteiro) is not None)
+ok('…e a tabela de lotes abre o lote 8 em diante com os 1.823 que faltam na seção 17', re.search(r'\| 8 em diante \|[^\n]*\| 1\.823 \| A fazer', roteiro) is not None)
 
 print('D. O leitor do arquivo (tools/build_catalog.py)')
 av = []; dados = bc.build([]); lidas = bc.ler_sinopses(dados, av)
