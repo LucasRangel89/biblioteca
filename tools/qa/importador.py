@@ -60,33 +60,43 @@ confere(len(pend) > 0 and trecho.count('\n- ') == len(pend) and all(f'{"subpasta
         f'o resumo diz a pasta e o nome exato do arquivo (ou da subpasta) de cada item a verificar ({len(pend)})')
 
 # 2 ▸ --conferir não grava
-with open(tmp / 'listagens' / 'poesia.txte', 'ab') as f: f.write('Poemas Novos - Fulano de Tal.epub\r\n'.encode('cp850'))
+with open(tmp / 'listagens' / 'poesia.txte', 'ab') as f:
+    f.write('Poemas Novos - Fulano de Tal.epub\r\nSedutor Infalivel.pdf\r\n'.encode('cp850'))
 saida = roda('--conferir')
 confere('Mudaria' in saida and all(ler(p) == antes[p] for p in antes), '--conferir avisa e não grava')
 
-# 3 ▸ arquivo novo: entra no inventário como "novo" e no catálogo com #verificar
+# 3 ▸ arquivo novo: entra no inventário como "novo"; #verificar só quando o nome é vago (combinado do dono, 17/11/2026)
 saida = roda()
 inv = imp.ler_inventario(imp.INVENTARIO)
 novo = [r for r in inv if r['arquivo'] == 'Poemas Novos - Fulano de Tal.epub']
 confere(len(novo) == 1 and novo[0]['titulo'] == 'Poemas Novos' and novo[0]['autor'] == 'Fulano de Tal' and novo[0]['obs'] == 'novo' and novo[0]['eixo'] == '8', 'arquivo novo entra no inventário, marcado "novo"')
 b = linha('Poemas Novos')
-confere(bool(b) and b['sec'] == 17 and b['sub'] == 8 and b['tags'] == ['poesia', 'verificar', 'tenho-digital'], 'e no catálogo, na seção 17.8, com #verificar')
-confere('Poemas Novos' in ler('RESUMO.md') and 'Nada mudou.' in roda(), 'aparece no resumo; repetir não muda nada')
+confere(bool(b) and b['sec'] == 17 and b['sub'] == 8 and b['tags'] == ['poesia', 'tenho-digital'],
+        'nome que se deduz com folga ("Poemas Novos - Fulano de Tal"): entra no catálogo, na seção 17.8, sem #verificar')
+tes = [r for r in imp.ler_inventario(imp.INVENTARIO) if r['arquivo'] == 'Sedutor Infalivel.pdf']
+bt = linha('Sedutor Infalivel')
+confere(len(tes) == 1 and imp.nome_vago(tes[0]['titulo'], tes[0]['autor']) and bt['tags'] == ['poesia', 'verificar', 'tenho-digital'],
+        'nome vago (título de uma palavra, sem autor): o mesmo "novo" entra também com #verificar no catálogo')
+confere('Poemas Novos' in ler('RESUMO.md') and 'Nada mudou.' in roda(), 'os dois aparecem no resumo (a revisão de arquivo novo é pedida sempre); repetir não muda nada')
 
 # 4 ▸ marcador posto à mão na seção 17 sobrevive; correção no inventário vale
-md = ler('catalogo.md').replace('| Poemas Novos | Fulano de Tal | #poesia #verificar #tenho-digital |', '| Poemas Novos | Fulano de Tal | #poesia #lido #top #verificar #tenho-digital |')
+md = ler('catalogo.md').replace('| Poemas Novos | Fulano de Tal | #poesia #tenho-digital |', '| Poemas Novos | Fulano de Tal | #poesia #lido #top #tenho-digital |')
+md = md.replace('| Sedutor Infalivel | (autor não informado) | #poesia #verificar #tenho-digital |', '| Sedutor Infalivel | (autor não informado) | #poesia #lido #top #verificar #tenho-digital |')
 (tmp / 'catalogo.md').write_text(md, encoding='utf-8', newline='\n')
 for r in inv:
-    if r['arquivo'] == 'Poemas Novos - Fulano de Tal.epub': r['obs'] = ''
+    if r['arquivo'] in ('Poemas Novos - Fulano de Tal.epub', 'Sedutor Infalivel.pdf'): r['obs'] = ''
 (tmp / 'inventario.tsv').write_text(imp.texto_inventario(inv), encoding='utf-8', newline='\n')
 roda()
 confere(linha('Poemas Novos')['tags'] == ['poesia', 'lido', 'top', 'tenho-digital'], 'marcadores postos à mão ficam; #verificar sai quando o inventário é revisado')
+confere(linha('Sedutor Infalivel')['tags'] == ['poesia', 'lido', 'top', 'tenho-digital'],
+        'vago ou não: apagado o "novo" do inventário, o #verificar sai — a conferência mora na linha do arquivo')
 
 # 4b ▸ a classificação (temas, dificuldade, extensão) vem da coluna `marcadores` do inventário; na linha, à mão, só #lido e #top
 confere('\n## Sem dificuldade nem extensão\n' in ler('RESUMO.md') and '- Poemas Novos — Fulano de Tal · pasta `poesia`' in ler('RESUMO.md'), 'obra ainda sem classificação no inventário aparece no resumo, em "Sem dificuldade nem extensão"')
 inv = imp.ler_inventario(imp.INVENTARIO)
 for r in inv:
     if r['arquivo'] == 'Poemas Novos - Fulano de Tal.epub': r['marcadores'] = 'BR #d1 e1 verificar tenho-fisico lido'      # o que não é classificação é ignorado
+    if r['arquivo'] == 'Sedutor Infalivel.pdf': r['marcadores'] = 'd1 e2'   # classificada, sai da lista do resumo
 (tmp / 'inventario.tsv').write_text(imp.texto_inventario(inv), encoding='utf-8', newline='\n')
 md = ler('catalogo.md').replace('| Poemas Novos | Fulano de Tal | #poesia #lido #top #tenho-digital |', '| Poemas Novos | Fulano de Tal | #poesia #tema-posto-a-mao #top #tenho-digital |')
 (tmp / 'catalogo.md').write_text(md, encoding='utf-8', newline='\n')
@@ -365,6 +375,28 @@ sem_uso = [t for g in ('Gêneros', 'Temas', am.GRUPO_PSI, 'Época e origem', 'Af
 confere(not sem_uso, 'todo marcador que o painel oferece nos filtros está em uso em algum livro' + (': ' + ', '.join(sem_uso[:5]) if sem_uso else ''))
 nos_grupos = [t for itens in GA.values() for t in itens]; repetidos = sorted({t for t in nos_grupos if nos_grupos.count(t) > 1})
 confere(not repetidos, 'cada marcador mora num grupo de filtros só (é o grupo que diz se dois marcadores somam ou cruzam)' + (': ' + ', '.join(repetidos[:5]) if repetidos else ''))
+
+# 14 ▸ arquivo novo só vai para "a verificar" quando o nome é vago (combinado do dono, 17/11/2026)
+with open(tmp / 'listagens' / 'poesia.txte', 'ab') as f:
+    f.write('persuasopnlehipnoseaplicadasseduo.pdf\r\nO Espelho - Clarice Lispector.epub\r\n'.encode('cp850'))
+roda()
+inv14 = {r['arquivo']: r for r in imp.ler_inventario(imp.INVENTARIO)}
+emaranhado, limpo = inv14['persuasopnlehipnoseaplicadasseduo.pdf'], inv14['O Espelho - Clarice Lispector.epub']
+confere(emaranhado['obs'] == 'novo' and limpo['obs'] == 'novo', 'os dois entraram no inventário marcados "novo" (a revisão é sempre pedida)')
+confere(imp.nome_vago(emaranhado['titulo'], emaranhado['autor']) and not imp.nome_vago(limpo['titulo'], limpo['autor']),
+        'o veredito "nome vago" sai do nome deduzido, na hora de criar a linha')
+confere(linha('Persuasopnlehipnoseaplicadasseduo')['tags'] == ['poesia', 'verificar', 'tenho-digital'],
+        'nome vago: a linha entra no catálogo com #verificar')
+confere(linha('O Espelho')['tags'] == ['poesia', 'tenho-digital'], 'nome que se deduz com folga: entra sem #verificar')
+res14 = ler('RESUMO.md')
+confere('- `poesia/persuasopnlehipnoseaplicadasseduo.pdf` → Persuasopnlehipnoseaplicadasseduo — sem autor' in res14
+        and '- `poesia/O Espelho - Clarice Lispector.epub` → O Espelho — Clarice Lispector' in res14,
+        'os dois aparecem em "Arquivos novos, a revisar": a revisão é pedida sempre; o #verificar é só para o vago')
+confere(imp.nome_vago('Introdução à Psicologia 6ª Edição', '') and imp.nome_vago('Tesouros Medievais', ''),
+        'sem autor, ou um titquezinho só: vago')
+confere(not imp.nome_vago('A Cabala e seu Simbolismo', 'Gershom Scholem') and not imp.nome_vago('18 Dias', 'Grant Morrison'),
+        'título de duas palavras com autor, e título com número, não são vagos')
+confere(bool(imp.nome_vago('manual_do_xaveco_como_conquistar_uma_mulher.pdf', 'x')), 'nome de arquivo com barras baixas: vago')
 
 shutil.rmtree(tmp, ignore_errors=True)
 print('ERROS:', len(erros))

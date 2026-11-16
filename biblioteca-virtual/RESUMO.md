@@ -266,7 +266,7 @@ Título, autor ou identificação incertos (coluna `obs` = `verificar`). Os que 
 
 ## Arquivos novos, a revisar
 
-Entraram nesta execução ou numa anterior, com título e autor deduzidos do nome do arquivo (nas pastas de quadrinhos, também do nome da subpasta). Revise a linha no inventário (tipo, título, autor, eixo, gênero) e apague `novo` da coluna `obs`.
+Entraram nesta execução ou numa anterior, com título e autor deduzidos do nome do arquivo (nas pastas de quadrinhos, também do nome da subpasta). Revise a linha no inventário (tipo, título, autor, eixo, gênero) e apague `novo` da coluna `obs`. Os que têm nome vago — sem autor, um título de uma palavra, o emaranhado do download — levam também `#verificar` no catálogo.
 
 - `Revistas/(Coleção Superinteressante)- Prato Sujo - Como a indústria manipula os alimentos para viciar você!-Editora Abril (2013).epub` → (Coleção Superinteressante)- Prato Sujo - como a Indústria Manipula os Alimentos para Viciar Você!-Editora Abril (2013) — sem autor
 - `Revistas/(Super Interessante - Coleção Mitologia) Livro 1_ Deuses. 1-Editora Abril (2011).pdf` → (Super Interessante - Coleção Mitologia) Livro 1: Deuses. 1-Editora Abril (2011) — sem autor
